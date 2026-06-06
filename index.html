@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kelas 5 · Tahun Pelajaran 2026–2027</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:      #1a1a2e;
+      --ink-2:    #3d3d5c;
+      --ink-3:    #7b7b9a;
+      --paper:    #faf9f6;
+      --paper-2:  #f0eee8;
+      --paper-3:  #e2dfd6;
+      --accent:   #2e6fbc;
+      --accent-2: #e8a020;
+      --accent-3: #2a9d6f;
+      --danger:   #c94040;
+      --border:   rgba(26,26,46,0.10);
+      --r:        10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ─────────────────────────────── */
+    #topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--ink);
+      color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem;
+      height: 52px;
+      border-bottom: 2px solid var(--accent-2);
+    }
+    #topbar .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+      color: #fff;
+    }
+    #topbar .brand span { color: var(--accent-2); }
+
+    #user-info {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: rgba(255,255,255,0.7);
+    }
+    #user-info strong { color: #fff; }
+    #btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.8);
+      padding: 4px 12px; border-radius: 6px;
+      cursor: pointer; font-size: 12px;
+      transition: all 0.2s;
+    }
+    #btn-logout:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+
+    /* ── HERO ───────────────────────────────── */
+    #hero {
+      background: var(--ink);
+      padding: 3.5rem 1.5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.02) 40px,
+        rgba(255,255,255,0.02) 41px
+      );
+    }
+    #hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+    }
+    #hero h1 em {
+      font-style: normal;
+      color: var(--accent-2);
+    }
+    #hero p {
+      margin-top: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      position: relative;
+    }
+
+    /* ── MAIN LAYOUT ────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* ── SECTION LABEL ──────────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── CARDS GRID ─────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-accent, var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,26,46,0.08); border-color: rgba(26,26,46,0.18); }
+    .card:hover::after { transform: scaleX(1); }
+
+    .card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .card-desc {
+      font-size: 12px;
+      color: var(--ink-3);
+      line-height: 1.5;
+    }
+    .card-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: var(--paper-2);
+      color: var(--ink-3);
+      margin-top: auto;
+      align-self: flex-start;
+    }
+
+    /* ── PENGUMUMAN ─────────────────────────── */
+    #pengumuman-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    #pengumuman-list li {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-2);
+      border-radius: 0 var(--r) var(--r) 0;
+      padding: 0.75rem 1rem;
+    }
+    #pengumuman-list li .tgl { font-size: 11px; color: var(--ink-3); }
+    #pengumuman-list li .judul { font-size: 13px; font-weight: 600; margin-top: 2px; }
+    #pengumuman-list li .isi { font-size: 12px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+    .empty-state { padding: 1.5rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+
+    /* ── ADMIN PANEL ────────────────────────── */
+    #admin-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--r);
+      padding: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    #admin-panel h2 { font-size: 14px; font-weight: 600; margin-bottom: 0.75rem; }
+    .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 7px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #2460a8; }
+    .btn-secondary { background: var(--paper-2); color: var(--ink); border-color: var(--border); }
+    .btn-secondary:hover { background: var(--paper-3); }
+
+    /* ── LOGIN SCREEN ───────────────────────── */
+    #login-screen {
+      position: fixed; inset: 0;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      padding: 1.5rem;
+    }
+    #login-box {
+      background: var(--paper);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 100%; max-width: 360px;
+      text-align: center;
+    }
+    #login-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    #login-box p { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 0.75rem; text-align: left; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
+    .form-group input {
+      width: 100%; padding: 9px 12px;
+      border: 1px solid var(--paper-3);
+      border-radius: 7px;
+      font-size: 14px; color: var(--ink);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--accent); }
+    #btn-login {
+      width: 100%; margin-top: 0.5rem;
+      padding: 10px; border: none; border-radius: 7px;
+      background: var(--accent); color: #fff;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    #btn-login:hover { background: #2460a8; }
+    #login-error { font-size: 12px; color: var(--danger); margin-top: 8px; min-height: 18px; }
+
+    /* ── FOOTER ─────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── LOADING ────────────────────────────── */
+    #loading {
+      position: fixed; inset: 0;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s;
+    }
+    #loading .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-2);
+      display: inline-block; margin: 0 4px;
+      animation: bounce 0.9s infinite;
+    }
+    #loading .dot:nth-child(2) { animation-delay: 0.15s; }
+    #loading .dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+</div>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div id="login-box">
+    <h2>Kelas <em style="color:var(--accent-2);font-style:normal">5</em></h2>
+    <p>Tahun Pelajaran 2026–2027<br>Silakan masuk untuk melanjutkan</p>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="inp-email" placeholder="email@sekolah.sch.id" autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label>Kata Sandi</label>
+      <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password" />
+    </div>
+    <button id="btn-login" onclick="doLogin()">Masuk</button>
+    <div id="login-error"></div>
+  </div>
+</div>
+
+<!-- Main App (hidden until login) -->
+<div id="app" class="hidden">
+
+  <!-- Topbar -->
+  <div id="topbar">
+    <div class="brand">Kelas <span>5</span> · 2026–2027</div>
+    <div id="user-info">
+      Halo, <strong id="display-name">—</strong>
+      <button id="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div id="hero">
+    <h1>Pusat Belajar<br><em>Kelas Lima</em></h1>
+    <p>Semua yang kamu butuhkan untuk belajar ada di sini · TP 2026–2027</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Admin Panel (only visible to guru) -->
+    <div id="admin-panel" class="hidden">
+      <h2>⚙️ Panel Guru</h2>
+      <div class="admin-actions">
+        <button class="btn btn-primary" onclick="alert('Fitur segera hadir')">+ Tambah Pengumuman</button>
+        <button class="btn btn-secondary" onclick="alert('Fitur segera hadir')">Upload Modul</button>
+        <button class="btn btn-secondary" onclick="alert('Fitur segera hadir')">Tambah Soal</button>
+        <a href="pages/admin.html" class="btn btn-secondary">Kelola Konten</a>
+      </div>
+    </div>
+
+    <!-- Menu Utama -->
+    <p class="section-label">Menu Utama</p>
+    <div class="card-grid">
+      <a href="pages/cp-tp-atp.html" class="card" style="--card-accent: #2e6fbc">
+        <div class="card-icon">📋</div>
+        <div class="card-title">CP, TP & ATP</div>
+        <div class="card-desc">Capaian Pembelajaran, Tujuan Pembelajaran, dan Alur Tujuan Pembelajaran</div>
+        <div class="card-badge">Kurikulum</div>
+      </a>
+      <a href="pages/modul.html" class="card" style="--card-accent: #2a9d6f">
+        <div class="card-icon">📚</div>
+        <div class="card-title">Modul Pembelajaran</div>
+        <div class="card-desc">Modul scaffolding per tema dan mata pelajaran</div>
+        <div class="card-badge">Pembelajaran</div>
+      </a>
+      <a href="pages/materi.html" class="card" style="--card-accent: #e8a020">
+        <div class="card-icon">📖</div>
+        <div class="card-title">Materi Ajar</div>
+        <div class="card-desc">Buku Belajar Mandiri untuk siswa, bisa dibaca langsung</div>
+        <div class="card-badge">Siswa</div>
+      </a>
+      <a href="pages/bank-soal.html" class="card" style="--card-accent: #9b59b6">
+        <div class="card-icon">✏️</div>
+        <div class="card-title">Bank Soal</div>
+        <div class="card-desc">Kumpulan soal latihan dan ujian per mata pelajaran</div>
+        <div class="card-badge">Evaluasi</div>
+      </a>
+      <a href="pages/info.html" class="card" style="--card-accent: #c94040">
+        <div class="card-icon">📢</div>
+        <div class="card-title">Pengumuman</div>
+        <div class="card-desc">Informasi penting, jadwal, dan pengumuman dari guru</div>
+        <div class="card-badge">Info</div>
+      </a>
+      <a href="pages/jadwal.html" class="card" style="--card-accent: #1a7a8a">
+        <div class="card-icon">🗓️</div>
+        <div class="card-title">Jadwal Pelajaran</div>
+        <div class="card-desc">Jadwal mingguan dan kalender akademik</div>
+        <div class="card-badge">Jadwal</div>
+      </a>
+    </div>
+
+    <!-- Pengumuman Terbaru -->
+    <p class="section-label">Pengumuman Terbaru</p>
+    <ul id="pengumuman-list">
+      <li class="empty-state">Memuat pengumuman…</li>
+    </ul>
+
+  </div>
+
+  <footer>
+    Website Kelas 5 · TP 2026–2027 · Dibuat dengan ❤️ &amp; GitHub Pages
+  </footer>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, limit }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ──────────────────────────────────────────────────────────
+  // TODO: Ganti nilai di bawah dengan config Firebase kamu!
+  // Dapatkan dari: Firebase Console → Project Settings → Your apps
+  // ──────────────────────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "GANTI_API_KEY_KAMU",
+    authDomain:        "GANTI_PROJECT_ID.firebaseapp.com",
+    projectId:         "GANTI_PROJECT_ID",
+    storageBucket:     "GANTI_PROJECT_ID.appspot.com",
+    messagingSenderId: "GANTI_SENDER_ID",
+    appId:             "GANTI_APP_ID"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── Expose helpers ke window ──────────────────────────────
+  window.doLogin = async () => {
+    const email = document.getElementById('inp-email').value.trim();
+    const pass  = document.getElementById('inp-pass').value;
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = '';
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (e) {
+      const map = {
+        'auth/invalid-credential': 'Email atau kata sandi salah.',
+        'auth/user-not-found':     'Akun tidak ditemukan.',
+        'auth/wrong-password':     'Kata sandi salah.',
+        'auth/too-many-requests':  'Terlalu banyak percobaan. Coba lagi nanti.',
+      };
+      errEl.textContent = map[e.code] || 'Login gagal: ' + e.message;
+    }
+  };
+
+  window.doLogout = () => signOut(auth);
+
+  // Allow Enter key on password input
+  document.getElementById('inp-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.doLogin();
+  });
+
+  // ── Auth state ─────────────────────────────────────────────
+  onAuthStateChanged(auth, async (user) => {
+    document.getElementById('loading').style.opacity = '0';
+    setTimeout(() => document.getElementById('loading').style.display = 'none', 300);
+
+    if (user) {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+
+      // Ambil data user dari Firestore
+      const userSnap = await getDoc(doc(db, 'users', user.uid));
+      const userData = userSnap.exists() ? userSnap.data() : {};
+      const namaUser = userData.nama || user.email;
+      const role     = userData.role || 'siswa';
+
+      document.getElementById('display-name').textContent = namaUser;
+
+      // Tampilkan panel admin kalau guru
+      if (role === 'guru') {
+        document.getElementById('admin-panel').classList.remove('hidden');
+      }
+
+      // Muat pengumuman
+      loadPengumuman();
+    } else {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('app').classList.add('hidden');
+    }
+  });
+
+  // ── Muat pengumuman dari Firestore ────────────────────────
+  async function loadPengumuman() {
+    const list = document.getElementById('pengumuman-list');
+    try {
+      const q = query(
+        collection(db, 'pengumuman'),
+        orderBy('tanggal', 'desc'),
+        limit(5)
+      );
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        list.innerHTML = '<li class="empty-state">Belum ada pengumuman.</li>';
+        return;
+      }
+      list.innerHTML = '';
+      snap.forEach(d => {
+        const data = d.data();
+        const tgl = data.tanggal?.toDate?.()?.toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'long', year: 'numeric'
+        }) || '';
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="tgl">${tgl}</div>
+          <div class="judul">${data.judul || '—'}</div>
+          <div class="isi">${data.isi || ''}</div>
+        `;
+        list.appendChild(li);
+      });
+    } catch (err) {
+      list.innerHTML = `<li class="empty-state">Gagal memuat pengumuman: ${err.message}</li>`;
+    }
+  }
+</script>
+</body>
+</html>
