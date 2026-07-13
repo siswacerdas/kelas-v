@@ -15,6 +15,6 @@
  *    sudah dipakai di halaman utama begitu sudah aktif.
  */
 const MPLS_CONFIG = {
-  APPS_SCRIPT_URL: "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbyXRrs178070_K8FO0rhSmrX1yk7NKvZvmFbVVH9eRh7jtVgO7ovcKdl0ttVcWCrQSmeQ/exec",
   ACCESS_CODE: "mpls2026",
 };
