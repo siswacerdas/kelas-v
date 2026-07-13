@@ -4,6 +4,21 @@
  * karena backend Apps Script yang dipakai sama dengan modul MPLS (1 spreadsheet).
  */
 
+/* ── ISI DROPDOWN NAMA DARI DAFTAR SISWA KELAS 5A ───────────────────
+ * Memakai MPLS_STUDENTS yang sama dengan modul MPLS (mpls-data.js),
+ * supaya nama di "Data Siswa" selalu konsisten dengan nama di penilaian MPLS.
+ */
+function isiDropdownNama() {
+  const select = document.getElementById("f-nama");
+  MPLS_STUDENTS.forEach((nama) => {
+    const opt = document.createElement("option");
+    opt.value = nama;
+    opt.textContent = nama;
+    select.appendChild(opt);
+  });
+}
+isiDropdownNama();
+
 const state = {
   siswaList: [],
   fotoResized: null, // { base64, mime } hasil resize, null kalau tidak ganti foto
