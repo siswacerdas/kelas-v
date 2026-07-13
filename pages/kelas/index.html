@@ -33,7 +33,9 @@
   <form id="form-siswa">
     <div class="field-group">
       <label for="f-nama">Nama Lengkap</label>
-      <input type="text" id="f-nama" required placeholder="mis. Abdurrahman Ar Ribery" />
+      <select id="f-nama" required>
+        <option value="">— pilih nama siswa —</option>
+      </select>
     </div>
     <div class="field-group">
       <label for="f-panggilan">Nama Panggilan</label>
@@ -72,6 +74,7 @@
 <div id="toast"></div>
 
 <script type="module" src="../../assets/js/guru-guard.js"></script>
+<script src="../mpls/assets/mpls-data.js"></script>
 <script src="../mpls/assets/config.js"></script>
 <script src="assets/kelas.js"></script>
 </body>
