@@ -55,6 +55,34 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Jika `APPS_SCRIPT_URL` di `config.js` belum diisi, muncul peringatan yang jelas (bukan error diam-diam)
 - [ ] Kolom "Diisi Oleh" tersimpan dari sesi sebelumnya (localStorage) saat membuka form lagi
 
+### 7. Dropdown Guru Pengamat (`input.html`)
+- [ ] Field "Diisi Oleh" berupa dropdown, bukan lagi teks bebas
+- [ ] Hanya ada 2 pilihan: "Arif Azwar Anas" dan "Azizah Zahro Ibrahim"
+- [ ] Pilihan guru terakhir tetap diingat (localStorage) saat form dibuka lagi
+
+### 8. Rekap & Kesimpulan Otomatis (`pages/mpls/rekap.html`)
+- [ ] Halaman ini menolak akses (redirect ke beranda) jika belum login / bukan role `guru`
+- [ ] Daftar semua siswa yang sudah punya data MPLS tampil dengan badge level per kategori
+- [ ] Kotak pencarian nama berfungsi
+- [ ] Klik nama siswa membuka detail: 4 kategori + kesimpulan akhir + rekomendasi guru/ortu
+- [ ] Siswa yang datanya belum lengkap tetap tampil, tidak error (kesimpulan bilang "belum ada data" pada kategori yang kosong)
+- [ ] Tombol "Cetak / Simpan PDF" membuka `laporan.html` dengan nama siswa yang benar
+
+### 9. Laporan Cetak PDF (`pages/mpls/laporan.html`)
+- [ ] Halaman ini juga menolak akses jika bukan guru
+- [ ] Logo sekolah tampil di kop laporan
+- [ ] Identitas siswa, semua nilai kategori, dan kesimpulan akhir tidak ada yang terpotong
+- [ ] Saat print/print-preview, hasil pas 1 halaman A4 (cek di Chrome: Ctrl/Cmd+P → lihat pratinjau)
+- [ ] Tombol "Cetak / Simpan sebagai PDF" tidak ikut tercetak (harus hilang di hasil print)
+
+### 10. Data Kelas — Profil & Foto Siswa (`pages/kelas/`)
+- [ ] Halaman ini menolak akses jika bukan guru; kontainer "Kelas" di beranda hanya muncul untuk role `guru`
+- [ ] Form bisa menyimpan nama lengkap, panggilan, tempat & tanggal lahir tanpa foto
+- [ ] Memilih foto dari kamera HP menampilkan pratinjau + perkiraan ukuran file setelah dikompres
+- [ ] Setelah simpan, foto muncul di folder Google Drive yang sudah ditentukan
+- [ ] Daftar siswa di bawah form menampilkan thumbnail foto (atau ikon placeholder bila belum ada foto)
+- [ ] Klik salah satu siswa di daftar mengisi ulang form (mode edit), simpan lagi meng-update baris yang sama (bukan duplikat — cek jumlah baris di sheet "Data Siswa")
+
 ---
 
 ## 🔁 Skenario Ujicoba Lengkap
@@ -87,6 +115,16 @@ Jalankan skenario ini setelah perubahan besar:
 2. Tambah pengumuman baru melalui panel guru (setelah fitur selesai)
 3. Logout, login sebagai siswa
 4. → **Harapan:** pengumuman baru muncul di beranda
+
+### Skenario F — Rekap, Cetak PDF, dan Data Kelas (guru)
+1. Login sebagai guru di beranda
+2. Klik kontainer "Kelas" → "Kelola Data Siswa & Foto"
+3. Isi 1 data siswa lengkap dengan foto dari kamera → Simpan
+4. → **Harapan:** muncul di daftar siswa dengan thumbnail foto, dan baris baru di sheet "Data Siswa" + file foto baru di folder Drive
+5. Kembali ke beranda → klik "Rekap Hasil MPLS" (via kontainer Kelas atau menu MPLS)
+6. → **Harapan:** daftar siswa dengan badge level muncul; klik salah satu nama menampilkan kesimpulan + rekomendasi
+7. Klik "Cetak / Simpan PDF" pada salah satu siswa
+8. → **Harapan:** halaman laporan A4 terbuka dengan logo, identitas, nilai, dan kesimpulan lengkap tidak terpotong; `Ctrl/Cmd+P` menghasilkan 1 halaman rapi
 
 ### Skenario E — Input MPLS (dari HP)
 1. Buka `pages/mpls/input.html` dari HP
@@ -126,6 +164,7 @@ Catat setiap sesi ujicoba di sini:
 | Tanggal | Versi | Oleh | Hasil | Catatan |
 |---|---|---|---|---|
 | 2026-06-07 | 0.1.0 | *(nama)* | ⏳ Belum diuji | Setup awal |
+| 2026-07-13 | 0.3.0 | *(nama)* | ⏳ Belum diuji | Rekap otomatis, cetak PDF, data kelas & foto |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

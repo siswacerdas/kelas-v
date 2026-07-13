@@ -99,8 +99,13 @@ kelas-v/
 │   │   └── style.css    ← Stylesheet global (opsional, sudah inline di index)
 │   └── img/
 │       └── logo.png     ← Logo sekolah
+├── assets/
+│   ├── img/
+│   │   └── logo-sekolah.jpg ← Logo untuk laporan cetak MPLS
+│   └── js/
+│       └── guru-guard.js    ← Pelindung Firebase Auth untuk halaman khusus guru
 ├── apps-script/
-│   ├── Code.gs           ← Backend Google Apps Script untuk modul MPLS
+│   ├── Code.gs           ← Backend Google Apps Script untuk modul MPLS + Data Siswa
 │   └── README.md         ← Cara deploy Apps Script sebagai Web App
 └── pages/
     ├── cp-tp-atp.html
@@ -110,14 +115,22 @@ kelas-v/
     ├── info.html
     ├── jadwal.html
     ├── admin.html        ← Hanya bisa diakses guru
+    ├── kelas/             ← Data profil & foto siswa (khusus guru, Firebase-gated)
+    │   ├── index.html
+    │   └── assets/
+    │       ├── kelas.css
+    │       └── kelas.js
     └── mpls/
         ├── index.html     ← Landing MPLS (daftar sub-halaman)
-        ├── input.html      ← Form input penilaian (mobile-first)
+        ├── input.html     ← Form input penilaian (mobile-first)
+        ├── rekap.html     ← Rekap & kesimpulan otomatis semua siswa (khusus guru)
+        ├── laporan.html   ← Cetak/PDF hasil MPLS per siswa, A4 satu halaman (khusus guru)
         └── assets/
-            ├── mpls.css     ← Gaya bersama halaman MPLS
-            ├── mpls-data.js ← Daftar siswa, skala, kategori indikator
-            ├── config.js    ← URL Apps Script & kode akses (GANTI sebelum pakai)
-            └── app.js       ← Logika form: render, load, simpan
+            ├── mpls.css        ← Gaya bersama halaman MPLS
+            ├── mpls-data.js    ← Daftar siswa, skala, kategori indikator, daftar guru
+            ├── mpls-scoring.js ← Engine skoring & kesimpulan otomatis
+            ├── config.js       ← URL Apps Script & kode akses (GANTI sebelum pakai)
+            └── app.js          ← Logika form: render, load, simpan
 ```
 
 ---
@@ -154,6 +167,21 @@ bank_soal/
     mapel      : string
     tingkat    : string
 ```
+
+---
+
+## 📊 Struktur Data MPLS (Google Sheets, terpisah dari Firestore)
+
+Spreadsheet: `1G-LWyOSyCKLP10RU234grIR_5-iWxLSG-6vZP3sKUkA` (lihat `apps-script/README.md`)
+
+```
+Sheet "Data MPLS"   → 1 baris per siswa: nilai 4 kategori observasi MPLS
+Sheet "Data Siswa"  → 1 baris per siswa: Nama Lengkap, Nama Panggilan,
+                       Tempat Lahir, Tanggal Lahir, URL Foto (link Google Drive)
+```
+
+Foto siswa disimpan sebagai file di folder Google Drive terpisah (ID folder
+ada di `apps-script/Code.gs` → `FOTO_FOLDER_ID`), bukan di spreadsheet.
 
 ---
 

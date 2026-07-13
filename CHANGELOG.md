@@ -16,8 +16,53 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 - Halaman `admin.html` — panel kelola konten untuk guru
 - Halaman `jadwal.html` — jadwal pelajaran mingguan
 - Integrasi upload modul & soal ke Firestore dari panel guru
-- `pages/mpls/rekap.html` — ringkasan hasil observasi MPLS seluruh siswa (kartu "Rekap Hasil" sudah disiapkan di `pages/mpls/index.html`, ditandai "Segera hadir")
-- Gerbang akses modul MPLS dipindah dari kode akses sederhana ke Firebase Authentication, begitu Firebase aktif secara sitewide
+- Gerbang akses `input.html` masih pakai kode akses sederhana (belum dipindah ke
+  Firebase) — sengaja tidak diubah dulu di update ini supaya tidak regresi
+
+---
+
+## [0.3.0] — 2026-07-13
+
+### Ditambahkan
+- **Rekap & kesimpulan otomatis MPLS**:
+  - `pages/mpls/assets/mpls-scoring.js` — engine skoring: menghitung rata-rata
+    per kategori (skala BB/MB/BSH/BSB), menentukan level, dan menghasilkan
+    narasi kesimpulan + rekomendasi tindak lanjut guru & orang tua secara
+    otomatis untuk berbagai skenario hasil (termasuk kesimpulan akhir
+    kesiapan belajar gabungan dari 4 kategori)
+  - `pages/mpls/rekap.html` — daftar rekap seluruh siswa, bisa dicari,
+    expand untuk detail per kategori + rekomendasi (khusus guru)
+  - `pages/mpls/laporan.html` — cetak/simpan PDF hasil MPLS per siswa,
+    layout A4 satu halaman dengan logo sekolah (`assets/img/logo-sekolah.jpg`)
+  - Kartu "Rekap Hasil" di `pages/mpls/index.html` diaktifkan (sebelumnya
+    "Segera hadir")
+- **Dropdown guru pengamat dibatasi**: `input.html` — field "Diisi Oleh"
+  yang tadinya teks bebas diganti dropdown 2 pilihan (`MPLS_GURU_LIST` di
+  `mpls-data.js`): "Arif Azwar Anas", "Azizah Zahro Ibrahim"
+- **Modul baru "Kelas" — data profil & foto siswa** (khusus guru):
+  - Kontainer baru di beranda (`index.html` root) — muncul hanya untuk role `guru`
+  - `pages/kelas/index.html` — form tambah/perbarui data siswa (nama lengkap,
+    nama panggilan, tempat & tanggal lahir) + daftar siswa tersimpan
+  - Foto diambil langsung dari kamera HP, diperkecil & dikompres otomatis di
+    sisi klien (maks. 1280px, JPEG kualitas 0.75) sebelum diunggah
+  - Data teks disimpan ke sheet baru **"Data Siswa"**; foto disimpan ke folder
+    Google Drive yang sudah dishare pemilik proyek (link folder ada di
+    `apps-script/Code.gs` → `FOTO_FOLDER_ID`)
+- **Proteksi Firebase Auth untuk halaman sensitif baru**: `assets/js/guru-guard.js`
+  — `rekap.html`, `laporan.html`, dan `pages/kelas/index.html` kini memverifikasi
+  login + role `guru` lewat Firebase sebelum menampilkan konten (beda dari
+  `input.html` yang tetap pakai kode akses sederhana, tidak diubah)
+- `apps-script/Code.gs`: sheet "Data Siswa" + header, endpoint `?all=1` dan
+  `?siswa=1` di `doGet`, penanganan `type: "siswa"` di `doPost` (termasuk
+  simpan foto base64 ke Drive)
+- `PROGRESS_MPLS_LANJUTAN.md` — pelacak progres pengerjaan fitur ini
+
+### Catatan Arsitektur
+- Ambang skor kategori: <1.75 BB · 1.75–2.49 MB · 2.5–3.24 BSH · ≥3.25 BSB.
+  Kesimpulan akhir mempertimbangkan jumlah kategori BB/MB, bukan sekadar
+  rata-rata polos, supaya 1 kategori sangat lemah tidak "tertutupi" kategori lain.
+- Laporan PDF pakai `window.print()` + CSS `@page { size: A4 }`, bukan
+  library seperti jsPDF, untuk hasil satu halaman yang lebih presisi.
 
 ---
 
