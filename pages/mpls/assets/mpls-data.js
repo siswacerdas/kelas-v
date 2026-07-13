@@ -36,6 +36,12 @@ const MPLS_STUDENTS = [
   "Shanum Meyra Rosadi",
 ];
 
+/** Daftar guru pengamat — dibatasi hanya nama-nama ini yang boleh dipilih di form input. */
+const MPLS_GURU_LIST = [
+  "Arif Azwar Anas",
+  "Azizah Zahro Ibrahim",
+];
+
 const MPLS_SCALE = [
   { v: 1, code: "BB", label: "Belum Berkembang" },
   { v: 2, code: "MB", label: "Mulai Berkembang" },

@@ -280,6 +280,46 @@ select { appearance: none; -webkit-appearance: none;
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 #toast.err { background: var(--danger); }
 
+/* ── LEVEL BADGE (BB/MB/BSH/BSB) — dipakai di rekap.html & laporan.html ── */
+.level-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+  white-space: nowrap;
+}
+.level-BB  { background: rgba(201,64,64,0.12);  color: #c94040; }
+.level-MB  { background: rgba(232,160,32,0.15); color: #b5790f; }
+.level-BSH { background: rgba(46,111,188,0.12); color: #2e6fbc; }
+.level-BSB { background: rgba(42,157,111,0.14); color: #218a5c; }
+.level-none{ background: var(--paper-2); color: var(--ink-3); }
+
+/* ── REKAP: daftar siswa ─────────────────── */
+.rekap-item {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+  padding: 0.9rem 1rem; margin-bottom: 10px; cursor: pointer;
+}
+.rekap-item-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rekap-item-name { font-weight: 700; font-size: 13.5px; }
+.rekap-mini-badges { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.rekap-mini-badge {
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 6px;
+  background: var(--paper-2); color: var(--ink-2);
+}
+.rekap-detail { display: none; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--border); }
+.rekap-item.open .rekap-detail { display: block; }
+.rekap-cat-block { margin-bottom: 0.9rem; }
+.rekap-cat-block h4 { font-size: 12.5px; margin-bottom: 3px; }
+.rekap-cat-block p { font-size: 12px; color: var(--ink-2); line-height: 1.55; margin-bottom: 4px; }
+.rekap-cat-block ul { padding-left: 1.1rem; font-size: 11.5px; color: var(--ink-2); line-height: 1.6; }
+.rekap-search {
+  width: 100%; padding: 11px 14px; border-radius: 9px; border: 1px solid var(--border);
+  font-size: 14px; margin-bottom: 1rem; font-family: inherit;
+}
+.btn-cetak {
+  display: inline-block; margin-top: 6px; background: var(--ink); color: #fff;
+  font-size: 12px; font-weight: 700; padding: 8px 14px; border-radius: 8px;
+  text-decoration: none;
+}
+
 footer { text-align: center; padding: 1.5rem 1rem 2rem; font-size: 11px; color: var(--ink-3); }
 
 @media (prefers-reduced-motion: reduce) {

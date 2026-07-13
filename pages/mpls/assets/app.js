@@ -156,8 +156,14 @@ function initStudentPicker() {
   sel.addEventListener("change", onStudentChange);
 
   const guru = document.getElementById("inp-guru");
+  MPLS_GURU_LIST.forEach((nama) => {
+    const opt = document.createElement("option");
+    opt.value = nama;
+    opt.textContent = nama;
+    guru.appendChild(opt);
+  });
   guru.value = localStorage.getItem("mpls_guru_name") || "";
-  guru.addEventListener("input", () => localStorage.setItem("mpls_guru_name", guru.value));
+  guru.addEventListener("change", () => localStorage.setItem("mpls_guru_name", guru.value));
 }
 
 function resetForm() {
