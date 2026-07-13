@@ -22,6 +22,11 @@ Menghubungkan halaman `pages/mpls/input.html` ke Google Spreadsheet
    *(ini normal untuk script buatan sendiri yang belum diverifikasi Google)*
 4. Cek spreadsheet — sheet baru bernama **"Data MPLS"** dengan header kolom
    akan otomatis muncul
+5. Ulangi untuk fungsi **setupSiswaSheet** (pilih di dropdown → Run) — ini
+   membuat sheet baru **"Data Siswa"** (dipakai fitur "Kelas" untuk profil +
+   foto siswa). Saat run ini, akan muncul permintaan izin **tambahan** untuk
+   akses Google Drive (dibutuhkan supaya foto siswa bisa disimpan ke folder
+   Drive) — klik **Allow/Izinkan** lagi.
 
 ### 3. Deploy sebagai Web App
 1. Klik **Deploy → New deployment** (Deploy → Deployment baru)
@@ -68,13 +73,29 @@ URL Web App tetap sama — tidak perlu ganti `config.js` lagi.
 - **Satu baris per siswa.** Mengisi ulang siswa yang sama akan meng-update
   baris yang sudah ada (dicocokkan lewat kolom "Nama Siswa"), bukan menambah
   baris baru — supaya bisa diisi bertahap selama minggu MPLS.
-- **GET** `?nama=Nama%20Siswa` → mengembalikan data siswa itu bila sudah ada
-  (dipakai form untuk memuat isian sebelumnya).
-- **POST** (body JSON, key = nama kolom persis seperti di `HEADERS`) → simpan
-  atau update baris.
-- Header kolom didefinisikan satu tempat di `HEADERS` (atas file `Code.gs`) —
-  kalau menambah/mengubah indikator di `pages/mpls/assets/mpls-data.js`,
-  pastikan nama field-nya sama persis dengan yang ditambahkan di `HEADERS`.
+- **GET** `?nama=Nama%20Siswa` → mengembalikan data MPLS siswa itu bila sudah ada
+  (dipakai `input.html` untuk memuat isian sebelumnya).
+- **GET** `?all=1` → mengembalikan SEMUA baris data MPLS (dipakai `rekap.html`
+  dan `laporan.html` untuk menghitung kesimpulan otomatis semua siswa).
+- **GET** `?siswa=1` → mengembalikan SEMUA baris profil siswa dari sheet
+  "Data Siswa" (dipakai `pages/kelas/index.html` dan `laporan.html`).
+- **POST** tanpa `type` (body JSON, key = nama kolom persis seperti di
+  `HEADERS`) → simpan/update baris nilai MPLS (perilaku lama, tidak berubah).
+- **POST** dengan `type: "siswa"` → simpan/update profil siswa (dicocokkan
+  lewat "Nama Lengkap"). Kalau body menyertakan `fotoBase64` + `fotoMime`,
+  foto akan disimpan sebagai file baru ke folder Google Drive dengan ID
+  di konstanta `FOTO_FOLDER_ID`, lalu URL-nya disimpan ke kolom "URL Foto".
+- Header kolom didefinisikan satu tempat di `HEADERS` / `SISWA_HEADERS` (atas
+  file `Code.gs`) — kalau menambah/mengubah indikator di
+  `pages/mpls/assets/mpls-data.js`, pastikan nama field-nya sama persis.
+
+## Folder Drive untuk foto siswa
+
+Foto disimpan ke folder yang linknya sudah dishare "siapa saja yang punya
+link bisa mengedit" (ID folder ada di konstanta `FOTO_FOLDER_ID` pada
+`Code.gs`). Ini pengaturan sementara sesuai permintaan pemilik proyek —
+bila ingin diperketat nanti, folder bisa diubah ke akses lebih terbatas
+(mis. hanya akun tertentu), tanpa perlu mengubah kode `Code.gs`.
 
 ## Keamanan
 
