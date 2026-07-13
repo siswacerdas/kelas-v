@@ -24,8 +24,8 @@
   <p class="section-label">Rekap & Kesimpulan Otomatis</p>
   <div class="info-box">
     Kesimpulan dan rekomendasi di bawah ini <strong>dihasilkan otomatis</strong> dari nilai
-    yang sudah diisi guru di halaman Input Penilaian. Klik nama siswa untuk melihat detail
-    per kategori beserta rekomendasi tindak lanjut untuk guru & orang tua.
+    yang sudah diisi guru di halaman Input Penilaian. Kategori yang belum diisi sama sekali
+    ditandai "-". Klik judul kartu siswa untuk menyembunyikan/menampilkan detail.
   </div>
 
   <select id="search" class="rekap-search">
@@ -88,7 +88,7 @@
       `).join("");
 
       return `
-        <div class="rekap-item" data-idx="${idx}">
+        <div class="rekap-item open" data-idx="${idx}">
           <div class="rekap-item-head">
             <div class="rekap-item-name">${row["Nama Siswa"] || "—"}</div>
             ${levelBadgeHtml(result.overall.level, result.overall.label)}
@@ -96,8 +96,12 @@
           <div class="rekap-mini-badges">${miniBadges}</div>
           <div class="rekap-detail">
             <div class="rekap-cat-block">
-              <h4>🎯 Kesimpulan Akhir Kesiapan Belajar</h4>
+              <h4>🎯 Kesimpulan Akhir Kesiapan Belajar — ${levelBadgeHtml(result.overall.level, result.overall.label)}</h4>
               <p>${result.overall.narasi}</p>
+              ${result.overall.kekuatan.length ? `<p style="margin-top:6px"><strong>Aspek kuat:</strong> ${result.overall.kekuatan.join(", ")}</p>` : ""}
+              ${result.overall.perhatian.length ? `<p><strong>Aspek yang perlu perhatian:</strong> ${result.overall.perhatian.join(", ")}</p>` : ""}
+              ${result.overall.guru.length ? `<p style="margin-bottom:2px;margin-top:6px"><strong>Saran untuk guru:</strong></p><ul>${result.overall.guru.map((g) => `<li>${g}</li>`).join("")}</ul>` : ""}
+              ${result.overall.ortu.length ? `<p style="margin-bottom:2px;margin-top:6px"><strong>Saran untuk orang tua:</strong></p><ul>${result.overall.ortu.map((o) => `<li>${o}</li>`).join("")}</ul>` : ""}
             </div>
             ${catDetail}
             <a class="btn-cetak" href="laporan.html?nama=${encodeURIComponent(row["Nama Siswa"])}" target="_blank">🖨️ Cetak / Simpan PDF</a>
@@ -108,9 +112,6 @@
     wrap.querySelectorAll(".rekap-item").forEach((el) => {
       el.querySelector(".rekap-item-head").addEventListener("click", () => el.classList.toggle("open"));
     });
-    if (namaTerpilih && rows.length === 1) {
-      wrap.querySelector(".rekap-item").classList.add("open");
-    }
   }
 
   async function loadData() {
@@ -118,7 +119,13 @@
     try {
       const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?all=1");
       const json = await res.json();
-      allData = json.data || [];
+      if (json.data === undefined) {
+        document.getElementById("list").innerHTML =
+          '<div class="info-box" style="border-color:var(--danger)">Backend belum mengenali permintaan ini (field "data" tidak ada di respons). ' +
+          'Kemungkinan Apps Script belum ter-deploy versi terbaru — cek Deploy → Manage deployments → pastikan versi aktif adalah yang terbaru.</div>';
+        return;
+      }
+      allData = json.data;
       renderList("");
     } catch (err) {
       document.getElementById("list").innerHTML = '<div class="info-box" style="border-color:var(--danger)">Gagal memuat data: ' + err.message + '</div>';

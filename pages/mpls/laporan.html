@@ -172,6 +172,8 @@
       <div class="rep-overall">
         <h2>🎯 Kesimpulan Akhir Kesiapan Belajar: <span class="badge ${levelClass(result.overall.level)}">${result.overall.label}</span></h2>
         <p>${result.overall.narasi}</p>
+        ${result.overall.kekuatan.length ? `<p style="margin-top:3px"><b>Aspek kuat:</b> ${result.overall.kekuatan.join(", ")}</p>` : ""}
+        ${result.overall.perhatian.length ? `<p><b>Perlu perhatian:</b> ${result.overall.perhatian.join(", ")}</p>` : ""}
         <div class="cols">
           <div>
             <b>Langkah Guru di Sekolah</b>
