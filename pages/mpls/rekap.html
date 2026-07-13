@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rekap Hasil MPLS · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/mpls.css" />
+</head>
+<body>
+
+<div id="checking" style="position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-3);z-index:500">
+  Memeriksa akses…
+</div>
+
+<div id="topbar">
+  <a href="index.html" class="back">←</a>
+  <div class="brand">Rekap <em>Hasil MPLS</em></div>
+</div>
+
+<div class="container">
+  <p class="section-label">Rekap & Kesimpulan Otomatis</p>
+  <div class="info-box">
+    Kesimpulan dan rekomendasi di bawah ini <strong>dihasilkan otomatis</strong> dari nilai
+    yang sudah diisi guru di halaman Input Penilaian. Klik nama siswa untuk melihat detail
+    per kategori beserta rekomendasi tindak lanjut untuk guru & orang tua.
+  </div>
+
+  <input type="text" id="search" class="rekap-search" placeholder="Cari nama siswa…" />
+
+  <div id="list"></div>
+</div>
+
+<footer>Modul MPLS · Kelas 5 · Rekap dibuat otomatis dari Google Spreadsheet</footer>
+
+<script type="module" src="../../assets/js/guru-guard.js"></script>
+<script src="assets/mpls-data.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/mpls-scoring.js"></script>
+<script>
+  let allData = [];
+
+  function levelBadgeHtml(level, label) {
+    const cls = level ? "level-" + level : "level-none";
+    return `<span class="level-badge ${cls}">${label}</span>`;
+  }
+
+  function renderList(filterText) {
+    const wrap = document.getElementById("list");
+    const filter = (filterText || "").trim().toLowerCase();
+    const rows = allData.filter((r) => !filter || String(r["Nama Siswa"]).toLowerCase().includes(filter));
+
+    if (!rows.length) {
+      wrap.innerHTML = '<div class="info-box">Tidak ada data yang cocok.</div>';
+      return;
+    }
+
+    wrap.innerHTML = rows.map((row, idx) => {
+      const result = MplsScoring.computeStudentResult(row);
+      const miniBadges = result.categories.map((c) =>
+        `<span class="rekap-mini-badge">${c.icon} ${c.level || "–"}</span>`
+      ).join("");
+
+      const catDetail = result.categories.map((c) => `
+        <div class="rekap-cat-block">
+          <h4>${c.icon} ${c.title} — ${levelBadgeHtml(c.level, c.levelLabel)} <span style="font-size:10.5px;color:var(--ink-3)">(${c.filled}/${c.total} indikator, ${c.kelengkapan}% lengkap)</span></h4>
+          <p>${c.simpulan}</p>
+          ${c.guru.length ? `<p style="margin-bottom:2px"><strong>Rekomendasi guru:</strong></p><ul>${c.guru.map((g) => `<li>${g}</li>`).join("")}</ul>` : ""}
+          ${c.ortu.length ? `<p style="margin-bottom:2px;margin-top:6px"><strong>Rekomendasi orang tua:</strong></p><ul>${c.ortu.map((o) => `<li>${o}</li>`).join("")}</ul>` : ""}
+        </div>
+      `).join("");
+
+      return `
+        <div class="rekap-item" data-idx="${idx}">
+          <div class="rekap-item-head">
+            <div class="rekap-item-name">${row["Nama Siswa"] || "—"}</div>
+            ${levelBadgeHtml(result.overall.level, result.overall.label)}
+          </div>
+          <div class="rekap-mini-badges">${miniBadges}</div>
+          <div class="rekap-detail">
+            <div class="rekap-cat-block">
+              <h4>🎯 Kesimpulan Akhir Kesiapan Belajar</h4>
+              <p>${result.overall.narasi}</p>
+            </div>
+            ${catDetail}
+            <a class="btn-cetak" href="laporan.html?nama=${encodeURIComponent(row["Nama Siswa"])}" target="_blank">🖨️ Cetak / Simpan PDF</a>
+          </div>
+        </div>`;
+    }).join("");
+
+    wrap.querySelectorAll(".rekap-item").forEach((el) => {
+      el.querySelector(".rekap-item-head").addEventListener("click", () => el.classList.toggle("open"));
+    });
+  }
+
+  async function loadData() {
+    document.getElementById("list").innerHTML = '<div class="info-box">Memuat data…</div>';
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?all=1");
+      const json = await res.json();
+      allData = json.data || [];
+      renderList("");
+    } catch (err) {
+      document.getElementById("list").innerHTML = '<div class="info-box" style="border-color:var(--danger)">Gagal memuat data: ' + err.message + '</div>';
+    }
+  }
+
+  document.getElementById("search").addEventListener("input", (e) => renderList(e.target.value));
+
+  document.addEventListener("guru-verified", () => {
+    document.getElementById("checking").remove();
+    loadData();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../../index.html"));
+</script>
+</body>
+</html>

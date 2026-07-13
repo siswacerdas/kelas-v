@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Laporan Hasil MPLS</title>
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --border: #d9d6cd;
+    --accent: #2e6fbc; --accent-2: #e8a020; --accent-3: #2a9d6f; --danger: #c94040;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #eee; color: var(--ink); }
+
+  #toolbar {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--ink); color: #fff; padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  #toolbar a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 13px; }
+  #toolbar button {
+    background: var(--accent-2); color: var(--ink); border: none; font-weight: 700;
+    padding: 8px 16px; border-radius: 7px; font-size: 13px; cursor: pointer;
+  }
+
+  #page {
+    width: 210mm; min-height: 297mm; margin: 16px auto; background: #fff;
+    padding: 12mm; box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+    font-size: 10.5px; line-height: 1.45;
+  }
+
+  #status { max-width: 210mm; margin: 16px auto; text-align: center; color: var(--ink-3); font-size: 13px; }
+
+  .rep-header { display: flex; align-items: center; gap: 12px; border-bottom: 3px solid var(--accent-2); padding-bottom: 8px; margin-bottom: 10px; }
+  .rep-header img { width: 46px; height: 46px; object-fit: contain; }
+  .rep-header h1 { font-size: 15px; }
+  .rep-header p { font-size: 10px; color: var(--ink-3); }
+
+  .rep-identitas {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px 18px;
+    background: var(--paper); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; margin-bottom: 10px; font-size: 10.5px;
+  }
+  .rep-identitas b { color: var(--ink-2); }
+
+  .rep-overall {
+    border: 1.5px solid var(--accent); border-radius: 6px; padding: 8px 10px; margin-bottom: 10px;
+  }
+  .rep-overall h2 { font-size: 12px; margin-bottom: 3px; }
+  .rep-overall .badge { font-weight: 700; }
+  .rep-overall p { font-size: 10px; margin-top: 2px; }
+  .rep-overall .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .rep-overall .cols div { font-size: 9.5px; }
+  .rep-overall .cols b { display: block; margin-bottom: 2px; font-size: 10px; }
+  .rep-overall .cols ul { padding-left: 14px; }
+
+  .rep-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 7px 9px; border-top: 3px solid var(--cat-accent, var(--accent)); }
+  .rep-cat h3 { font-size: 11px; margin-bottom: 2px; }
+  .rep-cat .lvl { font-size: 9px; font-weight: 700; }
+  .rep-cat p { font-size: 9.3px; color: var(--ink-2); margin-top: 3px; }
+  .rep-cat .rec { font-size: 9px; margin-top: 4px; }
+  .rep-cat .rec b { display: inline; }
+
+  .lvl-BB { color: var(--danger); }
+  .lvl-MB { color: #b5790f; }
+  .lvl-BSH { color: var(--accent); }
+  .lvl-BSB { color: var(--accent-3); }
+
+  .rep-footer { margin-top: 10px; font-size: 8.5px; color: var(--ink-3); text-align: right; }
+
+  @media print {
+    body { background: #fff; }
+    #toolbar { display: none; }
+    #page { box-shadow: none; margin: 0; width: auto; min-height: auto; padding: 0; }
+    @page { size: A4; margin: 12mm; }
+  }
+</style>
+</head>
+<body>
+
+<div id="checking" style="position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:#7b7b9a;z-index:500">
+  Memeriksa akses…
+</div>
+
+<div id="toolbar" class="hidden-when-checking" style="display:none">
+  <a href="rekap.html">← Kembali ke Rekap</a>
+  <button onclick="window.print()">🖨️ Cetak / Simpan sebagai PDF</button>
+</div>
+
+<div id="status">Memuat data…</div>
+<div id="page" style="display:none"></div>
+
+<script type="module" src="../../assets/js/guru-guard.js"></script>
+<script src="assets/mpls-data.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/mpls-scoring.js"></script>
+<script>
+  function qs(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  function levelClass(level) { return level ? "lvl-" + level : ""; }
+
+  async function loadSiswaProfile(nama) {
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1");
+      const json = await res.json();
+      const list = json.data || [];
+      return list.find((s) => String(s["Nama Lengkap"]).trim().toLowerCase() === nama.trim().toLowerCase()) || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async function render() {
+    const nama = qs("nama");
+    if (!nama) {
+      document.getElementById("status").textContent = "Nama siswa tidak ditemukan di URL.";
+      return;
+    }
+
+    let mplsRow;
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?nama=" + encodeURIComponent(nama));
+      const json = await res.json();
+      if (!json.found) {
+        document.getElementById("status").textContent = "Belum ada data penilaian MPLS untuk " + nama + ".";
+        return;
+      }
+      mplsRow = json.data;
+    } catch (err) {
+      document.getElementById("status").textContent = "Gagal memuat data: " + err.message;
+      return;
+    }
+
+    const profil = await loadSiswaProfile(nama);
+    const result = MplsScoring.computeStudentResult(mplsRow);
+
+    const identitasRight = profil ? `
+      <div><b>Nama Panggilan:</b> ${profil["Nama Panggilan"] || "-"}</div>
+      <div><b>TTL:</b> ${profil["Tempat Lahir"] || "-"}, ${profil["Tanggal Lahir"] || "-"}</div>
+    ` : `<div></div><div></div>`;
+
+    const catsHtml = result.categories.map((c) => `
+      <div class="rep-cat" style="--cat-accent:${c.accent}">
+        <h3>${c.icon} ${c.title}</h3>
+        <div class="lvl ${levelClass(c.level)}">${c.levelLabel}${c.avg !== null ? " (rata-rata " + c.avg.toFixed(1) + "/4)" : ""}</div>
+        <p>${c.simpulan}</p>
+        ${c.guru[0] ? `<div class="rec"><b>Guru:</b> ${c.guru[0]}</div>` : ""}
+        ${c.ortu[0] ? `<div class="rec"><b>Ortu:</b> ${c.ortu[0]}</div>` : ""}
+      </div>
+    `).join("");
+
+    document.getElementById("page").innerHTML = `
+      <div class="rep-header">
+        <img src="../../assets/img/logo-sekolah.jpg" alt="Logo Sekolah" />
+        <div>
+          <h1>Laporan Hasil Observasi Non-Kognitif MPLS</h1>
+          <p>Kelas 5 · Tahun Pelajaran 2026–2027</p>
+        </div>
+      </div>
+
+      <div class="rep-identitas">
+        <div><b>Nama Siswa:</b> ${mplsRow["Nama Siswa"] || nama}</div>
+        <div><b>Diisi Oleh:</b> ${mplsRow["Diisi Oleh"] || "-"}</div>
+        ${identitasRight}
+        <div><b>Tanggal Cetak:</b> ${new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</div>
+      </div>
+
+      <div class="rep-overall">
+        <h2>🎯 Kesimpulan Akhir Kesiapan Belajar: <span class="badge ${levelClass(result.overall.level)}">${result.overall.label}</span></h2>
+        <p>${result.overall.narasi}</p>
+        <div class="cols">
+          <div>
+            <b>Langkah Guru di Sekolah</b>
+            <ul>${(result.overall.guru.length ? result.overall.guru : ["Pertahankan pendampingan rutin yang sudah berjalan baik."]).map((g) => `<li>${g}</li>`).join("")}</ul>
+          </div>
+          <div>
+            <b>Langkah Orang Tua di Rumah</b>
+            <ul>${(result.overall.ortu.length ? result.overall.ortu : ["Pertahankan dukungan rutin yang sudah berjalan baik di rumah."]).map((o) => `<li>${o}</li>`).join("")}</ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep-cats">${catsHtml}</div>
+
+      <div class="rep-footer">Dokumen ini dihasilkan otomatis oleh sistem MPLS Kelas 5 dari hasil observasi guru. Bukan diagnosis klinis.</div>
+    `;
+
+    document.getElementById("status").style.display = "none";
+    document.getElementById("page").style.display = "block";
+    document.getElementById("toolbar").style.display = "flex";
+  }
+
+  document.addEventListener("guru-verified", () => {
+    document.getElementById("checking").remove();
+    render();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../../index.html"));
+</script>
+</body>
+</html>
