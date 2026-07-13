@@ -28,7 +28,9 @@
     per kategori beserta rekomendasi tindak lanjut untuk guru & orang tua.
   </div>
 
-  <input type="text" id="search" class="rekap-search" placeholder="Cari nama siswa…" />
+  <select id="search" class="rekap-search">
+    <option value="">— Tampilkan semua siswa —</option>
+  </select>
 
   <div id="list"></div>
 </div>
@@ -47,13 +49,26 @@
     return `<span class="level-badge ${cls}">${label}</span>`;
   }
 
-  function renderList(filterText) {
+  function isiDropdownPencarian() {
+    const select = document.getElementById("search");
+    MPLS_STUDENTS.forEach((nama) => {
+      const opt = document.createElement("option");
+      opt.value = nama;
+      opt.textContent = nama;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderList(namaTerpilih) {
     const wrap = document.getElementById("list");
-    const filter = (filterText || "").trim().toLowerCase();
-    const rows = allData.filter((r) => !filter || String(r["Nama Siswa"]).toLowerCase().includes(filter));
+    const rows = namaTerpilih
+      ? allData.filter((r) => String(r["Nama Siswa"]).trim() === namaTerpilih.trim())
+      : allData;
 
     if (!rows.length) {
-      wrap.innerHTML = '<div class="info-box">Tidak ada data yang cocok.</div>';
+      wrap.innerHTML = namaTerpilih
+        ? `<div class="info-box">Belum ada data penilaian MPLS untuk <strong>${namaTerpilih}</strong>.</div>`
+        : '<div class="info-box">Belum ada data penilaian MPLS sama sekali.</div>';
       return;
     }
 
@@ -93,6 +108,9 @@
     wrap.querySelectorAll(".rekap-item").forEach((el) => {
       el.querySelector(".rekap-item-head").addEventListener("click", () => el.classList.toggle("open"));
     });
+    if (namaTerpilih && rows.length === 1) {
+      wrap.querySelector(".rekap-item").classList.add("open");
+    }
   }
 
   async function loadData() {
@@ -107,10 +125,11 @@
     }
   }
 
-  document.getElementById("search").addEventListener("input", (e) => renderList(e.target.value));
+  document.getElementById("search").addEventListener("change", (e) => renderList(e.target.value));
 
   document.addEventListener("guru-verified", () => {
     document.getElementById("checking").remove();
+    isiDropdownPencarian();
     loadData();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../../index.html"));
