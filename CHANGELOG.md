@@ -16,6 +16,31 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 - Halaman `admin.html` — panel kelola konten untuk guru
 - Halaman `jadwal.html` — jadwal pelajaran mingguan
 - Integrasi upload modul & soal ke Firestore dari panel guru
+- `pages/mpls/rekap.html` — ringkasan hasil observasi MPLS seluruh siswa (kartu "Rekap Hasil" sudah disiapkan di `pages/mpls/index.html`, ditandai "Segera hadir")
+- Gerbang akses modul MPLS dipindah dari kode akses sederhana ke Firebase Authentication, begitu Firebase aktif secara sitewide
+
+---
+
+## [0.2.0] — 2026-07-13
+
+### Ditambahkan
+- Modul **MPLS — Penilaian Non-Kognitif** (`pages/mpls/`):
+  - `index.html` — halaman landing MPLS dengan kartu menu (Input Penilaian aktif, Rekap Hasil segera hadir)
+  - `input.html` — form input penilaian, dioptimalkan untuk HP: pemilih siswa, 4 kategori dalam accordion, tombol skala 1-4 (BB/MB/BSH/BSB), progress bar kelengkapan, tombol simpan sticky di bawah
+  - Gerbang kode akses sederhana sebelum form bisa diisi (`assets/config.js` → `ACCESS_CODE`)
+  - Data tersimpan otomatis ke Google Spreadsheet (satu baris per siswa, mengisi ulang nama yang sama akan meng-update, bukan menduplikasi)
+  - Memuat ulang isian sebelumnya saat nama siswa yang sudah pernah diisi dipilih lagi — mendukung pengisian bertahap selama minggu MPLS
+- Kartu navigasi **MPLS** ditambahkan ke beranda utama (`index.html`)
+- `apps-script/Code.gs` — backend Google Apps Script (`doGet`/`doPost`) yang menjembatani form ke Google Sheets
+- `apps-script/README.md` — panduan deploy Apps Script sebagai Web App
+- Bagian **Langkah 8** di `README.md` — cara mengaktifkan modul MPLS (terpisah dari setup Firebase)
+
+### Catatan Arsitektur
+- Modul MPLS memakai **Google Sheets**, bukan Firestore, sebagai penyimpanan —
+  supaya wali kelas bisa langsung membaca/mengolah data di spreadsheet tanpa
+  perlu panel admin terpisah
+- Struktur kategori & indikator penilaian mengikuti instrumen observasi MPLS
+  (skala BB/MB/BSH/BSB) yang sudah disusun sebelumnya di luar repo ini
 
 ---
 

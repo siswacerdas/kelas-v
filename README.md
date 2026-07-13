@@ -10,6 +10,7 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
 | Halaman | Deskripsi |
 |---|---|
 | Beranda | Pengumuman terbaru, navigasi utama |
+| MPLS — Penilaian Non-Kognitif | Input observasi emosi, kemandirian, minat & kondisi fisik siswa selama MPLS, dioptimalkan untuk HP, tersimpan ke Google Spreadsheet |
 | CP / TP / ATP | Capaian Pembelajaran, Tujuan Pembelajaran, Alur Tujuan Pembelajaran |
 | Modul Pembelajaran | Modul scaffolding per tema & mata pelajaran |
 | Materi Ajar | Buku Belajar Mandiri siswa |
@@ -25,6 +26,7 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
 - **Firebase Authentication** — login/logout berbasis email & kata sandi
 - **Cloud Firestore** — database untuk pengumuman, modul, dan soal yang bisa diupdate guru
 - **HTML + CSS + JavaScript (Vanilla)** — tidak perlu framework besar, ringan di semua perangkat
+- **Google Apps Script + Google Sheets** — backend khusus modul MPLS (lihat `apps-script/README.md`), dipakai karena datanya perlu langsung terbaca/diolah lewat spreadsheet oleh wali kelas
 
 ---
 
@@ -76,6 +78,12 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
 ### Langkah 7 — Tambah Akun Siswa
 Ulangi Langkah 6 untuk setiap siswa, dengan `role: "siswa"`
 
+### Langkah 8 — Aktifkan Modul MPLS (opsional, terpisah dari Firebase)
+Modul MPLS (`pages/mpls/`) memakai Google Sheets sebagai penyimpanan, bukan
+Firestore, supaya wali kelas bisa langsung baca/olah datanya di spreadsheet.
+Setup-nya independen dari Langkah 1–7 di atas — lihat panduan lengkap di
+[`apps-script/README.md`](./apps-script/README.md).
+
 ---
 
 ## 📁 Struktur Folder
@@ -91,6 +99,9 @@ kelas-v/
 │   │   └── style.css    ← Stylesheet global (opsional, sudah inline di index)
 │   └── img/
 │       └── logo.png     ← Logo sekolah
+├── apps-script/
+│   ├── Code.gs           ← Backend Google Apps Script untuk modul MPLS
+│   └── README.md         ← Cara deploy Apps Script sebagai Web App
 └── pages/
     ├── cp-tp-atp.html
     ├── modul.html
@@ -98,7 +109,15 @@ kelas-v/
     ├── bank-soal.html
     ├── info.html
     ├── jadwal.html
-    └── admin.html       ← Hanya bisa diakses guru
+    ├── admin.html        ← Hanya bisa diakses guru
+    └── mpls/
+        ├── index.html     ← Landing MPLS (daftar sub-halaman)
+        ├── input.html      ← Form input penilaian (mobile-first)
+        └── assets/
+            ├── mpls.css     ← Gaya bersama halaman MPLS
+            ├── mpls-data.js ← Daftar siswa, skala, kategori indikator
+            ├── config.js    ← URL Apps Script & kode akses (GANTI sebelum pakai)
+            └── app.js       ← Logika form: render, load, simpan
 ```
 
 ---
