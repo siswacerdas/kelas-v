@@ -21,6 +21,40 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
+## [0.3.2] — 2026-07-14
+
+### Diperbaiki
+- `pages/mpls/rekap.html`: **bug** — bagian "Kesimpulan Akhir Kesiapan Belajar"
+  sebelumnya hanya menampilkan narasi tanpa aspek kuat/perlu perhatian dan
+  tanpa saran guru/orang tua tingkat keseluruhan (padahal datanya sudah
+  dihitung `mpls-scoring.js`) — sekarang ditampilkan lengkap
+- `pages/mpls/rekap.html`: detail tiap siswa kini **terbuka secara default**
+  (tidak perlu klik dulu) supaya hasil bisa langsung dinilai
+- `pages/mpls/rekap.html`: pesan saat data kosong dibedakan antara "sheet
+  memang belum ada data" vs "kemungkinan Apps Script belum ter-deploy versi
+  terbaru" (field `data` tidak ada di respons) — untuk mempermudah diagnosa
+- `pages/mpls/assets/mpls-scoring.js`: kategori yang belum ada nilainya sama
+  sekali sekarang ditandai **"-"**, bukan kalimat panjang
+- `pages/mpls/laporan.html`: tambah baris ringkas "Aspek kuat" & "Perlu
+  perhatian" di kesimpulan cetak (tetap ringkas, muat 1 halaman A4)
+
+---
+
+## [0.3.1] — 2026-07-14
+
+### Diubah
+- **Konsistensi nama siswa antara modul Kelas dan modul MPLS**: field
+  "Nama Lengkap" di `pages/kelas/index.html` yang tadinya teks bebas diganti
+  jadi dropdown berisi daftar siswa Kelas 5A yang sama persis dengan
+  `MPLS_STUDENTS` (`pages/mpls/assets/mpls-data.js`), supaya tidak ada beda
+  ejaan nama antara data profil siswa dan data penilaian MPLS
+- `pages/mpls/rekap.html`: kotak pencarian teks diganti dropdown pilih nama
+  siswa (sumber sama: `MPLS_STUDENTS`) — pilih "— Tampilkan semua siswa —"
+  untuk lihat semua, atau pilih 1 nama untuk fokus ke siswa itu (otomatis
+  ditandai "belum ada data" bila siswa itu belum dinilai, bukan kosong tanpa keterangan)
+
+---
+
 ## [0.3.0] — 2026-07-13
 
 ### Ditambahkan
