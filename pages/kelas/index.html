@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Data Kelas · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../mpls/assets/mpls.css" />
+<link rel="stylesheet" href="assets/kelas.css" />
+</head>
+<body>
 
+<div id="checking" style="position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-3);z-index:500">
+  Memeriksa akses…
+</div>
+
+<div id="topbar">
+  <a href="../../index.html" class="back">←</a>
+  <div class="brand">Kelas <em>5</em> · Data Kelas</div>
+</div>
+
+<div class="container">
+
+  <p class="section-label">Tambah / Perbarui Data Siswa</p>
+  <div class="info-box">
+    Foto bisa diambil langsung dari kamera HP. Foto akan otomatis diperkecil ukurannya
+    supaya cepat dimuat, lalu disimpan ke folder Google Drive yang sudah disiapkan.
+    Data nama & tanggal lahir disimpan di sheet <strong>"Data Siswa"</strong>.
+  </div>
+
+  <form id="form-siswa">
+    <div class="field-group">
+      <label for="f-nama">Nama Lengkap</label>
+      <input type="text" id="f-nama" required placeholder="mis. Abdurrahman Ar Ribery" />
+    </div>
+    <div class="field-group">
+      <label for="f-panggilan">Nama Panggilan</label>
+      <input type="text" id="f-panggilan" placeholder="mis. Rahman" />
+    </div>
+    <div class="field-group">
+      <label for="f-tempat">Tempat Lahir</label>
+      <input type="text" id="f-tempat" placeholder="mis. Jakarta" />
+    </div>
+    <div class="field-group">
+      <label for="f-tanggal">Tanggal Lahir</label>
+      <input type="date" id="f-tanggal" />
+    </div>
+    <div class="field-group">
+      <label for="f-foto">Foto Siswa</label>
+      <input type="file" id="f-foto" accept="image/*" capture="environment" />
+      <div id="foto-preview-wrap" class="hidden">
+        <img id="foto-preview" alt="Pratinjau foto" />
+        <span id="foto-size-info"></span>
+      </div>
+    </div>
+    <div class="field-group" style="display:flex; gap:10px">
+      <button type="submit" class="btn-full" id="btn-simpan-siswa">Simpan Data Siswa</button>
+      <button type="button" class="btn-full btn-secondary" id="btn-reset-form">Kosongkan</button>
+    </div>
+    <div id="form-status"></div>
+  </form>
+
+  <p class="section-label" style="margin-top:2rem">Daftar Siswa Tersimpan</p>
+  <input type="text" id="search-siswa" class="rekap-search" placeholder="Cari nama siswa…" />
+  <div id="list-siswa"><div class="info-box">Memuat data…</div></div>
+
+</div>
+
+<footer>Modul Data Kelas · Kelas 5</footer>
+<div id="toast"></div>
+
+<script type="module" src="../../assets/js/guru-guard.js"></script>
+<script src="../mpls/assets/config.js"></script>
+<script src="assets/kelas.js"></script>
+</body>
+</html>
