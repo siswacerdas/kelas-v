@@ -241,11 +241,11 @@
       accent: CATEGORY_META[cat.key].accent,
       avg,
       level,
-      levelLabel: level ? LEVEL_LABEL[level] : "Belum ada data",
+      levelLabel: level ? LEVEL_LABEL[level] : "-",
       filled,
       total,
       kelengkapan: total ? Math.round((filled / total) * 100) : 0,
-      simpulan: text ? text.simpulan : "Indikator kategori ini belum diisi, kesimpulan belum bisa dibuat.",
+      simpulan: text ? text.simpulan : "Belum ada nilai untuk kategori ini.",
       guru: text ? text.guru : [],
       ortu: text ? text.ortu : [],
     };
