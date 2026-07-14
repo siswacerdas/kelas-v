@@ -50,8 +50,13 @@
       <input type="date" id="f-tanggal" />
     </div>
     <div class="field-group">
-      <label for="f-foto">Foto Siswa</label>
-      <input type="file" id="f-foto" accept="image/*" capture="environment" />
+      <label>Foto Siswa</label>
+      <div style="display:flex; gap:10px">
+        <button type="button" id="btn-ambil-foto" class="btn-full btn-secondary">📷 Ambil Foto</button>
+        <button type="button" id="btn-pilih-galeri" class="btn-full btn-secondary">🖼️ Pilih dari Galeri</button>
+      </div>
+      <input type="file" id="f-foto-kamera" accept="image/*" capture="environment" class="hidden" />
+      <input type="file" id="f-foto-galeri" accept="image/*" class="hidden" />
       <div id="foto-preview-wrap" class="hidden">
         <img id="foto-preview" alt="Pratinjau foto" />
         <span id="foto-size-info"></span>
