@@ -61,9 +61,8 @@ function humanFileSize(base64) {
   return (bytes / 1024).toFixed(0) + " KB";
 }
 
-document.getElementById("f-foto").addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) { state.fotoResized = null; return; }
+async function handleFotoFile(file) {
+  if (!file) return;
   document.getElementById("form-status").textContent = "Memproses foto…";
   try {
     const resized = await resizeImageFile(file, 1280, 0.75);
@@ -76,6 +75,22 @@ document.getElementById("f-foto").addEventListener("change", async (e) => {
     document.getElementById("form-status").textContent = "Gagal memproses foto: " + err.message;
     document.getElementById("form-status").classList.add("err");
   }
+}
+
+// Tombol "Ambil Foto" -> buka kamera langsung (capture="environment")
+document.getElementById("btn-ambil-foto").addEventListener("click", () => {
+  document.getElementById("f-foto-kamera").click();
+});
+document.getElementById("f-foto-kamera").addEventListener("change", (e) => {
+  handleFotoFile(e.target.files[0]);
+});
+
+// Tombol "Pilih dari Galeri" -> buka galeri/album foto (tanpa capture, jadi tidak memaksa kamera)
+document.getElementById("btn-pilih-galeri").addEventListener("click", () => {
+  document.getElementById("f-foto-galeri").click();
+});
+document.getElementById("f-foto-galeri").addEventListener("change", (e) => {
+  handleFotoFile(e.target.files[0]);
 });
 
 /* ── FORM SIMPAN ─────────────────────────────────────────────────── */
@@ -115,7 +130,11 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
     const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
     const json = await res.json();
     if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
-    showToast("Tersimpan: " + nama);
+    if (json.fotoWarning) {
+      showToast("⚠️ " + json.fotoWarning, true);
+    } else {
+      showToast("Tersimpan: " + nama);
+    }
     resetForm();
     loadSiswaList();
   } catch (err) {
@@ -132,7 +151,7 @@ function showToast(msg, isErr) {
   t.classList.toggle("err", !!isErr);
   t.classList.add("show");
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => t.classList.remove("show"), 2600);
+  showToast._t = setTimeout(() => t.classList.remove("show"), isErr ? 6000 : 2600);
 }
 
 /* ── DAFTAR SISWA ────────────────────────────────────────────────── */
@@ -143,7 +162,8 @@ function fillFormFromSiswa(s) {
   document.getElementById("f-tanggal").value = s["Tanggal Lahir"] || "";
   state.fotoResized = null;
   document.getElementById("foto-preview-wrap").classList.add("hidden");
-  document.getElementById("f-foto").value = "";
+  document.getElementById("f-foto-kamera").value = "";
+  document.getElementById("f-foto-galeri").value = "";
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
