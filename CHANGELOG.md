@@ -21,7 +21,44 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.4.0] — 2026-07-14
+## [0.4.1] — 2026-07-14
+
+### Diperbaiki
+- **Bug: foto & tanggal lahir siswa tidak muncul di `pages/kelas/index.html`**.
+  Akar masalah: fungsi baca/tulis sheet di `apps-script/Code.gs` mengasumsikan
+  urutan kolom fisik di spreadsheet SELALU sama persis dengan urutan array
+  konstanta (`SISWA_HEADERS`, dst) di kode — kalau berbeda (mis. sheet sempat
+  dibuat/diedit manual), data bisa "geser" ke field yang salah. Ini
+  menjelaskan kenapa dua kolom bersebelahan (Tanggal Lahir & URL Foto)
+  sama-sama bermasalah.
+  - Semua fungsi baca (`doGet`, `sheetToObjects_`) dan tulis (`doPost`,
+    `doPostSiswa_`) sekarang **selalu membaca ulang baris header sesungguhnya**
+    dari baris 1 tiap sheet (`readHeaderRow_`) dan mencocokkan berdasarkan
+    NAMA kolom, bukan lagi asumsi indeks/urutan tetap — berlaku untuk
+    ketiga sheet (Data MPLS, Data Siswa, Data MPLS Kognitif) sekaligus.
+  - Nilai tanggal yang otomatis terdeteksi Google Sheets sebagai objek
+    `Date` sekarang dinormalisasi jadi teks `yyyy-MM-dd` yang konsisten
+    sebelum dikirim ke web (`normalizeCell_`), supaya tidak pernah tampil
+    kosong/aneh gara-gara format.
+- **Bug: kegagalan upload foto menggagalkan seluruh penyimpanan data siswa**.
+  Sekarang kalau foto gagal diunggah ke Drive (mis. izin belum diotorisasi
+  ulang setelah deploy baru), **data teks tetap tersimpan** dan pengguna
+  diberi tahu lewat pesan peringatan spesifik (field `fotoWarning` di respons,
+  ditampilkan sebagai toast merah di `pages/kelas/index.html`) — bukan gagal
+  total tanpa keterangan jelas seperti sebelumnya.
+- **URL foto diganti formatnya**: dari `.../uc?id=...` menjadi
+  `.../thumbnail?id=...&sz=w1000`, karena format sebelumnya kadang gagal
+  tampil langsung sebagai `<img>` (Google menampilkan halaman perantara,
+  bukan gambarnya) — kemungkinan turut berkontribusi pada foto "tidak muncul".
+
+### Catatan Arsitektur
+- Konstanta `HEADERS`/`SISWA_HEADERS`/`HEADERS_KOGNITIF` di `Code.gs` sekarang
+  HANYA dipakai saat membuat sheet baru pertama kali (`setupSheet*`). Baca/tulis
+  data sehari-hari sepenuhnya mengikuti header asli di baris 1 sheet — lihat
+  `apps-script/README.md` bagian "Troubleshooting" untuk detail & implikasinya
+  (boleh tambah kolom baru di kanan, jangan mengedit teks header yang sudah ada).
+
+---
 
 ### Ditambahkan
 - **Modul baru: Asesmen Awal Kognitif** (literasi & numerasi dasar), paralel

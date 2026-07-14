@@ -101,8 +101,17 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Form bisa menyimpan nama lengkap, panggilan, tempat & tanggal lahir tanpa foto
 - [ ] Memilih foto dari kamera HP menampilkan pratinjau + perkiraan ukuran file setelah dikompres
 - [ ] Setelah simpan, foto muncul di folder Google Drive yang sudah ditentukan
+- [ ] **Setelah simpan, foto TAMPIL sebagai thumbnail di daftar siswa** (bukan ikon placeholder,
+      kecuali memang belum ada foto) — ini yang sebelumnya bug, wajib dicek ulang
+- [ ] **Tanggal lahir yang disimpan TAMPIL dengan benar** di daftar siswa (format yyyy-mm-dd),
+      sesuai dengan yang diisi di form — ini juga bagian dari bug yang sama, wajib dicek ulang
 - [ ] Daftar siswa di bawah form menampilkan thumbnail foto (atau ikon placeholder bila belum ada foto)
 - [ ] Klik salah satu siswa di daftar mengisi ulang form (mode edit), simpan lagi meng-update baris yang sama (bukan duplikat — cek jumlah baris di sheet "Data Siswa")
+- [ ] Coba simpan siswa BARU (belum pernah ada) dengan foto — pastikan baris baru muncul di
+      sheet "Data Siswa" dengan SEMUA kolom terisi benar (bukan cuma sebagian)
+- [ ] Kalau foto sengaja gagal diunggah (mis. tes dengan izin Drive dicabut sementara),
+      pastikan data teks (nama/panggilan/TTL) tetap tersimpan dan muncul pesan peringatan
+      yang jelas — bukan gagal total tanpa keterangan
 
 ### 11. Asesmen Awal Kognitif — Input (`pages/mpls/input-kognitif.html`)
 - [ ] Halaman ini **terpisah total** dari `input.html` non-kognitif — mengisi salah satu
@@ -179,6 +188,18 @@ Jalankan skenario ini setelah perubahan besar:
 7. → **Harapan:** laporan 1 halaman A4 muncul dengan foto (atau placeholder), tulisan besar,
    dan blok tanda tangan Arif Azwar Anas di kanan bawah lengkap dengan NBM
 
+### Skenario H — Verifikasi Perbaikan Bug Foto & Tanggal Lahir
+1. Buka spreadsheet → sheet "Data Siswa" → cek baris header (baris 1) — pastikan
+   urutannya: Timestamp, Nama Lengkap, Nama Panggilan, Tempat Lahir, Tanggal Lahir, URL Foto
+2. Login sebagai guru → "Kelola Data Siswa & Foto" → pilih 1 siswa dari dropdown
+3. Isi Tempat Lahir, Tanggal Lahir, dan ambil foto dari kamera → Simpan
+4. → **Harapan:** toast "Tersimpan: [nama]" muncul (bukan pesan peringatan foto)
+5. Cek baris siswa itu di sheet "Data Siswa" — kolom Tanggal Lahir dan URL Foto harus terisi
+6. Refresh halaman `pages/kelas/index.html`
+7. → **Harapan:** siswa tsb tampil di daftar dengan **thumbnail foto asli** (bukan ikon 🧒)
+   dan **tanggal lahir yang benar** di bawah namanya
+8. Klik siswa tsb di daftar → form terisi ulang termasuk tanggal lahirnya
+
 ### Skenario E — Input MPLS (dari HP)
 1. Buka `pages/mpls/input.html` dari HP
 2. Masukkan kode akses yang benar
@@ -221,6 +242,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-14 | 0.3.1 | *(nama)* | ✅ Diuji sebagian | Dropdown nama siswa konsisten (Kelas ↔ MPLS) |
 | 2026-07-14 | 0.3.2 | *(nama)* | ⏳ Belum diuji | Perbaikan tampilan & bug kesimpulan akhir di rekap |
 | 2026-07-14 | 0.4.0 | *(nama)* | ⏳ Belum diuji | Modul Asesmen Kognitif baru + laporan cetak dirombak (foto, tanda tangan) |
+| 2026-07-14 | 0.4.1 | *(nama)* | ⏳ Belum diuji | Perbaikan bug foto & tanggal lahir tidak muncul (Data Kelas) |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
@@ -236,3 +258,8 @@ Catat setiap sesi ujicoba di sini:
 - Jika ragu, buat **branch baru** dulu (misal: `dev` atau `fitur-bank-soal`), lalu merge ke `main` setelah lolos ujicoba
 - Simpan salinan `firebaseConfig` di tempat yang aman — **jangan bagikan ke publik**
 - Jika ada perubahan struktur Firestore, update juga bagian **Struktur Database** di `README.md`
+- **Sejak v0.4.1**: `apps-script/Code.gs` membaca/menulis ketiga sheet (Data MPLS,
+  Data Siswa, Data MPLS Kognitif) berdasarkan **nama kolom di baris header sesungguhnya**,
+  bukan lagi asumsi urutan tetap. Boleh menambah kolom baru di paling kanan sheet kapan
+  saja tanpa mengubah kode — TAPI jangan mengedit/mengetik ulang teks header kolom yang
+  sudah ada (typo atau beda kapitalisasi akan membuat kolom itu "hilang" dari aplikasi).
