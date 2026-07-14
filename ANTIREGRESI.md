@@ -100,6 +100,9 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       dropdown "Diisi Oleh"/nama siswa di modul MPLS (sumber sama: `MPLS_STUDENTS`)
 - [ ] Form bisa menyimpan nama lengkap, panggilan, tempat & tanggal lahir tanpa foto
 - [ ] Memilih foto dari kamera HP menampilkan pratinjau + perkiraan ukuran file setelah dikompres
+- [ ] **Tombol "Pilih dari Galeri" membuka album/galeri foto** (bukan kamera) dan foto yang
+      dipilih dari galeri juga berhasil diproses (pratinjau + ukuran) sama seperti dari kamera
+- [ ] Kedua jalur foto (kamera & galeri) sama-sama berhasil tersimpan ke Drive & tampil di daftar
 - [ ] Setelah simpan, foto muncul di folder Google Drive yang sudah ditentukan
 - [ ] **Setelah simpan, foto TAMPIL sebagai thumbnail di daftar siswa** (bukan ikon placeholder,
       kecuali memang belum ada foto) — ini yang sebelumnya bug, wajib dicek ulang
@@ -243,6 +246,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-14 | 0.3.2 | *(nama)* | ⏳ Belum diuji | Perbaikan tampilan & bug kesimpulan akhir di rekap |
 | 2026-07-14 | 0.4.0 | *(nama)* | ⏳ Belum diuji | Modul Asesmen Kognitif baru + laporan cetak dirombak (foto, tanda tangan) |
 | 2026-07-14 | 0.4.1 | *(nama)* | ⏳ Belum diuji | Perbaikan bug foto & tanggal lahir tidak muncul (Data Kelas) |
+| 2026-07-14 | 0.4.2 | *(nama)* | ⏳ Belum diuji | Tombol pilih foto dari galeri (selain kamera) |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

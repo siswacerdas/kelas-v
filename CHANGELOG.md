@@ -21,7 +21,25 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.4.1] — 2026-07-14
+## [0.4.2] — 2026-07-14
+
+### Ditambahkan
+- **Pilih foto dari galeri, tidak hanya kamera**: `pages/kelas/index.html`
+  sekarang punya 2 tombol terpisah — **"📷 Ambil Foto"** (buka kamera
+  langsung) dan **"🖼️ Pilih dari Galeri"** (buka album/galeri foto HP tanpa
+  memaksa kamera). Sebelumnya hanya ada 1 input dengan atribut `capture`
+  yang di sebagian browser/HP memaksa kamera terbuka tanpa opsi galeri.
+  Kedua jalur foto memakai proses resize/kompres klien yang sama persis
+  (maks. 1280px, JPEG kualitas 0.75) sebelum diunggah.
+
+### Catatan Arsitektur
+- Implementasi pakai 2 elemen `<input type="file">` tersembunyi (satu
+  dengan `capture="environment"`, satu tanpa), dipicu lewat tombol biasa
+  (`.click()`) — pendekatan ini lebih konsisten lintas browser dibanding
+  mengandalkan satu `<input>` dengan `capture` yang perilakunya berbeda-beda
+  per OS/browser.
+
+---
 
 ### Diperbaiki
 - **Bug: foto & tanggal lahir siswa tidak muncul di `pages/kelas/index.html`**.
