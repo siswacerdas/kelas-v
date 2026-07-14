@@ -42,6 +42,17 @@ const MPLS_GURU_LIST = [
   "Azizah Zahro Ibrahim",
 ];
 
+/** Wali kelas 5A — SELALU tertera sebagai "Guru Kelas" di laporan cetak,
+ * terlepas dari siapa guru yang mengisi form (guru pendamping bisa mengisi
+ * juga, tapi identitas wali kelas di laporan resmi tetap nama ini). */
+const MPLS_WALI_KELAS = "Arif Azwar Anas";
+/** Nama + gelar untuk blok tanda tangan di laporan cetak. */
+const MPLS_WALI_KELAS_TTD = "Arif Azwar Anas, S.Pd";
+/** Nomor Baku Muhammadiyah wali kelas, untuk blok tanda tangan. */
+const MPLS_WALI_KELAS_NBM = "NBM. 1167333";
+/** Kota untuk baris tempat & tanggal di blok tanda tangan. */
+const MPLS_KOTA_TTD = "Depok";
+
 const MPLS_SCALE = [
   { v: 1, code: "BB", label: "Belum Berkembang" },
   { v: 2, code: "MB", label: "Mulai Berkembang" },
