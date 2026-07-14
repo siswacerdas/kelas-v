@@ -61,3 +61,47 @@ berubah ke GitHub. Lihat pesan chat untuk daftar lengkap & instruksinya.
 Baca tabel status di atas → kerjakan baris yang belum ✅ → setelah semua ✅,
 update CHANGELOG.md & ANTIREGRESI.md → kasih file-file final ke user beserta
 instruksi upload ke GitHub + langkah re-deploy Apps Script.
+
+---
+
+## Ronde 2 (2026-07-14): Modul Kognitif + Laporan Cetak Dirombak
+
+### Permintaan
+1. [x] Nama Arif Azwar Anas selalu tertera sebagai "Guru Kelas" di laporan cetak
+2. [x] Modul baru Asesmen Awal Kognitif (literasi + numerasi: tambah/kurang/kali/bagi),
+       terpisah total dari MPLS non-kognitif, dengan struktur kategori→indikator yang sama
+3. [x] Laporan cetak MPLS: ruang foto, tulisan diperbesar, blok tanda tangan
+       (tempat+tanggal, ruang ttd 34pt, nama+gelar, NBM), tetap 1 halaman A4
+
+### File baru
+- `pages/mpls/assets/mpls-kognitif-data.js` — 5 kategori & indikator kognitif
+- `pages/mpls/assets/mpls-scoring-kognitif.js` — engine skoring versi akademik
+- `pages/mpls/input-kognitif.html` + `pages/mpls/assets/app-kognitif.js`
+- `pages/mpls/rekap-kognitif.html`
+- `pages/mpls/laporan-kognitif.html`
+
+### File diubah
+- `pages/mpls/assets/mpls-data.js` — tambah `MPLS_WALI_KELAS`, `MPLS_WALI_KELAS_TTD`,
+  `MPLS_WALI_KELAS_NBM`, `MPLS_KOTA_TTD`
+- `pages/mpls/laporan.html` — foto, font besar, blok tanda tangan, "Guru Kelas" tetap
+- `pages/mpls/index.html` — kartu navigasi ke modul kognitif
+- `pages/mpls/rekap.html` — tautan silang ke rekap kognitif
+- `apps-script/Code.gs` — sheet "Data MPLS Kognitif" + endpoint terpisah
+  (`namaKognitif`, `allKognitif`, `type:"mpls_kognitif"`) — endpoint lama TIDAK diubah perilakunya
+
+### Validasi teknis yang sudah dilakukan
+- Semua file JS baru lolos `node --check` (sintaks valid)
+- Semua `<script>` di HTML baru seimbang buka/tutup
+- `laporan.html` dan `laporan-kognitif.html` **diuji render sungguhan** pakai Playwright
+  (bukan cuma estimasi): di-render dengan data mock (skenario lengkap, dengan & tanpa foto),
+  di-print ke PDF A4, dicek jumlah halaman = 1 lewat `pypdf`. Kedua kasus PASS 1 halaman.
+- Endpoint backend baru mengikuti pola yang sudah ada (branch by `type`/query param),
+  endpoint & sheet lama tidak disentuh sama sekali — risiko regresi ke fitur lama minim.
+
+### Keputusan desain
+- Tanggal di blok tanda tangan **otomatis mengikuti tanggal cetak** (bukan tanggal tetap
+  "18 Juli 2025" seperti contoh user — diasumsikan itu cuma contoh format, bukan tanggal
+  yang harus di-hardcode selamanya). Kalau user maunya benar-benar tanggal tetap, tinggal
+  ganti logika di bagian `.rep-signature` masing-masing file laporan.
+- `laporan-kognitif.html` pakai grid 3 kolom (bukan 2 seperti non-kognitif) karena
+  5 kategori vs 4, supaya tetap ringkas dan muat 1 halaman.

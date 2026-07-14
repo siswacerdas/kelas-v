@@ -84,9 +84,14 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 ### 9. Laporan Cetak PDF (`pages/mpls/laporan.html`)
 - [ ] Halaman ini juga menolak akses jika bukan guru
 - [ ] Logo sekolah tampil di kop laporan
+- [ ] **Kotak foto siswa tampil di identitas** — foto asli kalau ada di modul Kelas, placeholder "Foto Siswa" kalau belum ada
+- [ ] Tulisan cukup besar untuk dibaca orang tua (bukan lagi ukuran sangat kecil)
+- [ ] "Guru Kelas" selalu tertera **Arif Azwar Anas**, terpisah dari "Guru Pengamat (pengisi form)" yang sesuai siapa yang mengisi
 - [ ] Identitas siswa, semua nilai kategori, dan kesimpulan akhir tidak ada yang terpotong
 - [ ] Kesimpulan akhir juga menampilkan "Aspek kuat" & "Perlu perhatian" secara ringkas
-- [ ] Saat print/print-preview, hasil pas 1 halaman A4 (cek di Chrome: Ctrl/Cmd+P → lihat pratinjau)
+- [ ] **Blok tanda tangan di kanan bawah** muncul lengkap: tempat & tanggal ("Depok, ..."),
+      ruang tanda tangan kosong, nama "Arif Azwar Anas, S.Pd", dan "NBM. 1167333"
+- [ ] Saat print/print-preview, hasil pas **1 halaman A4** (cek di Chrome: Ctrl/Cmd+P → lihat pratinjau)
 - [ ] Tombol "Cetak / Simpan sebagai PDF" tidak ikut tercetak (harus hilang di hasil print)
 
 ### 10. Data Kelas — Profil & Foto Siswa (`pages/kelas/`)
@@ -98,6 +103,28 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Setelah simpan, foto muncul di folder Google Drive yang sudah ditentukan
 - [ ] Daftar siswa di bawah form menampilkan thumbnail foto (atau ikon placeholder bila belum ada foto)
 - [ ] Klik salah satu siswa di daftar mengisi ulang form (mode edit), simpan lagi meng-update baris yang sama (bukan duplikat — cek jumlah baris di sheet "Data Siswa")
+
+### 11. Asesmen Awal Kognitif — Input (`pages/mpls/input-kognitif.html`)
+- [ ] Halaman ini **terpisah total** dari `input.html` non-kognitif — mengisi salah satu
+      TIDAK BOLEH mengubah/menimpa data di sheet yang lain (cek kedua sheet di spreadsheet)
+- [ ] Kode akses (gate) berfungsi sama seperti `input.html`
+- [ ] 5 kategori tampil: Literasi, Penjumlahan, Pengurangan, Perkalian, Pembagian
+- [ ] Memilih siswa yang sama dua kali (isi ulang) meng-update baris yang sama di sheet
+      "Data MPLS Kognitif", bukan menduplikasi baris
+
+### 12. Asesmen Awal Kognitif — Rekap & Laporan (`rekap-kognitif.html`, `laporan-kognitif.html`)
+- [ ] Kedua halaman menolak akses jika bukan guru (Firebase-gated, sama seperti versi non-kognitif)
+- [ ] Rekap menampilkan 5 kategori dengan badge level, "-" untuk kategori kosong
+- [ ] Kesimpulan akhir "Kesiapan Akademik" tampil lengkap dengan saran guru & orang tua
+- [ ] Tombol cetak dari rekap kognitif membuka `laporan-kognitif.html` dengan nama siswa yang benar
+- [ ] Laporan cetak kognitif juga pas 1 halaman A4, ada foto, tulisan besar, dan blok tanda tangan
+      (grid kategori 3 kolom karena ada 5 kategori — pastikan tidak ada yang terpotong)
+- [ ] Tautan silang antar rekap non-kognitif ↔ kognitif berfungsi di kedua arah
+
+### 13. Nama Guru Kelas di Laporan Cetak
+- [ ] `laporan.html` DAN `laporan-kognitif.html` sama-sama menampilkan "Guru Kelas: Arif Azwar Anas"
+      apa pun isi kolom "Diisi Oleh" (walau yang mengisi form Bu Azizah)
+- [ ] Blok tanda tangan tetap menampilkan nama & NBM Arif Azwar Anas di kedua jenis laporan
 
 ---
 
@@ -142,6 +169,16 @@ Jalankan skenario ini setelah perubahan besar:
 7. Klik "Cetak / Simpan PDF" pada salah satu siswa
 8. → **Harapan:** halaman laporan A4 terbuka dengan logo, identitas, nilai, dan kesimpulan lengkap tidak terpotong; `Ctrl/Cmd+P` menghasilkan 1 halaman rapi
 
+### Skenario G — Asesmen Kognitif (input, rekap, cetak)
+1. Login sebagai guru → buka menu MPLS → bagian "Asesmen Awal Kognitif"
+2. Klik "Input Asesmen Kognitif" → isi kode akses → pilih siswa → isi minimal 1-2 kategori
+3. → **Harapan:** tersimpan ke sheet "Data MPLS Kognitif" (BUKAN ke sheet "Data MPLS" yang lama)
+4. Kembali ke menu MPLS → klik "Rekap Asesmen Kognitif"
+5. → **Harapan:** siswa yang baru diisi muncul dengan badge level 5 kategori, kategori kosong "-"
+6. Klik "Cetak / Simpan PDF"
+7. → **Harapan:** laporan 1 halaman A4 muncul dengan foto (atau placeholder), tulisan besar,
+   dan blok tanda tangan Arif Azwar Anas di kanan bawah lengkap dengan NBM
+
 ### Skenario E — Input MPLS (dari HP)
 1. Buka `pages/mpls/input.html` dari HP
 2. Masukkan kode akses yang benar
@@ -183,6 +220,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-13 | 0.3.0 | *(nama)* | ⏳ Belum diuji | Rekap otomatis, cetak PDF, data kelas & foto |
 | 2026-07-14 | 0.3.1 | *(nama)* | ✅ Diuji sebagian | Dropdown nama siswa konsisten (Kelas ↔ MPLS) |
 | 2026-07-14 | 0.3.2 | *(nama)* | ⏳ Belum diuji | Perbaikan tampilan & bug kesimpulan akhir di rekap |
+| 2026-07-14 | 0.4.0 | *(nama)* | ⏳ Belum diuji | Modul Asesmen Kognitif baru + laporan cetak dirombak (foto, tanda tangan) |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

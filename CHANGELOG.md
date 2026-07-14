@@ -21,7 +21,58 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.3.2] — 2026-07-14
+## [0.4.0] — 2026-07-14
+
+### Ditambahkan
+- **Modul baru: Asesmen Awal Kognitif** (literasi & numerasi dasar), paralel
+  dan terpisah penuh dari modul non-kognitif (MPLS) supaya tidak ada risiko
+  regresi pada fitur yang sudah berjalan:
+  - `pages/mpls/assets/mpls-kognitif-data.js` — 5 kategori: Literasi Dasar
+    (Membaca), Numerasi Penjumlahan, Pengurangan, Perkalian, Pembagian —
+    masing-masing dijabarkan jadi beberapa indikator konkret (skala BB–BSB
+    sama seperti non-kognitif)
+  - `pages/mpls/assets/mpls-scoring-kognitif.js` — engine skoring & kesimpulan
+    otomatis versi akademik (teks berbeda dari non-kognitif, disesuaikan
+    konteks literasi/numerasi)
+  - `pages/mpls/input-kognitif.html` + `assets/app-kognitif.js` — form input
+    per siswa (mirror `input.html`, kode akses terpisah sama seperti sebelumnya)
+  - `pages/mpls/rekap-kognitif.html` — rekap & kesimpulan otomatis seluruh
+    siswa (khusus guru, Firebase-gated, dropdown nama siswa)
+  - `pages/mpls/laporan-kognitif.html` — cetak/PDF A4 satu halaman per siswa
+  - Kartu navigasi baru di `pages/mpls/index.html`, dan tautan silang antara
+    rekap non-kognitif ↔ kognitif
+  - Backend `apps-script/Code.gs`: sheet baru **"Data MPLS Kognitif"**,
+    endpoint `?namaKognitif=`, `?allKognitif=1`, dan `type: "mpls_kognitif"`
+    di `doPost` — sama sekali tidak mengubah perilaku endpoint/sheet lama
+
+### Diperbaiki / Ditingkatkan
+- **Nama guru kelas selalu tertera di laporan cetak**: field baru
+  `MPLS_WALI_KELAS` ("Arif Azwar Anas") di `mpls-data.js`, ditampilkan sebagai
+  "Guru Kelas" di `laporan.html` & `laporan-kognitif.html`, terpisah dari
+  "Guru Pengamat (pengisi form)" yang tetap menampilkan siapa pun yang
+  benar-benar mengisi (Arif atau Bu Azizah)
+- **Laporan cetak PDF (`laporan.html` & `laporan-kognitif.html`) dirombak**:
+  - Ditambah kotak foto siswa di bagian identitas (pakai foto dari modul
+    Kelas bila ada, placeholder bila belum ada)
+  - Ukuran tulisan diperbesar (±15%) untuk keterbacaan orang tua, tetap
+    dipastikan pas 1 halaman A4 lewat pengujian render otomatis (Playwright)
+  - Ditambah blok tanda tangan guru kelas di kanan bawah: tempat & tanggal
+    ("Depok, [tanggal cetak]"), ruang tanda tangan (~34pt), nama & gelar
+    ("Arif Azwar Anas, S.Pd"), dan NBM ("NBM. 1167333") — konstanta baru
+    `MPLS_WALI_KELAS_TTD`, `MPLS_WALI_KELAS_NBM`, `MPLS_KOTA_TTD` di `mpls-data.js`
+  - `laporan-kognitif.html` memakai grid 3 kolom untuk 5 kategori (bukan 2
+    kolom seperti non-kognitif) supaya tetap ringkas 1 halaman
+
+### Catatan Arsitektur
+- Tanggal pada blok tanda tangan **dibuat otomatis mengikuti tanggal cetak**
+  (bukan tanggal tetap), memakai format "Depok, [tanggal]". Kalau perlu
+  tanggal tetap/manual, ubah `MPLS_KOTA_TTD` atau logika tanggal di
+  `laporan.html`/`laporan-kognitif.html` bagian `.rep-signature`.
+- Layout laporan cetak diverifikasi otomatis pas 1 halaman A4 memakai
+  Playwright (render → print ke PDF → cek jumlah halaman = 1), bukan hanya
+  estimasi visual, untuk skenario data penuh maupun dengan foto.
+
+---
 
 ### Diperbaiki
 - `pages/mpls/rekap.html`: **bug** — bagian "Kesimpulan Akhir Kesiapan Belajar"
