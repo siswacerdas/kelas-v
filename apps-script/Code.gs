@@ -4,13 +4,16 @@
  * Cara pakai: lihat apps-script/README.md di repo ini.
  *
  * Ringkasan endpoint:
- * - doPost(e)  : { type: "mpls" (default) } -> upsert 1 baris nilai MPLS per siswa.
- *                { type: "siswa" }          -> upsert 1 baris profil siswa (+ opsional foto ke Drive).
- * - doGet(e)   : ?nama=...   -> 1 baris data MPLS siswa tsb (untuk input.html).
- *                ?all=1      -> SEMUA baris data MPLS (untuk rekap.html/laporan.html).
- *                ?siswa=1    -> SEMUA baris data profil siswa (untuk pages/kelas/).
- * - setupSheet() / setupSiswaSheet(): jalankan SEKALI secara manual dari editor
- *                Apps Script (pilih fungsi lalu Run) untuk membuat sheet + header.
+ * - doPost(e)  : { type: "mpls" (default) }   -> upsert 1 baris nilai MPLS non-kognitif per siswa.
+ *                { type: "siswa" }            -> upsert 1 baris profil siswa (+ opsional foto ke Drive).
+ *                { type: "mpls_kognitif" }    -> upsert 1 baris nilai asesmen kognitif per siswa.
+ * - doGet(e)   : ?nama=...        -> 1 baris data MPLS non-kognitif siswa tsb (untuk input.html).
+ *                ?all=1           -> SEMUA baris data MPLS non-kognitif (untuk rekap.html/laporan.html).
+ *                ?siswa=1         -> SEMUA baris data profil siswa (untuk pages/kelas/).
+ *                ?namaKognitif=.. -> 1 baris data kognitif siswa tsb (untuk input-kognitif.html).
+ *                ?allKognitif=1   -> SEMUA baris data kognitif (untuk rekap-kognitif.html/laporan-kognitif.html).
+ * - setupSheet() / setupSiswaSheet() / setupSheetKognitif(): jalankan SEKALI secara manual dari
+ *                editor Apps Script (pilih fungsi lalu Run) untuk membuat sheet + header.
  *
  * PENTING setelah mengubah file ini: deploy ulang sebagai "New version" dari
  * deployment yang SAMA (Deploy > Manage deployments > pensil > New version),
@@ -21,6 +24,7 @@
 
 const SPREADSHEET_ID = "1G-LWyOSyCKLP10RU234grIR_5-iWxLSG-6vZP3sKUkA";
 const SHEET_NAME = "Data MPLS";
+const SHEET_NAME_KOGNITIF = "Data MPLS Kognitif";
 const SISWA_SHEET_NAME = "Data Siswa";
 // ID folder Drive tempat foto siswa disimpan (dari link yang sudah dishare "siapa saja bisa mengedit")
 const FOTO_FOLDER_ID = "1b-ENsEQJeUFoVKKA6htZbVAxf7zr1IzG";
@@ -73,6 +77,46 @@ const HEADERS = [
   "Diisi Oleh",
 ];
 
+const HEADERS_KOGNITIF = [
+  "Timestamp",
+  "No",
+  "Nama Siswa",
+  // Literasi Dasar (Membaca)
+  "Mengenal dan melafalkan huruf dengan tepat",
+  "Membaca kata sederhana dengan lancar",
+  "Membaca kalimat pendek dengan lancar dan intonasi tepat",
+  "Membaca paragraf pendek tanpa mengeja",
+  "Memahami isi bacaan sederhana (dapat menjawab pertanyaan tentang bacaan)",
+  "Mampu menceritakan kembali isi bacaan dengan kata-kata sendiri",
+  "Catatan Literasi",
+  // Numerasi — Penjumlahan
+  "Penjumlahan bilangan tanpa teknik menyimpan (mis. 23 + 15)",
+  "Penjumlahan bilangan dengan teknik menyimpan (mis. 48 + 37)",
+  "Penjumlahan bersusun bilangan 3 digit atau lebih",
+  "Kecepatan & ketepatan fakta dasar penjumlahan (1-20)",
+  "Catatan Penjumlahan",
+  // Numerasi — Pengurangan
+  "Pengurangan bilangan tanpa teknik meminjam (mis. 58 - 23)",
+  "Pengurangan bilangan dengan teknik meminjam (mis. 52 - 27)",
+  "Pengurangan bersusun bilangan 3 digit atau lebih",
+  "Kecepatan & ketepatan fakta dasar pengurangan (1-20)",
+  "Catatan Pengurangan",
+  // Numerasi — Perkalian
+  "Hafal perkalian dasar 1-10 (tabel perkalian)",
+  "Perkalian bilangan dengan satu angka (mis. 24 x 3)",
+  "Perkalian bersusun (mis. 24 x 13)",
+  "Memahami konsep perkalian sebagai penjumlahan berulang",
+  "Catatan Perkalian",
+  // Numerasi — Pembagian
+  "Pembagian dasar tanpa sisa (mis. 20 ÷ 4)",
+  "Pembagian dengan sisa (mis. 22 ÷ 4)",
+  "Pembagian bersusun bilangan 2 digit atau lebih",
+  "Memahami konsep pembagian sebagai pengurangan berulang/pembagian rata",
+  "Catatan Pembagian",
+  // Meta
+  "Diisi Oleh",
+];
+
 function getSheet_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(SHEET_NAME);
@@ -88,6 +132,25 @@ function getSheet_() {
 function setupSheet() {
   const sheet = getSheet_();
   sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+  sheet.setFrozenRows(1);
+  Logger.log("Sheet siap: " + sheet.getName());
+}
+
+function getSheetKognitif_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(SHEET_NAME_KOGNITIF);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME_KOGNITIF);
+    sheet.getRange(1, 1, 1, HEADERS_KOGNITIF.length).setValues([HEADERS_KOGNITIF]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+/** Jalankan SEKALI dari editor Apps Script untuk inisialisasi sheet "Data MPLS Kognitif" + header. */
+function setupSheetKognitif() {
+  const sheet = getSheetKognitif_();
+  sheet.getRange(1, 1, 1, HEADERS_KOGNITIF.length).setValues([HEADERS_KOGNITIF]);
   sheet.setFrozenRows(1);
   Logger.log("Sheet siap: " + sheet.getName());
 }
@@ -161,6 +224,23 @@ function doGet(e) {
     return jsonOut_({ data: sheetToObjects_(sheet, SISWA_HEADERS) });
   }
 
+  if (params.allKognitif) {
+    const sheet = getSheetKognitif_();
+    return jsonOut_({ data: sheetToObjects_(sheet, HEADERS_KOGNITIF) });
+  }
+
+  if (params.namaKognitif) {
+    const sheet = getSheetKognitif_();
+    const row = findRowByColumn_(sheet, HEADERS_KOGNITIF, "Nama Siswa", params.namaKognitif);
+    if (row === -1) {
+      return jsonOut_({ found: false });
+    }
+    const values = sheet.getRange(row, 1, 1, HEADERS_KOGNITIF.length).getValues()[0];
+    const data = {};
+    HEADERS_KOGNITIF.forEach((h, i) => { data[h] = values[i]; });
+    return jsonOut_({ found: true, data: data });
+  }
+
   if (params.all) {
     const sheet = getSheet_();
     return jsonOut_({ data: sheetToObjects_(sheet, HEADERS) });
@@ -188,7 +268,20 @@ function doPost(e) {
       return doPostSiswa_(body);
     }
 
-    // default: data penilaian MPLS (perilaku lama, tidak diubah)
+    if (body.type === "mpls_kognitif") {
+      const sheet = getSheetKognitif_();
+      body["Timestamp"] = new Date();
+      const rowValues = HEADERS_KOGNITIF.map((h) => (body[h] !== undefined ? body[h] : ""));
+      const existingRow = findRowByColumn_(sheet, HEADERS_KOGNITIF, "Nama Siswa", body["Nama Siswa"]);
+      if (existingRow === -1) {
+        sheet.appendRow(rowValues);
+      } else {
+        sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
+      }
+      return jsonOut_({ status: "ok" });
+    }
+
+    // default: data penilaian MPLS non-kognitif (perilaku lama, tidak diubah)
     const sheet = getSheet_();
     body["Timestamp"] = new Date();
     const rowValues = HEADERS.map((h) => (body[h] !== undefined ? body[h] : ""));
