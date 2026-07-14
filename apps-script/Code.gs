@@ -174,14 +174,36 @@ function setupSiswaSheet() {
   Logger.log("Sheet siap: " + sheet.getName());
 }
 
+/** Baca baris header (baris 1) apa adanya dari sheet — SUMBER KEBENARAN untuk urutan kolom,
+ * bukan konstanta HEADERS/SISWA_HEADERS/HEADERS_KOGNITIF. Ini supaya baca/tulis tetap benar
+ * walau urutan kolom di spreadsheet fisik berbeda dari urutan di kode (mis. karena sheet
+ * dibuat/diedit manual sebelum kode ini ada). */
+function readHeaderRow_(sheet) {
+  const lastCol = sheet.getLastColumn();
+  if (lastCol < 1) return [];
+  return sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+}
+
+/** Kalau Google Sheets otomatis mendeteksi sebuah sel sebagai tanggal (jadi objek Date saat
+ * dibaca), ubah jadi teks "yyyy-MM-dd" yang konsisten supaya selalu bisa ditampilkan di web. */
+function normalizeCell_(value) {
+  if (Object.prototype.toString.call(value) === "[object Date]" && !isNaN(value)) {
+    return Utilities.formatDate(value, Session.getScriptTimeZone() || "GMT+7", "yyyy-MM-dd");
+  }
+  return value;
+}
+
 function jsonOut_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
-function findRowByColumn_(sheet, headers, colName, value) {
+/** Cari baris berdasarkan NAMA KOLOM (dibaca dari header asli sheet), bukan indeks tetap. */
+function findRowByColumn_(sheet, colName, value) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return -1;
-  const colIdx = headers.indexOf(colName) + 1;
+  const headerRow = readHeaderRow_(sheet);
+  const colIdx = headerRow.indexOf(colName) + 1;
+  if (colIdx < 1) return -1;
   const values = sheet.getRange(2, colIdx, lastRow - 1, 1).getValues();
   for (let i = 0; i < values.length; i++) {
     if (String(values[i][0]).trim() === String(value).trim()) return i + 2;
@@ -190,28 +212,51 @@ function findRowByColumn_(sheet, headers, colName, value) {
 }
 
 function findRowByName_(sheet, nama) {
-  return findRowByColumn_(sheet, HEADERS, "Nama Siswa", nama);
+  // Dipertahankan sebagai alias untuk kompatibilitas kalau ada kode lama yang memanggilnya.
+  return findRowByColumn_(sheet, "Nama Siswa", nama);
 }
 
-/** Simpan gambar base64 ke folder Drive yang sudah ditentukan, kembalikan URL-nya. */
+/** Baca 1 baris jadi object {namaKolom: nilai}, mengikuti header ASLI sheet (bukan konstanta). */
+function readRowAsObject_(sheet, row) {
+  const headerRow = readHeaderRow_(sheet);
+  const values = sheet.getRange(row, 1, 1, headerRow.length).getValues()[0];
+  const obj = {};
+  headerRow.forEach((h, i) => { if (h) obj[h] = normalizeCell_(values[i]); });
+  return obj;
+}
+
+/** Susun array nilai 1 baris SESUAI URUTAN KOLOM ASLI di sheet, dari sebuah object
+ * {namaKolom: nilai} — supaya tulis selalu ke kolom yang benar walau urutan berbeda
+ * dari konstanta HEADERS di kode. */
+function buildRowByHeaders_(sheet, recordObj) {
+  const headerRow = readHeaderRow_(sheet);
+  return headerRow.map((h) => (recordObj[h] !== undefined ? recordObj[h] : ""));
+}
+
+/** Simpan gambar base64 ke folder Drive yang sudah ditentukan, kembalikan URL-nya.
+ * Melempar error apa adanya kalau gagal — biar pemanggil (doPostSiswa_) yang memutuskan
+ * bagaimana menanganinya (supaya kegagalan foto tidak menggagalkan seluruh data siswa). */
 function simpanFotoKeDrive_(base64Data, mimeType, namaFile) {
   const folder = DriveApp.getFolderById(FOTO_FOLDER_ID);
   const bytes = Utilities.base64Decode(base64Data);
   const blob = Utilities.newBlob(bytes, mimeType || "image/jpeg", namaFile || "foto-siswa.jpg");
   const file = folder.createFile(blob);
   file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-  return "https://drive.google.com/uc?id=" + file.getId();
+  // "thumbnail?id=...&sz=..." jauh lebih reliable dipakai langsung sebagai <img src>
+  // dibanding "uc?id=..." yang kadang menampilkan halaman interstitial Drive, bukan gambarnya.
+  return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1000";
 }
 
-function sheetToObjects_(sheet, headers) {
+function sheetToObjects_(sheet) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];
-  const rows = sheet.getRange(2, 1, lastRow - 1, headers.length).getValues();
+  const headerRow = readHeaderRow_(sheet);
+  const rows = sheet.getRange(2, 1, lastRow - 1, headerRow.length).getValues();
   return rows
     .filter((row) => row.some((cell) => cell !== "" && cell !== null))
     .map((row) => {
       const obj = {};
-      headers.forEach((h, i) => { obj[h] = row[i]; });
+      headerRow.forEach((h, i) => { if (h) obj[h] = normalizeCell_(row[i]); });
       return obj;
     });
 }
@@ -221,43 +266,37 @@ function doGet(e) {
 
   if (params.siswa) {
     const sheet = getSiswaSheet_();
-    return jsonOut_({ data: sheetToObjects_(sheet, SISWA_HEADERS) });
+    return jsonOut_({ data: sheetToObjects_(sheet) });
   }
 
   if (params.allKognitif) {
     const sheet = getSheetKognitif_();
-    return jsonOut_({ data: sheetToObjects_(sheet, HEADERS_KOGNITIF) });
+    return jsonOut_({ data: sheetToObjects_(sheet) });
   }
 
   if (params.namaKognitif) {
     const sheet = getSheetKognitif_();
-    const row = findRowByColumn_(sheet, HEADERS_KOGNITIF, "Nama Siswa", params.namaKognitif);
+    const row = findRowByColumn_(sheet, "Nama Siswa", params.namaKognitif);
     if (row === -1) {
       return jsonOut_({ found: false });
     }
-    const values = sheet.getRange(row, 1, 1, HEADERS_KOGNITIF.length).getValues()[0];
-    const data = {};
-    HEADERS_KOGNITIF.forEach((h, i) => { data[h] = values[i]; });
-    return jsonOut_({ found: true, data: data });
+    return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
   }
 
   if (params.all) {
     const sheet = getSheet_();
-    return jsonOut_({ data: sheetToObjects_(sheet, HEADERS) });
+    return jsonOut_({ data: sheetToObjects_(sheet) });
   }
 
   if (!params.nama) {
     return jsonOut_({ status: "MPLS backend aktif", sheet: SHEET_NAME });
   }
   const sheet = getSheet_();
-  const row = findRowByName_(sheet, params.nama);
+  const row = findRowByColumn_(sheet, "Nama Siswa", params.nama);
   if (row === -1) {
     return jsonOut_({ found: false });
   }
-  const values = sheet.getRange(row, 1, 1, HEADERS.length).getValues()[0];
-  const data = {};
-  HEADERS.forEach((h, i) => { data[h] = values[i]; });
-  return jsonOut_({ found: true, data: data });
+  return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
 }
 
 function doPost(e) {
@@ -271,8 +310,8 @@ function doPost(e) {
     if (body.type === "mpls_kognitif") {
       const sheet = getSheetKognitif_();
       body["Timestamp"] = new Date();
-      const rowValues = HEADERS_KOGNITIF.map((h) => (body[h] !== undefined ? body[h] : ""));
-      const existingRow = findRowByColumn_(sheet, HEADERS_KOGNITIF, "Nama Siswa", body["Nama Siswa"]);
+      const existingRow = findRowByColumn_(sheet, "Nama Siswa", body["Nama Siswa"]);
+      const rowValues = buildRowByHeaders_(sheet, body);
       if (existingRow === -1) {
         sheet.appendRow(rowValues);
       } else {
@@ -284,8 +323,8 @@ function doPost(e) {
     // default: data penilaian MPLS non-kognitif (perilaku lama, tidak diubah)
     const sheet = getSheet_();
     body["Timestamp"] = new Date();
-    const rowValues = HEADERS.map((h) => (body[h] !== undefined ? body[h] : ""));
-    const existingRow = findRowByName_(sheet, body["Nama Siswa"]);
+    const existingRow = findRowByColumn_(sheet, "Nama Siswa", body["Nama Siswa"]);
+    const rowValues = buildRowByHeaders_(sheet, body);
     if (existingRow === -1) {
       sheet.appendRow(rowValues);
     } else {
@@ -297,7 +336,11 @@ function doPost(e) {
   }
 }
 
-/** Simpan/perbarui profil siswa (nama, panggilan, TTL) + opsional foto baru ke Drive. */
+/** Simpan/perbarui profil siswa (nama, panggilan, TTL) + opsional foto baru ke Drive.
+ * PENTING: kalau upload foto gagal (mis. izin Drive belum di-otorisasi ulang setelah
+ * deploy baru), data teks (nama/panggilan/TTL) TETAP tersimpan — hanya foto yang gagal,
+ * dan itu diberi tahu lewat field "fotoWarning" di respons (bukan bikin seluruh
+ * penyimpanan gagal seperti sebelumnya). */
 function doPostSiswa_(body) {
   const sheet = getSiswaSheet_();
   const namaLengkap = String(body["Nama Lengkap"] || "").trim();
@@ -305,16 +348,29 @@ function doPostSiswa_(body) {
     return jsonOut_({ status: "error", message: "Nama Lengkap wajib diisi" });
   }
 
-  const existingRow = findRowByColumn_(sheet, SISWA_HEADERS, "Nama Lengkap", namaLengkap);
+  const existingRow = findRowByColumn_(sheet, "Nama Lengkap", namaLengkap);
+  const headerRow = readHeaderRow_(sheet);
+  const fotoColIdx = headerRow.indexOf("URL Foto") + 1;
+
+  function fotoLamaJikaAda() {
+    if (existingRow !== -1 && fotoColIdx > 0) {
+      return sheet.getRange(existingRow, fotoColIdx).getValue();
+    }
+    return "";
+  }
 
   let urlFoto = body["URL Foto"] || "";
+  let fotoWarning = "";
   if (body.fotoBase64) {
-    const namaFile = namaLengkap.replace(/[^a-zA-Z0-9]+/g, "_") + "_" + new Date().getTime();
-    urlFoto = simpanFotoKeDrive_(body.fotoBase64, body.fotoMime, namaFile);
-  } else if (existingRow !== -1 && !urlFoto) {
-    // pertahankan foto lama kalau tidak upload foto baru
-    const colIdx = SISWA_HEADERS.indexOf("URL Foto") + 1;
-    urlFoto = sheet.getRange(existingRow, colIdx).getValue();
+    try {
+      const namaFile = namaLengkap.replace(/[^a-zA-Z0-9]+/g, "_") + "_" + new Date().getTime();
+      urlFoto = simpanFotoKeDrive_(body.fotoBase64, body.fotoMime, namaFile);
+    } catch (fotoErr) {
+      fotoWarning = "Data siswa tersimpan, tapi foto GAGAL diunggah: " + String(fotoErr);
+      urlFoto = fotoLamaJikaAda();
+    }
+  } else if (!urlFoto) {
+    urlFoto = fotoLamaJikaAda();
   }
 
   const record = {
@@ -325,12 +381,12 @@ function doPostSiswa_(body) {
     "Tanggal Lahir": body["Tanggal Lahir"] || "",
     "URL Foto": urlFoto,
   };
-  const rowValues = SISWA_HEADERS.map((h) => record[h] !== undefined ? record[h] : "");
+  const rowValues = buildRowByHeaders_(sheet, record);
 
   if (existingRow === -1) {
     sheet.appendRow(rowValues);
   } else {
     sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
   }
-  return jsonOut_({ status: "ok", urlFoto: urlFoto });
+  return jsonOut_({ status: "ok", urlFoto: urlFoto, fotoWarning: fotoWarning });
 }

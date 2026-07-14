@@ -85,9 +85,35 @@ URL Web App tetap sama — tidak perlu ganti `config.js` lagi.
   lewat "Nama Lengkap"). Kalau body menyertakan `fotoBase64` + `fotoMime`,
   foto akan disimpan sebagai file baru ke folder Google Drive dengan ID
   di konstanta `FOTO_FOLDER_ID`, lalu URL-nya disimpan ke kolom "URL Foto".
-- Header kolom didefinisikan satu tempat di `HEADERS` / `SISWA_HEADERS` (atas
-  file `Code.gs`) — kalau menambah/mengubah indikator di
-  `pages/mpls/assets/mpls-data.js`, pastikan nama field-nya sama persis.
+- Header kolom didefinisikan satu tempat di `HEADERS` / `SISWA_HEADERS` /
+  `HEADERS_KOGNITIF` (atas file `Code.gs`) — dipakai HANYA untuk membuat
+  sheet baru pertama kali (`setupSheet`/`setupSiswaSheet`/`setupSheetKognitif`).
+  Untuk **membaca/menulis data**, kode selalu membaca ulang baris header
+  yang SESUNGGUHNYA ada di baris 1 tiap sheet (`readHeaderRow_`), bukan
+  mengasumsikan urutan kolom tetap — jadi tetap aman walau kolom di
+  spreadsheet fisik pernah diubah urutannya secara manual.
+
+## Troubleshooting: foto/tanggal lahir tidak muncul
+
+Kalau setelah simpan data siswa, foto atau tanggal lahir tidak muncul di
+daftar `pages/kelas/index.html`:
+
+1. **Cek dulu apakah datanya benar-benar tersimpan** — buka spreadsheet →
+   sheet "Data Siswa" → cek baris siswa tsb. Kalau kolom "URL Foto" kosong,
+   berarti upload foto ke Drive-nya yang gagal (lihat poin 2). Kalau kolom
+   "Tanggal Lahir" kosong, cek apakah field itu memang diisi saat submit form.
+2. **Foto gagal terupload** biasanya karena izin Drive belum diotorisasi
+   ulang setelah membuat deployment baru — buka Apps Script editor, jalankan
+   fungsi apa saja secara manual sekali (mis. `setupSiswaSheet`) lewat tombol
+   Run, ikuti dialog izin sampai selesai (termasuk izin Drive), baru coba
+   simpan foto lagi dari web. Sejak versi ini, kalau foto gagal, **data teks
+   tetap tersimpan** dan aplikasi akan menampilkan pesan peringatan jelas
+   (bukan gagal total tanpa keterangan seperti sebelumnya).
+3. **Header sheet jangan diedit manual** (nama kolom di baris 1) — kode
+   sekarang membaca nama kolom apa adanya dari baris 1, jadi kalau nama
+   kolom diketik ulang dengan typo/beda kapitalisasi, field itu tidak akan
+   ketemu. Aman menambah kolom BARU di paling kanan, tapi jangan mengubah
+   teks header kolom yang sudah ada.
 
 ## Folder Drive untuk foto siswa
 
@@ -96,6 +122,11 @@ link bisa mengedit" (ID folder ada di konstanta `FOTO_FOLDER_ID` pada
 `Code.gs`). Ini pengaturan sementara sesuai permintaan pemilik proyek —
 bila ingin diperketat nanti, folder bisa diubah ke akses lebih terbatas
 (mis. hanya akun tertentu), tanpa perlu mengubah kode `Code.gs`.
+
+URL foto yang disimpan memakai format
+`https://drive.google.com/thumbnail?id=FILE_ID&sz=w1000` (bukan
+`.../uc?id=...`) karena format ini jauh lebih konsisten dipakai langsung
+sebagai `<img src>` di browser.
 
 ## Keamanan
 
