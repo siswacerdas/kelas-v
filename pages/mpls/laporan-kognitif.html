@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Laporan Hasil MPLS</title>
+<title>Laporan Asesmen Kognitif</title>
 <style>
   :root {
     --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
@@ -27,19 +27,19 @@
   #page {
     width: 210mm; min-height: 297mm; margin: 16px auto; background: #fff;
     padding: 11mm; box-shadow: 0 4px 18px rgba(0,0,0,0.15);
-    font-size: 12px; line-height: 1.42;
+    font-size: 11.5px; line-height: 1.38;
   }
 
   #status { max-width: 210mm; margin: 16px auto; text-align: center; color: var(--ink-3); font-size: 13px; }
 
   .rep-header { display: flex; align-items: center; gap: 12px; border-bottom: 3px solid var(--accent-2); padding-bottom: 7px; margin-bottom: 8px; }
   .rep-header img { width: 44px; height: 44px; object-fit: contain; }
-  .rep-header h1 { font-size: 17px; }
-  .rep-header p { font-size: 11.5px; color: var(--ink-3); }
+  .rep-header h1 { font-size: 16.5px; }
+  .rep-header p { font-size: 11px; color: var(--ink-3); }
 
   .rep-identitas-wrap { display: flex; gap: 10px; margin-bottom: 8px; }
   .rep-photo-box {
-    width: 24mm; height: 30mm; flex-shrink: 0; border: 1px solid var(--border); border-radius: 5px;
+    width: 22mm; height: 28mm; flex-shrink: 0; border: 1px solid var(--border); border-radius: 5px;
     background: var(--paper); overflow: hidden; display: flex; align-items: center; justify-content: center;
   }
   .rep-photo-box img { width: 100%; height: 100%; object-fit: cover; }
@@ -48,27 +48,27 @@
   .rep-identitas {
     flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 3px 18px;
     background: var(--paper); border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 10px; font-size: 12px; align-content: center;
+    padding: 7px 10px; font-size: 11.5px; align-content: center;
   }
   .rep-identitas b { color: var(--ink-2); }
 
   .rep-overall {
-    border: 1.5px solid var(--accent); border-radius: 6px; padding: 8px 10px; margin-bottom: 8px;
+    border: 1.5px solid var(--accent); border-radius: 6px; padding: 7px 10px; margin-bottom: 7px;
   }
-  .rep-overall h2 { font-size: 13.5px; margin-bottom: 3px; }
+  .rep-overall h2 { font-size: 13px; margin-bottom: 3px; }
   .rep-overall .badge { font-weight: 700; }
-  .rep-overall p { font-size: 11.5px; margin-top: 2px; }
-  .rep-overall .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
-  .rep-overall .cols div { font-size: 11px; }
-  .rep-overall .cols b { display: block; margin-bottom: 2px; font-size: 11.5px; }
+  .rep-overall p { font-size: 11px; margin-top: 2px; }
+  .rep-overall .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
+  .rep-overall .cols div { font-size: 10.5px; }
+  .rep-overall .cols b { display: block; margin-bottom: 2px; font-size: 11px; }
   .rep-overall .cols ul { padding-left: 14px; }
 
-  .rep-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-  .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 7px 9px; border-top: 3px solid var(--cat-accent, var(--accent)); }
-  .rep-cat h3 { font-size: 12.5px; margin-bottom: 2px; }
-  .rep-cat .lvl { font-size: 10.5px; font-weight: 700; }
-  .rep-cat p { font-size: 10.8px; color: var(--ink-2); margin-top: 3px; }
-  .rep-cat .rec { font-size: 10.5px; margin-top: 4px; }
+  .rep-cats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; border-top: 3px solid var(--cat-accent, var(--accent)); }
+  .rep-cat h3 { font-size: 11px; margin-bottom: 2px; }
+  .rep-cat .lvl { font-size: 10px; font-weight: 700; }
+  .rep-cat p { font-size: 10px; color: var(--ink-2); margin-top: 3px; }
+  .rep-cat .rec { font-size: 9.5px; margin-top: 3px; }
   .rep-cat .rec b { display: inline; }
 
   .lvl-BB { color: var(--danger); }
@@ -101,7 +101,7 @@
 </div>
 
 <div id="toolbar" class="hidden-when-checking" style="display:none">
-  <a href="rekap.html">← Kembali ke Rekap</a>
+  <a href="rekap-kognitif.html">← Kembali ke Rekap</a>
   <button onclick="window.print()">🖨️ Cetak / Simpan sebagai PDF</button>
 </div>
 
@@ -110,8 +110,9 @@
 
 <script type="module" src="../../assets/js/guru-guard.js"></script>
 <script src="assets/mpls-data.js"></script>
+<script src="assets/mpls-kognitif-data.js"></script>
 <script src="assets/config.js"></script>
-<script src="assets/mpls-scoring.js"></script>
+<script src="assets/mpls-scoring-kognitif.js"></script>
 <script>
   function qs(name) {
     return new URLSearchParams(window.location.search).get(name);
@@ -137,22 +138,22 @@
       return;
     }
 
-    let mplsRow;
+    let dataRow;
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?nama=" + encodeURIComponent(nama));
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?namaKognitif=" + encodeURIComponent(nama));
       const json = await res.json();
       if (!json.found) {
-        document.getElementById("status").textContent = "Belum ada data penilaian MPLS untuk " + nama + ".";
+        document.getElementById("status").textContent = "Belum ada data asesmen kognitif untuk " + nama + ".";
         return;
       }
-      mplsRow = json.data;
+      dataRow = json.data;
     } catch (err) {
       document.getElementById("status").textContent = "Gagal memuat data: " + err.message;
       return;
     }
 
     const profil = await loadSiswaProfile(nama);
-    const result = MplsScoring.computeStudentResult(mplsRow);
+    const result = MplsScoringKognitif.computeStudentResult(dataRow);
 
     const identitasRight = profil ? `
       <div><b>Nama Panggilan:</b> ${profil["Nama Panggilan"] || "-"}</div>
@@ -173,8 +174,8 @@
       <div class="rep-header">
         <img src="../../assets/img/logo-sekolah.jpg" alt="Logo Sekolah" />
         <div>
-          <h1>Laporan Hasil Observasi Non-Kognitif MPLS</h1>
-          <p>Kelas 5 · Tahun Pelajaran 2026–2027</p>
+          <h1>Laporan Hasil Asesmen Awal Kognitif</h1>
+          <p>Literasi & Numerasi Dasar · Kelas 5 · Tahun Pelajaran 2026–2027</p>
         </div>
       </div>
 
@@ -185,16 +186,16 @@
             : `<div class="ph-empty">Foto<br/>Siswa</div>`}
         </div>
         <div class="rep-identitas">
-          <div><b>Nama Siswa:</b> ${mplsRow["Nama Siswa"] || nama}</div>
+          <div><b>Nama Siswa:</b> ${dataRow["Nama Siswa"] || nama}</div>
           <div><b>Guru Kelas:</b> ${MPLS_WALI_KELAS}</div>
           ${identitasRight}
-          <div><b>Guru Pengamat (pengisi form):</b> ${mplsRow["Diisi Oleh"] || "-"}</div>
+          <div><b>Guru Pengamat (pengisi form):</b> ${dataRow["Diisi Oleh"] || "-"}</div>
           <div><b>Tanggal Cetak:</b> ${new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</div>
         </div>
       </div>
 
       <div class="rep-overall">
-        <h2>🎯 Kesimpulan Akhir Kesiapan Belajar: <span class="badge ${levelClass(result.overall.level)}">${result.overall.label}</span></h2>
+        <h2>🎯 Kesimpulan Akhir Kesiapan Akademik: <span class="badge ${levelClass(result.overall.level)}">${result.overall.label}</span></h2>
         <p>${result.overall.narasi}</p>
         ${result.overall.kekuatan.length ? `<p style="margin-top:3px"><b>Aspek kuat:</b> ${result.overall.kekuatan.join(", ")}</p>` : ""}
         ${result.overall.perhatian.length ? `<p><b>Perlu perhatian:</b> ${result.overall.perhatian.join(", ")}</p>` : ""}
@@ -221,7 +222,7 @@
         </div>
       </div>
 
-      <div class="rep-footer">Dokumen ini dihasilkan otomatis oleh sistem MPLS Kelas 5 dari hasil observasi guru. Bukan diagnosis klinis.</div>
+      <div class="rep-footer">Dokumen ini dihasilkan otomatis oleh sistem Asesmen Kognitif Kelas 5. Bukan diagnosis klinis/psikologis.</div>
     `;
 
     document.getElementById("status").style.display = "none";
