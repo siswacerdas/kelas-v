@@ -177,6 +177,36 @@ foto juga terlihat ada di folder Drive — tapi foto tetap tidak tampil di
   itu artinya ID filenya salah/file sudah terhapus dari Drive (cek folder
   `FOTO_FOLDER_ID`), bukan lagi masalah hotlink.
 
+## Troubleshooting: foto berhasil ke Drive tapi kolom "URL Foto" tetap KOSONG di sheet
+
+Kalau folder Drive (`FOTO_FOLDER_ID`) sudah punya file foto barunya, TIDAK ada pesan
+peringatan foto gagal yang muncul di aplikasi, tapi kolom "URL Foto" di sheet
+"Data Siswa" tetap kosong untuk siswa itu (v0.5.4):
+
+1. Buka sheet "Data Siswa" → **cek PERSIS teks header di baris 1, kolom URL Foto**.
+   Kode menulis nilai berdasarkan kecocokan nama header PERSIS (case-sensitive, termasuk
+   spasi) — kalau header tertulis mis. `"Url Foto"`, `" URL Foto"` (ada spasi di depan),
+   atau `"URL Foto "` (spasi di belakang), kolom itu TIDAK akan pernah terisi otomatis oleh
+   aplikasi, walau foto sendiri sudah 100% berhasil terupload ke Drive. Perbaiki teks header
+   itu jadi PERSIS `URL Foto`, lalu coba simpan ulang data siswa yang sama.
+2. Setelah update `Code.gs` v0.5.4, kondisi #1 di atas akan otomatis terdeteksi dan muncul
+   sebagai pesan peringatan jelas di toast aplikasi (bukan lagi senyap) — asalkan sudah
+   di-deploy ulang sebagai "New version".
+3. Kalau header sudah PERSIS benar dan tetap kosong, cek juga apakah nilai yang ditulis ke
+   `body["URL Foto"]`/hasil `simpanFotoKeDrive_()` memang bukan string kosong — buka
+   **View → Logs** (atau **Executions** di menu kiri editor Apps Script) setelah mencoba
+   simpan data untuk melihat error yang mungkin tertahan.
+
+## Troubleshooting: link foto yang ditempel manual tidak tampil (atau nama siswa ikut hilang)
+
+Kalau Anda menempel link Google Drive secara manual ke kolom "URL Foto" di spreadsheet
+(untuk uji coba), pastikan formatnya link "Bagikan"/"Get link" standar, contoh:
+`https://drive.google.com/file/d/ID_FILE/view?usp=drive_link` — format ini sudah dikenali
+sejak v0.5.4. Kalau nama siswa yang bersangkutan malah ikut hilang dari daftar (bukan cuma
+placeholder foto yang muncul), pastikan Anda menarik update v0.5.4 (`foto-fallback.js`) —
+versi sebelum itu punya bug terpisah yang membuat seluruh baris siswa ikut terhapus dari
+tampilan saat foto gagal dimuat.
+
 ## Keamanan
 
 - Web App di-deploy dengan akses **Anyone**, artinya siapa pun yang tahu URL-nya

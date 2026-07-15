@@ -335,7 +335,10 @@ function serveFotoBinary_(fileIdOrUrl) {
 function ekstrakIdFotoDrive_(urlOrId) {
   if (!urlOrId) return null;
   const str = String(urlOrId).trim();
-  const m = str.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  let m = str.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if (m) return m[1];
+  // Format link "Bagikan"/"Get link" standar Google Drive (.../file/d/ID/view?...) — v0.5.4.
+  m = str.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
   if (m) return m[1];
   if (/^[a-zA-Z0-9_-]{10,}$/.test(str)) return str;
   return null;
@@ -503,6 +506,15 @@ function doPostSiswa_(body) {
   const headerRow = readHeaderRow_(sheet);
   const fotoColIdx = headerRow.indexOf("URL Foto") + 1;
 
+  // v0.5.4: deteksi dini kalau header "URL Foto" tidak ketemu PERSIS di baris 1 sheet
+  // "Data Siswa" (mis. ada spasi tambahan atau beda huruf besar/kecil karena pernah diedit
+  // manual). TANPA pengecekan ini, foto tetap berhasil terupload ke Drive (jadi tampak
+  // "berhasil"), tapi URL-nya diam-diam TIDAK PERNAH tersimpan ke kolom manapun — karena
+  // buildRowByHeaders_() hanya menulis nilai ke kolom yang namanya cocok PERSIS dengan
+  // "URL Foto". Ini gejala tepat yang dilaporkan: foto ada di folder Drive, tidak ada pesan
+  // error, tapi kolom "URL Foto" tetap kosong di spreadsheet.
+  const headerUrlFotoBermasalah = fotoColIdx <= 0;
+
   function fotoLamaJikaAda() {
     if (existingRow !== -1 && fotoColIdx > 0) {
       return sheet.getRange(existingRow, fotoColIdx).getValue();
@@ -522,6 +534,14 @@ function doPostSiswa_(body) {
     }
   } else if (!urlFoto) {
     urlFoto = fotoLamaJikaAda();
+  }
+
+  if (headerUrlFotoBermasalah && (body.fotoBase64 || urlFoto)) {
+    fotoWarning = (fotoWarning ? fotoWarning + " " : "") +
+      'PERINGATAN: header kolom "URL Foto" tidak ditemukan PERSIS di baris 1 sheet "Data ' +
+      'Siswa" (cek kemungkinan beda spasi/huruf besar-kecil). Foto mungkin sudah diproses, ' +
+      "tapi URL-nya TIDAK akan tersimpan ke kolom manapun sampai nama header diperbaiki " +
+      'jadi persis "URL Foto".';
   }
 
   const record = {
