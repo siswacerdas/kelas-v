@@ -98,6 +98,8 @@ function resetForm() {
   document.getElementById("form-siswa").reset();
   state.fotoResized = null;
   document.getElementById("foto-preview-wrap").classList.add("hidden");
+  document.getElementById("foto-current-wrap").classList.add("hidden");
+  document.getElementById("foto-current-frame").innerHTML = "";
   document.getElementById("form-status").textContent = "";
   document.getElementById("form-status").classList.remove("err");
 }
@@ -164,6 +166,17 @@ function fillFormFromSiswa(s) {
   document.getElementById("foto-preview-wrap").classList.add("hidden");
   document.getElementById("f-foto-kamera").value = "";
   document.getElementById("f-foto-galeri").value = "";
+
+  // v0.5.4: tampilkan status foto yang SUDAH tersimpan untuk siswa ini, supaya guru
+  // tahu apakah perlu mengambil foto baru atau tidak — sebelumnya form tidak menunjukkan
+  // apa-apa soal foto lama, jadi tidak kelihatan apakah upload sebelumnya benar berhasil.
+  const currentWrap = document.getElementById("foto-current-wrap");
+  const currentFrame = document.getElementById("foto-current-frame");
+  currentFrame.innerHTML = s["URL Foto"]
+    ? fotoImgHtml(s["URL Foto"], "Foto tersimpan " + (s["Nama Lengkap"] || ""), "", '<div class="ph-empty">Foto<br/>gagal dimuat</div>')
+    : '<div class="ph-empty">Belum ada<br/>foto tersimpan</div>';
+  currentWrap.classList.remove("hidden");
+
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
