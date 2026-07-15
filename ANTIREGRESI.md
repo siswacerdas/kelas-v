@@ -123,6 +123,10 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] **Tanggal lahir yang disimpan TAMPIL dengan benar** di daftar siswa (format yyyy-mm-dd),
       sesuai dengan yang diisi di form — ini juga bagian dari bug yang sama, wajib dicek ulang
 - [ ] Daftar siswa di bawah form menampilkan thumbnail foto (atau ikon placeholder bila belum ada foto)
+- [ ] **(Baru v0.5.5) Daftar siswa terurut ABJAD berdasarkan Nama Lengkap** (A→Z), bukan
+      urutan baris/input di sheet — cek juga tetap terurut setelah kolom pencarian dipakai
+      lalu dikosongkan lagi, dan siswa baru muncul di posisi abjad yang benar (bukan ditempel
+      di akhir daftar)
 - [ ] Klik salah satu siswa di daftar mengisi ulang form (mode edit), simpan lagi meng-update baris yang sama (bukan duplikat — cek jumlah baris di sheet "Data Siswa")
 - [ ] **(Baru v0.5.4) Blok "Foto tersimpan saat ini" muncul saat mode edit** — menampilkan foto
       asli siswa yang dipilih (atau "Belum ada foto tersimpan" bila memang belum ada), dan
@@ -247,6 +251,24 @@ Jalankan skenario ini setelah perubahan besar:
    - Foto siswa (kalau ada) mengisi penuh frame-nya, tidak gepeng
    - Tetap 1 halaman A4
 
+### Skenario L — Verifikasi Perbaikan v0.5.5 (error JSON saat simpan + urutan abjad)
+1. Login sebagai guru → "Kelola Data Siswa & Foto" → cek daftar siswa yang sudah ada
+2. → **Harapan (BARU):** daftar tersusun berdasarkan ABJAD nama lengkap (A→Z), bukan urutan
+   input/baris di sheet
+3. Ketik sesuatu di "Cari nama siswa" lalu kosongkan lagi
+4. → **Harapan:** urutan abjad tetap konsisten setelah filter dikosongkan (regresi pencarian)
+5. Tambah 1 siswa baru dengan nama yang urutannya di tengah abjad (bukan di awal/akhir daftar)
+   → simpan
+6. → **Harapan:** setelah "Tersimpan", siswa baru itu muncul di POSISI ABJAD yang benar,
+   bukan cuma ditempel di akhir daftar
+7. (Simulasi bug asli — kalau memungkinkan lewat DevTools Network throttling/route
+   interception) buat respons simpan mengembalikan teks HTML alih-alih JSON
+8. → **Harapan:** pesan error yang tampil masuk akal dalam Bahasa Indonesia (bukan
+   `Unexpected token '<'...`), DAN daftar siswa di bawah ikut otomatis dimuat ulang setelah
+   error tsb muncul
+
+---
+
 ### Skenario K — Verifikasi Perbaikan v0.5.4 (nama hilang, link manual, header URL Foto)
 1. **Deploy ulang** Apps Script sebagai **New version**
 2. Cek baris 1 sheet "Data Siswa" → pastikan header kolom foto PERSIS `URL Foto`
@@ -343,6 +365,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-15 | 0.5.2 | *(nama)* | ❌ Gagal | Fallback 3 format URL lulus test otomatis, tapi foto TETAP tidak tampil di Drive sungguhan (akar masalah: hotlink anonim diblokir Google, bukan soal format URL) |
 | 2026-07-15 | 0.5.3 | *(nama)* | ⏳ Belum diuji | Foto akhirnya diproxy lewat Apps Script sendiri (`?foto=`) — WAJIB uji Skenario J dengan Apps Script sungguhan sebelum ditandai ✅ |
 | 2026-07-15 | 0.5.4 | *(nama)* | ⏳ Belum diuji | Nama siswa ikut hilang saat foto gagal (diperbaiki), link Drive format "Bagikan" kini dikenali, peringatan header "URL Foto" mismatch, preview foto tersimpan di form edit — WAJIB uji Skenario K |
+| 2026-07-15 | 0.5.5 | *(nama)* | ⏳ Belum diuji | Error JSON mentah saat simpan lambat kini bermakna (bukan `Unexpected token`), daftar siswa auto-refresh saat gagal simpan, daftar terurut abjad — WAJIB uji Skenario L |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

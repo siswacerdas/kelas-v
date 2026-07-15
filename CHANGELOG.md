@@ -21,6 +21,54 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
+## [0.5.5] — 2026-07-15
+
+### Diperbaiki
+- **Bug BARU: muncul error `Unexpected token '<', "<!DOCTYPE "... is not valid JSON` saat
+  simpan, khususnya setelah proses terasa lama.** Akar masalah: Google Apps Script Web App
+  (URL `/exec`) kadang mengembalikan **halaman HTML generik dari infrastruktur Google**
+  (bukan JSON dari `Code.gs`) kalau eksekusi di baliknya lambat — upload + set-sharing foto ke
+  Drive bisa memakan beberapa detik lebih lama dari permintaan biasa, dan Google diketahui
+  kadang memotong/mengganti respons `/exec` dengan halaman error generik dalam kondisi itu, di
+  luar kendali kode aplikasi ini. Kode sebelumnya langsung memanggil `res.json()` tanpa
+  pengecekan, sehingga errornya jadi pesan mentah JavaScript yang membingungkan bagi pengguna.
+  - **Solusi**: `pages/kelas/assets/kelas.js` — fungsi baru `parseJsonAman_()` membaca
+    response sebagai teks dulu, baru mencoba mem-parse JSON; kalau gagal DAN teksnya diawali
+    `<` (tanda halaman HTML), dilempar pesan yang jelas & actionable dalam Bahasa Indonesia,
+    bukan pesan error JavaScript mentah.
+  - **Tambahan keamanan**: saat simpan GAGAL dengan error apa pun, daftar siswa di bawah form
+    ikut dimuat ulang otomatis (sebelumnya cuma dimuat ulang saat BERHASIL) — supaya guru bisa
+    langsung mengecek apakah datanya ternyata SUDAH tersimpan di balik layar (Apps Script bisa
+    saja sudah selesai menulis ke sheet meski respons ke browser gagal/terlambat), sebelum
+    memutuskan menyimpan ulang. Ini penting supaya tidak muncul foto dobel di Drive akibat
+    percobaan simpan berulang untuk data yang sebenarnya sudah masuk.
+  - **Catatan jujur soal batas perbaikan ini**: ini MENGATASI GEJALA (pesan error yang jelas +
+    visibilitas status), bukan akar masalah kecepatan eksekusi Apps Script itu sendiri, yang
+    berada di luar kendali kode aplikasi (infrastruktur Google). Kalau ini sering terjadi,
+    pertimbangkan membersihkan folder `FOTO_FOLDER_ID` dari file-file lama/duplikat hasil
+    percobaan sebelumnya (folder yang terlalu penuh berpotensi memperlambat operasi Drive).
+
+### Ditambahkan
+- **Daftar siswa tersimpan kini terurut ABJAD berdasarkan Nama Lengkap** (sebelumnya
+  mengikuti urutan baris apa adanya di sheet "Data Siswa", yang berarti urutan sesuai kapan
+  data dimasukkan/diupdate — jadi kelihatan "acak" seiring waktu). Diurutkan di sisi klien
+  (`pages/kelas/assets/kelas.js`, fungsi `loadSiswaList()`) memakai `localeCompare` dengan
+  locale Indonesia, jadi tidak bergantung urutan di spreadsheet dan tidak perlu mengubah data
+  di sheet sama sekali.
+
+### Diuji
+- Diuji dengan Playwright: respons fetch disimulasikan mengembalikan teks HTML
+  (`<!DOCTYPE html>...`) alih-alih JSON — dikonfirmasi `parseJsonAman_()` melempar pesan Bahasa
+  Indonesia yang jelas (bukan `Unexpected token`), dan daftar siswa tetap dimuat ulang setelah
+  error simpan.
+- Diuji urutan abjad dengan data uji berisi nama tidak berurutan (mis. "Zainal", "Abdurrahman",
+  "Mira") — dikonfirmasi tampil terurut A→Z setelah `loadSiswaList()`, termasuk setelah
+  pencarian di kolom "Cari nama siswa" dikosongkan kembali.
+- (Regresi) Fitur pencarian (`search-siswa`) tetap berfungsi normal di atas daftar yang sudah
+  terurut — filter hanya menyaring, tidak mengubah urutan.
+
+---
+
 ## [0.5.4] — 2026-07-15
 
 ### Diperbaiki
