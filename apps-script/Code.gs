@@ -7,13 +7,16 @@
  * - doPost(e)  : { type: "mpls" (default) }   -> upsert 1 baris nilai MPLS non-kognitif per siswa.
  *                { type: "siswa" }            -> upsert 1 baris profil siswa (+ opsional foto ke Drive).
  *                { type: "mpls_kognitif" }    -> upsert 1 baris nilai asesmen kognitif per siswa.
+ *                { type: "jurnal" }           -> upsert 1 baris nilai asesmen menulis (jurnal aktivitas) per siswa.
  * - doGet(e)   : ?nama=...        -> 1 baris data MPLS non-kognitif siswa tsb (untuk input.html).
  *                ?all=1           -> SEMUA baris data MPLS non-kognitif (untuk rekap.html/laporan.html).
  *                ?siswa=1         -> SEMUA baris data profil siswa (untuk pages/kelas/).
  *                ?namaKognitif=.. -> 1 baris data kognitif siswa tsb (untuk input-kognitif.html).
  *                ?allKognitif=1   -> SEMUA baris data kognitif (untuk rekap-kognitif.html/laporan-kognitif.html).
- * - setupSheet() / setupSiswaSheet() / setupSheetKognitif(): jalankan SEKALI secara manual dari
- *                editor Apps Script (pilih fungsi lalu Run) untuk membuat sheet + header.
+ *                ?namaJurnal=..   -> 1 baris data jurnal siswa tsb (untuk input-jurnal.html).
+ *                ?allJurnal=1     -> SEMUA baris data jurnal (untuk rekap-jurnal.html/laporan-jurnal.html).
+ * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal(): jalankan SEKALI
+ *                secara manual dari editor Apps Script (pilih fungsi lalu Run) untuk membuat sheet + header.
  *
  * PENTING setelah mengubah file ini: deploy ulang sebagai "New version" dari
  * deployment yang SAMA (Deploy > Manage deployments > pensil > New version),
@@ -25,6 +28,7 @@
 const SPREADSHEET_ID = "1G-LWyOSyCKLP10RU234grIR_5-iWxLSG-6vZP3sKUkA";
 const SHEET_NAME = "Data MPLS";
 const SHEET_NAME_KOGNITIF = "Data MPLS Kognitif";
+const SHEET_NAME_JURNAL = "Data Jurnal Aktivitas";
 const SISWA_SHEET_NAME = "Data Siswa";
 // ID folder Drive tempat foto siswa disimpan (dari link yang sudah dishare "siapa saja bisa mengedit")
 const FOTO_FOLDER_ID = "1b-ENsEQJeUFoVKKA6htZbVAxf7zr1IzG";
@@ -117,6 +121,28 @@ const HEADERS_KOGNITIF = [
   "Diisi Oleh",
 ];
 
+const HEADERS_JURNAL = [
+  "Timestamp",
+  "No",
+  "Nama Siswa",
+  "Aktivitas",
+  // Struktur & Isi Tulisan
+  "Menuliskan pokok pikiran dengan urutan yang jelas (awal - tengah - akhir)",
+  "Isi tulisan sesuai momen yang diminta (saat perjalanan / di taman / saat kembali)",
+  "Kalimat cukup runtut dan mudah dipahami",
+  "Menuliskan detail konkret, bukan hanya satu-dua kata",
+  "Catatan Tulisan",
+  // Kemandirian & Regulasi Diri
+  "Mengisi jurnal di ketiga momen (perjalanan, di taman, kembali) tanpa terus diingatkan",
+  "Mengatur sendiri waktu menulis di sela aktivitas",
+  "Menyelesaikan seluruh isian tanpa bantuan penuh dari guru/teman",
+  "Catatan Kemandirian",
+  // Bukti/contoh tulisan asli siswa
+  "Cuplikan Tulisan Siswa",
+  // Meta
+  "Diisi Oleh",
+];
+
 function getSheet_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(SHEET_NAME);
@@ -151,6 +177,25 @@ function getSheetKognitif_() {
 function setupSheetKognitif() {
   const sheet = getSheetKognitif_();
   sheet.getRange(1, 1, 1, HEADERS_KOGNITIF.length).setValues([HEADERS_KOGNITIF]);
+  sheet.setFrozenRows(1);
+  Logger.log("Sheet siap: " + sheet.getName());
+}
+
+function getSheetJurnal_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(SHEET_NAME_JURNAL);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME_JURNAL);
+    sheet.getRange(1, 1, 1, HEADERS_JURNAL.length).setValues([HEADERS_JURNAL]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+/** Jalankan SEKALI dari editor Apps Script untuk inisialisasi sheet "Data Jurnal Aktivitas" + header. */
+function setupSheetJurnal() {
+  const sheet = getSheetJurnal_();
+  sheet.getRange(1, 1, 1, HEADERS_JURNAL.length).setValues([HEADERS_JURNAL]);
   sheet.setFrozenRows(1);
   Logger.log("Sheet siap: " + sheet.getName());
 }
@@ -283,6 +328,20 @@ function doGet(e) {
     return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
   }
 
+  if (params.allJurnal) {
+    const sheet = getSheetJurnal_();
+    return jsonOut_({ data: sheetToObjects_(sheet) });
+  }
+
+  if (params.namaJurnal) {
+    const sheet = getSheetJurnal_();
+    const row = findRowByColumn_(sheet, "Nama Siswa", params.namaJurnal);
+    if (row === -1) {
+      return jsonOut_({ found: false });
+    }
+    return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
+  }
+
   if (params.all) {
     const sheet = getSheet_();
     return jsonOut_({ data: sheetToObjects_(sheet) });
@@ -309,6 +368,19 @@ function doPost(e) {
 
     if (body.type === "mpls_kognitif") {
       const sheet = getSheetKognitif_();
+      body["Timestamp"] = new Date();
+      const existingRow = findRowByColumn_(sheet, "Nama Siswa", body["Nama Siswa"]);
+      const rowValues = buildRowByHeaders_(sheet, body);
+      if (existingRow === -1) {
+        sheet.appendRow(rowValues);
+      } else {
+        sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
+      }
+      return jsonOut_({ status: "ok" });
+    }
+
+    if (body.type === "jurnal") {
+      const sheet = getSheetJurnal_();
       body["Timestamp"] = new Date();
       const existingRow = findRowByColumn_(sheet, "Nama Siswa", body["Nama Siswa"]);
       const rowValues = buildRowByHeaders_(sheet, body);
