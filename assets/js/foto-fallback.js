@@ -33,9 +33,16 @@
 function extractDriveFileId(urlOrId) {
   if (!urlOrId) return null;
   const str = String(urlOrId).trim();
-  const m = str.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  // Format 1: ...?id=XXXX / ...&id=XXXX — dipakai URL yang dibangun aplikasi ini sendiri.
+  let m = str.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
   if (m) return m[1];
-  // Kalau yang disimpan cuma ID mentah (bukan URL lengkap)
+  // Format 2 (BARU sejak v0.5.4): .../file/d/XXXX/view?... — format link "Bagikan"/"Get link"
+  // STANDAR Google Drive yang paling umum disalin manual oleh pengguna (mis. dari menu
+  // klik-kanan "Get link" atau tombol "Bagikan"). Sebelumnya TIDAK dikenali sama sekali,
+  // sehingga link seperti ini dipakai apa adanya sebagai <img src> (bukan gambar, gagal total).
+  m = str.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if (m) return m[1];
+  // Format 3: kalau yang disimpan cuma ID mentah (bukan URL lengkap)
   if (/^[a-zA-Z0-9_-]{10,}$/.test(str)) return str;
   return null;
 }
@@ -84,7 +91,14 @@ function fotoImgHtml(urlOrId, altText, extraAttrs, placeholderHtml) {
   );
 }
 
-/** Dipanggil dari atribut onerror inline pada <img> yang dihasilkan fotoImgHtml(). */
+/** Dipanggil dari atribut onerror inline pada <img> yang dihasilkan fotoImgHtml().
+ * PENTING (perbaikan v0.5.4): hanya mengganti elemen <img> itu sendiri, BUKAN
+ * `img.parentElement.innerHTML` seperti sebelumnya. Versi lama diam-diam mengasumsikan
+ * <img> selalu satu-satunya isi induknya (benar untuk kotak foto laporan cetak yang
+ * memang dedicated, tapi SALAH untuk daftar siswa di kelas.js — di sana <img> adalah
+ * sibling dari blok nama & keterangan siswa dalam kartu yang sama, sehingga
+ * `parentElement.innerHTML = placeholder` ikut menghapus nama siswa itu juga begitu
+ * SEMUA kandidat foto gagal dimuat). Mengganti hanya node <img> aman untuk kedua kasus. */
 function fotoFallbackNext(img) {
   try {
     const candidates = JSON.parse(img.getAttribute("data-candidates") || "[]");
@@ -94,9 +108,14 @@ function fotoFallbackNext(img) {
       img.src = candidates[idx];
     } else {
       const placeholder = img.getAttribute("data-placeholder") || '<div class="ph-empty">Foto<br/>Siswa</div>';
-      if (img.parentElement) img.parentElement.innerHTML = placeholder;
+      const temp = document.createElement("div");
+      temp.innerHTML = placeholder;
+      const replacement = temp.firstElementChild || temp;
+      if (img.parentNode) img.parentNode.replaceChild(replacement, img);
     }
   } catch (e) {
-    if (img.parentElement) img.parentElement.innerHTML = '<div class="ph-empty">Foto<br/>Siswa</div>';
+    const temp = document.createElement("div");
+    temp.innerHTML = '<div class="ph-empty">Foto<br/>Siswa</div>';
+    if (img.parentNode) img.parentNode.replaceChild(temp.firstElementChild, img);
   }
 }
