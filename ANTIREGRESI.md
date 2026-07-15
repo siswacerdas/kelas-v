@@ -124,6 +124,9 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       sesuai dengan yang diisi di form — ini juga bagian dari bug yang sama, wajib dicek ulang
 - [ ] Daftar siswa di bawah form menampilkan thumbnail foto (atau ikon placeholder bila belum ada foto)
 - [ ] Klik salah satu siswa di daftar mengisi ulang form (mode edit), simpan lagi meng-update baris yang sama (bukan duplikat — cek jumlah baris di sheet "Data Siswa")
+- [ ] **(Baru v0.5.4) Blok "Foto tersimpan saat ini" muncul saat mode edit** — menampilkan foto
+      asli siswa yang dipilih (atau "Belum ada foto tersimpan" bila memang belum ada), dan
+      hilang lagi saat form dikosongkan/tambah siswa baru
 - [ ] Coba simpan siswa BARU (belum pernah ada) dengan foto — pastikan baris baru muncul di
       sheet "Data Siswa" dengan SEMUA kolom terisi benar (bukan cuma sebagian)
 - [ ] Kalau foto sengaja gagal diunggah (mis. tes dengan izin Drive dicabut sementara),
@@ -244,6 +247,29 @@ Jalankan skenario ini setelah perubahan besar:
    - Foto siswa (kalau ada) mengisi penuh frame-nya, tidak gepeng
    - Tetap 1 halaman A4
 
+### Skenario K — Verifikasi Perbaikan v0.5.4 (nama hilang, link manual, header URL Foto)
+1. **Deploy ulang** Apps Script sebagai **New version**
+2. Cek baris 1 sheet "Data Siswa" → pastikan header kolom foto PERSIS `URL Foto`
+   (tanpa spasi tambahan, huruf besar/kecil sama)
+3. Login sebagai guru → "Kelola Data Siswa & Foto" → pilih 1 siswa dari daftar untuk diedit
+4. → **Harapan (BARU):** muncul blok "Foto tersimpan saat ini" di atas tombol Ambil/Pilih
+   Foto — menampilkan foto asli kalau sudah ada, atau "Belum ada foto tersimpan" bila belum
+5. Simpan siswa BARU dengan foto dari kamera/galeri → cek toast: **Harapan:** "Tersimpan:
+   [nama]" TANPA peringatan (bukan lagi "Access denied" atau peringatan header)
+6. Cek sheet "Data Siswa" → kolom "URL Foto" utuk siswa itu **HARUS terisi** (bukan kosong)
+7. Refresh `pages/kelas/index.html` → foto tampil sebagai gambar asli di daftar (regresi
+   Skenario J tetap berlaku)
+8. (Regresi khusus bug nama hilang) Di spreadsheet, tempel MANUAL sebuah link Google Drive
+   format "Bagikan" standar (`.../file/d/ID/view?usp=...`, BUKAN format `?id=...`) ke kolom
+   "URL Foto" siswa lain yang fotonya sengaja rusak/tidak publik
+9. → **Harapan:** placeholder foto muncul untuk siswa itu, TAPI **nama & keterangan siswa
+   tetap tampil utuh** di kartunya (tidak boleh ikut hilang — ini bug yang baru diperbaiki)
+10. Tempel link "Bagikan" standar yang BENAR (foto asli, publik) ke kolom "URL Foto" siswa lain
+11. → **Harapan:** foto asli tampil (ID berhasil diekstrak dari format link ini, bukan cuma
+    format `?id=...` lama)
+
+---
+
 ### Skenario J — Verifikasi Perbaikan Foto Tidak Tampil (v0.5.3, WAJIB pakai Apps Script sungguhan)
 > ⚠️ Skenario ini TIDAK bisa dianggap lulus hanya dari hasil test Playwright/otomatis —
 > harus dicoba langsung dengan deployment Apps Script & folder Drive sekolah yang sungguhan,
@@ -316,6 +342,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-15 | 0.5.1 | *(nama)* | ⏳ Belum diuji | Fungsi bantu otorisasi Drive untuk atasi "Access denied: DriveApp" |
 | 2026-07-15 | 0.5.2 | *(nama)* | ❌ Gagal | Fallback 3 format URL lulus test otomatis, tapi foto TETAP tidak tampil di Drive sungguhan (akar masalah: hotlink anonim diblokir Google, bukan soal format URL) |
 | 2026-07-15 | 0.5.3 | *(nama)* | ⏳ Belum diuji | Foto akhirnya diproxy lewat Apps Script sendiri (`?foto=`) — WAJIB uji Skenario J dengan Apps Script sungguhan sebelum ditandai ✅ |
+| 2026-07-15 | 0.5.4 | *(nama)* | ⏳ Belum diuji | Nama siswa ikut hilang saat foto gagal (diperbaiki), link Drive format "Bagikan" kini dikenali, peringatan header "URL Foto" mismatch, preview foto tersimpan di form edit — WAJIB uji Skenario K |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

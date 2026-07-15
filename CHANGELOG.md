@@ -21,6 +21,78 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
+## [0.5.4] — 2026-07-15
+
+### Diperbaiki
+- **Bug BARU #1 (ditemukan dari laporan pengguna setelah uji coba v0.5.3): nama siswa ikut
+  HILANG dari daftar `pages/kelas/index.html` begitu foto siswa itu gagal dimuat** (bukan cuma
+  fotonya yang jadi placeholder — seluruh baris termasuk nama & keterangan ikut lenyap, sesuai
+  cuplikan layar yang dilampirkan pengguna).
+  - **Akar masalah**: `fotoFallbackNext()` di `assets/js/foto-fallback.js` mengganti
+    `img.parentElement.innerHTML` saat SEMUA kandidat foto gagal. Ini aman untuk kotak foto
+    laporan cetak (`.rep-photo-box` memang HANYA berisi `<img>`, tidak ada elemen lain), tapi
+    di `pages/kelas/assets/kelas.js` elemen `<img>` adalah **sibling** dari blok nama & info
+    siswa dalam kartu (`.siswa-item`) yang sama — jadi mengganti `innerHTML` induknya ikut
+    menghapus nama & info tsb, bukan cuma fotonya.
+  - **Solusi**: `fotoFallbackNext()` sekarang HANYA mengganti node `<img>` itu sendiri
+    (`parentNode.replaceChild`), tidak pernah menyentuh elemen saudara (`sibling`) apa pun.
+    Berlaku aman untuk kedua kasus pemakaian (kartu daftar siswa & kotak foto laporan cetak).
+- **Bug BARU #2: link foto yang ditempel manual di kolom "URL Foto" (format link "Bagikan"
+  standar Google Drive, mis. `.../file/d/ID/view?usp=drive_link`) sama sekali tidak dikenali**
+  — baik `extractDriveFileId()` (klien, `foto-fallback.js`) maupun `ekstrakIdFotoDrive_()`
+  (server, `Code.gs`) sebelumnya HANYA mengenali format `?id=...`/`&id=...` (format yang dibuat
+  aplikasi ini sendiri saat upload), bukan format link "Bagikan"/"Get link" standar yang paling
+  umum disalin manual oleh pengguna dari menu Drive. Akibatnya link mentah dipakai apa adanya
+  sebagai `<img src>` (yang sebetulnya halaman HTML, bukan gambar) — gagal dimuat, ditambah bug
+  #1 di atas, membuat nama siswa ikut hilang persis seperti yang dilaporkan.
+  - **Solusi**: kedua fungsi ekstraksi ID (klien & server) diperluas mengenali pola
+    `.../d/ID/...` (mencakup format `/file/d/ID/view`) selain format `?id=` yang sudah ada.
+    Foto lama yang formatnya sudah benar (`?id=...`) tetap kompatibel, tidak ada regresi.
+- **Kemungkinan penyebab bug #3 (dilaporkan): tidak ada URL foto tersimpan sama sekali di
+  spreadsheet meski foto berhasil masuk ke folder Drive dan tidak ada pesan error** — root
+  cause pastinya TIDAK bisa dipastikan tanpa akses langsung ke spreadsheet sekolah, tapi
+  penyebab paling mungkin (dan sudah didokumentasikan sebagai risiko sejak v0.4.1, lihat
+  bagian "Catatan Penting" di `ANTIREGRESI.md`): **nama header kolom "URL Foto" di baris 1
+  sheet "Data Siswa" tidak persis sama** (beda spasi/huruf besar-kecil) dengan yang dicari
+  kode — karena penulisan baris memakai pencocokan nama header PERSIS
+  (`buildRowByHeaders_()`), kalau tidak cocok maka nilai URL foto ditulis ke "" (tidak ke
+  kolom manapun) TANPA memicu error, walau file fotonya sendiri sudah berhasil dibuat di Drive
+  (jadi tampak "berhasil" dari sisi pengguna).
+  - **Mitigasi (bukan solusi pasti, karena ini bergantung isi spreadsheet)**:
+    `apps-script/Code.gs` → `doPostSiswa_()` sekarang mendeteksi kondisi ini secara eksplisit
+    dan menambahkan pesan peringatan yang jelas ke `fotoWarning` kalau terjadi, supaya
+    kegagalan ini tidak lagi senyap. **Pengguna WAJIB mengecek langsung** teks persis header
+    kolom "URL Foto" di baris 1 sheet "Data Siswa" (lihat langkah cek di
+    `apps-script/README.md` bagian troubleshooting terbaru).
+- **Permintaan pengguna: form Tambah/Perbarui Data Siswa tidak menunjukkan status foto yang
+  SUDAH tersimpan saat mode edit** (`pages/kelas/index.html`) — sekarang ditambahkan blok
+  "Foto tersimpan saat ini" yang muncul begitu 1 siswa dipilih dari daftar untuk diedit,
+  menampilkan foto asli (atau placeholder "Belum ada foto tersimpan" bila memang belum ada)
+  memakai `foto-fallback.js` yang sama seperti tempat lain. Ambil/pilih foto baru akan
+  MENGGANTI foto ini; kalau tidak diisi ulang, foto lama tetap dipakai (perilaku simpan tidak
+  berubah, ini murni tambahan tampilan/visibilitas).
+
+### Diuji
+- Diuji dengan Playwright: simulasi kartu daftar siswa dengan foto yang SEMUA kandidatnya
+  gagal dimuat (network mocking) — dikonfirmasi nama & info siswa TETAP tampil setelah
+  placeholder foto muncul (regresi bug #1 tidak terulang).
+- Ekstraksi ID diuji dengan berbagai format URL: `?id=...&sz=...` (lama), `/file/d/ID/view`
+  (baru, sesuai contoh link yang diberikan pengguna), dan ID mentah — ketiganya menghasilkan
+  ID file yang benar.
+- **Catatan jujur soal batas pengujian otomatis**: penyebab pasti bug #3 (URL foto tidak
+  tersimpan) TIDAK bisa dikonfirmasi/direproduksi di lingkungan pengembangan ini karena
+  memerlukan akses ke spreadsheet & Apps Script sungguhan milik sekolah. Perbaikan yang
+  diberikan adalah mitigasi diagnosa (memunculkan peringatan yang jelas), BUKAN kepastian
+  bahwa ini satu-satunya penyebab — wajib diverifikasi langsung oleh pengguna sesuai langkah
+  di `ANTIREGRESI.md` bagian "Skenario K".
+
+### PENTING — Langkah wajib setelah menarik update ini
+- **Deploy ulang Apps Script sebagai "New version"** (`Code.gs` berubah lagi di update ini).
+- **Cek langsung baris 1 sheet "Data Siswa"** — pastikan teks header kolom foto PERSIS
+  `URL Foto` (tanpa spasi tambahan di awal/akhir, huruf besar/kecil sama persis).
+
+---
+
 ## [0.5.3] — 2026-07-15
 
 ### Diperbaiki
