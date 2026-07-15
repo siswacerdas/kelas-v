@@ -292,6 +292,31 @@ function simpanFotoKeDrive_(base64Data, mimeType, namaFile) {
   return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1000";
 }
 
+/**
+ * JALANKAN FUNGSI INI SECARA MANUAL (sekali saja) dari editor Apps Script kalau
+ * muncul error "Exception: Access denied: DriveApp" saat upload foto dari web.
+ *
+ * Kenapa perlu: izin Spreadsheet dan izin Drive adalah 2 hal TERPISAH di Google.
+ * Web App selalu berjalan sebagai akun pemilik script ("Execute as: Me"), tapi
+ * akun itu baru benar-benar "menyetujui" pemakaian sebuah layanan (mis. Drive)
+ * kalau pernah menjalankan kode yang memakai layanan itu LANGSUNG dari editor
+ * dan mengklik "Allow/Izinkan" di dialog yang muncul. Deploy ulang saja TIDAK
+ * cukup untuk memicu dialog izin baru.
+ *
+ * Cara pakai:
+ * 1. Di dropdown fungsi (toolbar atas editor Apps Script), pilih "otorisasiAksesDrive"
+ * 2. Klik Run (▶️)
+ * 3. Akan muncul dialog "Authorization required" → Review permissions
+ * 4. Pilih akun Google Anda → Advanced/Lanjutan → "Buka (nama proyek) (tidak aman)" → Allow/Izinkan
+ * 5. Cek log (View > Logs / Ctrl+Enter) — kalau muncul nama folder, berarti berhasil
+ * 6. Coba lagi upload foto dari web — seharusnya sudah tidak error lagi
+ *    (tidak perlu deploy ulang untuk ini, izin ini melekat ke akun, bukan ke deployment)
+ */
+function otorisasiAksesDrive() {
+  const folder = DriveApp.getFolderById(FOTO_FOLDER_ID);
+  Logger.log("Berhasil! Nama folder foto siswa: " + folder.getName());
+}
+
 function sheetToObjects_(sheet) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];

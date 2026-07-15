@@ -102,13 +102,28 @@ daftar `pages/kelas/index.html`:
    sheet "Data Siswa" → cek baris siswa tsb. Kalau kolom "URL Foto" kosong,
    berarti upload foto ke Drive-nya yang gagal (lihat poin 2). Kalau kolom
    "Tanggal Lahir" kosong, cek apakah field itu memang diisi saat submit form.
-2. **Foto gagal terupload** biasanya karena izin Drive belum diotorisasi
-   ulang setelah membuat deployment baru — buka Apps Script editor, jalankan
-   fungsi apa saja secara manual sekali (mis. `setupSiswaSheet`) lewat tombol
-   Run, ikuti dialog izin sampai selesai (termasuk izin Drive), baru coba
-   simpan foto lagi dari web. Sejak versi ini, kalau foto gagal, **data teks
-   tetap tersimpan** dan aplikasi akan menampilkan pesan peringatan jelas
-   (bukan gagal total tanpa keterangan seperti sebelumnya).
+2. **Foto gagal terupload dengan pesan `Exception: Access denied: DriveApp`** —
+   ini paling sering terjadi karena izin **Spreadsheet** dan izin **Drive**
+   adalah 2 hal TERPISAH di Google, walau sama-sama dipakai 1 script. Ciri
+   khasnya: data teks (nama/panggilan/TTL) berhasil tersimpan, tapi foto
+   gagal — itu artinya izin Spreadsheet sudah oke, cuma izin Drive yang
+   belum. **Deploy ulang saja TIDAK cukup** untuk memicu izin baru. Caranya:
+   1. Buka Apps Script editor (dari spreadsheet: Extensions/Ekstensi → Apps Script)
+   2. Di dropdown fungsi (toolbar atas), pilih **`otorisasiAksesDrive`**
+   3. Klik **Run** (▶️)
+   4. Muncul dialog "Authorization required" → **Review permissions** → pilih
+      akun Google Anda → **Advanced/Lanjutan** → "Buka (nama proyek) (tidak
+      aman)" → **Allow/Izinkan**
+   5. Cek log (menu **View → Logs**, atau Ctrl+Enter) — kalau muncul nama
+      folder foto, berarti berhasil
+   6. **Tidak perlu deploy ulang** — izin ini melekat ke akun Google Anda,
+      bukan ke versi deployment. Langsung coba lagi upload foto dari web.
+   - Kalau langkah di atas TIDAK memunculkan dialog izin sama sekali (langsung
+     jalan tanpa dialog tapi tetap error), kemungkinan project Apps Script
+     Anda punya file `appsscript.json` dengan `oauthScopes` yang didefinisikan
+     manual dan belum menyertakan scope Drive. Buka file itu (menu ⚙️ Project
+     Settings → centang "Show appsscript.json") dan pastikan ada
+     `"https://www.googleapis.com/auth/drive"` di daftar `oauthScopes`.
 3. **Header sheet jangan diedit manual** (nama kolom di baris 1) — kode
    sekarang membaca nama kolom apa adanya dari baris 1, jadi kalau nama
    kolom diketik ulang dengan typo/beda kapitalisasi, field itu tidak akan
