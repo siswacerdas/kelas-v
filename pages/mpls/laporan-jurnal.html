@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Laporan Hasil MPLS</title>
+<title>Laporan Asesmen Menulis</title>
 <style>
   :root {
     --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
@@ -53,7 +53,7 @@
   .rep-identitas b { color: var(--ink-2); }
 
   .rep-overall {
-    border: 1.5px solid var(--accent); border-radius: 6px; padding: 10px 12px; margin-bottom: 16px;
+    border: 1.5px solid var(--accent); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px;
   }
   .rep-overall h2 { font-size: 13.5px; margin-bottom: 5px; }
   .rep-overall .badge { font-weight: 700; }
@@ -63,8 +63,14 @@
   .rep-overall .cols b { display: block; margin-bottom: 3px; font-size: 11.5px; }
   .rep-overall .cols ul { padding-left: 14px; }
 
+  .rep-cuplikan {
+    border: 1px dashed var(--border); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px;
+    font-size: 11.5px; font-style: italic; color: var(--ink-2); background: var(--paper);
+  }
+  .rep-cuplikan b { font-style: normal; color: var(--ink); display: block; margin-bottom: 3px; }
+
   .rep-cats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 9px 11px; border-top: 3px solid var(--cat-accent, var(--accent)); }
+  .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; border-top: 3px solid var(--cat-accent, var(--accent)); }
   .rep-cat h3 { font-size: 12.5px; margin-bottom: 3px; }
   .rep-cat .lvl { font-size: 10.5px; font-weight: 700; }
   .rep-cat p { font-size: 10.8px; color: var(--ink-2); margin-top: 4px; }
@@ -78,11 +84,7 @@
 
   .rep-footer { margin-top: 14px; font-size: 9px; color: var(--ink-3); }
 
-  /* ── BLOK TANDA TANGAN ─────────────────────────────────────────────
-   * Font di sini SENGAJA disamakan skalanya dengan teks isi (px), bukan pt
-   * seperti sebelumnya — itu sebabnya dulu terlihat lebih besar dari teks
-   * penilaian di atasnya (pt dan px punya rasio konversi berbeda).
-   * Ruang kosong tanda tangan (.sig-space) tetap dijaga ±32pt (≈43px). */
+  /* ── BLOK TANDA TANGAN (skala px, bukan pt, samakan dgn teks isi) ──── */
   .rep-signature { display: flex; justify-content: flex-end; margin-top: 18px; }
   .sig-col { width: 170px; text-align: center; font-size: 11px; }
   .sig-date { margin-bottom: 2px; }
@@ -105,7 +107,7 @@
 </div>
 
 <div id="toolbar" class="hidden-when-checking" style="display:none">
-  <a href="rekap.html">← Kembali ke Rekap</a>
+  <a href="rekap-jurnal.html">← Kembali ke Rekap</a>
   <button onclick="window.print()">🖨️ Cetak / Simpan sebagai PDF</button>
 </div>
 
@@ -115,8 +117,9 @@
 <script type="module" src="../../assets/js/guru-guard.js"></script>
 <script src="../../assets/js/foto-fallback.js"></script>
 <script src="assets/mpls-data.js"></script>
+<script src="assets/mpls-jurnal-data.js"></script>
 <script src="assets/config.js"></script>
-<script src="assets/mpls-scoring.js"></script>
+<script src="assets/mpls-scoring-jurnal.js"></script>
 <script>
   function qs(name) {
     return new URLSearchParams(window.location.search).get(name);
@@ -142,22 +145,22 @@
       return;
     }
 
-    let mplsRow;
+    let dataRow;
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?nama=" + encodeURIComponent(nama));
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?namaJurnal=" + encodeURIComponent(nama));
       const json = await res.json();
       if (!json.found) {
-        document.getElementById("status").textContent = "Belum ada data penilaian MPLS untuk " + nama + ".";
+        document.getElementById("status").textContent = "Belum ada data asesmen menulis untuk " + nama + ".";
         return;
       }
-      mplsRow = json.data;
+      dataRow = json.data;
     } catch (err) {
       document.getElementById("status").textContent = "Gagal memuat data: " + err.message;
       return;
     }
 
     const profil = await loadSiswaProfile(nama);
-    const result = MplsScoring.computeStudentResult(mplsRow);
+    const result = MplsScoringJurnal.computeStudentResult(dataRow);
 
     const identitasRight = profil ? `
       <div><b>Nama Panggilan:</b> ${profil["Nama Panggilan"] || "-"}</div>
@@ -174,12 +177,16 @@
       </div>
     `).join("");
 
+    const cuplikanHtml = dataRow["Cuplikan Tulisan Siswa"]
+      ? `<div class="rep-cuplikan"><b>📄 Cuplikan Tulisan Siswa</b>"${dataRow["Cuplikan Tulisan Siswa"]}"</div>`
+      : "";
+
     document.getElementById("page").innerHTML = `
       <div class="rep-header">
         <img src="../../assets/img/logo-sekolah.jpg" alt="Logo Sekolah" />
         <div>
-          <h1>Laporan Hasil Observasi Non-Kognitif MPLS</h1>
-          <p>Kelas 5 · Tahun Pelajaran 2026–2027</p>
+          <h1>Laporan Hasil Asesmen Menulis (Jurnal Aktivitas)</h1>
+          <p>${dataRow["Aktivitas"] || MPLS_JURNAL_AKTIVITAS} · Kelas 5 · Tahun Pelajaran 2026–2027</p>
         </div>
       </div>
 
@@ -190,16 +197,16 @@
             : `<div class="ph-empty">Foto<br/>Siswa</div>`}
         </div>
         <div class="rep-identitas">
-          <div><b>Nama Siswa:</b> ${mplsRow["Nama Siswa"] || nama}</div>
+          <div><b>Nama Siswa:</b> ${dataRow["Nama Siswa"] || nama}</div>
           <div><b>Guru Kelas:</b> ${MPLS_WALI_KELAS}</div>
           ${identitasRight}
-          <div><b>Guru Pengamat (pengisi form):</b> ${mplsRow["Diisi Oleh"] || "-"}</div>
+          <div><b>Guru Pengamat (pengisi form):</b> ${dataRow["Diisi Oleh"] || "-"}</div>
           <div><b>Tanggal Cetak:</b> ${new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</div>
         </div>
       </div>
 
       <div class="rep-overall">
-        <h2>🎯 Kesimpulan Akhir Kesiapan Belajar: <span class="badge ${levelClass(result.overall.level)}">${result.overall.label}</span></h2>
+        <h2>🎯 Kesimpulan Akhir: <span class="badge ${levelClass(result.overall.level)}">${result.overall.label}</span></h2>
         <p>${result.overall.narasi}</p>
         ${result.overall.kekuatan.length ? `<p style="margin-top:3px"><b>Aspek kuat:</b> ${result.overall.kekuatan.join(", ")}</p>` : ""}
         ${result.overall.perhatian.length ? `<p><b>Perlu perhatian:</b> ${result.overall.perhatian.join(", ")}</p>` : ""}
@@ -215,6 +222,8 @@
         </div>
       </div>
 
+      ${cuplikanHtml}
+
       <div class="rep-cats">${catsHtml}</div>
 
       <div class="rep-signature">
@@ -226,7 +235,7 @@
         </div>
       </div>
 
-      <div class="rep-footer">Dokumen ini dihasilkan otomatis oleh sistem MPLS Kelas 5 dari hasil observasi guru. Bukan diagnosis klinis.</div>
+      <div class="rep-footer">Dokumen ini dihasilkan otomatis oleh sistem Asesmen Menulis Kelas 5. Bukan diagnosis klinis/psikologis.</div>
     `;
 
     document.getElementById("status").style.display = "none";

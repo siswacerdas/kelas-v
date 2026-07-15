@@ -32,43 +32,43 @@
 
   #status { max-width: 210mm; margin: 16px auto; text-align: center; color: var(--ink-3); font-size: 13px; }
 
-  .rep-header { display: flex; align-items: center; gap: 12px; border-bottom: 3px solid var(--accent-2); padding-bottom: 7px; margin-bottom: 8px; }
+  .rep-header { display: flex; align-items: center; gap: 12px; border-bottom: 3px solid var(--accent-2); padding-bottom: 8px; margin-bottom: 12px; }
   .rep-header img { width: 44px; height: 44px; object-fit: contain; }
   .rep-header h1 { font-size: 16.5px; }
   .rep-header p { font-size: 11px; color: var(--ink-3); }
 
-  .rep-identitas-wrap { display: flex; gap: 10px; margin-bottom: 8px; }
+  .rep-identitas-wrap { display: flex; gap: 10px; margin-bottom: 12px; }
   .rep-photo-box {
     width: 22mm; height: 28mm; flex-shrink: 0; border: 1px solid var(--border); border-radius: 5px;
     background: var(--paper); overflow: hidden; display: flex; align-items: center; justify-content: center;
   }
-  .rep-photo-box img { width: 100%; height: 100%; object-fit: cover; }
+  .rep-photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .rep-photo-box .ph-empty { font-size: 9px; color: var(--ink-3); text-align: center; padding: 4px; }
 
   .rep-identitas {
-    flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 3px 18px;
+    flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px;
     background: var(--paper); border: 1px solid var(--border); border-radius: 6px;
-    padding: 7px 10px; font-size: 11.5px; align-content: center;
+    padding: 9px 11px; font-size: 11.5px; align-content: center;
   }
   .rep-identitas b { color: var(--ink-2); }
 
   .rep-overall {
-    border: 1.5px solid var(--accent); border-radius: 6px; padding: 7px 10px; margin-bottom: 7px;
+    border: 1.5px solid var(--accent); border-radius: 6px; padding: 9px 11px; margin-bottom: 13px;
   }
-  .rep-overall h2 { font-size: 13px; margin-bottom: 3px; }
+  .rep-overall h2 { font-size: 13px; margin-bottom: 4px; }
   .rep-overall .badge { font-weight: 700; }
-  .rep-overall p { font-size: 11px; margin-top: 2px; }
-  .rep-overall .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
+  .rep-overall p { font-size: 11px; margin-top: 3px; }
+  .rep-overall .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 7px; }
   .rep-overall .cols div { font-size: 10.5px; }
-  .rep-overall .cols b { display: block; margin-bottom: 2px; font-size: 11px; }
+  .rep-overall .cols b { display: block; margin-bottom: 3px; font-size: 11px; }
   .rep-overall .cols ul { padding-left: 14px; }
 
-  .rep-cats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-  .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; border-top: 3px solid var(--cat-accent, var(--accent)); }
-  .rep-cat h3 { font-size: 11px; margin-bottom: 2px; }
+  .rep-cats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 7px 9px; border-top: 3px solid var(--cat-accent, var(--accent)); }
+  .rep-cat h3 { font-size: 11px; margin-bottom: 3px; }
   .rep-cat .lvl { font-size: 10px; font-weight: 700; }
-  .rep-cat p { font-size: 10px; color: var(--ink-2); margin-top: 3px; }
-  .rep-cat .rec { font-size: 9.5px; margin-top: 3px; }
+  .rep-cat p { font-size: 10px; color: var(--ink-2); margin-top: 4px; }
+  .rep-cat .rec { font-size: 9.5px; margin-top: 4px; }
   .rep-cat .rec b { display: inline; }
 
   .lvl-BB { color: var(--danger); }
@@ -76,19 +76,19 @@
   .lvl-BSH { color: var(--accent); }
   .lvl-BSB { color: var(--accent-3); }
 
-  .rep-footer { margin-top: 8px; font-size: 9px; color: var(--ink-3); }
+  .rep-footer { margin-top: 12px; font-size: 9px; color: var(--ink-3); }
 
-  /* ── BLOK TANDA TANGAN ─────────────────────────────────── */
-  .rep-signature { display: flex; justify-content: flex-end; margin-top: 10pt; }
-  .sig-col { width: 190pt; text-align: center; font-size: 11pt; }
-  .sig-date { margin-bottom: 2pt; }
-  .sig-space { height: 34pt; }
-  .sig-name { font-weight: 700; border-top: 1px solid var(--ink); padding-top: 3pt; }
-  .sig-nbm { font-size: 10pt; color: var(--ink-2); margin-top: 1pt; }
+  /* ── BLOK TANDA TANGAN (skala px, bukan pt, samakan dgn teks isi) ──── */
+  .rep-signature { display: flex; justify-content: flex-end; margin-top: 16px; }
+  .sig-col { width: 170px; text-align: center; font-size: 11px; }
+  .sig-date { margin-bottom: 2px; }
+  .sig-space { height: 43px; }
+  .sig-name { font-weight: 700; font-size: 12px; border-top: 1px solid var(--ink); padding-top: 4px; }
+  .sig-nbm { font-size: 10.5px; color: var(--ink-2); margin-top: 2px; }
 
   @media print {
     body { background: #fff; }
-    #toolbar { display: none; }
+    #toolbar { display: none !important; }
     #page { box-shadow: none; margin: 0; width: auto; min-height: auto; padding: 0; }
     @page { size: A4; margin: 11mm; }
   }
@@ -109,6 +109,7 @@
 <div id="page" style="display:none"></div>
 
 <script type="module" src="../../assets/js/guru-guard.js"></script>
+<script src="../../assets/js/foto-fallback.js"></script>
 <script src="assets/mpls-data.js"></script>
 <script src="assets/mpls-kognitif-data.js"></script>
 <script src="assets/config.js"></script>
@@ -182,7 +183,7 @@
       <div class="rep-identitas-wrap">
         <div class="rep-photo-box">
           ${profil && profil["URL Foto"]
-            ? `<img src="${profil["URL Foto"]}" alt="Foto siswa" />`
+            ? fotoImgHtml(profil["URL Foto"], "Foto siswa", "", '<div class="ph-empty">Foto<br/>Siswa</div>')
             : `<div class="ph-empty">Foto<br/>Siswa</div>`}
         </div>
         <div class="rep-identitas">
