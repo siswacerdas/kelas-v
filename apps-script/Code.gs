@@ -11,6 +11,10 @@
  * - doGet(e)   : ?nama=...        -> 1 baris data MPLS non-kognitif siswa tsb (untuk input.html).
  *                ?all=1           -> SEMUA baris data MPLS non-kognitif (untuk rekap.html/laporan.html).
  *                ?siswa=1         -> SEMUA baris data profil siswa (untuk pages/kelas/).
+ *                ?foto=<id atau URL Drive> -> PROXY: mengirim BYTE gambar foto siswa langsung
+ *                (bukan JSON) — dipakai sebagai <img src> lewat assets/js/foto-fallback.js,
+ *                supaya tidak bergantung pada hotlink Drive yang sering diblokir Google untuk
+ *                pengunjung anonim. Lihat komentar di serveFotoBinary_() (baru sejak v0.5.3).
  *                ?namaKognitif=.. -> 1 baris data kognitif siswa tsb (untuk input-kognitif.html).
  *                ?allKognitif=1   -> SEMUA baris data kognitif (untuk rekap-kognitif.html/laporan-kognitif.html).
  *                ?namaJurnal=..   -> 1 baris data jurnal siswa tsb (untuk input-jurnal.html).
@@ -293,6 +297,51 @@ function simpanFotoKeDrive_(base64Data, mimeType, namaFile) {
 }
 
 /**
+ * v0.5.3 — PERBAIKAN AKAR MASALAH foto tidak tampil (lihat CHANGELOG untuk detail lengkap).
+ *
+ * Kenapa 3-format fallback di v0.5.2 (lh3.googleusercontent.com, thumbnail?id=, uc?export=view)
+ * TETAP gagal semua walau file sudah "Anyone with the link": ketiganya adalah cara meng-HOTLINK
+ * file Drive langsung dari domain Google sebagai pengunjung ANONIM (tanpa sesi login Google).
+ * Google membatasi/memblokir pola hotlink anonim semacam ini secara tidak konsisten (kadang
+ * jalan, kadang muncul halaman "Sepertinya Anda tidak berwenang..." alih-alih gambar) — ini di
+ * luar kendali kode aplikasi, terlepas dari izin sharing file sudah benar sekalipun.
+ *
+ * Solusi sesungguhnya: JANGAN andalkan hotlink Drive sama sekali. Sebagai gantinya, Apps Script
+ * Web App ini sendiri yang membaca byte file (berjalan sebagai akun PEMILIK script yang punya
+ * akses penuh & sah ke file, bukan sebagai pengunjung anonim) lalu mengirim byte gambarnya
+ * langsung sebagai respons HTTP — persis seperti server gambar biasa. Endpoint: `?foto=<id>`.
+ * <img src> di browser tidak butuh CORS untuk ini (beda dengan fetch/XHR), jadi aman dipakai
+ * langsung sebagai src.
+ */
+function serveFotoBinary_(fileIdOrUrl) {
+  try {
+    const id = ekstrakIdFotoDrive_(fileIdOrUrl);
+    if (!id) throw new Error("ID foto tidak valid: " + fileIdOrUrl);
+    const file = DriveApp.getFileById(id);
+    return file.getBlob();
+  } catch (err) {
+    // Sengaja TIDAK melempar exception mentah (yang akan tampil sebagai halaman error Apps
+    // Script dengan status 200 + HTML) — dikembalikan sebagai teks biasa supaya jelas saat
+    // di-debug manual, dan tetap memicu `onerror` di <img> milik browser (bukan gambar valid)
+    // sehingga foto-fallback.js otomatis lanjut ke kandidat URL berikutnya.
+    return ContentService.createTextOutput("Foto tidak ditemukan/gagal dibaca: " + String(err))
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+}
+
+/** Duplikat sengaja dari extractDriveFileId() di assets/js/foto-fallback.js (sisi klien) —
+ * Code.gs tidak boleh bergantung pada file JS front-end, jadi logika ekstraksi ID yang sama
+ * ditulis ulang di sini. Kalau salah satu diubah, ubah juga yang satunya. */
+function ekstrakIdFotoDrive_(urlOrId) {
+  if (!urlOrId) return null;
+  const str = String(urlOrId).trim();
+  const m = str.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if (m) return m[1];
+  if (/^[a-zA-Z0-9_-]{10,}$/.test(str)) return str;
+  return null;
+}
+
+/**
  * JALANKAN FUNGSI INI SECARA MANUAL (sekali saja) dari editor Apps Script kalau
  * muncul error "Exception: Access denied: DriveApp" saat upload foto dari web.
  *
@@ -333,6 +382,11 @@ function sheetToObjects_(sheet) {
 
 function doGet(e) {
   const params = (e && e.parameter) || {};
+
+  // Proxy foto siswa — lihat komentar lengkap di serveFotoBinary_() untuk alasannya.
+  if (params.foto) {
+    return serveFotoBinary_(params.foto);
+  }
 
   if (params.siswa) {
     const sheet = getSiswaSheet_();

@@ -79,6 +79,10 @@ URL Web App tetap sama — tidak perlu ganti `config.js` lagi.
   dan `laporan.html` untuk menghitung kesimpulan otomatis semua siswa).
 - **GET** `?siswa=1` → mengembalikan SEMUA baris profil siswa dari sheet
   "Data Siswa" (dipakai `pages/kelas/index.html` dan `laporan.html`).
+- **GET** `?foto=<id atau URL Drive>` → **(baru sejak v0.5.3)** bukan JSON,
+  tapi PROXY yang mengirim langsung byte gambar foto siswa, dipakai sebagai
+  `<img src>` oleh `assets/js/foto-fallback.js`. Lihat bagian
+  "Troubleshooting: foto tersimpan tapi tidak tampil" di bawah untuk alasannya.
 - **POST** tanpa `type` (body JSON, key = nama kolom persis seperti di
   `HEADERS`) → simpan/update baris nilai MPLS (perilaku lama, tidak berubah).
 - **POST** dengan `type: "siswa"` → simpan/update profil siswa (dicocokkan
@@ -138,10 +142,40 @@ link bisa mengedit" (ID folder ada di konstanta `FOTO_FOLDER_ID` pada
 bila ingin diperketat nanti, folder bisa diubah ke akses lebih terbatas
 (mis. hanya akun tertentu), tanpa perlu mengubah kode `Code.gs`.
 
-URL foto yang disimpan memakai format
-`https://drive.google.com/thumbnail?id=FILE_ID&sz=w1000` (bukan
-`.../uc?id=...`) karena format ini jauh lebih konsisten dipakai langsung
-sebagai `<img src>` di browser.
+URL foto yang disimpan (kolom "URL Foto" di sheet) tetap memakai format lama
+`https://drive.google.com/thumbnail?id=FILE_ID&sz=w1000` — ini TIDAK perlu
+diubah, karena `assets/js/foto-fallback.js` hanya menggunakan URL ini untuk
+**mengekstrak ID file**, lalu membangun ulang kandidat-kandidat tampilannya
+sendiri (termasuk proxy `?foto=` yang baru, lihat bawah). Foto lama yang
+sudah pernah tersimpan otomatis ikut kebagian perbaikan tanpa perlu diedit.
+
+## Troubleshooting: foto TERSIMPAN di Drive tapi TIDAK TAMPIL di web/cetak
+
+Kalau data siswa berhasil disimpan (termasuk kolom "URL Foto" terisi), file
+foto juga terlihat ada di folder Drive — tapi foto tetap tidak tampil di
+`pages/kelas/index.html` maupun laporan cetak (selalu jatuh ke placeholder
+"Foto Siswa"):
+
+- **Ini BUKAN soal format URL** (sudah dicoba 3 format berbeda sejak v0.5.2,
+  tetap gagal semua). Akar masalahnya: ketiga format itu sama-sama meng-
+  **hotlink** file Drive langsung dari domain Google sebagai pengunjung
+  ANONIM (browser yang membuka halaman tidak login ke akun Google manapun).
+  Google membatasi/memblokir pola ini secara tidak konsisten, terlepas dari
+  file sudah di-set "Anyone with the link" atau belum.
+- **Solusi sejak v0.5.3**: `Code.gs` sekarang punya endpoint `?foto=<id>`
+  yang membaca & mengirim byte file itu sendiri lewat Apps Script (berjalan
+  sebagai akun pemilik yang punya akses sah, bukan pengunjung anonim) —
+  `foto-fallback.js` otomatis memakai ini sebagai kandidat pertama.
+- **WAJIB deploy ulang** (`Deploy → Manage deployments` → ✏️ → ubah dropdown
+  **Version** ke **New version** → **Deploy**) setelah menarik update
+  `Code.gs` ini, kalau tidak endpoint `?foto=` baru tidak akan aktif meski
+  kode di editor sudah benar (kesalahan paling umum, lihat bagian "Setiap
+  kali kode Code.gs diubah" di atas).
+- Kalau setelah deploy ulang foto TETAP tidak tampil, buka langsung URL
+  `APPS_SCRIPT_URL_ANDA?foto=ID_FILE_DARI_KOLOM_URL_FOTO` di tab browser
+  baru — kalau muncul pesan teks "Foto tidak ditemukan/gagal dibaca: ...",
+  itu artinya ID filenya salah/file sudah terhapus dari Drive (cek folder
+  `FOTO_FOLDER_ID`), bukan lagi masalah hotlink.
 
 ## Keamanan
 
