@@ -21,7 +21,61 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.4.2] — 2026-07-14
+## [0.5.0] — 2026-07-15
+
+### Ditambahkan
+- **Modul baru: Asesmen Menulis (Jurnal Aktivitas)** — modul ketiga, terpisah
+  penuh dari non-kognitif & kognitif (sheet & endpoint sendiri, sama sekali
+  tidak mengubah keduanya). Menilai kemampuan anak menuliskan pokok pikiran
+  secara terstruktur, sekaligus kemandirian & regulasi diri, lewat aktivitas
+  jalan sehat ke Taman Kukusan (siswa mengisi jurnal mandiri di 3 momen:
+  perjalanan, di taman, dan setelah kembali). Rubrik SENGAJA ringkas
+  (2 kategori, 7 indikator total), sesuai permintaan — bukan penilaian
+  tata bahasa/ejaan yang detail:
+  - `pages/mpls/assets/mpls-jurnal-data.js` — kategori "Struktur & Isi
+    Tulisan" dan "Kemandirian & Regulasi Diri"
+  - `pages/mpls/assets/mpls-scoring-jurnal.js` — engine skoring & kesimpulan otomatis
+  - `pages/mpls/input-jurnal.html` + `assets/app-jurnal.js` — form input,
+    termasuk field opsional "Cuplikan Tulisan Siswa" untuk menyalin contoh
+    tulisan asli anak sebagai bukti
+  - `pages/mpls/rekap-jurnal.html`, `pages/mpls/laporan-jurnal.html`
+  - Kartu navigasi baru di `pages/mpls/index.html`
+  - `apps-script/Code.gs`: sheet baru **"Data Jurnal Aktivitas"**, endpoint
+    `?namaJurnal=`, `?allJurnal=1`, `type: "jurnal"` di `doPost`
+
+### Diperbaiki — Laporan Cetak PDF (ketiga jenis: non-kognitif, kognitif, menulis)
+- **Bug: tombol "← Kembali ke Rekap" dan "🖨️ Cetak / Simpan sebagai PDF" ikut
+  tercetak di PDF**. Akar masalah: skrip men-set `element.style.display`
+  langsung (inline style) untuk menampilkan toolbar di layar, dan inline
+  style SELALU menang melawan aturan CSS biasa di `@media print` — jadi
+  aturan "sembunyikan saat print" sebelumnya kalah. Perbaikan: aturan
+  `@media print { #toolbar { display: none !important; } }` — `!important`
+  memastikan tetap tersembunyi apa pun inline style yang di-set skrip.
+- **Jarak antar-blok diperlonggar** (kesimpulan akhir, kotak identitas, kartu
+  kategori) — sebelumnya margin/padding terlalu rapat sehingga melelahkan
+  dibaca. Tetap diverifikasi ulang pas 1 halaman A4 lewat Playwright.
+- **Bug: ukuran font blok tanda tangan (tempat/tanggal, nama, NBM) terlalu
+  besar dibanding teks lain**. Akar masalah: blok tanda tangan memakai unit
+  `pt` sedangkan seluruh dokumen lain memakai `px` — 11pt setara ±14.7px,
+  jauh lebih besar dari teks isi (~11-12px). Disamakan semua ke `px` dengan
+  skala sepadan; ruang kosong tanda tangan tetap dijaga ±32pt (≈43px) sesuai
+  permintaan awal, hanya teksnya yang diperkecil.
+- **Foto siswa**: ditambah `onerror` fallback — kalau URL foto gagal dimuat
+  (mis. link rusak/foto dihapus), otomatis tampilkan placeholder rapi
+  "Foto Siswa", bukan ikon gambar rusak. `object-fit: cover` pada kotak foto
+  dikonfirmasi sudah benar (foto akan mengisi penuh & terpotong proporsional
+  sesuai ukuran frame, bukan gepeng/terdistorsi).
+
+### Catatan Arsitektur
+- Ketiga laporan cetak (`laporan.html`, `laporan-kognitif.html`,
+  `laporan-jurnal.html`) sekarang konsisten pakai unit `px` untuk semua teks
+  (bukan campuran `pt`/`px` seperti sebelumnya) — kalau menambah laporan
+  baru lagi, ikuti pola ini supaya tidak terulang masalah skala font.
+- Semua perubahan divalidasi ulang dengan Playwright (render → print ke PDF
+  → cek jumlah halaman via `pypdf` + cek teks toolbar TIDAK ada di PDF) —
+  bukan hanya estimasi visual.
+
+---
 
 ### Ditambahkan
 - **Pilih foto dari galeri, tidak hanya kamera**: `pages/kelas/index.html`

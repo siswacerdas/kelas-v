@@ -81,18 +81,23 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 > ikut ter-deploy walau terlihat seperti sudah "Deploy" — inilah penyebab paling
 > umum field `data` tidak muncul di respons meski `Code.gs` sudah benar.
 
-### 9. Laporan Cetak PDF (`pages/mpls/laporan.html`)
+### 9. Laporan Cetak PDF (`pages/mpls/laporan.html`, `laporan-kognitif.html`, `laporan-jurnal.html`)
 - [ ] Halaman ini juga menolak akses jika bukan guru
 - [ ] Logo sekolah tampil di kop laporan
 - [ ] **Kotak foto siswa tampil di identitas** — foto asli kalau ada di modul Kelas, placeholder "Foto Siswa" kalau belum ada
+- [ ] Foto mengisi penuh kotak framenya (tidak gepeng/terdistorsi) — coba dengan foto potret & lanskap
+- [ ] Kalau URL foto rusak/tidak bisa dimuat, otomatis tampil placeholder "Foto Siswa", BUKAN ikon gambar rusak
 - [ ] Tulisan cukup besar untuk dibaca orang tua (bukan lagi ukuran sangat kecil)
+- [ ] **Jarak antar blok terasa lega** (Kesimpulan Akhir vs kartu kategori, dsb) — bukan lagi berdesakan
 - [ ] "Guru Kelas" selalu tertera **Arif Azwar Anas**, terpisah dari "Guru Pengamat (pengisi form)" yang sesuai siapa yang mengisi
 - [ ] Identitas siswa, semua nilai kategori, dan kesimpulan akhir tidak ada yang terpotong
 - [ ] Kesimpulan akhir juga menampilkan "Aspek kuat" & "Perlu perhatian" secara ringkas
-- [ ] **Blok tanda tangan di kanan bawah** muncul lengkap: tempat & tanggal ("Depok, ..."),
-      ruang tanda tangan kosong, nama "Arif Azwar Anas, S.Pd", dan "NBM. 1167333"
+- [ ] **Blok tanda tangan di kanan bawah**: tempat & tanggal ("Depok, ..."), ruang tanda tangan kosong,
+      nama "Arif Azwar Anas, S.Pd", dan "NBM. 1167333" — dan **ukuran tulisannya SEPADAN**
+      dengan teks penilaian di atasnya (tidak lagi terlihat lebih besar/mencolok)
 - [ ] Saat print/print-preview, hasil pas **1 halaman A4** (cek di Chrome: Ctrl/Cmd+P → lihat pratinjau)
-- [ ] Tombol "Cetak / Simpan sebagai PDF" tidak ikut tercetak (harus hilang di hasil print)
+- [ ] **Tombol "← Kembali ke Rekap" dan "🖨️ Cetak / Simpan sebagai PDF" TIDAK ikut tercetak** —
+      cek betul-betul di hasil PDF final (bukan cuma print preview), ini sempat jadi bug
 
 ### 10. Data Kelas — Profil & Foto Siswa (`pages/kelas/`)
 - [ ] Halaman ini menolak akses jika bukan guru; kontainer "Kelas" di beranda hanya muncul untuk role `guru`
@@ -134,9 +139,20 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Tautan silang antar rekap non-kognitif ↔ kognitif berfungsi di kedua arah
 
 ### 13. Nama Guru Kelas di Laporan Cetak
-- [ ] `laporan.html` DAN `laporan-kognitif.html` sama-sama menampilkan "Guru Kelas: Arif Azwar Anas"
-      apa pun isi kolom "Diisi Oleh" (walau yang mengisi form Bu Azizah)
-- [ ] Blok tanda tangan tetap menampilkan nama & NBM Arif Azwar Anas di kedua jenis laporan
+- [ ] `laporan.html`, `laporan-kognitif.html`, DAN `laporan-jurnal.html` sama-sama menampilkan
+      "Guru Kelas: Arif Azwar Anas" apa pun isi kolom "Diisi Oleh" (walau yang mengisi form Bu Azizah)
+- [ ] Blok tanda tangan tetap menampilkan nama & NBM Arif Azwar Anas di ketiga jenis laporan
+
+### 14. Asesmen Menulis — Jurnal Aktivitas (`input-jurnal.html`, `rekap-jurnal.html`, `laporan-jurnal.html`)
+- [ ] Ketiga halaman ini **terpisah total** dari MPLS non-kognitif maupun kognitif — mengisi
+      salah satu tidak boleh mengubah/menimpa data di sheet lain (cek 3 sheet MPLS di spreadsheet)
+- [ ] Kode akses di `input-jurnal.html` berfungsi sama seperti `input.html`/`input-kognitif.html`
+- [ ] 2 kategori tampil: "Struktur & Isi Tulisan" (4 indikator) dan "Kemandirian & Regulasi Diri" (3 indikator)
+- [ ] Field "Cuplikan Tulisan Siswa" (opsional) tersimpan dan tampil di rekap & laporan cetak
+- [ ] Memilih siswa yang sama dua kali (isi ulang) meng-update baris yang sama di sheet
+      "Data Jurnal Aktivitas", bukan menduplikasi baris
+- [ ] Rekap & laporan cetak jurnal mengikuti standar yang sama dengan 2 modul lain: badge
+      level, kesimpulan otomatis dibedakan per skala, foto+tanda tangan di laporan cetak, 1 halaman A4
 
 ---
 
@@ -203,6 +219,19 @@ Jalankan skenario ini setelah perubahan besar:
    dan **tanggal lahir yang benar** di bawah namanya
 8. Klik siswa tsb di daftar → form terisi ulang termasuk tanggal lahirnya
 
+### Skenario I — Asesmen Menulis (Jurnal) + Verifikasi Perbaikan Cetak PDF
+1. Login sebagai guru → menu MPLS → bagian "Asesmen Menulis — Jurnal Aktivitas"
+2. "Input Asesmen Menulis" → kode akses → pilih siswa → isi kedua kategori + cuplikan tulisan
+3. → **Harapan:** tersimpan ke sheet "Data Jurnal Aktivitas" (BUKAN ke sheet MPLS/Kognitif)
+4. "Rekap Asesmen Menulis" → siswa muncul dengan cuplikan tulisan tampil di detail
+5. Klik "Cetak / Simpan PDF" pada salah satu siswa (bisa dari laporan MPLS, Kognitif, atau Jurnal)
+6. → **Harapan** (cek SEMUA poin ini di hasil PDF, bukan cuma print preview):
+   - Tidak ada tulisan "Kembali ke Rekap" atau "Cetak / Simpan sebagai PDF" di PDF
+   - Jarak antar blok terasa lega, enak dibaca
+   - Font tanda tangan (tempat/tanggal, nama, NBM) sepadan ukurannya dengan teks penilaian
+   - Foto siswa (kalau ada) mengisi penuh frame-nya, tidak gepeng
+   - Tetap 1 halaman A4
+
 ### Skenario E — Input MPLS (dari HP)
 1. Buka `pages/mpls/input.html` dari HP
 2. Masukkan kode akses yang benar
@@ -247,6 +276,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-14 | 0.4.0 | *(nama)* | ⏳ Belum diuji | Modul Asesmen Kognitif baru + laporan cetak dirombak (foto, tanda tangan) |
 | 2026-07-14 | 0.4.1 | *(nama)* | ⏳ Belum diuji | Perbaikan bug foto & tanggal lahir tidak muncul (Data Kelas) |
 | 2026-07-14 | 0.4.2 | *(nama)* | ⏳ Belum diuji | Tombol pilih foto dari galeri (selain kamera) |
+| 2026-07-15 | 0.5.0 | *(nama)* | ⏳ Belum diuji | Modul Asesmen Menulis (Jurnal) baru + perbaikan besar laporan cetak (toolbar, spasi, font ttd, fallback foto) |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

@@ -105,3 +105,45 @@ instruksi upload ke GitHub + langkah re-deploy Apps Script.
   ganti logika di bagian `.rep-signature` masing-masing file laporan.
 - `laporan-kognitif.html` pakai grid 3 kolom (bukan 2 seperti non-kognitif) karena
   5 kategori vs 4, supaya tetap ringkas dan muat 1 halaman.
+
+---
+
+## Ronde 3 (2026-07-15): Modul Asesmen Menulis (Jurnal) + Perbaikan Besar Laporan Cetak
+
+### Permintaan
+1. [x] Modul baru: Asesmen Menulis (Jurnal Aktivitas) — rubrik ringkas (2 kategori,
+       7 indikator), menilai kemampuan menulis terstruktur + kemandirian/regulasi diri,
+       konteks aktivitas jalan sehat ke Taman Kukusan
+2. [x] Perbaikan laporan cetak (berdasarkan review PDF yang diupload user):
+       - Tombol toolbar ikut tercetak → diperbaiki (`!important` di `@media print`)
+       - Foto siswa perlu dicek kesesuaian ukuran frame → `object-fit:cover` dikonfirmasi
+         benar + ditambah fallback `onerror`
+       - Jarak antar blok terlalu rapat → diperlonggar
+       - Font blok tanda tangan terlalu besar → ternyata bug unit (pt vs px), diperbaiki
+       - Semua perbaikan di atas diterapkan ke ketiga laporan (non-kognitif, kognitif, menulis)
+
+### File baru
+- `pages/mpls/assets/mpls-jurnal-data.js`, `mpls-scoring-jurnal.js`, `app-jurnal.js`
+- `pages/mpls/input-jurnal.html`, `rekap-jurnal.html`, `laporan-jurnal.html`
+
+### File diubah
+- `pages/mpls/laporan.html`, `laporan-kognitif.html` — CSS toolbar/spasi/font diperbaiki,
+  fallback foto ditambah
+- `pages/mpls/index.html` — kartu navigasi ke modul jurnal
+- `apps-script/Code.gs` — sheet "Data Jurnal Aktivitas" + endpoint terpisah
+  (`namaJurnal`, `allJurnal`, `type:"jurnal"`) — endpoint lama TIDAK diubah perilakunya
+
+### Validasi teknis
+- Semua file JS baru lolos `node --check`; semua `<script>` di HTML seimbang
+- Ketiga laporan (non-kognitif, kognitif, menulis) diuji ulang dengan Playwright SETELAH
+  perbaikan: di-render dengan data mock, di-print ke PDF A4, dicek (a) jumlah halaman = 1,
+  DAN (b) teks toolbar ("Kembali ke Rekap"/"Cetak / Simpan") TIDAK ADA di teks PDF hasil
+  ekstraksi `pypdf` — bukti konkret bug toolbar benar-benar sudah teratasi, bukan asumsi.
+
+### Insight penting: kenapa toolbar tetap tercetak walau sudah ada `display:none`
+Skrip men-set `document.getElementById("toolbar").style.display = "flex"` (inline style)
+untuk menampilkan toolbar di layar setelah data selesai dimuat. Inline style SELALU
+menang atas selector CSS biasa apa pun spesifisitasnya — termasuk di dalam `@media print`.
+Solusinya: tambahkan `!important` pada aturan print (`#toolbar { display: none !important; }`).
+Ini pola yang perlu diingat kalau nanti menambah elemen lain yang di-toggle via inline style
+tapi harus disembunyikan saat print.
