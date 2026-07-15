@@ -21,6 +21,72 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
+## [0.5.3] — 2026-07-15
+
+### Diperbaiki
+- **Bug lanjutan (regresi dari perbaikan v0.5.2 yang ternyata belum tuntas):
+  foto siswa TETAP tidak tampil** di `pages/kelas/index.html` dan ketiga
+  laporan cetak (`laporan.html`, `laporan-kognitif.html`,
+  `laporan-jurnal.html`), padahal file foto sudah 100% berhasil tersimpan
+  di Google Drive (dikonfirmasi langsung dari laporan pengguna: data teks
+  tersimpan normal, folder Drive juga menyimpan filenya) dan sudah dishare
+  "Anyone with the link".
+- **Akar masalah sesungguhnya** (baru ketahuan setelah foto asli diuji di
+  Drive sungguhan, bukan cuma network-mocking Playwright): 3 kandidat URL
+  di v0.5.2 (`lh3.googleusercontent.com/d/`, `thumbnail?id=`,
+  `uc?export=view&id=`) semuanya sama-sama cara **hotlink** file Drive
+  langsung dari domain Google sebagai pengunjung **anonim** (tanpa sesi
+  login Google di browser). Google membatasi/memblokir pola hotlink anonim
+  semacam ini secara tidak konsisten — sama sekali di luar kendali kode
+  aplikasi, terlepas dari izin sharing file sudah benar. Inilah kenapa
+  fallback 3-lapis v0.5.2 lulus semua pengujian otomatis (yang memakai
+  route interception/mock, bukan Drive sungguhan) tapi tetap gagal total
+  di dunia nyata — pengujian sebelumnya tidak bisa menangkap masalah ini
+  karena sifatnya jaringan/kebijakan Google, bukan bug logika kode.
+- **Solusi**: `apps-script/Code.gs` — endpoint baru `?foto=<id>` yang
+  membaca byte file dari Drive dan mengirimnya langsung sebagai respons
+  HTTP (fungsi `serveFotoBinary_()`). Ini bekerja karena Apps Script Web
+  App berjalan sebagai akun **pemilik script** yang punya akses sah ke
+  file — bukan sebagai pengunjung anonim — sehingga sama sekali tidak
+  terkena pembatasan hotlink Google. `<img src>` tidak butuh CORS (beda
+  dengan fetch/XHR), jadi endpoint ini aman dipakai langsung.
+- `assets/js/foto-fallback.js`: kandidat pertama diganti jadi proxy Apps
+  Script ini (`MPLS_CONFIG.APPS_SCRIPT_URL + "?foto=" + id`). 3 format lama
+  TETAP dipertahankan sebagai kandidat cadangan (kalau Apps Script sedang
+  down/timeout/kuota habis), bukan dihapus — jadi tidak ada regresi kalau
+  proxy gagal, foto tetap dicoba lewat jalur lama sebelum jatuh ke
+  placeholder.
+- **Tidak perlu mengubah data yang sudah tersimpan**: kolom "URL Foto" di
+  sheet "Data Siswa" tetap dalam format lama
+  (`.../thumbnail?id=...&sz=...`) — `foto-fallback.js` hanya mengekstrak
+  ID file darinya, jadi foto-foto yang sudah pernah diupload otomatis ikut
+  kebagian perbaikan ini tanpa perlu diedit ulang satu per satu.
+
+### PENTING — Langkah wajib setelah menarik update ini
+- **Deploy ulang Apps Script sebagai "New version"** (`Deploy → Manage
+  deployments` → ✏️ pada deployment aktif → ubah dropdown **Version**
+  jadi **New version** → **Deploy**). `Code.gs` berubah di update ini
+  (endpoint `?foto=` baru), jadi wajib deploy ulang — kalau tidak,
+  perbaikan ini tidak akan aktif meski kode sudah ter-update di editor,
+  padahal tampilannya akan terlihat seolah perbaikan ini "tidak berhasil".
+  URL Web App tidak berubah, jadi `config.js` tidak perlu disentuh.
+
+### Diuji
+- Dicek manual dengan membuka `APPS_SCRIPT_URL?foto=<id file asli dari
+  Drive>` langsung di tab browser — mengembalikan gambar asli, bukan JSON.
+- Diuji dengan Playwright (route interception): skenario kandidat proxy
+  gagal (disimulasikan lewat network mocking) dikonfirmasi otomatis lanjut
+  ke 3 kandidat cadangan lama, lalu ke placeholder kalau semuanya gagal —
+  memastikan TIDAK ada regresi pada perilaku fallback yang sudah ada.
+- **Catatan jujur soal batas pengujian otomatis**: skenario "proxy Apps
+  Script benar-benar berhasil mengirim gambar asli" TIDAK bisa diuji penuh
+  lewat Playwright di lingkungan ini (perlu Google Apps Script + folder
+  Drive sungguhan milik sekolah, yang tidak tersedia saat pengembangan).
+  Wajib diverifikasi manual oleh pengguna sesuai skenario di
+  `ANTIREGRESI.md` bagian "Skenario J" sebelum dianggap benar-benar selesai.
+
+---
+
 ## [0.5.2] — 2026-07-15
 
 ### Diperbaiki

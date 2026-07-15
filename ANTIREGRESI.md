@@ -86,8 +86,10 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Logo sekolah tampil di kop laporan
 - [ ] **Kotak foto siswa tampil di identitas** — foto asli kalau ada di modul Kelas, placeholder "Foto Siswa" kalau belum ada
 - [ ] **Foto siswa yang sudah diupload benar-benar TAMPIL sebagai gambar asli** (bukan
-      cuma placeholder terus) — ini sempat jadi bug walau file sudah ada di Drive, wajib
-      dicek dengan siswa yang fotonya sudah pernah diupload lewat modul Kelas
+      cuma placeholder terus) — ini sempat jadi bug 2x (v0.5.2 belum tuntas, baru benar-benar
+      teratasi di v0.5.3 lewat proxy `?foto=` di Apps Script), wajib dicek dengan siswa yang
+      fotonya sudah pernah diupload lewat modul Kelas, DENGAN APPS SCRIPT SUNGGUHAN
+      (bukan cuma network-mocking) — lihat Skenario J
 - [ ] Foto mengisi penuh kotak framenya (tidak gepeng/terdistorsi) — coba dengan foto potret & lanskap
 - [ ] Kalau URL foto benar-benar rusak/file terhapus, otomatis tampil placeholder "Foto Siswa"
       SETELAH mencoba semua format URL alternatif, BUKAN ikon gambar rusak
@@ -114,7 +116,10 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Kedua jalur foto (kamera & galeri) sama-sama berhasil tersimpan ke Drive & tampil di daftar
 - [ ] Setelah simpan, foto muncul di folder Google Drive yang sudah ditentukan
 - [ ] **Setelah simpan, foto TAMPIL sebagai thumbnail di daftar siswa** (bukan ikon placeholder,
-      kecuali memang belum ada foto) — ini yang sebelumnya bug, wajib dicek ulang
+      kecuali memang belum ada foto) — bug ini sempat "kelihatan" selesai di v0.5.2 tapi
+      ternyata belum tuntas di Drive sungguhan, baru benar-benar diperbaiki di v0.5.3
+      (proxy `?foto=`) — WAJIB dicek ulang dengan Apps Script sungguhan yang sudah di-deploy
+      sebagai "New version", bukan cuma percaya hasil test otomatis (lihat Skenario J)
 - [ ] **Tanggal lahir yang disimpan TAMPIL dengan benar** di daftar siswa (format yyyy-mm-dd),
       sesuai dengan yang diisi di form — ini juga bagian dari bug yang sama, wajib dicek ulang
 - [ ] Daftar siswa di bawah form menampilkan thumbnail foto (atau ikon placeholder bila belum ada foto)
@@ -239,6 +244,30 @@ Jalankan skenario ini setelah perubahan besar:
    - Foto siswa (kalau ada) mengisi penuh frame-nya, tidak gepeng
    - Tetap 1 halaman A4
 
+### Skenario J — Verifikasi Perbaikan Foto Tidak Tampil (v0.5.3, WAJIB pakai Apps Script sungguhan)
+> ⚠️ Skenario ini TIDAK bisa dianggap lulus hanya dari hasil test Playwright/otomatis —
+> harus dicoba langsung dengan deployment Apps Script & folder Drive sekolah yang sungguhan,
+> karena akar masalah v0.5.2 justru baru muncul di lingkungan Drive sungguhan.
+
+1. **Deploy ulang** Apps Script sebagai **New version** (lihat `apps-script/README.md`
+   bagian "Setiap kali kode Code.gs diubah") — pastikan tidak lupa langkah ini
+2. Login sebagai guru → "Kelola Data Siswa & Foto" → pilih/isi 1 siswa dengan foto baru
+   dari kamera atau galeri → Simpan
+3. → **Harapan:** toast "Tersimpan" (bukan pesan peringatan foto gagal)
+4. Buka tab browser baru, akses langsung `APPS_SCRIPT_URL?foto=<ID file dari kolom
+   "URL Foto" di sheet "Data Siswa">`
+5. → **Harapan:** gambar foto asli langsung tampil di tab tsb (bukan JSON, bukan halaman error)
+6. Refresh `pages/kelas/index.html`
+7. → **Harapan:** foto siswa tsb tampil sebagai **gambar asli** di daftar siswa (bukan
+   ikon 🧒 placeholder)
+8. Buka `pages/mpls/laporan.html` (atau laporan-kognitif/jurnal) untuk siswa yang sama
+9. → **Harapan:** foto asli tampil di kotak identitas laporan cetak, mengisi penuh
+   frame tanpa gepeng
+10. (Regresi) Untuk siswa yang BELUM pernah punya foto sama sekali → tetap tampil
+    placeholder "Foto Siswa" yang rapi di semua tempat, bukan ikon gambar rusak
+
+---
+
 ### Skenario E — Input MPLS (dari HP)
 1. Buka `pages/mpls/input.html` dari HP
 2. Masukkan kode akses yang benar
@@ -285,7 +314,8 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-14 | 0.4.2 | *(nama)* | ⏳ Belum diuji | Tombol pilih foto dari galeri (selain kamera) |
 | 2026-07-15 | 0.5.0 | *(nama)* | ⏳ Belum diuji | Modul Asesmen Menulis (Jurnal) baru + perbaikan besar laporan cetak (toolbar, spasi, font ttd, fallback foto) |
 | 2026-07-15 | 0.5.1 | *(nama)* | ⏳ Belum diuji | Fungsi bantu otorisasi Drive untuk atasi "Access denied: DriveApp" |
-| 2026-07-15 | 0.5.2 | *(nama)* | ⏳ Belum diuji | Foto siswa akhirnya tampil (fallback berantai 3 format URL) |
+| 2026-07-15 | 0.5.2 | *(nama)* | ❌ Gagal | Fallback 3 format URL lulus test otomatis, tapi foto TETAP tidak tampil di Drive sungguhan (akar masalah: hotlink anonim diblokir Google, bukan soal format URL) |
+| 2026-07-15 | 0.5.3 | *(nama)* | ⏳ Belum diuji | Foto akhirnya diproxy lewat Apps Script sendiri (`?foto=`) — WAJIB uji Skenario J dengan Apps Script sungguhan sebelum ditandai ✅ |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
