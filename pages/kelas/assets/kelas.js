@@ -55,6 +55,36 @@ function resizeImageFile(file, maxDim, quality) {
   });
 }
 
+/**
+ * v0.5.5 — Ambil response fetch dan urai sebagai JSON dengan aman.
+ *
+ * KENAPA PERLU INI: dilaporkan pengguna muncul error
+ * `Unexpected token '<', "<!DOCTYPE "... is not valid JSON` setelah proses simpan terasa
+ * lama. Ini terjadi karena Apps Script Web App (URL `?exec`) kadang mengembalikan HALAMAN
+ * HTML generik dari infrastruktur Google — BUKAN JSON dari `Code.gs` — kalau eksekusi di
+ * baliknya lambat (upload + set-sharing foto ke Drive bisa memakan beberapa detik lebih,
+ * dan URL `/exec` diketahui kadang memotong/mengganti respons dengan halaman error kalau
+ * dianggap terlalu lama, di luar kendali kode aplikasi ini). Kalau HTML ini langsung
+ * dilempar ke `res.json()`, pesan errornya jadi membingungkan bagi pengguna awam. Fungsi ini
+ * mendeteksi kondisi itu dan memberi pesan yang jelas & actionable sebagai gantinya.
+ */
+async function parseJsonAman_(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (e) {
+    if (/^\s*</.test(text)) {
+      throw new Error(
+        "Google Apps Script tidak merespons dengan benar (kemungkinan lambat/timeout saat " +
+        "memproses, sering terjadi kalau upload foto). Data KEMUNGKINAN SUDAH tersimpan di " +
+        "baliknya walau muncul error ini — cek dulu daftar siswa di bawah (akan otomatis " +
+        "dimuat ulang) sebelum menyimpan ulang, supaya foto tidak ter-upload dobel ke Drive."
+      );
+    }
+    throw new Error("Respons tidak dikenali dari server: " + text.slice(0, 150));
+  }
+}
+
 function humanFileSize(base64) {
   const bytes = Math.round((base64.length * 3) / 4);
   if (bytes < 1024) return bytes + " B";
@@ -130,7 +160,7 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
 
   try {
     const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
-    const json = await res.json();
+    const json = await parseJsonAman_(res);
     if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
     if (json.fotoWarning) {
       showToast("⚠️ " + json.fotoWarning, true);
@@ -142,6 +172,11 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
   } catch (err) {
     statusEl.textContent = "⚠️ Gagal menyimpan: " + err.message;
     statusEl.classList.add("err");
+    // v0.5.5: muat ulang daftar siswa juga saat GAGAL (bukan cuma saat berhasil) — respons
+    // error ini bisa saja muncul PADAHAL Apps Script sudah selesai menulis datanya di balik
+    // layar (lihat penjelasan di parseJsonAman_). Refresh di sini membantu guru memastikan
+    // status sebenarnya sebelum memutuskan menyimpan ulang.
+    loadSiswaList();
   } finally {
     btn.disabled = false;
   }
@@ -211,8 +246,10 @@ async function loadSiswaList() {
   document.getElementById("list-siswa").innerHTML = '<div class="info-box">Memuat data…</div>';
   try {
     const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1");
-    const json = await res.json();
-    state.siswaList = json.data || [];
+    const json = await parseJsonAman_(res);
+    state.siswaList = (json.data || []).slice().sort((a, b) =>
+      String(a["Nama Lengkap"] || "").localeCompare(String(b["Nama Lengkap"] || ""), "id", { sensitivity: "base" })
+    );
     renderSiswaList("");
   } catch (err) {
     document.getElementById("list-siswa").innerHTML = '<div class="info-box" style="border-color:var(--danger)">Gagal memuat data: ' + err.message + '</div>';
