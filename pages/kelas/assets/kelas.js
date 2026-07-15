@@ -179,7 +179,9 @@ function renderSiswaList(filterText) {
 
   wrap.innerHTML = rows.map((s, idx) => `
     <div class="siswa-item" data-idx="${idx}">
-      ${s["URL Foto"] ? `<img src="${s["URL Foto"]}" alt="Foto ${s["Nama Lengkap"]}" loading="lazy" />` : `<div class="siswa-noimg">🧒</div>`}
+      ${s["URL Foto"]
+        ? fotoImgHtml(s["URL Foto"], "Foto " + (s["Nama Lengkap"] || ""), 'loading="lazy"', '<div class="siswa-noimg">🧒</div>')
+        : `<div class="siswa-noimg">🧒</div>`}
       <div class="siswa-item-info">
         <div class="siswa-item-name">${s["Nama Lengkap"] || "—"}</div>
         <div class="siswa-item-meta">${s["Nama Panggilan"] ? "Panggilan: " + s["Nama Panggilan"] + " · " : ""}${s["Tempat Lahir"] || "-"}, ${s["Tanggal Lahir"] || "-"}</div>
