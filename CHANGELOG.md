@@ -21,7 +21,59 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.5.0] — 2026-07-15
+## [0.5.2] — 2026-07-15
+
+### Diperbaiki
+- **Bug: foto siswa gagal tampil di `pages/kelas/index.html` dan ketiga laporan
+  cetak, meski file-nya sudah berhasil tersimpan di Google Drive**. Akar
+  masalah: format URL `drive.google.com/thumbnail?id=...` yang dipakai sejak
+  v0.4.1 ternyata tidak konsisten bisa dijadikan `<img src>` langsung dari
+  luar domain Drive (perilakunya bisa berubah sewaktu-waktu di sisi Google).
+- **Solusi**: `assets/js/foto-fallback.js` (file baru) — untuk 1 foto,
+  disiapkan 3 kandidat format URL sekaligus (`lh3.googleusercontent.com`,
+  `thumbnail?id=`, `uc?export=view&id=`), dicoba satu-satu otomatis lewat
+  event `onerror` sampai salah satu berhasil. Kalau ketiganya gagal, baru
+  tampil placeholder "Foto Siswa" yang rapi — bukan ikon gambar rusak.
+  Dipakai di `pages/kelas/assets/kelas.js` (daftar siswa) dan ketiga laporan
+  cetak (`laporan.html`, `laporan-kognitif.html`, `laporan-jurnal.html`).
+- Diuji dengan Playwright memakai **route interception** (network mocking
+  sungguhan, bukan cuma baca kode): 2 kandidat URL pertama sengaja digagalkan,
+  dan dikonfirmasi otomatis lanjut ke kandidat ke-3 yang berhasil memuat
+  gambar. Skenario "semua kandidat gagal" juga diuji terpisah — hasilnya
+  placeholder tampil dengan benar. Laporan cetak tetap dikonfirmasi 1 halaman A4.
+
+### Catatan
+- **Tidak perlu update/deploy ulang `Code.gs`** untuk perbaikan ini — URL yang
+  sudah tersimpan di sheet "Data Siswa" (format `thumbnail?id=...`) tetap
+  bisa dipakai apa adanya, karena `foto-fallback.js` mengekstrak ID file dari
+  URL apa pun formatnya dan membangun ulang kandidat-kandidatnya sendiri.
+- Folder Drive terlihat menyimpan beberapa file untuk siswa yang sama (foto
+  diganti berkali-kali saat testing) — ini bukan bug, file lama memang belum
+  dihapus otomatis saat foto diganti. Kalau mau dirapikan otomatis nanti,
+  bisa jadi perbaikan terpisah (belum diminta, jadi belum dikerjakan).
+
+---
+
+### Ditambahkan
+- **Fungsi bantuan `otorisasiAksesDrive()`** di `apps-script/Code.gs` — untuk
+  mengatasi error `Exception: Access denied: DriveApp` saat upload foto siswa
+  (kode error ini ditemukan langsung dari laporan pengguna). Error ini terjadi
+  karena izin **Spreadsheet** dan izin **Drive** adalah 2 hal terpisah di
+  Google — deploy ulang saja tidak memicu dialog izin baru untuk scope yang
+  belum pernah disetujui. Fungsi ini dirancang supaya kalau dijalankan manual
+  1x dari editor Apps Script, akan memicu dialog "Review permissions" yang
+  mencakup izin Drive.
+- `apps-script/README.md` — bagian troubleshooting diperluas dengan
+  langkah persis mengatasi error ini, termasuk kemungkinan kasus langka
+  (`appsscript.json` dengan `oauthScopes` manual yang belum menyertakan Drive).
+
+### Catatan
+- Ini BUKAN bug di kode aplikasi — SpreadsheetApp dan DriveApp perlu
+  otorisasi terpisah walau dipanggil dari script yang sama. Tandanya persis
+  seperti yang dilaporkan: data teks berhasil tersimpan, cuma foto yang gagal
+  dengan pesan spesifik "Access denied: DriveApp".
+
+---
 
 ### Ditambahkan
 - **Modul baru: Asesmen Menulis (Jurnal Aktivitas)** — modul ketiga, terpisah

@@ -85,8 +85,12 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Halaman ini juga menolak akses jika bukan guru
 - [ ] Logo sekolah tampil di kop laporan
 - [ ] **Kotak foto siswa tampil di identitas** — foto asli kalau ada di modul Kelas, placeholder "Foto Siswa" kalau belum ada
+- [ ] **Foto siswa yang sudah diupload benar-benar TAMPIL sebagai gambar asli** (bukan
+      cuma placeholder terus) — ini sempat jadi bug walau file sudah ada di Drive, wajib
+      dicek dengan siswa yang fotonya sudah pernah diupload lewat modul Kelas
 - [ ] Foto mengisi penuh kotak framenya (tidak gepeng/terdistorsi) — coba dengan foto potret & lanskap
-- [ ] Kalau URL foto rusak/tidak bisa dimuat, otomatis tampil placeholder "Foto Siswa", BUKAN ikon gambar rusak
+- [ ] Kalau URL foto benar-benar rusak/file terhapus, otomatis tampil placeholder "Foto Siswa"
+      SETELAH mencoba semua format URL alternatif, BUKAN ikon gambar rusak
 - [ ] Tulisan cukup besar untuk dibaca orang tua (bukan lagi ukuran sangat kecil)
 - [ ] **Jarak antar blok terasa lega** (Kesimpulan Akhir vs kartu kategori, dsb) — bukan lagi berdesakan
 - [ ] "Guru Kelas" selalu tertera **Arif Azwar Anas**, terpisah dari "Guru Pengamat (pengisi form)" yang sesuai siapa yang mengisi
@@ -120,6 +124,9 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Kalau foto sengaja gagal diunggah (mis. tes dengan izin Drive dicabut sementara),
       pastikan data teks (nama/panggilan/TTL) tetap tersimpan dan muncul pesan peringatan
       yang jelas — bukan gagal total tanpa keterangan
+- [ ] **Kalau muncul error "Access denied: DriveApp"**: jalankan `otorisasiAksesDrive()`
+      dari editor Apps Script sekali (lihat `apps-script/README.md` bagian Troubleshooting),
+      lalu coba upload foto lagi TANPA perlu deploy ulang — pastikan berhasil setelahnya
 
 ### 11. Asesmen Awal Kognitif — Input (`pages/mpls/input-kognitif.html`)
 - [ ] Halaman ini **terpisah total** dari `input.html` non-kognitif — mengisi salah satu
@@ -277,6 +284,8 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-14 | 0.4.1 | *(nama)* | ⏳ Belum diuji | Perbaikan bug foto & tanggal lahir tidak muncul (Data Kelas) |
 | 2026-07-14 | 0.4.2 | *(nama)* | ⏳ Belum diuji | Tombol pilih foto dari galeri (selain kamera) |
 | 2026-07-15 | 0.5.0 | *(nama)* | ⏳ Belum diuji | Modul Asesmen Menulis (Jurnal) baru + perbaikan besar laporan cetak (toolbar, spasi, font ttd, fallback foto) |
+| 2026-07-15 | 0.5.1 | *(nama)* | ⏳ Belum diuji | Fungsi bantu otorisasi Drive untuk atasi "Access denied: DriveApp" |
+| 2026-07-15 | 0.5.2 | *(nama)* | ⏳ Belum diuji | Foto siswa akhirnya tampil (fallback berantai 3 format URL) |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
