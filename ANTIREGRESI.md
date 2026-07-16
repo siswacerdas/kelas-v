@@ -251,6 +251,27 @@ Jalankan skenario ini setelah perubahan besar:
    - Foto siswa (kalau ada) mengisi penuh frame-nya, tidak gepeng
    - Tetap 1 halaman A4
 
+### Skenario N — Verifikasi Pengelompokan Print Out Kognitif (v0.6.1)
+1. Isi asesmen kognitif LENGKAP (semua 7 kategori, termasuk Menyimak & Menulis) untuk
+   1 siswa uji coba di `input-kognitif.html`
+2. Buka `pages/mpls/laporan-kognitif.html?nama=<siswa uji coba>`, cetak/pratinjau (Ctrl+P
+   atau tombol "Cetak / Simpan sebagai PDF")
+3. → **Harapan:** muncul label "📖 LITERASI (MEMBACA, MENYIMAK & MENULIS)" dengan 3 kartu
+   (Literasi Dasar, Menyimak, Menulis) berdampingan, BARU DI BAWAHNYA label
+   "🔢 NUMERASI (BERHITUNG)" dengan 4 kartu (Penjumlahan, Pengurangan, Perkalian,
+   Pembagian) — bukan lagi 7 kartu campur dalam satu grid
+4. → **Harapan:** laporan tetap **1 halaman** di pratinjau cetak/PDF (cek jumlah halaman
+   di dialog print browser)
+5. Ulangi untuk siswa yang BEBERAPA kategorinya belum diisi sama sekali (mis. baru isi
+   Literasi & Numerasi, belum isi Menyimak/Menulis)
+6. → **Harapan:** kategori yang belum diisi tetap tampil di kelompoknya masing-masing
+   dengan keterangan "Belum ada nilai untuk kategori ini" (bukan hilang dari laporan)
+7. (Regresi) Kartu ringkasan "Kesimpulan Akhir Kesiapan Akademik" di bagian atas laporan
+   (aspek kuat/perlu perhatian, langkah guru & ortu gabungan) tetap tampil normal dan
+   tidak berubah isinya dibanding sebelum v0.6.1
+
+---
+
 ### Skenario M — Verifikasi Instrumen Baru "Menyimak & Menulis" (v0.6.0)
 1. **Deploy ulang** Apps Script sebagai **New version**
 2. Kalau sheet "Data MPLS Kognitif" sudah ada isinya: tambahkan manual 14 kolom header
@@ -395,6 +416,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-15 | 0.5.4 | *(nama)* | ⏳ Belum diuji | Nama siswa ikut hilang saat foto gagal (diperbaiki), link Drive format "Bagikan" kini dikenali, peringatan header "URL Foto" mismatch, preview foto tersimpan di form edit — WAJIB uji Skenario K |
 | 2026-07-15 | 0.5.5 | *(nama)* | ⏳ Belum diuji | Error JSON mentah saat simpan lambat kini bermakna (bukan `Unexpected token`), daftar siswa auto-refresh saat gagal simpan, daftar terurut abjad — WAJIB uji Skenario L |
 | 2026-07-16 | 0.6.0 | *(nama)* | ⏳ Belum diuji | Instrumen baru "Menyimak & Menulis" (2 kategori kognitif + rubrik cetak pendamping) — WAJIB uji Skenario M, termasuk cek kolom lama TIDAK bergeser di sheet |
+| 2026-07-16 | 0.6.1 | Claude (Playwright, data uji) | ✅ Lulus (otomatis) | Print out kognitif dikelompokkan Literasi vs Numerasi, dikonfirmasi tetap 1 halaman PDF dengan 7 kategori terisi penuh — guru tetap disarankan cek visual manual (Skenario N) sebelum dipakai massal |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

@@ -21,6 +21,50 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
+## [0.6.1] — 2026-07-16
+
+### Diubah
+- **Print out Laporan Asesmen Kognitif kini mengelompokkan kartu kategori jadi 2 bagian
+  terpisah** (`pages/mpls/laporan-kognitif.html`): "📖 Literasi (Membaca, Menyimak &
+  Menulis)" dan "🔢 Numerasi (Berhitung)" — sebelumnya ke-7 kategori tampil sebagai satu
+  grid campur (urutan sesuai `MPLS_KOGNITIF_CATEGORIES`: literasi, penjumlahan,
+  pengurangan, perkalian, pembagian, menyimak, menulis — sehingga menyimak/menulis
+  malah nyempil di antara kategori numerasi), membuatnya lebih sulit dibaca & dijelaskan
+  ke orang tua sebagai dua kelompok kemampuan yang berbeda.
+  - Bagian "Literasi" memakai grid 3 kolom (literasi, menyimak, menulis — 3 kategori
+    berbahasa/literasi dasar); bagian "Numerasi" memakai grid 4 kolom (penjumlahan,
+    pengurangan, perkalian, pembagian).
+  - Pengelompokan berdasarkan DAFTAR KEY eksplisit (`LITERASI_KEYS`/`NUMERASI_KEYS`),
+    bukan urutan array — kategori yang key-nya belum dikenal (mis. kalau nanti ditambah
+    kategori baru lagi) otomatis masuk kelompok "📌 Lainnya" di akhir, tidak hilang
+    begitu saja dari laporan.
+  - Tipografi kartu di bagian Numerasi (grid 4 kolom, lebih sempit) sedikit dipadatkan
+    (padding & ukuran font -1px) supaya tetap nyaman dibaca di kolom yang lebih sempit.
+
+### Diuji
+- Diuji dengan Playwright + Chromium headless: halaman dirender dengan data uji 1 siswa
+  yang SEMUA 7 kategorinya terisi penuh (skenario terberat untuk muat 1 halaman), dicetak
+  ke PDF (`page.pdf()`, format A4) dan jumlah halaman dihitung dengan `pypdf` —
+  **dikonfirmasi tetap 1 halaman**, baik saat kategori tertentu kosong ("Belum ada nilai")
+  maupun saat semua terisi lengkap dengan teks rekomendasi guru/ortu penuh.
+- Teks hasil PDF diekstrak dan diverifikasi urutannya: bagian "Literasi" (3 kartu: Literasi
+  Dasar, Menyimak, Menulis) tampil dulu sebagai satu kelompok, baru bagian "Numerasi"
+  (4 kartu: Penjumlahan, Pengurangan, Perkalian, Pembagian) — tidak ada lagi kategori
+  yang tercampur di antara kelompok yang salah.
+- (Regresi) Kartu "Kesimpulan Akhir Kesiapan Akademik" di bagian atas (ringkasan gabungan
+  semua kategori, aspek kuat/perlu perhatian, langkah guru & ortu) tetap tampil normal dan
+  tidak terpengaruh perubahan pengelompokan di bawahnya, karena logika `computeOverall()`
+  tidak diubah sama sekali — hanya urutan/pengelompokan tampilan kartu per-kategori yang
+  berubah.
+- **Catatan jujur soal batas pengujian**: pengecekan "muat 1 halaman" ini dilakukan dengan
+  data uji buatan (bukan data siswa sungguhan), dan hanya menguji 1 kombinasi skor. Kalau
+  di kemudian hari ada guru yang mengisi catatan anekdot (`noteField`) sangat panjang di
+  banyak kategori sekaligus, laporan berpotensi meluber ke halaman ke-2 — ini bukan
+  regresi baru (risiko yang sama juga ada di layout LAMA sebelum pengelompokan ini), tapi
+  tetap perlu diperhatikan guru saat mengisi kolom catatan.
+
+---
+
 ## [0.6.0] — 2026-07-16
 
 ### Ditambahkan
