@@ -63,13 +63,27 @@
   .rep-overall .cols b { display: block; margin-bottom: 3px; font-size: 11px; }
   .rep-overall .cols ul { padding-left: 14px; }
 
+  .rep-section-title {
+    font-size: 11px; font-weight: 700; color: var(--ink-2);
+    margin: 10px 0 5px; padding-left: 7px; border-left: 3px solid var(--accent);
+    text-transform: uppercase; letter-spacing: 0.3px;
+  }
+  .rep-section-title.first { margin-top: 0; }
+
   .rep-cats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .rep-cats.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+  .rep-cats + .rep-section-title { margin-top: 8px; }
   .rep-cat { border: 1px solid var(--border); border-radius: 6px; padding: 7px 9px; border-top: 3px solid var(--cat-accent, var(--accent)); }
   .rep-cat h3 { font-size: 11px; margin-bottom: 3px; }
   .rep-cat .lvl { font-size: 10px; font-weight: 700; }
   .rep-cat p { font-size: 10px; color: var(--ink-2); margin-top: 4px; }
   .rep-cat .rec { font-size: 9.5px; margin-top: 4px; }
   .rep-cat .rec b { display: inline; }
+
+  .rep-cats.cols-4 .rep-cat { padding: 6px 7px; }
+  .rep-cats.cols-4 .rep-cat h3 { font-size: 10px; }
+  .rep-cats.cols-4 .rep-cat p { font-size: 9.3px; }
+  .rep-cats.cols-4 .rep-cat .rec { font-size: 9px; }
 
   .lvl-BB { color: var(--danger); }
   .lvl-MB { color: #b5790f; }
@@ -161,15 +175,44 @@
       <div><b>TTL:</b> ${profil["Tempat Lahir"] || "-"}, ${profil["Tanggal Lahir"] || "-"}</div>
     ` : `<div></div><div></div>`;
 
-    const catsHtml = result.categories.map((c) => `
-      <div class="rep-cat" style="--cat-accent:${c.accent}">
-        <h3>${c.icon} ${c.title}</h3>
-        <div class="lvl ${levelClass(c.level)}">${c.levelLabel}${c.avg !== null ? " (rata-rata " + c.avg.toFixed(1) + "/4)" : ""}</div>
-        <p>${c.simpulan}</p>
-        ${c.guru[0] ? `<div class="rec"><b>Guru:</b> ${c.guru[0]}</div>` : ""}
-        ${c.ortu[0] ? `<div class="rec"><b>Ortu:</b> ${c.ortu[0]}</div>` : ""}
-      </div>
-    `).join("");
+    /**
+     * v0.6.1 — Kelompokkan kartu kategori jadi 2 bagian terpisah (Literasi & Numerasi)
+     * alih-alih 1 grid campur seperti sebelumnya, supaya lebih mudah dibaca/dijelaskan.
+     * "Literasi" di sini mencakup literasi (membaca), menyimak, dan menulis — ketiganya
+     * sama-sama kemampuan berbahasa/literasi dasar, berbeda dari numerasi (berhitung).
+     * Daftar key ditulis eksplisit (bukan otomatis dari urutan array) supaya kalau nanti
+     * ada kategori baru yang ditambahkan, tidak otomatis salah masuk kelompok — kategori
+     * yang key-nya tidak dikenali akan muncul di kelompok "Lainnya" di akhir, bukan hilang.
+     */
+    const LITERASI_KEYS = ["literasi", "menyimak", "menulis"];
+    const NUMERASI_KEYS = ["penjumlahan", "pengurangan", "perkalian", "pembagian"];
+
+    function catCardHtml(c) {
+      return `
+        <div class="rep-cat" style="--cat-accent:${c.accent}">
+          <h3>${c.icon} ${c.title}</h3>
+          <div class="lvl ${levelClass(c.level)}">${c.levelLabel}${c.avg !== null ? " (rata-rata " + c.avg.toFixed(1) + "/4)" : ""}</div>
+          <p>${c.simpulan}</p>
+          ${c.guru[0] ? `<div class="rec"><b>Guru:</b> ${c.guru[0]}</div>` : ""}
+          ${c.ortu[0] ? `<div class="rec"><b>Ortu:</b> ${c.ortu[0]}</div>` : ""}
+        </div>`;
+    }
+
+    function catsSectionHtml(title, icon, cats, gridClass, isFirst) {
+      if (!cats.length) return "";
+      return `
+        <div class="rep-section-title${isFirst ? " first" : ""}">${icon} ${title}</div>
+        <div class="rep-cats${gridClass ? " " + gridClass : ""}">${cats.map(catCardHtml).join("")}</div>`;
+    }
+
+    const catLiterasi = result.categories.filter((c) => LITERASI_KEYS.includes(c.key));
+    const catNumerasi = result.categories.filter((c) => NUMERASI_KEYS.includes(c.key));
+    const catLainnya = result.categories.filter((c) => !LITERASI_KEYS.includes(c.key) && !NUMERASI_KEYS.includes(c.key));
+
+    const catsHtml =
+      catsSectionHtml("Literasi (Membaca, Menyimak & Menulis)", "📖", catLiterasi, "", true) +
+      catsSectionHtml("Numerasi (Berhitung)", "🔢", catNumerasi, "cols-4", !catLiterasi.length) +
+      catsSectionHtml("Lainnya", "📌", catLainnya, "", !catLiterasi.length && !catNumerasi.length);
 
     document.getElementById("page").innerHTML = `
       <div class="rep-header">
@@ -212,7 +255,7 @@
         </div>
       </div>
 
-      <div class="rep-cats">${catsHtml}</div>
+      ${catsHtml}
 
       <div class="rep-signature">
         <div class="sig-col">
