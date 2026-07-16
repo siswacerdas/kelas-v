@@ -21,6 +21,68 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
+## [0.6.0] — 2026-07-16
+
+### Ditambahkan
+- **Instrumen Asesmen Awal Kognitif BARU: "Menyimak & Mengikuti Instruksi" dan "Menulis &
+  Meringkas"** — 2 kategori baru dalam modul kognitif yang sudah ada (bergabung dengan
+  Literasi Dasar & 4 kategori Numerasi), dilatarbelakangi kebutuhan menyiapkan siswa
+  menghadapi jadwal belajar Kelas 5 yang padat setelah masa MPLS selesai: kemampuan
+  menyimak instruksi dengan efektif dan menulis/meringkas informasi secara mandiri.
+  - **Menyimak & Mengikuti Instruksi** (`pages/mpls/assets/mpls-kognitif-data.js`, key
+    `menyimak`) — 6 indikator: memperhatikan penjelasan guru, memahami instruksi 1 langkah,
+    instruksi bertahap 2&ndash;3 langkah, menjelaskan ulang inti instruksi, memilah
+    informasi penting dari penjelasan panjang, dan bertahan fokus menyimak.
+  - **Menulis & Meringkas** (key `menulis`) — 6 indikator: keterbacaan tulisan (bukan
+    kerapian), mencatat poin penting secara mandiri, menulis rangkuman singkat dengan
+    kata sendiri, kecepatan menyelesaikan tugas tulis, memahami maksud instruksi/kriteria
+    tugas tertulis (termasuk rubrik penilaian), dan kesesuaian jawaban dengan instruksi.
+  - Teks kesimpulan & rekomendasi (BB/MB/BSH/BSB, untuk guru & orang tua) untuk kedua
+    kategori ditambahkan di `pages/mpls/assets/mpls-scoring-kognitif.js`.
+  - Karena `input-kognitif.html`/`app-kognitif.js` dan `rekap-kognitif.html`/
+    `laporan-kognitif.html` sudah sepenuhnya digerakkan oleh data
+    (`MPLS_KOGNITIF_CATEGORIES` & `result.categories`, bukan HTML kategori yang
+    di-hardcode), 2 kategori baru ini **otomatis muncul di form input, rekap, dan laporan
+    cetak** tanpa perlu mengubah HTML halaman-halaman tsb sama sekali.
+- **Rubrik cetak pendamping baru**: `pages/mpls/rubrik/rubrik-menyimak-menulis-mpls.html`
+  — dokumen mandiri (tidak bergantung Apps Script/konfigurasi apa pun) bergaya visual
+  sama seperti rubrik referensi yang sudah ada (badge level BB/MB/BSH/BSB, tabel per
+  aspek), berisi deskripsi lengkap tiap level untuk keenam indikator Menyimak dan keenam
+  indikator Menulis — membantu guru mengkalibrasi skor 1&ndash;4 sebelum/saat mengisi di
+  aplikasi. Setiap baris rubrik ini sama persis dengan 1 indikator yang bisa dicentang di
+  `input-kognitif.html`.
+- `apps-script/Code.gs` → `HEADERS_KOGNITIF`: 14 kolom baru (6 indikator + 1 catatan untuk
+  masing-masing kategori) ditambahkan **di ujung PALING AKHIR array** (setelah "Diisi
+  Oleh"), bukan disisipkan di antara kategori-kategori lama — supaya kolom-kolom lama
+  yang sudah menyimpan data tidak pernah bergeser posisi, baik saat sheet baru dibuat
+  maupun saat `setupSheetKognitif()` dijalankan ulang pada sheet yang sudah ada isinya.
+
+### PENTING — Langkah wajib setelah menarik update ini
+- **Deploy ulang Apps Script sebagai "New version"** (`Code.gs` berubah).
+- **Kalau sheet "Data MPLS Kognitif" SUDAH ADA isinya** (bukan sheet baru): kolom baru
+  TIDAK muncul otomatis — tambahkan manual 14 header kolom baru (teks PERSIS sama, lihat
+  daftar lengkap di `apps-script/README.md` bagian "Menambahkan kategori 'Menyimak &
+  Menulis'") di kolom kosong pertama setelah kolom terakhir yang ada sekarang.
+
+### Diuji
+- Diuji dengan Playwright: mengisi indikator Menyimak & Menulis di `input-kognitif.html`
+  untuk 1 siswa uji, dikonfirmasi tersimpan dan muncul benar di `rekap-kognitif.html`
+  serta `laporan-kognitif.html` (kartu kategori, rata-rata, level, dan rekomendasi guru/
+  ortu tampil sesuai `CATEGORY_TEXT` yang baru ditambahkan) — TANPA perlu mengubah HTML
+  kedua halaman tsb, mengonfirmasi arsitektur data-driven bekerja seperti didokumentasikan.
+- Item text di `mpls-kognitif-data.js` diverifikasi program dengan `HEADERS_KOGNITIF` di
+  `Code.gs` untuk memastikan cocok PERSIS karakter demi karakter (termasuk tanda baca) —
+  ketidakcocokan sekecil apa pun akan membuat skor untuk indikator itu gagal tersimpan
+  secara senyap (lihat prinsip pencocokan nama header PERSIS yang sudah didokumentasikan
+  sejak v0.5.4).
+- **Catatan jujur soal batas pengujian**: skenario "menambah kolom manual ke sheet lama
+  yang sudah berjalan sungguhan" tidak bisa diuji penuh di lingkungan pengembangan ini
+  (memerlukan spreadsheet sekolah yang sungguhan dengan data lama) — logikanya sudah
+  diverifikasi dengan cermat (append-only, tidak ada penyisipan di tengah array), tapi
+  tetap disarankan menambah 1 siswa uji coba dulu setelah update sebelum dipakai massal.
+
+---
+
 ## [0.5.5] — 2026-07-15
 
 ### Diperbaiki

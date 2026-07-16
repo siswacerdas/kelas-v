@@ -251,6 +251,34 @@ Jalankan skenario ini setelah perubahan besar:
    - Foto siswa (kalau ada) mengisi penuh frame-nya, tidak gepeng
    - Tetap 1 halaman A4
 
+### Skenario M — Verifikasi Instrumen Baru "Menyimak & Menulis" (v0.6.0)
+1. **Deploy ulang** Apps Script sebagai **New version**
+2. Kalau sheet "Data MPLS Kognitif" sudah ada isinya: tambahkan manual 14 kolom header
+   baru sesuai daftar di `apps-script/README.md` (bagian "Menambahkan kategori 'Menyimak &
+   Menulis'"), di kolom kosong setelah kolom terakhir yang ada
+3. Buka `pages/mpls/input-kognitif.html` → pilih 1 siswa uji coba
+4. → **Harapan:** muncul 2 kartu kategori baru "Menyimak & Mengikuti Instruksi" (ikon 👂)
+   dan "Menulis & Meringkas" (ikon ✍️) di bawah kategori Literasi/Numerasi yang sudah ada,
+   masing-masing dengan 6 indikator + 1 kolom catatan anekdot
+5. Isi semua indikator di kedua kategori baru untuk siswa itu, klik simpan
+6. → **Harapan:** toast "Tersimpan", tanpa error
+7. Cek sheet "Data MPLS Kognitif" → 14 kolom baru terisi nilai yang benar untuk baris
+   siswa tsb, DAN kolom-kolom lama (Literasi/Numerasi/Diisi Oleh) untuk siswa LAIN yang
+   sudah ada sebelumnya **tidak berubah/tidak bergeser** (regresi kritis — cek beberapa
+   baris lama untuk memastikan)
+8. Buka `pages/mpls/rekap-kognitif.html` → cari siswa uji coba tsb
+9. → **Harapan:** kartu ringkas menampilkan level (BB/MB/BSH/BSB) untuk kategori Menyimak
+   & Menulis juga, bukan cuma Literasi/Numerasi
+10. Buka `pages/mpls/laporan-kognitif.html` untuk siswa yang sama → cetak/pratinjau
+11. → **Harapan:** laporan cetak menampilkan kartu kategori Menyimak & Menulis lengkap
+    dengan rata-rata, level, simpulan, dan rekomendasi guru/ortu — konsisten gaya dengan
+    kategori Literasi/Numerasi yang sudah ada
+12. Buka `pages/mpls/rubrik/rubrik-menyimak-menulis-mpls.html` langsung di browser
+13. → **Harapan:** rubrik tampil rapi (2 bagian: Menyimak & Menulis, masing-masing tabel
+    6 baris x 4 level), tanpa perlu koneksi internet/Apps Script apa pun
+
+---
+
 ### Skenario L — Verifikasi Perbaikan v0.5.5 (error JSON saat simpan + urutan abjad)
 1. Login sebagai guru → "Kelola Data Siswa & Foto" → cek daftar siswa yang sudah ada
 2. → **Harapan (BARU):** daftar tersusun berdasarkan ABJAD nama lengkap (A→Z), bukan urutan
@@ -366,6 +394,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-15 | 0.5.3 | *(nama)* | ⏳ Belum diuji | Foto akhirnya diproxy lewat Apps Script sendiri (`?foto=`) — WAJIB uji Skenario J dengan Apps Script sungguhan sebelum ditandai ✅ |
 | 2026-07-15 | 0.5.4 | *(nama)* | ⏳ Belum diuji | Nama siswa ikut hilang saat foto gagal (diperbaiki), link Drive format "Bagikan" kini dikenali, peringatan header "URL Foto" mismatch, preview foto tersimpan di form edit — WAJIB uji Skenario K |
 | 2026-07-15 | 0.5.5 | *(nama)* | ⏳ Belum diuji | Error JSON mentah saat simpan lambat kini bermakna (bukan `Unexpected token`), daftar siswa auto-refresh saat gagal simpan, daftar terurut abjad — WAJIB uji Skenario L |
+| 2026-07-16 | 0.6.0 | *(nama)* | ⏳ Belum diuji | Instrumen baru "Menyimak & Menulis" (2 kategori kognitif + rubrik cetak pendamping) — WAJIB uji Skenario M, termasuk cek kolom lama TIDAK bergeser di sheet |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
