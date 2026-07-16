@@ -123,6 +123,35 @@ const HEADERS_KOGNITIF = [
   "Catatan Pembagian",
   // Meta
   "Diisi Oleh",
+  // v0.6.0 — Menyimak & Menulis. SENGAJA ditambahkan SETELAH "Diisi Oleh" (di ujung
+  // paling akhir array), BUKAN disisipkan di antara kategori-kategori lama di atas —
+  // supaya posisi kolom header LAMA di sheet "Data MPLS Kognitif" yang sudah berjalan
+  // tidak pernah bergeser. Kalau header baru disisipkan di tengah, label kolom akan
+  // pindah posisi tapi data yang SUDAH tersimpan di baris-baris lama tidak ikut pindah
+  // — nilai lama jadi salah tempat. Menambah di ujung = 100% aman untuk sheet lama
+  // maupun baru (lihat CHANGELOG v0.6.0 untuk detail lengkap).
+  //
+  // PENTING: kalau sheet "Data MPLS Kognitif" SUDAH ada isinya (bukan sheet baru),
+  // header baru ini TIDAK otomatis muncul — tambahkan manual 14 kolom baru berikut
+  // (teksnya harus PERSIS sama) di sheet yang sudah berjalan, di kolom paling kanan
+  // setelah kolom terakhir yang ada sekarang. Lihat apps-script/README.md.
+  //
+  // Menyimak & Mengikuti Instruksi
+  "Memperhatikan guru berbicara tanpa perlu diingatkan berulang kali",
+  "Memahami instruksi lisan sederhana (1 langkah) dan langsung melaksanakannya dengan benar",
+  "Memahami dan mengikuti instruksi lisan bertahap (2-3 langkah berurutan) dengan benar",
+  "Mampu mengulang/menjelaskan kembali inti instruksi yang baru didengar dengan kata-kata sendiri",
+  "Mampu memilah informasi penting dari penjelasan lisan yang lebih panjang (mis. bisa menyebutkan poin-poin utamanya)",
+  "Bertahan menyimak dengan fokus selama penjelasan/instruksi berlangsung (tidak mudah teralih)",
+  "Catatan Menyimak",
+  // Menulis & Meringkas
+  "Menulis huruf/kata dengan bentuk yang terbaca jelas (kerapian bukan fokus utama, keterbacaan yang utama)",
+  "Mencatat poin-poin penting dari penjelasan guru secara mandiri (tanpa didikte kata per kata)",
+  "Menulis rangkuman singkat (1-3 kalimat) dari suatu penjelasan/bacaan dengan kata-kata sendiri",
+  "Menyelesaikan catatan/tugas tulis dalam waktu yang wajar (tidak tertinggal jauh dari teman sekelas)",
+  "Memahami maksud instruksi/kriteria tugas tertulis (mis. rubrik penilaian) dan tahu apa yang harus dilakukan untuk mendapat nilai baik",
+  "Menuliskan jawaban/tugas sesuai dengan apa yang diminta instruksi (bukan asal menulis)",
+  "Catatan Menulis",
 ];
 
 const HEADERS_JURNAL = [

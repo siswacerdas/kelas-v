@@ -207,6 +207,39 @@ placeholder foto yang muncul), pastikan Anda menarik update v0.5.4 (`foto-fallba
 versi sebelum itu punya bug terpisah yang membuat seluruh baris siswa ikut terhapus dari
 tampilan saat foto gagal dimuat.
 
+## Menambahkan kategori "Menyimak & Menulis" (v0.6.0) ke sheet yang sudah berjalan
+
+Kategori baru ini ditambahkan di `Code.gs` (`HEADERS_KOGNITIF`) SETELAH kolom "Diisi
+Oleh" — sengaja di ujung paling akhir, BUKAN disisipkan di tengah, supaya kolom-kolom
+lama tidak pernah bergeser posisi (lihat komentar di `HEADERS_KOGNITIF` untuk alasan
+lengkapnya). Konsekuensinya:
+
+- **Sheet "Data MPLS Kognitif" yang BARU dibuat** (lewat `setupSheetKognitif()`) otomatis
+  mendapat ke-14 kolom baru ini — tidak perlu langkah tambahan apa pun.
+- **Sheet yang SUDAH ADA isinya**: kolom baru TIDAK muncul otomatis. Tambahkan manual
+  14 kolom berikut di baris 1, dimulai dari kolom kosong pertama setelah kolom terakhir
+  yang sudah ada sekarang (teksnya harus PERSIS sama, termasuk tanda baca):
+  1. `Memperhatikan guru berbicara tanpa perlu diingatkan berulang kali`
+  2. `Memahami instruksi lisan sederhana (1 langkah) dan langsung melaksanakannya dengan benar`
+  3. `Memahami dan mengikuti instruksi lisan bertahap (2-3 langkah berurutan) dengan benar`
+  4. `Mampu mengulang/menjelaskan kembali inti instruksi yang baru didengar dengan kata-kata sendiri`
+  5. `Mampu memilah informasi penting dari penjelasan lisan yang lebih panjang (mis. bisa menyebutkan poin-poin utamanya)`
+  6. `Bertahan menyimak dengan fokus selama penjelasan/instruksi berlangsung (tidak mudah teralih)`
+  7. `Catatan Menyimak`
+  8. `Menulis huruf/kata dengan bentuk yang terbaca jelas (kerapian bukan fokus utama, keterbacaan yang utama)`
+  9. `Mencatat poin-poin penting dari penjelasan guru secara mandiri (tanpa didikte kata per kata)`
+  10. `Menulis rangkuman singkat (1-3 kalimat) dari suatu penjelasan/bacaan dengan kata-kata sendiri`
+  11. `Menyelesaikan catatan/tugas tulis dalam waktu yang wajar (tidak tertinggal jauh dari teman sekelas)`
+  12. `Memahami maksud instruksi/kriteria tugas tertulis (mis. rubrik penilaian) dan tahu apa yang harus dilakukan untuk mendapat nilai baik`
+  13. `Menuliskan jawaban/tugas sesuai dengan apa yang diminta instruksi (bukan asal menulis)`
+  14. `Catatan Menulis`
+- **Deploy ulang Apps Script sebagai "New version"** setelah menarik update `Code.gs` ini
+  (seperti biasa setiap `Code.gs` berubah).
+- Rubrik referensi cetak untuk kategori ini ada di
+  `pages/mpls/rubrik/rubrik-menyimak-menulis-mpls.html` — dokumen mandiri (tidak
+  memerlukan Apps Script/konfigurasi apa pun) berisi deskripsi lengkap tiap level
+  (BB/MB/BSH/BSB) per indikator, untuk membantu kalibrasi skor saat mengisi di aplikasi.
+
 ## Keamanan
 
 - Web App di-deploy dengan akses **Anyone**, artinya siapa pun yang tahu URL-nya
