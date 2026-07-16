@@ -186,6 +186,82 @@
         ortu: ["Dukung eksplorasi soal pembagian yang lebih menantang."],
       },
     },
+
+    /* v0.6.0 — Menyimak & Menulis (lihat mpls-kognitif-data.js untuk daftar item lengkapnya) */
+    menyimak: {
+      BB: {
+        simpulan: "Anak masih kesulitan memahami dan mengikuti instruksi lisan, bahkan untuk instruksi satu langkah, sehingga sering tertinggal saat pembelajaran berlangsung.",
+        guru: [
+          "Berikan instruksi satu langkah pada satu waktu, gunakan kalimat pendek dan konkret.",
+          "Pastikan perhatian anak tertuju sebelum memberi instruksi, ulangi dengan sabar bila perlu.",
+          "Gunakan bantuan visual (gambar/tulisan poin) untuk mendukung instruksi lisan.",
+        ],
+        ortu: [
+          "Latih mengikuti instruksi sederhana di rumah (mis. \"tolong ambilkan sendok\") secara rutin.",
+          "Kurangi gangguan (gawai, TV) saat berbicara/memberi instruksi ke anak.",
+        ],
+      },
+      MB: {
+        simpulan: "Anak mulai bisa mengikuti instruksi lisan sederhana, namun masih kesulitan pada instruksi bertahap atau penjelasan yang lebih panjang.",
+        guru: [
+          "Pecah instruksi panjang jadi beberapa langkah kecil, cek pemahaman di setiap langkah.",
+          "Minta anak mengulang instruksi dengan kata-kata sendiri sebelum mulai mengerjakan.",
+        ],
+        ortu: [
+          "Latih instruksi 2 langkah berurutan di rumah (mis. \"ambil piring, lalu taruh di meja\").",
+          "Ajak anak menceritakan ulang apa yang baru didengar (dari cerita/tontonan) secara santai.",
+        ],
+      },
+      BSH: {
+        simpulan: "Anak cukup mampu memahami dan mengikuti instruksi lisan bertahap, serta cukup mampu memilah informasi penting dari penjelasan guru.",
+        guru: [
+          "Berikan instruksi dengan langkah yang lebih kompleks/jumlahnya lebih banyak secara bertahap.",
+          "Libatkan dalam diskusi kelas yang butuh menyimak & menanggapi pendapat teman.",
+        ],
+        ortu: ["Ajak diskusi ringan yang butuh menyimak & menanggapi (mis. cerita tentang kegiatan hari ini)."],
+      },
+      BSB: {
+        simpulan: "Anak sangat mampu menyimak, memahami instruksi kompleks, dan mampu memilah/meringkas informasi penting yang didengar dengan baik.",
+        guru: ["Libatkan sebagai 'penerjemah instruksi' bagi teman yang masih kesulitan memahami (peer support)."],
+        ortu: ["Dukung kegiatan yang melatih menyimak lebih lanjut (mis. mendengarkan cerita audio sesuai usia lalu didiskusikan)."],
+      },
+    },
+
+    menulis: {
+      BB: {
+        simpulan: "Anak masih kesulitan menulis dan mencatat secara mandiri, termasuk memahami apa yang diminta dari sebuah tugas/rubrik penilaian.",
+        guru: [
+          "Sediakan kerangka catatan sederhana (isian titik-titik) sebagai langkah awal sebelum menulis bebas.",
+          "Jelaskan rubrik/kriteria tugas dengan bahasa sangat sederhana dan contoh konkret sebelum anak mulai mengerjakan.",
+          "Beri waktu ekstra dan pendampingan langsung saat menulis, jangan disamakan kecepatannya dengan teman lain.",
+        ],
+        ortu: [
+          "Latih menulis santai di rumah (mis. menulis daftar belanja, catatan singkat) tanpa tekanan.",
+          "Bacakan/jelaskan instruksi tugas bersama anak sebelum ia mulai mengerjakan sendiri.",
+        ],
+      },
+      MB: {
+        simpulan: "Anak mulai bisa mencatat poin-poin sederhana, namun belum lancar meringkas sendiri dan masih perlu bantuan memahami kriteria tugas.",
+        guru: [
+          "Latih meringkas bertahap: mulai dari melengkapi kerangka, menuju menulis bebas 1-2 kalimat.",
+          "Jelaskan ulang rubrik/kriteria tugas dengan contoh hasil kerja \"baik\" dan \"kurang\" secara konkret.",
+        ],
+        ortu: ["Ajak anak menuliskan ulang cerita singkat dari apa yang ia ceritakan secara lisan."],
+      },
+      BSH: {
+        simpulan: "Anak cukup mampu mencatat & meringkas secara mandiri dengan waktu yang wajar, serta cukup memahami maksud instruksi/kriteria tugas tertulis.",
+        guru: [
+          "Berikan tugas menulis dengan kriteria yang sedikit lebih kompleks untuk memperdalam pemahaman rubrik.",
+          "Beri umpan balik spesifik yang mengaitkan hasil kerja anak dengan kriteria di rubrik, agar makin paham polanya.",
+        ],
+        ortu: ["Dukung kebiasaan menulis jurnal harian singkat di rumah sebagai latihan rutin."],
+      },
+      BSB: {
+        simpulan: "Anak sangat mampu menulis/mencatat secara mandiri, cepat, dan memahami dengan baik apa yang dituntut oleh kriteria/rubrik tugas.",
+        guru: ["Libatkan sebagai contoh/model saat menjelaskan rubrik ke teman sekelas."],
+        ortu: ["Dukung eksplorasi menulis kreatif (cerita pendek, jurnal) sesuai minatnya."],
+      },
+    },
   };
 
   function categoryMeta(cat) {

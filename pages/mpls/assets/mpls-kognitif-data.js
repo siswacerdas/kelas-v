@@ -95,4 +95,45 @@ const MPLS_KOGNITIF_CATEGORIES = [
     noteLabel: "Catatan Anekdot",
     notePlaceholder: "Kejadian spesifik yang teramati",
   },
+
+  /* v0.6.0 — Ditambahkan di AKHIR array (BUKAN disisipkan di tengah) supaya urutan &
+   * posisi header kategori-kategori LAMA di atas tidak pernah berubah — ini prinsip
+   * yang sama dijaga sejak v0.4.1 (lihat komentar di apps-script/Code.gs → HEADERS_KOGNITIF):
+   * data lama yang sudah tersimpan tetap aman selama header baru HANYA ditambah di ujung. */
+  {
+    key: "menyimak",
+    title: "Menyimak & Mengikuti Instruksi",
+    subtitle: "Memahami informasi lisan dan melaksanakan instruksi dengan tepat",
+    accent: "#1f8a8a",
+    icon: "👂",
+    items: [
+      "Memperhatikan guru berbicara tanpa perlu diingatkan berulang kali",
+      "Memahami instruksi lisan sederhana (1 langkah) dan langsung melaksanakannya dengan benar",
+      "Memahami dan mengikuti instruksi lisan bertahap (2-3 langkah berurutan) dengan benar",
+      "Mampu mengulang/menjelaskan kembali inti instruksi yang baru didengar dengan kata-kata sendiri",
+      "Mampu memilah informasi penting dari penjelasan lisan yang lebih panjang (mis. bisa menyebutkan poin-poin utamanya)",
+      "Bertahan menyimak dengan fokus selama penjelasan/instruksi berlangsung (tidak mudah teralih)",
+    ],
+    noteField: "Catatan Menyimak",
+    noteLabel: "Catatan Anekdot",
+    notePlaceholder: 'mis. "perlu instruksi diulang 2-3 kali sebelum mulai mengerjakan"',
+  },
+  {
+    key: "menulis",
+    title: "Menulis & Meringkas",
+    subtitle: "Mencatat, meringkas, dan memahami maksud instruksi/rubrik tugas tertulis",
+    accent: "#b8860b",
+    icon: "✍️",
+    items: [
+      "Menulis huruf/kata dengan bentuk yang terbaca jelas (kerapian bukan fokus utama, keterbacaan yang utama)",
+      "Mencatat poin-poin penting dari penjelasan guru secara mandiri (tanpa didikte kata per kata)",
+      "Menulis rangkuman singkat (1-3 kalimat) dari suatu penjelasan/bacaan dengan kata-kata sendiri",
+      "Menyelesaikan catatan/tugas tulis dalam waktu yang wajar (tidak tertinggal jauh dari teman sekelas)",
+      "Memahami maksud instruksi/kriteria tugas tertulis (mis. rubrik penilaian) dan tahu apa yang harus dilakukan untuk mendapat nilai baik",
+      "Menuliskan jawaban/tugas sesuai dengan apa yang diminta instruksi (bukan asal menulis)",
+    ],
+    noteField: "Catatan Menulis",
+    noteLabel: "Catatan Anekdot",
+    notePlaceholder: 'mis. "rangkuman lisan sudah bagus, tapi menuliskannya sendiri masih lambat"',
+  },
 ];
