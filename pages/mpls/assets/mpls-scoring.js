@@ -224,7 +224,18 @@
     fisik: { title: "Kondisi Fisik", icon: "🩺", accent: "#1a7a8a" },
   };
 
-  /** Hitung rata-rata + level untuk satu kategori dari 1 baris data siswa. */
+  /** Potong catatan guru supaya tidak membengkakkan laporan cetak (tetap 1 halaman A4). */
+  function ringkasCatatan(catatan, maxLen) {
+    const bersih = String(catatan).trim();
+    if (bersih.length <= maxLen) return bersih;
+    return bersih.slice(0, maxLen).trim() + "…";
+  }
+
+  /** Hitung rata-rata + level untuk satu kategori dari 1 baris data siswa.
+   * 2026-07-17: simpulan sekarang menyerap 2 hal yang sebelumnya diabaikan —
+   * (1) catatan anekdot guru (cat.noteField), (2) kelengkapan data — supaya
+   * kesimpulan tercetak tidak murni template kategori-level yang identik
+   * untuk semua anak di level yang sama. */
   function computeCategory(cat, data) {
     const values = cat.items
       .map((item) => Number(data[item]))
@@ -234,6 +245,17 @@
     const avg = filled ? values.reduce((a, b) => a + b, 0) / filled : null;
     const level = avg !== null ? levelFromAvg(avg) : null;
     const text = level ? CATEGORY_TEXT[cat.key][level] : null;
+    const kelengkapan = total ? Math.round((filled / total) * 100) : 0;
+    const catatan = cat.noteField ? (data[cat.noteField] || "").toString().trim() : "";
+
+    let simpulan = text ? text.simpulan : "Belum ada nilai untuk kategori ini.";
+    if (level && kelengkapan < 100) {
+      simpulan += ` (Baru ${filled} dari ${total} indikator kategori ini yang dinilai — simpulan masih sementara.)`;
+    }
+    if (catatan) {
+      simpulan += ` Catatan guru: "${ringkasCatatan(catatan, 130)}"`;
+    }
+
     return {
       key: cat.key,
       title: CATEGORY_META[cat.key].title,
@@ -244,8 +266,9 @@
       levelLabel: level ? LEVEL_LABEL[level] : "-",
       filled,
       total,
-      kelengkapan: total ? Math.round((filled / total) * 100) : 0,
-      simpulan: text ? text.simpulan : "Belum ada nilai untuk kategori ini.",
+      kelengkapan,
+      catatan,
+      simpulan,
       guru: text ? text.guru : [],
       ortu: text ? text.ortu : [],
     };

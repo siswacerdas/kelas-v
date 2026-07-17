@@ -268,6 +268,16 @@
     return { title: cat.title, icon: cat.icon, accent: cat.accent };
   }
 
+  /** Potong catatan guru supaya tidak membengkakkan laporan cetak (tetap 1 halaman A4). */
+  function ringkasCatatan(catatan, maxLen) {
+    const bersih = String(catatan).trim();
+    if (bersih.length <= maxLen) return bersih;
+    return bersih.slice(0, maxLen).trim() + "…";
+  }
+
+  /* 2026-07-17: simpulan sekarang menyerap catatan anekdot guru (cat.noteField)
+   * dan kelengkapan data — supaya kesimpulan tercetak tidak murni template
+   * kategori-level yang identik untuk semua anak di level yang sama. */
   function computeCategory(cat, data) {
     const values = cat.items
       .map((item) => Number(data[item]))
@@ -278,6 +288,20 @@
     const level = avg !== null ? levelFromAvg(avg) : null;
     const text = level ? CATEGORY_TEXT[cat.key][level] : null;
     const meta = categoryMeta(cat);
+    const kelengkapan = total ? Math.round((filled / total) * 100) : 0;
+    const catatan = cat.noteField ? (data[cat.noteField] || "").toString().trim() : "";
+
+    // Cap lebih pendek dari mpls-scoring.js/mpls-scoring-jurnal.js SENGAJA —
+    // laporan-kognitif.html menampilkan 7 kategori dalam grid rapat (vs 4/2
+    // di modul lain), diuji lewat Playwright supaya tetap 1 halaman A4.
+    let simpulan = text ? text.simpulan : "Belum ada nilai untuk kategori ini.";
+    if (level && kelengkapan < 100) {
+      simpulan += ` (${filled}/${total} indikator, sementara.)`;
+    }
+    if (catatan) {
+      simpulan += ` Catatan: "${ringkasCatatan(catatan, 60)}"`;
+    }
+
     return {
       key: cat.key,
       title: meta.title,
@@ -288,8 +312,9 @@
       levelLabel: level ? LEVEL_LABEL[level] : "-",
       filled,
       total,
-      kelengkapan: total ? Math.round((filled / total) * 100) : 0,
-      simpulan: text ? text.simpulan : "Belum ada nilai untuk kategori ini.",
+      kelengkapan,
+      catatan,
+      simpulan,
       guru: text ? text.guru : [],
       ortu: text ? text.ortu : [],
     };
