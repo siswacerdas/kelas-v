@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Input Asesmen Menulis · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/mpls.css" />
+</head>
+<body>
+
+<!-- Gerbang kode akses (sama seperti input.html / input-kognitif.html) -->
+<div id="gate">
+  <div id="gate-box">
+    <h2>Input Asesmen Menulis</h2>
+    <p>Masukkan kode akses dari wali kelas untuk mulai mengisi penilaian.</p>
+    <input type="text" id="inp-gate" placeholder="Kode akses" autocomplete="off" />
+    <div id="gate-error"></div>
+    <button id="btn-gate" class="btn-full">Masuk</button>
+  </div>
+</div>
+
+<div id="topbar">
+  <a href="index.html" class="back">←</a>
+  <div class="brand">Input <em>Asesmen Menulis</em></div>
+</div>
+
+<div class="container">
+
+  <div id="config-warning" class="info-box hidden" style="border-color:#c94040">
+    <strong>⚠️ Belum terhubung ke Spreadsheet.</strong><br />
+    URL Apps Script belum diisi di <code>assets/config.js</code>. Lihat <code>apps-script/README.md</code> untuk cara deploy.
+  </div>
+
+  <div class="info-box">
+    Asesmen ini menilai kemampuan anak menuliskan pokok pikiran secara terstruktur, sekaligus
+    kemandirian &amp; regulasi diri, lewat jurnal aktivitas <strong id="lbl-aktivitas"></strong> yang
+    diisi siswa di 3 momen: perjalanan, di taman, dan setelah kembali. Rubrik ringkas — bukan
+    penilaian tata bahasa/ejaan detail.
+  </div>
+
+  <div id="student-picker-card">
+    <div class="field-group" style="margin-bottom:0.85rem">
+      <label for="student-select">Pilih Siswa</label>
+      <select id="student-select">
+        <option value="">— pilih nama siswa —</option>
+      </select>
+    </div>
+    <div class="field-group" style="margin-bottom:0">
+      <label for="inp-guru">Diisi Oleh (nama guru)</label>
+      <select id="inp-guru">
+        <option value="">— pilih guru pengamat —</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="progress-wrap">
+    <div id="progress-label">
+      <span>Kelengkapan pengisian</span>
+      <span id="progress-count">0/7 indikator terisi</span>
+    </div>
+    <div id="progress-track"><div id="progress-fill"></div></div>
+  </div>
+
+  <div id="form-area" class="hidden">
+    <div id="categories"></div>
+
+    <div class="field-group" style="margin-top:1rem">
+      <label for="inp-cuplikan">Cuplikan Tulisan Siswa (opsional)</label>
+      <textarea id="inp-cuplikan" placeholder="Salin 1-2 kalimat asli tulisan siswa sebagai bukti, kalau ada"></textarea>
+    </div>
+  </div>
+
+</div>
+
+<div id="bottom-bar">
+  <div id="save-status">Pilih siswa untuk mulai mengisi.</div>
+  <button id="btn-save">Simpan</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="assets/mpls-data.js"></script>
+<script src="assets/mpls-jurnal-data.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/app-jurnal.js"></script>
+<script>
+  document.getElementById("lbl-aktivitas").textContent = MPLS_JURNAL_AKTIVITAS;
+</script>
+</body>
+</html>

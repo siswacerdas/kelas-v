@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rekap Asesmen Menulis · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/mpls.css" />
+</head>
+<body>
+
+<div id="checking" style="position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-3);z-index:500">
+  Memeriksa akses…
+</div>
+
+<div id="topbar">
+  <a href="index.html" class="back">←</a>
+  <div class="brand">Rekap <em>Asesmen Menulis</em></div>
+</div>
+
+<div class="container">
+  <p class="section-label">Rekap & Kesimpulan Otomatis — Jurnal Aktivitas</p>
+  <div class="info-box">
+    Kesimpulan dan rekomendasi di bawah ini <strong>dihasilkan otomatis</strong> dari nilai
+    yang sudah diisi guru di halaman Input Asesmen Menulis. Kategori yang belum diisi sama
+    sekali ditandai "-". Klik judul kartu siswa untuk menyembunyikan/menampilkan detail.
+    <br /><a href="rekap.html" style="font-size:12px">↪ Lihat rekap non-kognitif (MPLS)</a> ·
+    <a href="rekap-kognitif.html" style="font-size:12px">↪ Lihat rekap kognitif</a>
+  </div>
+
+  <select id="search" class="rekap-search">
+    <option value="">— Tampilkan semua siswa —</option>
+  </select>
+
+  <div id="list"></div>
+</div>
+
+<footer>Modul Asesmen Menulis · Kelas 5 · Rekap dibuat otomatis dari Google Spreadsheet</footer>
+
+<script type="module" src="../../assets/js/guru-guard.js"></script>
+<script src="assets/mpls-data.js"></script>
+<script src="assets/mpls-jurnal-data.js"></script>
+<script src="assets/config.js"></script>
+<script src="assets/mpls-scoring-jurnal.js"></script>
+<script>
+  let allData = [];
+
+  function levelBadgeHtml(level, label) {
+    const cls = level ? "level-" + level : "level-none";
+    return `<span class="level-badge ${cls}">${label}</span>`;
+  }
+
+  function isiDropdownPencarian() {
+    const select = document.getElementById("search");
+    MPLS_STUDENTS.forEach((nama) => {
+      const opt = document.createElement("option");
+      opt.value = nama;
+      opt.textContent = nama;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderList(namaTerpilih) {
+    const wrap = document.getElementById("list");
+    const rows = namaTerpilih
+      ? allData.filter((r) => String(r["Nama Siswa"]).trim() === namaTerpilih.trim())
+      : allData;
+
+    if (!rows.length) {
+      wrap.innerHTML = namaTerpilih
+        ? `<div class="info-box">Belum ada data asesmen menulis untuk <strong>${namaTerpilih}</strong>.</div>`
+        : '<div class="info-box">Belum ada data asesmen menulis sama sekali.</div>';
+      return;
+    }
+
+    wrap.innerHTML = rows.map((row, idx) => {
+      const result = MplsScoringJurnal.computeStudentResult(row);
+      const miniBadges = result.categories.map((c) =>
+        `<span class="rekap-mini-badge">${c.icon} ${c.level || "–"}</span>`
+      ).join("");
+
+      const catDetail = result.categories.map((c) => `
+        <div class="rekap-cat-block">
+          <h4>${c.icon} ${c.title} — ${levelBadgeHtml(c.level, c.levelLabel)} <span style="font-size:10.5px;color:var(--ink-3)">(${c.filled}/${c.total} indikator, ${c.kelengkapan}% lengkap)</span></h4>
+          <p>${c.simpulan}</p>
+          ${c.guru.length ? `<p style="margin-bottom:2px"><strong>Rekomendasi guru:</strong></p><ul>${c.guru.map((g) => `<li>${g}</li>`).join("")}</ul>` : ""}
+          ${c.ortu.length ? `<p style="margin-bottom:2px;margin-top:6px"><strong>Rekomendasi orang tua:</strong></p><ul>${c.ortu.map((o) => `<li>${o}</li>`).join("")}</ul>` : ""}
+        </div>
+      `).join("");
+
+      const cuplikanBlock = row["Cuplikan Tulisan Siswa"]
+        ? `<div class="rekap-cat-block"><h4>📄 Cuplikan Tulisan Siswa</h4><p style="font-style:italic">"${row["Cuplikan Tulisan Siswa"]}"</p></div>`
+        : "";
+
+      return `
+        <div class="rekap-item open" data-idx="${idx}">
+          <div class="rekap-item-head">
+            <div class="rekap-item-name">${row["Nama Siswa"] || "—"}</div>
+            ${levelBadgeHtml(result.overall.level, result.overall.label)}
+          </div>
+          <div class="rekap-mini-badges">${miniBadges}</div>
+          <div class="rekap-detail">
+            <div class="rekap-cat-block">
+              <h4>🎯 Kesimpulan Akhir Asesmen Menulis — ${levelBadgeHtml(result.overall.level, result.overall.label)}</h4>
+              <p>${result.overall.narasi}</p>
+              ${result.overall.kekuatan.length ? `<p style="margin-top:6px"><strong>Aspek kuat:</strong> ${result.overall.kekuatan.join(", ")}</p>` : ""}
+              ${result.overall.perhatian.length ? `<p><strong>Aspek yang perlu perhatian:</strong> ${result.overall.perhatian.join(", ")}</p>` : ""}
+              ${result.overall.guru.length ? `<p style="margin-bottom:2px;margin-top:6px"><strong>Saran untuk guru:</strong></p><ul>${result.overall.guru.map((g) => `<li>${g}</li>`).join("")}</ul>` : ""}
+              ${result.overall.ortu.length ? `<p style="margin-bottom:2px;margin-top:6px"><strong>Saran untuk orang tua:</strong></p><ul>${result.overall.ortu.map((o) => `<li>${o}</li>`).join("")}</ul>` : ""}
+            </div>
+            ${cuplikanBlock}
+            ${catDetail}
+            <a class="btn-cetak" href="laporan-jurnal.html?nama=${encodeURIComponent(row["Nama Siswa"])}" target="_blank">🖨️ Cetak / Simpan PDF</a>
+          </div>
+        </div>`;
+    }).join("");
+
+    wrap.querySelectorAll(".rekap-item").forEach((el) => {
+      el.querySelector(".rekap-item-head").addEventListener("click", () => el.classList.toggle("open"));
+    });
+  }
+
+  async function loadData() {
+    document.getElementById("list").innerHTML = '<div class="info-box">Memuat data…</div>';
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?allJurnal=1");
+      const json = await res.json();
+      if (json.data === undefined) {
+        document.getElementById("list").innerHTML =
+          '<div class="info-box" style="border-color:var(--danger)">Backend belum mengenali permintaan ini (field "data" tidak ada di respons). ' +
+          'Kemungkinan Apps Script belum ter-deploy versi terbaru — cek Deploy → Manage deployments → pastikan versi aktif adalah yang terbaru.</div>';
+        return;
+      }
+      allData = json.data;
+      renderList("");
+    } catch (err) {
+      document.getElementById("list").innerHTML = '<div class="info-box" style="border-color:var(--danger)">Gagal memuat data: ' + err.message + '</div>';
+    }
+  }
+
+  document.getElementById("search").addEventListener("change", (e) => renderList(e.target.value));
+
+  document.addEventListener("guru-verified", () => {
+    document.getElementById("checking").remove();
+    isiDropdownPencarian();
+    loadData();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../../index.html"));
+</script>
+</body>
+</html>
