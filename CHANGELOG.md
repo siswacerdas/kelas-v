@@ -21,7 +21,28 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.6.1] — 2026-07-16
+## [0.6.2] — 2026-07-17
+
+### Diperbaiki
+- **Modul Asesmen Menulis (Jurnal Aktivitas) yang tercatat "selesai" sejak v0.5.0 ternyata
+  hilang total dari repo** — `mpls-jurnal-data.js`, `mpls-scoring-jurnal.js`, `app-jurnal.js`,
+  `input-jurnal.html`, `rekap-jurnal.html`, dan kartu navigasi di `index.html` tidak ada,
+  padahal `laporan-jurnal.html` sudah memanggilnya. Kelima file + kartu navigasi
+  dibangun ulang mengikuti spesifikasi yang sudah ditulis di `ANTIREGRESI.md` §14 dan
+  Skenario I (2 kategori, 7 indikator, field "Cuplikan Tulisan Siswa"), dan cocok dengan
+  `HEADERS_JURNAL` yang sudah lebih dulu ada di `apps-script/Code.gs` — backend tidak diubah.
+- **Simpulan otomatis per kategori (3 modul: MPLS non-kognitif, Kognitif, Jurnal) sebelumnya
+  murni template kategori+level, buta terhadap catatan anekdot guru dan buta terhadap
+  kelengkapan data** — dua siswa dengan pola sangat berbeda tapi rata-rata skor sama akan
+  mendapat kalimat cetak identik. `computeCategory()` di ketiga file `mpls-scoring*.js`
+  kini melampirkan cuplikan catatan anekdot guru (field `noteField`, sudah dikumpulkan
+  form input tapi sebelumnya tidak pernah dipakai) dan penanda "(x/y indikator, sementara)"
+  saat kategori belum terisi penuh. Diuji dengan Playwright (data terpanjang di semua
+  kategori + data tidak lengkap) — tetap 1 halaman A4 di ketiga laporan cetak; cap
+  panjang catatan sengaja lebih pendek di laporan kognitif (7 kategori, grid lebih rapat)
+  dibanding 2 modul lain.
+
+
 
 ### Diubah
 - **Print out Laporan Asesmen Kognitif kini mengelompokkan kartu kategori jadi 2 bagian

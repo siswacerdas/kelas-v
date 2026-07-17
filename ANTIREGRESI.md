@@ -417,6 +417,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-15 | 0.5.5 | *(nama)* | ⏳ Belum diuji | Error JSON mentah saat simpan lambat kini bermakna (bukan `Unexpected token`), daftar siswa auto-refresh saat gagal simpan, daftar terurut abjad — WAJIB uji Skenario L |
 | 2026-07-16 | 0.6.0 | *(nama)* | ⏳ Belum diuji | Instrumen baru "Menyimak & Menulis" (2 kategori kognitif + rubrik cetak pendamping) — WAJIB uji Skenario M, termasuk cek kolom lama TIDAK bergeser di sheet |
 | 2026-07-16 | 0.6.1 | Claude (Playwright, data uji) | ✅ Lulus (otomatis) | Print out kognitif dikelompokkan Literasi vs Numerasi, dikonfirmasi tetap 1 halaman PDF dengan 7 kategori terisi penuh — guru tetap disarankan cek visual manual (Skenario N) sebelum dipakai massal |
+| 2026-07-17 | 0.6.2 | Claude (Playwright, data uji) | ⚠️ Lulus dengan catatan | 5 file modul Jurnal yang sempat hilang sejak v0.5.0 dibangun ulang (§14 baru bisa diuji sungguhan pertama kali); simpulan otomatis di 3 modul kini menyerap catatan anekdot & kelengkapan data — diuji cetak 1 halaman A4 dengan data terpanjang+tidak lengkap (headless, tanpa Apps Script sungguhan). WAJIB: guru cek simpan/muat data jurnal ke sheet "Data Jurnal Aktivitas" sungguhan sebelum dipakai massal (Skenario I langkah 3-4 belum diuji dengan backend nyata) |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
