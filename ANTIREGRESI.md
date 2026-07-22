@@ -29,6 +29,8 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Login sebagai **guru**: panel guru muncul
 - [ ] Login sebagai **siswa**: panel guru **tidak** muncul
 - [ ] Login sebagai **siswa**: tidak bisa mengakses `pages/admin.html` secara langsung
+      *(⏳ belum bisa diuji — `pages/admin.html` belum dibuat, masih di daftar "Direncanakan"
+      di CHANGELOG. Item ini baru relevan setelah halaman itu dibangun.)*
 
 ### 4. Pengumuman (Firestore)
 - [ ] Pengumuman terbaru tampil di beranda setelah login
@@ -73,6 +75,14 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Tombol "Cetak / Simpan PDF" membuka `laporan.html` dengan nama siswa yang benar
 - [ ] Kalau field `data` tidak ada di respons backend, muncul pesan yang mengarahkan
       untuk cek ulang deployment Apps Script (lihat catatan di bawah)
+- [ ] **Sejak v0.6.2** (berlaku di ketiga modul — cek juga di `rekap-kognitif.html` dan
+      `rekap-jurnal.html`, bukan cuma `rekap.html`): kalimat kesimpulan per kategori
+      melampirkan cuplikan **catatan anekdot** guru kalau field catatannya diisi (bukan
+      cuma template kategori+level polos) — coba isi catatan lalu cek kalimatnya berubah,
+      bukan tetap generik
+- [ ] **Sejak v0.6.2** (berlaku di ketiga modul): kategori yang belum terisi PENUH (mis.
+      baru 3 dari 4 indikator) diberi penanda "(x/y indikator, sementara)" di
+      kesimpulannya — bukan dianggap sudah final seolah semua indikator terisi
 
 > ⚠️ **Jebakan umum saat re-deploy Apps Script**: di dialog "Manage deployments" →
 > pensil (edit) → pastikan dropdown **"Version"** diganti ke **"New version"**
@@ -144,18 +154,30 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Halaman ini **terpisah total** dari `input.html` non-kognitif — mengisi salah satu
       TIDAK BOLEH mengubah/menimpa data di sheet yang lain (cek kedua sheet di spreadsheet)
 - [ ] Kode akses (gate) berfungsi sama seperti `input.html`
-- [ ] 5 kategori tampil: Literasi, Penjumlahan, Pengurangan, Perkalian, Pembagian
+- [ ] **7 kategori** tampil: Literasi, Penjumlahan, Pengurangan, Perkalian, Pembagian,
+      Menyimak, Menulis (2 terakhir ditambahkan sejak v0.6.0 — BUKAN 5 kategori)
 - [ ] Memilih siswa yang sama dua kali (isi ulang) meng-update baris yang sama di sheet
       "Data MPLS Kognitif", bukan menduplikasi baris
 
 ### 12. Asesmen Awal Kognitif — Rekap & Laporan (`rekap-kognitif.html`, `laporan-kognitif.html`)
 - [ ] Kedua halaman menolak akses jika bukan guru (Firebase-gated, sama seperti versi non-kognitif)
-- [ ] Rekap menampilkan 5 kategori dengan badge level, "-" untuk kategori kosong
+- [ ] Rekap menampilkan **7 kategori** dengan badge level, "-" untuk kategori kosong (literasi,
+      penjumlahan, pengurangan, perkalian, pembagian, menyimak, menulis — BUKAN 5, sudah
+      bertambah 2 kategori "Menyimak" & "Menulis" sejak v0.6.0)
 - [ ] Kesimpulan akhir "Kesiapan Akademik" tampil lengkap dengan saran guru & orang tua
 - [ ] Tombol cetak dari rekap kognitif membuka `laporan-kognitif.html` dengan nama siswa yang benar
 - [ ] Laporan cetak kognitif juga pas 1 halaman A4, ada foto, tulisan besar, dan blok tanda tangan
-      (grid kategori 3 kolom karena ada 5 kategori — pastikan tidak ada yang terpotong)
+- [ ] **Sejak v0.6.2**: kartu kategori di laporan cetak terbagi jadi **2 bagian terpisah**, BUKAN
+      lagi satu grid campur — "📖 Literasi (Membaca, Menyimak & Menulis)" grid 3 kolom
+      (literasi, menyimak, menulis) dan "🔢 Numerasi (Berhitung)" grid 4 kolom (penjumlahan,
+      pengurangan, perkalian, pembagian). Pastikan tidak ada kartu yang terpotong di kedua grid,
+      dan urutan tidak lagi campur aduk seperti sebelum v0.6.2
 - [ ] Tautan silang antar rekap non-kognitif ↔ kognitif berfungsi di kedua arah
+
+> **Bukan bug**: cuplikan catatan anekdot di kesimpulan kognitif memang SENGAJA dibatasi
+> lebih pendek (60 karakter) dibanding modul non-kognitif & jurnal (130 karakter) — karena
+> grid kategorinya lebih rapat (7 kategori vs 4). Jangan "diperbaiki" jadi 130 tanpa
+> mengecek dulu apakah laporan kognitif masih pas 1 halaman A4 kalau diubah.
 
 ### 13. Nama Guru Kelas di Laporan Cetak
 - [ ] `laporan.html`, `laporan-kognitif.html`, DAN `laporan-jurnal.html` sama-sama menampilkan
@@ -175,6 +197,161 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 
 ---
 
+### 15. Kunci Akses Server-side (`apps-script/Code.gs`, v0.7.0)
+> **Kenapa ditambahkan**: sebelum v0.7.0, kode akses di `input.html` dan gerbang Firebase
+> Auth di halaman guru (`rekap*.html`, `laporan*.html`, `pages/kelas/`) HANYA memproteksi
+> tampilan. Endpoint Apps Script di baliknya sama sekali tidak mengecek apa pun — siapa saja
+> yang tahu `APPS_SCRIPT_URL` (yang memang publik, ada di `pages/mpls/assets/config.js` yang
+> ikut ter-deploy ke GitHub Pages) bisa memanggil `?all=1`/`?siswa=1`/dst. langsung dari
+> browser/curl dan mendapatkan nama lengkap, foto, tempat & tanggal lahir SEMUA siswa. v0.7.0
+> menambahkan 2 lapis pengecekan **di server** (`wajibKodeAkses_()` dan `wajibGuru_()` di
+> `Code.gs`), bukan cuma di JS klien.
+- [ ] **Deploy ulang** `Code.gs` sebagai **New version** sudah dilakukan (lihat
+      `apps-script/README.md`) — kalau belum, SEMUA endpoint akan gagal total (bukan cuma
+      soal keamanan), karena kode lama tidak mengenal parameter `idToken`/`kode`
+- [ ] Saat deploy ulang, muncul permintaan izin **tambahan** untuk "menghubungkan ke layanan
+      eksternal" (`UrlFetchApp`, dipakai `wajibGuru_()` untuk memverifikasi ke Identity Toolkit
+      & Firestore) — klik Allow/Izinkan
+- [ ] `input.html`/`input-kognitif.html`/`input-jurnal.html`: isi kode akses yang BENAR →
+      pilih siswa → data lama (kalau ada) tetap termuat, simpan tetap berhasil seperti biasa
+      (regresi: pastikan tidak ada perubahan perilaku dari sisi guru pengisi)
+- [ ] Login sebagai **guru** → buka `pages/kelas/index.html`, `rekap.html`, `rekap-kognitif.html`,
+      `rekap-jurnal.html` → semua tetap memuat data seperti biasa (regresi: pastikan idToken
+      terkirim otomatis, guru tidak perlu memasukkan apa pun secara manual)
+- [ ] Login sebagai guru → buka salah satu `laporan*.html` untuk siswa yang punya foto →
+      foto tetap tampil (proxy `?foto=` kini juga minta idToken)
+- [ ] **Uji negatif (penting)**: dari tab browser baru yang **belum login** (mode
+      penyamaran/incognito), akses langsung `APPS_SCRIPT_URL?all=1` atau `?siswa=1` di address
+      bar → **Harapan: balasan `{"status":"error","message":"..."}`, BUKAN data siswa**
+- [ ] **Uji negatif**: akses `APPS_SCRIPT_URL?nama=<nama siswa>` tanpa parameter `&kode=` →
+      **Harapan: balasan error, bukan data nilai siswa tsb**
+- [ ] Kode akses di `Code.gs` (`ACCESS_CODE_MPLS`) dan di `pages/mpls/assets/config.js`
+      (`ACCESS_CODE`) **sama persis** — kalau salah satu diganti, ganti juga yang satunya
+- [ ] Rules Firestore yang AKTIF di Firebase Console → Firestore Database → Rules **sudah
+      versi terbaru dari `README.md`** (3 blok match eksplisit: `pengumuman`/`modul`/
+      `bank_soal`), BUKAN versi lama yang pakai wildcard `/{koleksi}/{id}` (ada bug tabrakan
+      aturan — lihat CHANGELOG v0.7.0) dan BUKAN lagi "test mode" bawaan (yang otomatis
+      terkunci total setelah 30 hari & sebelum itu terbuka untuk siapa saja)
+- [ ] **Uji negatif Firestore**: login sebagai **siswa** (bukan guru) → coba baca dokumen
+      `users/{uid milik guru atau siswa lain}` lewat Firebase Console "Rules Playground"
+      atau lewat kode sementara di console browser → **Harapan: ditolak** (kalau berhasil
+      dibaca, berarti rules masih versi lama yang bermasalah)
+
+---
+
+### 16. Panel Kelola Konten Guru (`pages/admin.html`, v0.8.0)
+- [ ] Halaman menolak akses jika login sebagai **siswa** (Firebase-gated pakai
+      `guru-guard.js`, sama seperti `rekap*.html`/`laporan*.html`/`pages/kelas/`)
+- [ ] 3 tab (Pengumuman, Modul, Bank Soal) bisa diklik bolak-balik, isi form tidak
+      tercampur antar tab
+- [ ] **Tab Pengumuman**: tambah baru → muncul di list & di beranda (`index.html`)
+      dengan tanggal hari ini; klik Edit → form terisi ulang persis, judul jadi
+      "Edit Pengumuman"; simpan perubahan → list ter-update, BUKAN duplikat baris
+      baru; klik Hapus → muncul konfirmasi, kalau di-Oke baris hilang dari list
+      DAN dari beranda
+- [ ] **Tab Modul**: tambah baru dengan mapel yang belum pernah ada → muncul grup
+      mapel baru; tambah modul kedua dengan mapel yang SAMA tapi urutan lebih
+      kecil → tampil LEBIH ATAS dari yang pertama (urutan menentukan posisi,
+      bukan waktu tambah); Edit & Hapus berfungsi sama seperti Pengumuman
+- [ ] **Tab Bank Soal**: isi 2-4 pilihan, centang radio "Benar" di salah satu →
+      field jawaban yang tersimpan **sesuai teks pilihan yang dicentang**, bukan
+      urutan/huruf (A/B/C/D); ubah radio ke pilihan lain sebelum simpan → jawaban
+      ikut berubah; Edit soal lama → radio "Benar" otomatis tercentang ulang di
+      pilihan yang sesuai
+- [ ] Coba isi judul/pertanyaan dengan karakter aneh seperti `<script>` atau
+      `<img onerror=...>` → HARUS tampil sebagai teks biasa di list (bukan
+      dieksekusi/muncul kotak alert) — ini uji anti-XSS, bukan sekadar tampilan
+- [ ] Tombol "+ Tambah Pengumuman" / "Upload Modul" / "Tambah Soal" di beranda
+      membuka `admin.html` langsung ke tab yang sesuai (bukan lagi `alert("Fitur
+      segera hadir")`)
+- [ ] Tampilan tab Bank Soal (paling padat: pertanyaan + 4 pilihan + radio) tetap
+      rapi di layar HP (≤ 380px), tidak ada radio/label yang terpotong
+
+---
+
+### 17. Halaman Modul Pembelajaran (`pages/modul.html`, v0.8.0)
+- [ ] Login sebagai **siswa** → halaman tetap bisa diakses (BUKAN guru-only,
+      pakai `auth-guard.js` yang mengizinkan siapa saja yang login)
+- [ ] Modul yang ditambahkan lewat `admin.html` langsung muncul di sini tanpa
+      perlu deploy ulang apa pun (data dari Firestore, bukan hardcode)
+- [ ] Modul dikelompokkan per mata pelajaran, dan di dalam satu mapel diurutkan
+      sesuai field "Urutan Tampil" yang diisi guru — BUKAN urutan tambah/abjad
+- [ ] Filter chip di atas (nama-nama mapel + "Semua") menyaring daftar dengan
+      benar; pilih satu mapel → modul mapel lain hilang dari tampilan
+- [ ] Tombol "Buka Modul" membuka link Drive/PDF di tab baru, TIDAK menavigasi
+      keluar dari halaman ini
+- [ ] Modul tanpa link file valid (kosong atau bukan `http`) tidak menampilkan
+      tombol "Buka Modul" yang rusak — dicek dulu formatnya sebelum dibuatkan link
+- [ ] Kalau belum ada modul sama sekali → pesan "Belum ada modul yang ditambahkan
+      guru", bukan halaman kosong tanpa penjelasan
+
+---
+
+### 18. Materi Ajar (`pages/admin.html` tab Materi, `pages/materi.html`, v0.9.0)
+- [ ] Tab Materi di `admin.html`: tambah/edit/hapus berfungsi sama seperti tab
+      Modul, tapi field "Isi Materi" (textarea panjang) tersimpan & termuat ulang
+      utuh saat Edit — tidak terpotong
+- [ ] `materi.html` bisa dibuka akun **siswa** (bukan guru-only)
+- [ ] Daftar materi dikelompokkan per mapel & diurutkan sesuai "Urutan Tampil",
+      sama seperti Modul
+- [ ] Klik judul materi → isi materi TERBUKA di tempat (tidak pindah halaman,
+      tidak buka tab baru); klik lagi → tertutup kembali
+- [ ] Materi dengan lampiran (`url_file` valid) menampilkan link "📎 Buka
+      lampiran" di dalam isi yang terbuka; materi tanpa lampiran tidak
+      menampilkan link rusak
+- [ ] Filter chip per mapel berfungsi sama seperti `modul.html`
+
+---
+
+### 19. Bank Soal — Latihan Interaktif (`pages/bank-soal.html`, v0.9.0)
+- [ ] Bisa dibuka akun **siswa** (bukan guru-only)
+- [ ] Kotak pilihan mapel menampilkan jumlah soal yang benar per mapel (mis.
+      "5 soal") sesuai isi `bank_soal` yang sudah ditambahkan guru
+- [ ] Klik salah satu mapel → masuk mode kuis, menampilkan SEMUA soal mapel itu
+      sekaligus (bukan satu-satu)
+- [ ] Pilih jawaban untuk sebagian atau semua soal → klik "Periksa Jawaban" →
+      skor (x/y) muncul dan SESUAI dengan jumlah jawaban yang benar-benar cocok
+- [ ] Pilihan yang benar ditandai **hijau** untuk SEMUA soal (termasuk yang
+      dijawab benar maupun salah); pilihan yang dipilih siswa tapi SALAH ditandai
+      **merah**; soal yang tidak dijawab sama sekali tidak menampilkan warna merah
+      di pilihan manapun (karena tidak ada yang dipilih)
+- [ ] Setelah dinilai: semua radio button terkunci (tidak bisa diubah lagi) dan
+      tombol berubah jadi "Sudah Dinilai" (nonaktif)
+- [ ] Tombol "← Pilih mapel lain" mengembalikan ke daftar mapel, dan memilih
+      mapel lain/sama menampilkan kuis BARU (bukan hasil kuis sebelumnya yang
+      masih nyangkut)
+- [ ] Soal dengan hanya 2 pilihan maupun 4 pilihan sama-sama tampil rapi
+      (jumlah pilihan tidak seragam antar soal — cek tidak ada yang janggal)
+
+---
+
+### 20. Arsip Pengumuman (`pages/info.html`, v0.9.0)
+- [ ] Bisa dibuka akun siswa maupun guru
+- [ ] Menampilkan SEMUA pengumuman yang ada di Firestore, terbaru di paling atas
+      — BUKAN cuma 5 seperti di beranda (`index.html`)
+- [ ] Pengumuman yang ditambah/diedit/dihapus lewat `admin.html` langsung
+      konsisten antara beranda dan halaman ini (sama-sama baca koleksi
+      `pengumuman` yang sama, tidak ada data terpisah)
+
+---
+
+### 21. Halaman Statis — CP/TP/ATP & Jadwal (`pages/cp-tp-atp.html`, `pages/jadwal.html`, v0.9.0)
+> Kedua halaman ini SENGAJA statis (bukan Firestore) dan SENGAJA masih kerangka
+> kosong — checklist di bawah menguji bahwa kerangkanya jujur dan tidak rusak,
+> BUKAN menguji konten (karena kontennya memang belum ada).
+- [ ] Bisa dibuka akun siswa maupun guru (pakai `auth-guard.js`, sama seperti
+      `modul.html`/`materi.html`/`bank-soal.html`/`info.html`)
+- [ ] Kotak catatan kuning "Halaman ini masih kerangka" tampil jelas, tidak
+      disembunyikan atau ketutupan elemen lain
+- [ ] `jadwal.html`: tabel jadwal tidak bikin halaman melebar ke samping di
+      layar HP (tabelnya sendiri boleh di-scroll horizontal DI DALAM kotaknya,
+      tapi halaman secara keseluruhan tidak ikut melebar)
+- [ ] **Kalau nanti sudah diisi dokumen CP/TP/ATP atau jadwal resmi**: pastikan
+      kotak catatan kuning ("masih kerangka") ikut DIHAPUS supaya tidak
+      membingungkan — jangan cuma menambah isi tanpa menghapus catatannya
+
+---
+
 ## 🔁 Skenario Ujicoba Lengkap
 
 Jalankan skenario ini setelah perubahan besar:
@@ -191,7 +368,8 @@ Jalankan skenario ini setelah perubahan besar:
 1. Masukkan email siswa yang terdaftar
 2. Masukkan kata sandi yang benar
 3. → **Harapan:** beranda tampil, panel guru **tidak** muncul
-4. Coba akses URL `pages/admin.html` langsung di browser
+4. Coba akses URL `pages/admin.html` langsung di browser *(⏳ belum bisa diuji — halaman
+   ini belum dibuat, masih di daftar "Direncanakan"; lewati langkah 4-5 untuk saat ini)*
 5. → **Harapan:** diarahkan ke login atau muncul pesan tidak punya akses
 
 ### Skenario C — Login Gagal
@@ -221,7 +399,7 @@ Jalankan skenario ini setelah perubahan besar:
 2. Klik "Input Asesmen Kognitif" → isi kode akses → pilih siswa → isi minimal 1-2 kategori
 3. → **Harapan:** tersimpan ke sheet "Data MPLS Kognitif" (BUKAN ke sheet "Data MPLS" yang lama)
 4. Kembali ke menu MPLS → klik "Rekap Asesmen Kognitif"
-5. → **Harapan:** siswa yang baru diisi muncul dengan badge level 5 kategori, kategori kosong "-"
+5. → **Harapan:** siswa yang baru diisi muncul dengan badge level **7 kategori**, kategori kosong "-"
 6. Klik "Cetak / Simpan PDF"
 7. → **Harapan:** laporan 1 halaman A4 muncul dengan foto (atau placeholder), tulisan besar,
    dan blok tanda tangan Arif Azwar Anas di kanan bawah lengkap dengan NBM
@@ -377,6 +555,39 @@ Jalankan skenario ini setelah perubahan besar:
 
 ---
 
+### Skenario O — Verifikasi Kunci Akses Server-side (v0.7.0)
+> Bagian 1-2 bisa diuji otomatis (Playwright + stub Firebase SDK, sudah dilakukan Claude —
+> lihat Log Ujicoba). Bagian 3 (uji negatif ke Apps Script SUNGGUHAN) **wajib manual**,
+> karena butuh deployment nyata yang sudah di-reauthorize untuk `UrlFetchApp`.
+
+**1) Alur normal — jalur kode akses (input)**
+1. Buka `input.html`, masukkan kode akses benar, pilih siswa, simpan
+2. → **Harapan:** tersimpan seperti biasa, tidak ada pesan error baru yang muncul
+
+**2) Alur normal — jalur guru (Firebase)**
+1. Login sebagai guru → buka `pages/kelas/index.html` → daftar siswa termuat, foto tampil
+2. Tambah/ubah 1 data siswa (boleh tanpa ganti foto) → simpan → **Harapan:** tersimpan normal
+3. Buka `rekap.html`, `rekap-kognitif.html`, `rekap-jurnal.html` → semua termuat normal
+4. Buka salah satu `laporan*.html` untuk siswa berfoto → foto tampil
+
+**3) Uji negatif — WAJIB dengan Apps Script sungguhan yang sudah di-deploy ulang**
+1. Salin `APPS_SCRIPT_URL` dari `pages/mpls/assets/config.js`
+2. Di tab **incognito/belum login sama sekali**, buka `<APPS_SCRIPT_URL>?all=1` langsung
+   di address bar → **Harapan: `{"status":"error","message":"Sesi login guru tidak
+   ditemukan..."}`, TIDAK ada field "data" berisi nilai siswa**
+3. Ulangi untuk `?siswa=1`, `?allKognitif=1`, `?allJurnal=1` → semua harus balas error yang
+   sama, bukan data
+4. Buka `<APPS_SCRIPT_URL>?nama=<nama siswa asli>` (tanpa `&kode=`) → **Harapan: error, bukan
+   data penilaian siswa tsb**
+5. Ulangi langkah 4 dengan `&kode=SALAH` di akhir URL → **Harapan: tetap error**
+6. Ulangi langkah 4 dengan `&kode=mpls2026` (atau kode yang sedang dipakai) di akhir URL →
+   **Harapan: BERHASIL** dapat data (ini expected — kode akses memang bukan keamanan
+   sesungguhnya, cuma mencegah pemanggilan tidak sengaja, sesuai desain awal proyek)
+7. (Regresi) Ulangi Skenario J (foto) dari awal — pastikan proxy `?foto=` masih bisa
+   diakses dari halaman `laporan.html`/`pages/kelas/` yang sudah login guru
+
+---
+
 ## 🐛 Cara Melaporkan Bug
 
 Jika menemukan masalah, catat informasi berikut:
@@ -418,6 +629,10 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-16 | 0.6.0 | *(nama)* | ⏳ Belum diuji | Instrumen baru "Menyimak & Menulis" (2 kategori kognitif + rubrik cetak pendamping) — WAJIB uji Skenario M, termasuk cek kolom lama TIDAK bergeser di sheet |
 | 2026-07-16 | 0.6.1 | Claude (Playwright, data uji) | ✅ Lulus (otomatis) | Print out kognitif dikelompokkan Literasi vs Numerasi, dikonfirmasi tetap 1 halaman PDF dengan 7 kategori terisi penuh — guru tetap disarankan cek visual manual (Skenario N) sebelum dipakai massal |
 | 2026-07-17 | 0.6.2 | Claude (Playwright, data uji) | ⚠️ Lulus dengan catatan | 5 file modul Jurnal yang sempat hilang sejak v0.5.0 dibangun ulang (§14 baru bisa diuji sungguhan pertama kali); simpulan otomatis di 3 modul kini menyerap catatan anekdot & kelengkapan data — diuji cetak 1 halaman A4 dengan data terpanjang+tidak lengkap (headless, tanpa Apps Script sungguhan). WAJIB: guru cek simpan/muat data jurnal ke sheet "Data Jurnal Aktivitas" sungguhan sebelum dipakai massal (Skenario I langkah 3-4 belum diuji dengan backend nyata) |
+| 2026-07-19 | 0.7.0 | Claude (Playwright + unit test, tanpa Apps Script sungguhan) | ⚠️ Lulus dengan catatan | Kunci akses server-side: `wajibKodeAkses_()` & `wajibGuru_()` baru di `Code.gs` — 8 unit test logika (kode benar/salah/kosong, token valid/invalid/kedaluwarsa, role guru/bukan guru, dokumen users/{uid} hilang) semua lulus; 17 skenario Playwright (semua halaman yang memanggil endpoint MPLS/Kelas/foto, dengan stub Firebase SDK offline) mengonfirmasi `idToken`/`kode` benar-benar terkirim di setiap panggilan — semua lulus. **BELUM diuji**: Skenario O bagian 3 (uji negatif ke Apps Script SUNGGUHAN setelah redeploy) — WAJIB dilakukan manual sebelum dianggap aman, karena verifikasi `wajibGuru_()` memanggil Identity Toolkit & Firestore REST API sungguhan yang tidak bisa disimulasikan penuh dari sandbox. Celah residual yang SENGAJA belum ditutup: 3 kandidat fallback foto (hotlink Drive langsung) masih tidak diproteksi karena folder Drive di-share "anyone with link" — lihat komentar di `assets/js/foto-fallback.js` |
+| 2026-07-20 | 0.7.1 | Claude (audit dokumen, tanpa perubahan kode aplikasi) | ⚠️ Lulus dengan catatan | Audit lanjutan: (1) rules Firestore README diverifikasi ke dokumentasi resmi Firebase — dikonfirmasi bug tabrakan aturan (rules di-OR-kan, wildcard `/{koleksi}/{id}` melumpuhkan `/users/{uid}`), sudah diperbaiki di README, **BELUM diuji dengan Firestore Rules Playground sungguhan** (perlu dilakukan manual di Firebase Console, dicatat sebagai item checklist baru); (2) audit isi `ANTIREGRESI.md` sendiri terhadap kode sungguhan menemukan 2 tempat checklist keliru soal jumlah kategori kognitif (bilang 5, sebenarnya 7 sejak v0.6.0) dan 1 tempat penjelasan grid laporan yang sudah basi sejak v0.6.2 — semua dikonfirmasi lewat `grep` langsung ke `mpls-kognitif-data.js`/`laporan-kognitif.html`, bukan tebakan. |
+| 2026-07-20 | 0.8.0 | Claude (Playwright + stub Firestore in-memory, tanpa Firestore sungguhan) | ⚠️ Lulus dengan catatan | `admin.html` (panel CRUD Pengumuman/Modul/Bank Soal) & `modul.html` (tampil siswa) baru. 18 skenario Playwright: tambah/edit/hapus untuk ketiga jenis konten (semua lulus), radio jawaban benar di Bank Soal tersimpan sesuai teks pilihan yang dicentang (lulus), anti-XSS pada judul/pertanyaan dengan tag HTML (lulus, di-escape bukan dieksekusi), penolakan akses akun bukan-guru di `admin.html` (lulus), pengelompokan+pengurutan+filter mapel di `modul.html` untuk akun siswa (lulus). Screenshot layar sempit (360-375px) untuk kedua halaman, termasuk tab Bank Soal yang paling padat — tidak ada elemen terpotong. **BELUM diuji**: dengan Firestore project sungguhan (`kelas-v-2026`) — stub in-memory tidak bisa memvalidasi apakah Firestore Rules produksi (v0.7.1) benar-benar mengizinkan guru menulis ke koleksi `modul`/`bank_soal` seperti diharapkan; WAJIB dicoba manual sebelum dipakai guru beneran (lihat §16-17 checklist baru). |
+| 2026-07-20 | 0.9.0 | Claude (Playwright + stub Firestore in-memory, tanpa Firestore sungguhan) | ⚠️ Lulus dengan catatan | `materi.html`, `bank-soal.html`, `info.html`, `cp-tp-atp.html`, `jadwal.html` baru + tab Materi di `admin.html`. 20 skenario Playwright baru (semua lulus): CRUD tab Materi, baca/tutup+lampiran di `materi.html`, alur kuis penuh di `bank-soal.html` (skor dihitung tepat, penandaan hijau/merah tepat, tombol terkunci setelah dinilai, ganti mapel mereset kuis), arsip penuh di `info.html`, dan pemastian `cp-tp-atp.html`/`jadwal.html` jujur menampilkan penanda "kerangka" (bukan konten karangan). 18 skenario lama (v0.8.0) dijalankan ulang untuk cek regresi dari tab Materi baru — semua tetap lulus (38 total). Ditemukan+diperbaiki sekalian: celah XSS kecil di atribut `href` untuk `url_file` di `modul.html`/`materi.html` (belum di-escape) — sekarang sudah di-escape. Cek overflow horizontal terprogram di 360px untuk 6 halaman baru — nol piksel di semuanya. **BELUM diuji**: dengan Firestore project sungguhan — sama seperti v0.8.0, checklist manual ada di §18-21. Konten `cp-tp-atp.html`/`jadwal.html` SENGAJA masih placeholder (bukan bug) — menunggu dokumen resmi dari sekolah. |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
@@ -438,3 +653,9 @@ Catat setiap sesi ujicoba di sini:
   bukan lagi asumsi urutan tetap. Boleh menambah kolom baru di paling kanan sheet kapan
   saja tanpa mengubah kode — TAPI jangan mengedit/mengetik ulang teks header kolom yang
   sudah ada (typo atau beda kapitalisasi akan membuat kolom itu "hilang" dari aplikasi).
+- **Sejak v0.7.0**: setiap endpoint di `Code.gs` sekarang wajib `kode` (untuk endpoint
+  input per-siswa) atau `idToken` (untuk endpoint guru/bulk). Kalau menambah endpoint
+  BARU di `doGet`/`doPost`, jangan lupa panggil `wajibKodeAkses_(...)` atau
+  `wajibGuru_(...)` di awal cabangnya — endpoint baru yang lupa digerbang akan kembali
+  membuka celah yang sama seperti sebelum v0.7.0. `ACCESS_CODE_MPLS` di `Code.gs` harus
+  selalu disamakan manual dengan `ACCESS_CODE` di `pages/mpls/assets/config.js`.

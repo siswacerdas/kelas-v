@@ -9,15 +9,206 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
 ### Direncanakan
-- Halaman `cp-tp-atp.html` — tampilan CP, TP, dan ATP per mata pelajaran
-- Halaman `modul.html` — daftar modul scaffolding
-- Halaman `materi.html` — buku belajar mandiri
-- Halaman `bank-soal.html` — kumpulan soal dengan filter mapel
-- Halaman `admin.html` — panel kelola konten untuk guru
-- Halaman `jadwal.html` — jadwal pelajaran mingguan
-- Integrasi upload modul & soal ke Firestore dari panel guru
+- Isi konten asli `cp-tp-atp.html` (CP/TP/ATP resmi per mapel) dan `jadwal.html`
+  (jadwal mingguan resmi) — kerangkanya sudah ada sejak v0.9.0, tinggal menunggu
+  dokumen dari sekolah untuk diisi (lihat catatan "Halaman ini masih kerangka"
+  di kedua halaman tsb)
 - Gerbang akses `input.html` masih pakai kode akses sederhana (belum dipindah ke
   Firebase) — sengaja tidak diubah dulu di update ini supaya tidak regresi
+- Riwayat pengerjaan siswa di Bank Soal belum disimpan ke Firestore (kuis murni
+  di sisi klien, skor tidak direkap guru) — perlu didiskusikan dulu apakah memang
+  diperlukan sebelum ditambahkan (butuh koleksi & rules baru)
+
+---
+
+## [0.9.0] — 2026-07-20
+
+### Ditambahkan
+- **`pages/materi.html`** — Materi Ajar/Buku Belajar Mandiri untuk siswa & guru
+  (pakai `auth-guard.js`, bukan guru-only). Beda dari `modul.html`: isi materi
+  dibaca LANGSUNG di halaman (klik judul untuk buka/tutup), bukan cuma link
+  keluar — cocok untuk rangkuman belajar mandiri. Lampiran opsional tetap bisa
+  ditambahkan kalau guru ingin menyertakan link Drive/PDF pendamping.
+- **`pages/bank-soal.html`** — halaman latihan soal interaktif untuk siswa: pilih
+  mata pelajaran → kerjakan soal pilihan ganda → klik "Periksa Jawaban" → skor
+  langsung tampil (x/y benar), jawaban benar ditandai hijau dan pilihan salah
+  yang dipilih ditandai merah. Murni di sisi klien, tidak menyimpan riwayat
+  pengerjaan ke Firestore (lihat "Direncanakan" di atas kalau nanti perlu direkap).
+- **`pages/info.html`** — arsip lengkap pengumuman (beranda `index.html` cuma
+  menampilkan 5 pengumuman terbaru; halaman ini menampilkan semuanya, terbaru
+  di atas). Memakai koleksi `pengumuman` yang sama, tidak ada data/field baru.
+- **`pages/cp-tp-atp.html`** dan **`pages/jadwal.html`** — dibangun sebagai
+  halaman STATIS (bukan Firestore), sesuai keputusan bahwa konten administratif
+  yang nyaris tidak berubah setahun tidak perlu panel edit. **Isinya masih
+  kerangka/placeholder** — daftar mapel di `cp-tp-atp.html` cuma tebakan mapel
+  Kurikulum Merdeka SD umum (belum tentu cocok dengan mapel ciri khas
+  Muhammadiyah seperti ISMUBA/Bahasa Arab), dan jam pelajaran di `jadwal.html`
+  cuma ilustrasi. Keduanya diberi kotak catatan kuning yang jujur ke pengguna
+  bahwa isinya menunggu dokumen resmi dari sekolah — TIDAK mengarang konten
+  seolah-olah itu data asli.
+- **Tab "Materi Ajar" baru di `pages/admin.html`** — CRUD untuk koleksi
+  `materi` (judul, mapel, tema, isi, lampiran opsional, urutan), pola sama
+  dengan tab Modul yang sudah ada.
+- Koleksi Firestore `materi` didaftarkan eksplisit di rules produksi
+  (`README.md`) — perlu ditempel ulang ke Firebase Console kalau rules yang
+  aktif belum termasuk blok ini.
+
+### Diuji
+- 20 skenario Playwright baru (stub Firestore in-memory): CRUD tab Materi di
+  `admin.html`; tampil+baca+lampiran di `materi.html`; alur kuis penuh di
+  `bank-soal.html` (pilih mapel → jawab campuran benar/salah → skor dihitung
+  tepat → penandaan hijau/merah tepat → tombol nonaktif setelah dinilai →
+  ganti mapel mereset kuis); arsip penuh di `info.html`; serta pemeriksaan
+  bahwa `cp-tp-atp.html`/`jadwal.html` bisa dibuka akun manapun yang login dan
+  benar-benar menampilkan penanda "kerangka", bukan berpura-pura sudah lengkap.
+  Semua 20 lulus, plus 18 skenario lama (`admin.html`/`modul.html`) dijalankan
+  ulang untuk cek regresi dari penambahan tab Materi — semua tetap lulus.
+- Diperbaiki juga (ditemukan saat membangun halaman baru): link lampiran/`url_file`
+  di `modul.html` dan `materi.html` sebelumnya dimasukkan ke atribut `href` TANPA
+  di-escape — celah XSS kecil kalau field itu diisi teks berisi tanda kutip;
+  sekarang di-escape sama seperti field teks lain.
+- Cek overflow horizontal terprogram (bukan cuma dilihat mata) di layar 360px
+  untuk keenam halaman baru — nol piksel overflow di semuanya.
+- **Belum diuji** dengan Firestore project sungguhan — sama seperti v0.8.0,
+  perlu dicoba manual sebelum dipakai guru/siswa beneran (checklist lengkap di
+  `ANTIREGRESI.md` §18-21).
+
+---
+
+## [0.8.0] — 2026-07-20
+
+### Ditambahkan
+- **`pages/admin.html`** — panel guru untuk kelola konten Firestore (`pengumuman`,
+  `modul`, `bank_soal`) langsung dari browser, tanpa perlu buka Firebase Console.
+  3 tab (Pengumuman / Modul / Bank Soal), masing-masing dengan form tambah, dan
+  daftar isi yang bisa diedit atau dihapus. Guru-gated pakai `guru-guard.js` yang
+  sudah ada (bukan proteksi baru). Tombol "+ Tambah Pengumuman" / "Upload Modul" /
+  "Tambah Soal" di beranda (`index.html`) yang sebelumnya cuma `alert("Fitur segera
+  hadir")` sekarang mengarah ke tab yang sesuai di `admin.html` (pakai `#pengumuman`
+  / `#modul` / `#soal`).
+- **`pages/modul.html`** — halaman tampil daftar modul untuk SISWA & guru (bukan
+  cuma guru), dikelompokkan per mata pelajaran dan diurutkan sesuai field
+  `urutan`, dengan filter chip per mapel. Tombol "Buka Modul" membuka `url_file`
+  (link Drive/PDF) di tab baru.
+- **`assets/js/auth-guard.js`** — guard baru untuk halaman yang boleh diakses
+  SIAPA SAJA yang sudah login (guru maupun siswa), berbeda dari `guru-guard.js`
+  yang khusus guru. Dipakai `modul.html`, akan dipakai juga di `materi.html` dan
+  `bank-soal.html` nanti. Firestore Rules (`request.auth != null` untuk baca
+  `modul`/`pengumuman`/`bank_soal`) sudah otomatis diverifikasi SDK Firestore
+  sendiri — tidak perlu kirim idToken manual seperti ke Apps Script.
+- Soal di `bank_soal` disimpan dengan field `jawaban` berisi TEKS pilihan yang
+  benar (bukan indeks angka) — di form `admin.html`, guru cukup mencentang radio
+  "Benar" di sebelah pilihan yang tepat, tidak perlu mengetik ulang jawabannya.
+- Modul dikelompokkan per `mapel` di sisi klien (bukan lewat `orderBy` majemuk di
+  Firestore) supaya tidak butuh composite index — lihat catatan di
+  `ANTIREGRESI.md` §16.
+
+### Diuji
+- 18 skenario Playwright dengan stub Firestore in-memory (bukan Firestore
+  sungguhan): tambah/edit/hapus untuk ketiga jenis konten, radio jawaban benar
+  di Bank Soal, proteksi anti-XSS (judul dengan tag HTML di-escape, bukan
+  dieksekusi), penolakan akses untuk akun bukan-guru di `admin.html`, dan
+  tampilan `modul.html` untuk akun siswa (pengelompokan, pengurutan, filter
+  mapel) — semua lulus.
+- Screenshot tampilan layar sempit (360-375px) untuk `admin.html` (termasuk tab
+  Bank Soal yang formnya paling padat) dan `modul.html` — tidak ada teks
+  terpotong/tumpang tindih.
+- **Belum diuji** dengan Firestore sungguhan (hanya stub in-memory) — perlu
+  dicoba manual sekali di project Firebase asli sebelum dipakai guru beneran,
+  terutama untuk memastikan Firestore Rules produksi (`README.md`, yang sudah
+  diperbaiki di v0.7.1) benar-benar mengizinkan guru menulis ke `modul` dan
+  `bank_soal` seperti yang diharapkan.
+
+---
+
+## [0.7.0] — 2026-07-19
+
+### Keamanan
+- **Celah besar: semua endpoint `apps-script/Code.gs` bisa diakses siapa saja tanpa
+  otorisasi apa pun di level server.** Kode akses di `input.html`/`input-kognitif.html`/
+  `input-jurnal.html` dan Firebase Auth di halaman guru (`rekap*.html`, `laporan*.html`,
+  `pages/kelas/`) selama ini HANYA gerbang tampilan (client-side) — endpoint di baliknya
+  tidak pernah mengecek apa pun. Siapa saja yang tahu `APPS_SCRIPT_URL` (publik, ada di
+  `pages/mpls/assets/config.js` yang ikut ter-deploy ke GitHub Pages) bisa memanggil
+  `?all=1` / `?siswa=1` / `?allKognitif=1` / `?allJurnal=1` langsung dari browser/curl dan
+  mendapat nama lengkap, foto, tempat & tanggal lahir SEMUA siswa, atau mengirim `POST`
+  untuk menimpa data siswa manapun.
+- Ditambahkan dua lapis pengecekan **di server** (`Code.gs`), menutup celah di atas:
+  - `wajibKodeAkses_()` — kode akses sederhana (level proteksi sama seperti yang sudah
+    ada di `config.js`, BUKAN keamanan sungguhan) untuk endpoint per-siswa yang dipakai
+    halaman input: `?nama=`, `?namaKognitif=`, `?namaJurnal=`, dan `POST` jenis
+    `mpls`/`mpls_kognitif`/`jurnal`.
+  - `wajibGuru_()` — verifikasi **sungguhan**: memeriksa `idToken` Firebase Auth yang
+    dikirim klien lewat Identity Toolkit REST API (`accounts:lookup`), lalu mengecek
+    field `role` di dokumen `users/{uid}` lewat Firestore REST API (memakai `idToken`
+    yang sama sebagai Bearer, memanfaatkan rule Firestore yang sudah ada — bukan
+    kredensial service account). Dipakai untuk endpoint yang mengembalikan/menulis data
+    SEMUA siswa sekaligus: `?all=1`, `?siswa=1`, `?allKognitif=1`, `?allJurnal=1`,
+    `?foto=`, dan `POST` jenis `siswa`.
+- Klien disesuaikan untuk mengirim kunci yang sesuai di setiap panggilan: `guru-guard.js`
+  kini menyimpan `window.guruIdToken` (dijaga tetap segar otomatis lewat
+  `onIdTokenChanged`, di-set sebelum event `guru-verified` ditembak supaya tidak ada
+  celah waktu/race condition); `foto-fallback.js`, `kelas.js`, `app.js`, `app-kognitif.js`,
+  `app-jurnal.js`, dan keenam halaman `rekap*.html`/`laporan*.html` masing-masing
+  menyertakan `idToken` atau `kode` sesuai endpoint yang dipanggil.
+- **Celah residual yang SENGAJA belum ditutup di update ini**: 3 kandidat fallback foto
+  di `foto-fallback.js` (hotlink langsung ke domain Google) masih tidak diproteksi,
+  karena file di folder Drive foto masih di-share "siapa saja yang punya link boleh
+  melihat" (`simpanFotoKeDrive_()`). Menutupnya berarti mengubah setting share folder
+  jadi privat + melepas kandidat fallback itu, yang akan menghilangkan jaring pengaman
+  kalau proxy Apps Script sedang down — didiskusikan dulu sebelum diputuskan.
+- **Diuji**: 8 unit test murni untuk logika `wajibKodeAkses_()`/`wajibGuru_()` (kode
+  benar/salah/kosong, token valid/invalid/kedaluwarsa, role guru/bukan guru, dokumen
+  `users/{uid}` hilang) — semua lulus. 17 skenario Playwright dengan stub Firebase SDK
+  offline mengonfirmasi setiap halaman yang memanggil endpoint MPLS/Kelas/foto benar-benar
+  mengirim `idToken`/`kode` — semua lulus. **Belum diuji** dengan Apps Script sungguhan
+  yang sudah di-deploy ulang (lihat `ANTIREGRESI.md` Skenario O bagian 3) — WAJIB
+  dijalankan manual sebelum dianggap aman di produksi.
+
+### Penting untuk redeploy
+- `apps-script/Code.gs` HARUS di-deploy ulang sebagai **New version** setelah update ini
+  (lihat `apps-script/README.md`) — kode lama tidak mengenal parameter `idToken`/`kode`
+  sama sekali, jadi tanpa redeploy semua endpoint akan tetap berjalan seperti versi lama
+  (tanpa proteksi baru ini).
+- Saat redeploy, Apps Script akan meminta **izin tambahan** untuk mengakses layanan
+  eksternal (dipakai `UrlFetchApp` di `wajibGuru_()` untuk memanggil Identity Toolkit &
+  Firestore REST API) — klik Allow/Izinkan saat diminta.
+
+### Keamanan (lanjutan — Firestore Rules)
+- **Bug tabrakan aturan (rule collision) di rules Firestore "produksi" yang direkomendasikan
+  `README.md`.** Firestore meng-OR-kan semua blok `match` yang cocok dengan sebuah path —
+  blok wildcard generik `match /{koleksi}/{id} { allow read: if request.auth != null; ... }`
+  ternyata JUGA cocok untuk path `/users/{uid}` (karena `koleksi` bisa "users"), dan karena
+  di-OR-kan, blok itu **melumpuhkan** pembatasan yang sudah dibuat di blok
+  `match /users/{uid}` di atasnya. Akibatnya: siapa saja yang login (termasuk siswa, bukan
+  cuma guru) bisa membaca dokumen profil (`nama`, `role`, `email`) siswa/guru LAIN, padahal
+  dimaksudkan hanya pemilik dokumen sendiri yang boleh baca. Diperbaiki dengan mengganti
+  wildcard generik jadi 3 blok match eksplisit per koleksi (`pengumuman`, `modul`,
+  `bank_soal`) yang tidak lagi bertabrakan dengan `/users/{uid}`. **Perlu ditempel manual**
+  ke Firebase Console → Firestore → Rules — file kode tidak bisa mengubah ini otomatis.
+
+---
+
+## [0.7.1] — 2026-07-20
+
+### Diperbaiki
+- **`ANTIREGRESI.md` berisi beberapa checklist yang sudah basi (menyebut kondisi lama,
+  bukan kondisi sekarang) — ditemukan saat menyinkronkan dokumen ini dengan implementasi
+  jurnal v0.6.2, ternyata cakupannya lebih luas dari itu:**
+  - §11 & §12 (Asesmen Kognitif) menyebut **"5 kategori"** — sudah salah sejak v0.6.0
+    menambahkan kategori Menyimak & Menulis (total jadi **7 kategori**). Skenario G juga
+    ikut diperbaiki.
+  - §12 masih menjelaskan laporan cetak kognitif sebagai "grid 3 kolom untuk 5 kategori" —
+    padahal sejak v0.6.2 sudah berubah jadi 2 bagian terpisah (Literasi grid 3 kolom,
+    Numerasi grid 4 kolom). Ditambahkan juga catatan bahwa cap panjang catatan anekdot di
+    kognitif (60 karakter) SENGAJA lebih pendek dari 2 modul lain (130 karakter) — bukan bug.
+  - Fitur v0.6.2 "kesimpulan menyerap catatan anekdot & penanda kelengkapan data
+    (x/y indikator, sementara)" sebelumnya HANYA disebut di baris Log Ujicoba, tidak pernah
+    jadi item checklist yang bisa dicentang — ditambahkan ke §8 (berlaku di ketiga modul:
+    non-kognitif, kognitif, jurnal).
+  - 2 checklist item yang menguji proteksi `pages/admin.html` (§3 dan Skenario B) diberi
+    penanda "belum bisa diuji" — halaman itu sendiri belum dibuat (masih di daftar
+    "Direncanakan"), jadi checklist itu sebelumnya menguji sesuatu yang tidak ada.
 
 ---
 

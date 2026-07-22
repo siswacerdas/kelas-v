@@ -97,24 +97,22 @@ kelas-v/
 ├── assets/
 │   ├── css/
 │   │   └── style.css    ← Stylesheet global (opsional, sudah inline di index)
-│   └── img/
-│       └── logo.png     ← Logo sekolah
-├── assets/
 │   ├── img/
 │   │   └── logo-sekolah.jpg ← Logo untuk laporan cetak MPLS
 │   └── js/
-│       └── guru-guard.js    ← Pelindung Firebase Auth untuk halaman khusus guru
+│       ├── guru-guard.js   ← Pelindung Firebase Auth khusus halaman guru
+│       └── auth-guard.js   ← Pelindung Firebase Auth untuk siapa saja yang login (guru & siswa)
 ├── apps-script/
 │   ├── Code.gs           ← Backend Google Apps Script untuk modul MPLS + Data Siswa
 │   └── README.md         ← Cara deploy Apps Script sebagai Web App
 └── pages/
-    ├── cp-tp-atp.html
-    ├── modul.html
-    ├── materi.html
-    ├── bank-soal.html
-    ├── info.html
-    ├── jadwal.html
-    ├── admin.html        ← Hanya bisa diakses guru
+    ├── cp-tp-atp.html     ← Kerangka statis, isi CP/TP/ATP menunggu dokumen resmi
+    ├── modul.html         ← Daftar modul, bisa diakses guru & siswa yang login
+    ├── materi.html        ← Materi Ajar (dibaca langsung), guru & siswa
+    ├── bank-soal.html     ← Latihan soal interaktif dengan skor, guru & siswa
+    ├── info.html          ← Arsip lengkap pengumuman, guru & siswa
+    ├── jadwal.html        ← Kerangka statis, isi jadwal menunggu jadwal resmi
+    ├── admin.html         ← Panel kelola konten (Pengumuman/Modul/Materi/Bank Soal), hanya guru
     ├── kelas/             ← Data profil & foto siswa (khusus guru, Firebase-gated)
     │   ├── index.html
     │   └── assets/
@@ -159,6 +157,15 @@ modul/
     url_file : string (link Google Drive / PDF)
     urutan   : number
 
+materi/
+  {id}/
+    judul    : string
+    mapel    : string
+    tema     : string
+    isi      : string (teks materi, dibaca langsung di halaman — bukan link)
+    url_file : string (opsional, lampiran tambahan kalau ada)
+    urutan   : number
+
 bank_soal/
   {id}/
     pertanyaan : string
@@ -201,8 +208,33 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
     }
 
-    // Pengumuman, modul, soal: semua login bisa baca; hanya guru yang bisa tulis
-    match /{koleksi}/{id} {
+    // Pengumuman, modul, soal: semua login bisa baca; hanya guru yang bisa tulis.
+    // PENTING: ditulis per-koleksi secara EKSPLISIT (bukan wildcard /{koleksi}/{id})
+    // karena Firestore meng-OR-kan semua match block yang cocok dengan sebuah path —
+    // wildcard generik di sini akan "menabrak" & melumpuhkan pembatasan yang sudah
+    // dibuat di /users/{uid} di atas (siapa saja yang login jadi bisa baca dokumen
+    // users/{uid} SIAPA PUN lewat blok wildcard ini, bukan cuma dokumennya sendiri).
+    // Kalau menambah koleksi baru (mis. `jadwal`), tambahkan blok match baru di sini,
+    // JANGAN pakai wildcard generik lagi.
+    match /pengumuman/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /modul/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /materi/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /bank_soal/{id} {
       allow read: if request.auth != null;
       allow write: if request.auth != null &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
