@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CP, TP & ATP · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-3: #e2dfd6; --accent: #2e6fbc; --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--accent);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--accent); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.25rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  .notice {
+    background: #fff7e6; border: 1px solid #e8c88a; border-radius: var(--r);
+    padding: 1rem 1.1rem; font-size: 12.5px; color: #6b5015; line-height: 1.6; margin-bottom: 1.75rem;
+  }
+  .notice b { color: #4a3600; }
+
+  .mapel-section {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 1rem 1.1rem; margin-bottom: 10px;
+  }
+  .mapel-section h2 { font-size: 14.5px; font-weight: 700; margin-bottom: 6px; }
+  .mapel-section .placeholder { font-size: 12.5px; color: var(--ink-3); font-style: italic; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-cptpatp" class="hidden">
+  <div id="topbar">
+    <div class="brand">CP, TP &amp; ATP <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>📋 Capaian, Tujuan &amp; Alur Tujuan Pembelajaran</h1>
+    <p class="subtitle">Kurikulum Merdeka — Kelas 5, Tahun Ajaran 2026/2027.</p>
+
+    <div class="notice">
+      <b>Halaman ini masih kerangka.</b> Isinya belum diisi karena dokumen CP/TP/ATP
+      resmi dari sekolah belum tersedia untuk ditransfer ke sini. Kirim dokumen
+      Word/PDF CP-TP-ATP per mata pelajaran, nanti akan diisi persis sesuai
+      dokumen tsb — bukan dikarang. Halaman ini sengaja dibuat statis (bukan dari
+      Firestore) karena isinya biasanya tidak berubah sepanjang tahun ajaran.
+      <br/><br/>
+      Daftar mata pelajaran di bawah ini baru tebakan mapel Kurikulum Merdeka
+      SD pada umumnya — untuk SD Muhammadiyah biasanya ada mapel ciri khas
+      tambahan (mis. ISMUBA/Al-Islam Kemuhammadiyahan, Bahasa Arab) yang belum
+      saya masukkan karena belum tahu persis daftar resminya. Beri tahu kalau
+      ada mapel yang perlu ditambah atau dihapus.
+    </div>
+
+    <div class="mapel-section">
+      <h2>Bahasa Indonesia</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+    <div class="mapel-section">
+      <h2>Matematika</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+    <div class="mapel-section">
+      <h2>IPAS (Ilmu Pengetahuan Alam dan Sosial)</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+    <div class="mapel-section">
+      <h2>Pendidikan Agama Islam dan Budi Pekerti</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+    <div class="mapel-section">
+      <h2>Pendidikan Pancasila</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+    <div class="mapel-section">
+      <h2>Seni Budaya</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+    <div class="mapel-section">
+      <h2>PJOK (Pendidikan Jasmani, Olahraga dan Kesehatan)</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+    <div class="mapel-section">
+      <h2>Bahasa Inggris</h2>
+      <p class="placeholder">Belum diisi.</p>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-cptpatp").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+</script>
+</body>
+</html>

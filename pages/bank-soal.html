@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bank Soal · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --purple: #9b59b6; --ok: #2a9d6f; --err: #c94040;
+    --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--purple);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--purple); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 700px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  /* ── PILIH MAPEL ── */
+  .mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .mapel-btn {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 1rem; text-align: left; cursor: pointer; font-family: inherit;
+  }
+  .mapel-btn .mb-title { font-weight: 700; font-size: 14px; }
+  .mapel-btn .mb-count { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
+  .mapel-btn:hover { border-color: var(--purple); }
+
+  /* ── KUIS ── */
+  #back-to-mapel { font-size: 12.5px; color: var(--accent); cursor: pointer; display: inline-block; margin-bottom: 1rem; }
+  .soal-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 1rem; margin-bottom: 12px; }
+  .soal-card .s-nomor { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .soal-card .s-pertanyaan { font-size: 14.5px; font-weight: 600; margin-bottom: 0.8rem; line-height: 1.5; }
+  .pilihan-opsi { display: block; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 8px; margin-bottom: 7px; cursor: pointer; font-size: 13.5px; }
+  .pilihan-opsi:hover { border-color: var(--purple); }
+  .pilihan-opsi input { margin-right: 8px; }
+  .pilihan-opsi.correct { border-color: var(--ok); background: rgba(42,157,111,0.08); }
+  .pilihan-opsi.wrong { border-color: var(--err); background: rgba(201,64,64,0.08); }
+  .soal-card.dinilai .pilihan-opsi { pointer-events: none; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; }
+  .btn-submit { background: var(--purple); color: #fff; width: 100%; }
+  .btn-submit:hover { background: #834a9e; }
+  .btn-submit:disabled { background: var(--paper-3); color: var(--ink-3); cursor: not-allowed; }
+
+  #hasil-skor { background: #fff; border: 2px solid var(--purple); border-radius: var(--r); padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; }
+  #hasil-skor .skor-angka { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--purple); }
+  #hasil-skor .skor-label { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+
+  .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-soal" class="hidden">
+  <div id="topbar">
+    <div class="brand">Bank Soal <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+
+    <!-- ══ TAHAP 1: PILIH MAPEL ══ -->
+    <div id="view-pilih-mapel">
+      <h1>✏️ Bank Soal</h1>
+      <p class="subtitle">Pilih mata pelajaran untuk mulai berlatih soal.</p>
+      <div id="mapel-grid" class="mapel-grid"><div class="empty-state">Memuat…</div></div>
+    </div>
+
+    <!-- ══ TAHAP 2: KUIS ══ -->
+    <div id="view-kuis" class="hidden">
+      <span id="back-to-mapel" onclick="kembaliKePilihMapel()">← Pilih mapel lain</span>
+      <h1 id="kuis-judul">Latihan</h1>
+      <p class="subtitle" id="kuis-subtitle"></p>
+
+      <div id="hasil-skor" class="hidden"></div>
+      <div id="daftar-soal"></div>
+      <button class="btn btn-submit" id="btn-submit-kuis" onclick="nilaiKuis()">Periksa Jawaban</button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module">
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  const app = getApps()[0];
+  const db = getFirestore(app);
+
+  let allItems = [];
+  let currentSoal = [];
+
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  async function loadSoal() {
+    const wrap = document.getElementById("mapel-grid");
+    try {
+      const snap = await getDocs(collection(db, "bank_soal"));
+      allItems = [];
+      snap.forEach((d) => allItems.push({ id: d.id, ...d.data() }));
+      renderMapelGrid();
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat soal: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  function renderMapelGrid() {
+    const wrap = document.getElementById("mapel-grid");
+    if (allItems.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Belum ada soal yang ditambahkan guru.</div>';
+      return;
+    }
+    const grouped = {};
+    allItems.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
+    wrap.innerHTML = "";
+    Object.keys(grouped).sort().forEach((mapel) => {
+      const btn = document.createElement("button");
+      btn.className = "mapel-btn";
+      btn.innerHTML = `<div class="mb-title">${escHtml(mapel)}</div><div class="mb-count">${grouped[mapel].length} soal</div>`;
+      btn.onclick = () => mulaiKuis(mapel, grouped[mapel]);
+      wrap.appendChild(btn);
+    });
+  }
+
+  window.mulaiKuis = function (mapel, soalList) {
+    currentSoal = soalList;
+    document.getElementById("view-pilih-mapel").classList.add("hidden");
+    document.getElementById("view-kuis").classList.remove("hidden");
+    document.getElementById("kuis-judul").textContent = "Latihan " + mapel;
+    document.getElementById("kuis-subtitle").textContent = soalList.length + " soal — pilih jawaban lalu klik \"Periksa Jawaban\".";
+    document.getElementById("hasil-skor").classList.add("hidden");
+    document.getElementById("btn-submit-kuis").disabled = false;
+    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
+
+    const wrap = document.getElementById("daftar-soal");
+    wrap.innerHTML = "";
+    soalList.forEach((soal, i) => {
+      const card = document.createElement("div");
+      card.className = "soal-card";
+      card.dataset.soalId = soal.id;
+      const pilihanHtml = (soal.pilihan || []).map((p, j) => `
+        <label class="pilihan-opsi" data-pilihan="${escHtml(p)}">
+          <input type="radio" name="soal-${soal.id}" value="${escHtml(p)}" /> ${escHtml(p)}
+        </label>`).join("");
+      card.innerHTML = `
+        <div class="s-nomor">Soal ${i + 1} dari ${soalList.length}</div>
+        <div class="s-pertanyaan">${escHtml(soal.pertanyaan || "")}</div>
+        ${pilihanHtml}
+      `;
+      wrap.appendChild(card);
+    });
+  };
+
+  window.kembaliKePilihMapel = function () {
+    document.getElementById("view-kuis").classList.add("hidden");
+    document.getElementById("view-pilih-mapel").classList.remove("hidden");
+  };
+
+  window.nilaiKuis = function () {
+    let benar = 0;
+    const cards = document.querySelectorAll("#daftar-soal .soal-card");
+    cards.forEach((card) => {
+      const soalId = card.dataset.soalId;
+      const soal = currentSoal.find((s) => s.id === soalId);
+      const checked = card.querySelector(`input[name="soal-${soalId}"]:checked`);
+      const jawabanDipilih = checked ? checked.value : null;
+      const isBenar = jawabanDipilih === soal.jawaban;
+      if (isBenar) benar++;
+      card.classList.add("dinilai");
+      card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
+        const val = opt.dataset.pilihan;
+        if (val === soal.jawaban) opt.classList.add("correct");
+        else if (val === jawabanDipilih && !isBenar) opt.classList.add("wrong");
+      });
+    });
+
+    const total = cards.length;
+    const skorEl = document.getElementById("hasil-skor");
+    skorEl.classList.remove("hidden");
+    skorEl.innerHTML = `
+      <div class="skor-angka">${benar} / ${total}</div>
+      <div class="skor-label">jawaban benar</div>
+    `;
+    document.getElementById("btn-submit-kuis").disabled = true;
+    document.getElementById("btn-submit-kuis").textContent = "Sudah Dinilai";
+    skorEl.scrollIntoView({ behavior: "smooth" });
+  };
+
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-soal").classList.remove("hidden");
+    loadSoal();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+</script>
+</body>
+</html>

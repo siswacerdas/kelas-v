@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kelola Konten · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --accent-2: #e8a020; --accent-3: #2a9d6f;
+    --danger: #c94040; --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--accent-2);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--accent-2); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  /* ── TABS ─────────────────────────────── */
+  .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .tab-btn {
+    background: none; border: none; padding: 10px 16px; font-size: 13px; font-weight: 600;
+    color: var(--ink-3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── FORM ─────────────────────────────── */
+  .panel-card {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 1.25rem; margin-bottom: 1.5rem;
+  }
+  .panel-card h2 { font-size: 14px; font-weight: 600; margin-bottom: 1rem; }
+  .form-row { margin-bottom: 0.85rem; }
+  .form-row label { font-size: 12px; font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
+  .form-row input[type=text], .form-row input[type=number], .form-row textarea {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 7px;
+    font-size: 14px; color: var(--ink); background: #fff; outline: none; font-family: inherit;
+  }
+  .form-row input:focus, .form-row textarea:focus { border-color: var(--accent); }
+  .form-row textarea { resize: vertical; min-height: 70px; }
+  .form-row .hint { font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .pilihan-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .pilihan-row input[type=text] { flex: 1; }
+  .pilihan-row label { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--ink-3); white-space: nowrap; margin: 0; font-weight: 400; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 7px;
+    font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent;
+    transition: all 0.15s; text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #2460a8; }
+  .btn-secondary { background: var(--paper-2); color: var(--ink); border-color: var(--border); }
+  .btn-secondary:hover { background: var(--paper-3); }
+  .btn-danger { background: #fff; color: var(--danger); border-color: rgba(201,64,64,0.3); }
+  .btn-danger:hover { background: rgba(201,64,64,0.08); }
+  .btn-sm { padding: 5px 10px; font-size: 11px; }
+  .form-actions { display: flex; gap: 8px; margin-top: 0.5rem; }
+
+  #status-msg { font-size: 12px; margin-top: 8px; min-height: 16px; }
+  #status-msg.ok { color: var(--accent-3); }
+  #status-msg.err { color: var(--danger); }
+
+  /* ── LIST ─────────────────────────────── */
+  .list-group-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-3); margin: 1.25rem 0 0.5rem;
+  }
+  .list-item {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 0.9rem 1rem; margin-bottom: 8px; display: flex; justify-content: space-between; gap: 12px;
+  }
+  .list-item .li-body { flex: 1; min-width: 0; }
+  .list-item .li-title { font-weight: 600; font-size: 13.5px; }
+  .list-item .li-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+  .list-item .li-desc { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; line-height: 1.5; }
+  .list-item .li-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; }
+  .empty-state { padding: 1.5rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-admin" class="hidden">
+  <div id="topbar">
+    <div class="brand">Kelola Konten <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>Panel Guru</h1>
+    <p class="subtitle">Tambah, ubah, atau hapus konten yang tampil di halaman Pengumuman, Modul, dan Bank Soal.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="pengumuman" onclick="switchTab('pengumuman')">📢 Pengumuman</button>
+      <button class="tab-btn" data-tab="modul" onclick="switchTab('modul')">📚 Modul</button>
+      <button class="tab-btn" data-tab="materi" onclick="switchTab('materi')">📖 Materi Ajar</button>
+      <button class="tab-btn" data-tab="soal" onclick="switchTab('soal')">✏️ Bank Soal</button>
+    </div>
+
+    <!-- ══════════════ TAB: PENGUMUMAN ══════════════ -->
+    <div id="tab-pengumuman" class="tab-panel active">
+      <div class="panel-card">
+        <h2 id="pengumuman-form-title">Tambah Pengumuman Baru</h2>
+        <form id="form-pengumuman" onsubmit="return false;">
+          <input type="hidden" id="pengumuman-edit-id" value="" />
+          <div class="form-row">
+            <label for="pengumuman-judul">Judul</label>
+            <input type="text" id="pengumuman-judul" placeholder="mis. Libur Semester Ganjil" />
+          </div>
+          <div class="form-row">
+            <label for="pengumuman-isi">Isi Pengumuman</label>
+            <textarea id="pengumuman-isi" placeholder="Tulis isi pengumuman di sini…"></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="pengumuman-submit-btn" onclick="simpanPengumuman()">Simpan Pengumuman</button>
+            <button class="btn btn-secondary hidden" id="pengumuman-cancel-btn" onclick="batalEditPengumuman()">Batal Edit</button>
+          </div>
+          <div id="pengumuman-status" class="status-msg"></div>
+        </form>
+      </div>
+      <div id="list-pengumuman"><div class="empty-state">Memuat…</div></div>
+    </div>
+
+    <!-- ══════════════ TAB: MODUL ══════════════ -->
+    <div id="tab-modul" class="tab-panel">
+      <div class="panel-card">
+        <h2 id="modul-form-title">Tambah Modul Baru</h2>
+        <form id="form-modul" onsubmit="return false;">
+          <input type="hidden" id="modul-edit-id" value="" />
+          <div class="form-row">
+            <label for="modul-judul">Judul Modul</label>
+            <input type="text" id="modul-judul" placeholder="mis. Modul 1 - Pecahan Sederhana" />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="modul-mapel">Mata Pelajaran</label>
+              <input type="text" id="modul-mapel" placeholder="mis. Matematika" />
+            </div>
+            <div class="form-row">
+              <label for="modul-tema">Tema</label>
+              <input type="text" id="modul-tema" placeholder="mis. Pecahan" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="modul-url">Link File Modul</label>
+            <input type="text" id="modul-url" placeholder="Link Google Drive / PDF" />
+            <div class="hint">Tempel link "Get link" dari Google Drive, atau URL PDF lainnya.</div>
+          </div>
+          <div class="form-row">
+            <label for="modul-urutan">Urutan Tampil (dalam mapel yang sama)</label>
+            <input type="number" id="modul-urutan" placeholder="1" />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="modul-submit-btn" onclick="simpanModul()">Simpan Modul</button>
+            <button class="btn btn-secondary hidden" id="modul-cancel-btn" onclick="batalEditModul()">Batal Edit</button>
+          </div>
+          <div id="modul-status" class="status-msg"></div>
+        </form>
+      </div>
+      <div id="list-modul"><div class="empty-state">Memuat…</div></div>
+    </div>
+
+    <!-- ══════════════ TAB: MATERI AJAR ══════════════ -->
+    <div id="tab-materi" class="tab-panel">
+      <div class="panel-card">
+        <h2 id="materi-form-title">Tambah Materi Baru</h2>
+        <form id="form-materi" onsubmit="return false;">
+          <input type="hidden" id="materi-edit-id" value="" />
+          <div class="form-row">
+            <label for="materi-judul">Judul Materi</label>
+            <input type="text" id="materi-judul" placeholder="mis. Mengenal Ekosistem Sawah" />
+          </div>
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="materi-mapel">Mata Pelajaran</label>
+              <input type="text" id="materi-mapel" placeholder="mis. IPA" />
+            </div>
+            <div class="form-row">
+              <label for="materi-tema">Tema</label>
+              <input type="text" id="materi-tema" placeholder="mis. Ekosistem" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="materi-isi">Isi Materi (dibaca langsung oleh siswa)</label>
+            <textarea id="materi-isi" style="min-height:140px" placeholder="Tulis rangkuman/materi yang bisa dibaca langsung oleh siswa…"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="materi-url">Lampiran Tambahan (opsional)</label>
+            <input type="text" id="materi-url" placeholder="Link Google Drive / PDF (kalau ada)" />
+          </div>
+          <div class="form-row">
+            <label for="materi-urutan">Urutan Tampil (dalam mapel yang sama)</label>
+            <input type="number" id="materi-urutan" placeholder="1" />
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="materi-submit-btn" onclick="simpanMateri()">Simpan Materi</button>
+            <button class="btn btn-secondary hidden" id="materi-cancel-btn" onclick="batalEditMateri()">Batal Edit</button>
+          </div>
+          <div id="materi-status" class="status-msg"></div>
+        </form>
+      </div>
+      <div id="list-materi"><div class="empty-state">Memuat…</div></div>
+    </div>
+
+    <!-- ══════════════ TAB: BANK SOAL ══════════════ -->
+    <div id="tab-soal" class="tab-panel">
+      <div class="panel-card">
+        <h2 id="soal-form-title">Tambah Soal Baru</h2>
+        <form id="form-soal" onsubmit="return false;">
+          <input type="hidden" id="soal-edit-id" value="" />
+          <div class="form-row">
+            <label for="soal-pertanyaan">Pertanyaan</label>
+            <textarea id="soal-pertanyaan" placeholder="Tulis pertanyaan di sini…"></textarea>
+          </div>
+          <div class="form-row">
+            <label>Pilihan Jawaban (centang salah satu sebagai jawaban benar)</label>
+            <div class="pilihan-row">
+              <input type="text" id="soal-pilihan-0" placeholder="Pilihan A" />
+              <label><input type="radio" name="soal-jawaban-benar" value="0" checked /> Benar</label>
+            </div>
+            <div class="pilihan-row">
+              <input type="text" id="soal-pilihan-1" placeholder="Pilihan B" />
+              <label><input type="radio" name="soal-jawaban-benar" value="1" /> Benar</label>
+            </div>
+            <div class="pilihan-row">
+              <input type="text" id="soal-pilihan-2" placeholder="Pilihan C (opsional)" />
+              <label><input type="radio" name="soal-jawaban-benar" value="2" /> Benar</label>
+            </div>
+            <div class="pilihan-row">
+              <input type="text" id="soal-pilihan-3" placeholder="Pilihan D (opsional)" />
+              <label><input type="radio" name="soal-jawaban-benar" value="3" /> Benar</label>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="soal-mapel">Mata Pelajaran</label>
+              <input type="text" id="soal-mapel" placeholder="mis. IPA" />
+            </div>
+            <div class="form-row">
+              <label for="soal-tingkat">Tingkat/Kelas</label>
+              <input type="text" id="soal-tingkat" placeholder="mis. 5" value="5" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="soal-submit-btn" onclick="simpanSoal()">Simpan Soal</button>
+            <button class="btn btn-secondary hidden" id="soal-cancel-btn" onclick="batalEditSoal()">Batal Edit</button>
+          </div>
+          <div id="soal-status" class="status-msg"></div>
+        </form>
+      </div>
+      <div id="list-soal"><div class="empty-state">Memuat…</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module" src="../assets/js/guru-guard.js"></script>
+<script type="module">
+  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, orderBy, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  // guru-guard.js sudah initializeApp() lebih dulu — pakai instance yang sama,
+  // JANGAN initializeApp() lagi di sini (akan error "app already exists").
+  const app = getApps()[0];
+  const db = getFirestore(app);
+  window.__db = db;
+
+  // ── Util status pesan ──────────────────────────────────────
+  function setStatus(elId, msg, isErr) {
+    const el = document.getElementById(elId);
+    el.textContent = msg;
+    el.className = "status-msg " + (isErr ? "err" : "ok");
+    if (msg) setTimeout(() => { el.textContent = ""; el.className = "status-msg"; }, 4000);
+  }
+
+  // ═══════════════════════ PENGUMUMAN ═══════════════════════
+  window.simpanPengumuman = async function () {
+    const judul = document.getElementById("pengumuman-judul").value.trim();
+    const isi = document.getElementById("pengumuman-isi").value.trim();
+    const editId = document.getElementById("pengumuman-edit-id").value;
+    if (!judul || !isi) { setStatus("pengumuman-status", "Judul dan isi wajib diisi.", true); return; }
+    try {
+      if (editId) {
+        await updateDoc(doc(db, "pengumuman", editId), { judul, isi });
+        setStatus("pengumuman-status", "Pengumuman diperbarui.", false);
+      } else {
+        await addDoc(collection(db, "pengumuman"), {
+          judul, isi, tanggal: serverTimestamp(), oleh: window.__guruNama || "",
+        });
+        setStatus("pengumuman-status", "Pengumuman ditambahkan.", false);
+      }
+      batalEditPengumuman();
+      loadPengumuman();
+    } catch (err) {
+      setStatus("pengumuman-status", "Gagal menyimpan: " + err.message, true);
+    }
+  };
+
+  window.editPengumuman = function (id, judul, isi) {
+    document.getElementById("pengumuman-edit-id").value = id;
+    document.getElementById("pengumuman-judul").value = judul;
+    document.getElementById("pengumuman-isi").value = isi;
+    document.getElementById("pengumuman-form-title").textContent = "Edit Pengumuman";
+    document.getElementById("pengumuman-submit-btn").textContent = "Update Pengumuman";
+    document.getElementById("pengumuman-cancel-btn").classList.remove("hidden");
+    document.getElementById("tab-pengumuman").scrollIntoView({ behavior: "smooth" });
+  };
+
+  window.batalEditPengumuman = function () {
+    document.getElementById("pengumuman-edit-id").value = "";
+    document.getElementById("pengumuman-judul").value = "";
+    document.getElementById("pengumuman-isi").value = "";
+    document.getElementById("pengumuman-form-title").textContent = "Tambah Pengumuman Baru";
+    document.getElementById("pengumuman-submit-btn").textContent = "Simpan Pengumuman";
+    document.getElementById("pengumuman-cancel-btn").classList.add("hidden");
+  };
+
+  window.hapusPengumuman = async function (id) {
+    if (!confirm("Hapus pengumuman ini? Tindakan ini tidak bisa dibatalkan.")) return;
+    try {
+      await deleteDoc(doc(db, "pengumuman", id));
+      loadPengumuman();
+    } catch (err) {
+      alert("Gagal menghapus: " + err.message);
+    }
+  };
+
+  async function loadPengumuman() {
+    const wrap = document.getElementById("list-pengumuman");
+    try {
+      const snap = await getDocs(query(collection(db, "pengumuman"), orderBy("tanggal", "desc")));
+      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada pengumuman.</div>'; return; }
+      wrap.innerHTML = "";
+      snap.forEach((d) => {
+        const data = d.data();
+        const tgl = data.tanggal?.toDate?.()?.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) || "";
+        const item = document.createElement("div");
+        item.className = "list-item";
+        const judulEsc = escHtml(data.judul || "");
+        const isiEsc = escHtml(data.isi || "");
+        item.innerHTML = `
+          <div class="li-body">
+            <div class="li-meta">${tgl}</div>
+            <div class="li-title">${judulEsc}</div>
+            <div class="li-desc">${isiEsc}</div>
+          </div>
+          <div class="li-actions">
+            <button class="btn btn-secondary btn-sm" onclick='editPengumuman(${JSON.stringify(d.id)}, ${JSON.stringify(data.judul || "")}, ${JSON.stringify(data.isi || "")})'>Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="hapusPengumuman('${d.id}')">Hapus</button>
+          </div>`;
+        wrap.appendChild(item);
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  // ═══════════════════════ MODUL ═══════════════════════
+  window.simpanModul = async function () {
+    const judul = document.getElementById("modul-judul").value.trim();
+    const mapel = document.getElementById("modul-mapel").value.trim();
+    const tema = document.getElementById("modul-tema").value.trim();
+    const url_file = document.getElementById("modul-url").value.trim();
+    const urutan = Number(document.getElementById("modul-urutan").value) || 0;
+    const editId = document.getElementById("modul-edit-id").value;
+    if (!judul || !mapel) { setStatus("modul-status", "Judul dan mata pelajaran wajib diisi.", true); return; }
+    try {
+      const payload = { judul, mapel, tema, url_file, urutan };
+      if (editId) {
+        await updateDoc(doc(db, "modul", editId), payload);
+        setStatus("modul-status", "Modul diperbarui.", false);
+      } else {
+        await addDoc(collection(db, "modul"), payload);
+        setStatus("modul-status", "Modul ditambahkan.", false);
+      }
+      batalEditModul();
+      loadModul();
+    } catch (err) {
+      setStatus("modul-status", "Gagal menyimpan: " + err.message, true);
+    }
+  };
+
+  window.editModul = function (id, data) {
+    document.getElementById("modul-edit-id").value = id;
+    document.getElementById("modul-judul").value = data.judul || "";
+    document.getElementById("modul-mapel").value = data.mapel || "";
+    document.getElementById("modul-tema").value = data.tema || "";
+    document.getElementById("modul-url").value = data.url_file || "";
+    document.getElementById("modul-urutan").value = data.urutan || 0;
+    document.getElementById("modul-form-title").textContent = "Edit Modul";
+    document.getElementById("modul-submit-btn").textContent = "Update Modul";
+    document.getElementById("modul-cancel-btn").classList.remove("hidden");
+    document.getElementById("tab-modul").scrollIntoView({ behavior: "smooth" });
+  };
+
+  window.batalEditModul = function () {
+    document.getElementById("modul-edit-id").value = "";
+    document.getElementById("modul-judul").value = "";
+    document.getElementById("modul-mapel").value = "";
+    document.getElementById("modul-tema").value = "";
+    document.getElementById("modul-url").value = "";
+    document.getElementById("modul-urutan").value = "";
+    document.getElementById("modul-form-title").textContent = "Tambah Modul Baru";
+    document.getElementById("modul-submit-btn").textContent = "Simpan Modul";
+    document.getElementById("modul-cancel-btn").classList.add("hidden");
+  };
+
+  window.hapusModul = async function (id) {
+    if (!confirm("Hapus modul ini? Tindakan ini tidak bisa dibatalkan.")) return;
+    try {
+      await deleteDoc(doc(db, "modul", id));
+      loadModul();
+    } catch (err) {
+      alert("Gagal menghapus: " + err.message);
+    }
+  };
+
+  async function loadModul() {
+    const wrap = document.getElementById("list-modul");
+    try {
+      const snap = await getDocs(collection(db, "modul"));
+      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada modul.</div>'; return; }
+      const items = [];
+      snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
+      // Kelompokkan per mapel di klien (menghindari kebutuhan composite index Firestore
+      // untuk orderBy 2 field sekaligus — lihat catatan di ANTIREGRESI.md/CHANGELOG.md)
+      const grouped = {};
+      items.forEach((it) => {
+        const key = it.mapel || "(Tanpa Mapel)";
+        (grouped[key] = grouped[key] || []).push(it);
+      });
+      Object.keys(grouped).forEach((k) => grouped[k].sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
+
+      wrap.innerHTML = "";
+      Object.keys(grouped).sort().forEach((mapel) => {
+        const title = document.createElement("div");
+        title.className = "list-group-title";
+        title.textContent = mapel;
+        wrap.appendChild(title);
+        grouped[mapel].forEach((it) => {
+          const item = document.createElement("div");
+          item.className = "list-item";
+          item.innerHTML = `
+            <div class="li-body">
+              <div class="li-title">${escHtml(it.judul || "")}</div>
+              <div class="li-meta">${escHtml(it.tema || "")} · urutan ${it.urutan ?? "-"}</div>
+            </div>
+            <div class="li-actions">
+              <button class="btn btn-secondary btn-sm" onclick='editModul(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusModul('${it.id}')">Hapus</button>
+            </div>`;
+          wrap.appendChild(item);
+        });
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  // ═══════════════════════ MATERI AJAR ═══════════════════════
+  window.simpanMateri = async function () {
+    const judul = document.getElementById("materi-judul").value.trim();
+    const mapel = document.getElementById("materi-mapel").value.trim();
+    const tema = document.getElementById("materi-tema").value.trim();
+    const isi = document.getElementById("materi-isi").value.trim();
+    const url_file = document.getElementById("materi-url").value.trim();
+    const urutan = Number(document.getElementById("materi-urutan").value) || 0;
+    const editId = document.getElementById("materi-edit-id").value;
+    if (!judul || !mapel || !isi) { setStatus("materi-status", "Judul, mapel, dan isi materi wajib diisi.", true); return; }
+    try {
+      const payload = { judul, mapel, tema, isi, url_file, urutan };
+      if (editId) {
+        await updateDoc(doc(db, "materi", editId), payload);
+        setStatus("materi-status", "Materi diperbarui.", false);
+      } else {
+        await addDoc(collection(db, "materi"), payload);
+        setStatus("materi-status", "Materi ditambahkan.", false);
+      }
+      batalEditMateri();
+      loadMateri();
+    } catch (err) {
+      setStatus("materi-status", "Gagal menyimpan: " + err.message, true);
+    }
+  };
+
+  window.editMateri = function (id, data) {
+    document.getElementById("materi-edit-id").value = id;
+    document.getElementById("materi-judul").value = data.judul || "";
+    document.getElementById("materi-mapel").value = data.mapel || "";
+    document.getElementById("materi-tema").value = data.tema || "";
+    document.getElementById("materi-isi").value = data.isi || "";
+    document.getElementById("materi-url").value = data.url_file || "";
+    document.getElementById("materi-urutan").value = data.urutan || 0;
+    document.getElementById("materi-form-title").textContent = "Edit Materi";
+    document.getElementById("materi-submit-btn").textContent = "Update Materi";
+    document.getElementById("materi-cancel-btn").classList.remove("hidden");
+    document.getElementById("tab-materi").scrollIntoView({ behavior: "smooth" });
+  };
+
+  window.batalEditMateri = function () {
+    document.getElementById("materi-edit-id").value = "";
+    document.getElementById("materi-judul").value = "";
+    document.getElementById("materi-mapel").value = "";
+    document.getElementById("materi-tema").value = "";
+    document.getElementById("materi-isi").value = "";
+    document.getElementById("materi-url").value = "";
+    document.getElementById("materi-urutan").value = "";
+    document.getElementById("materi-form-title").textContent = "Tambah Materi Baru";
+    document.getElementById("materi-submit-btn").textContent = "Simpan Materi";
+    document.getElementById("materi-cancel-btn").classList.add("hidden");
+  };
+
+  window.hapusMateri = async function (id) {
+    if (!confirm("Hapus materi ini? Tindakan ini tidak bisa dibatalkan.")) return;
+    try {
+      await deleteDoc(doc(db, "materi", id));
+      loadMateri();
+    } catch (err) {
+      alert("Gagal menghapus: " + err.message);
+    }
+  };
+
+  async function loadMateri() {
+    const wrap = document.getElementById("list-materi");
+    try {
+      const snap = await getDocs(collection(db, "materi"));
+      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada materi.</div>'; return; }
+      const items = [];
+      snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
+      const grouped = {};
+      items.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
+      Object.keys(grouped).forEach((k) => grouped[k].sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
+
+      wrap.innerHTML = "";
+      Object.keys(grouped).sort().forEach((mapel) => {
+        const title = document.createElement("div");
+        title.className = "list-group-title";
+        title.textContent = mapel;
+        wrap.appendChild(title);
+        grouped[mapel].forEach((it) => {
+          const item = document.createElement("div");
+          item.className = "list-item";
+          const cuplikan = (it.isi || "").slice(0, 80) + ((it.isi || "").length > 80 ? "…" : "");
+          item.innerHTML = `
+            <div class="li-body">
+              <div class="li-title">${escHtml(it.judul || "")}</div>
+              <div class="li-meta">${escHtml(it.tema || "")} · urutan ${it.urutan ?? "-"}</div>
+              <div class="li-desc">${escHtml(cuplikan)}</div>
+            </div>
+            <div class="li-actions">
+              <button class="btn btn-secondary btn-sm" onclick='editMateri(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusMateri('${it.id}')">Hapus</button>
+            </div>`;
+          wrap.appendChild(item);
+        });
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  // ═══════════════════════ BANK SOAL ═══════════════════════
+  window.simpanSoal = async function () {
+    const pertanyaan = document.getElementById("soal-pertanyaan").value.trim();
+    const pilihan = [0, 1, 2, 3]
+      .map((i) => document.getElementById("soal-pilihan-" + i).value.trim())
+      .filter((v) => v !== "");
+    const benarIdx = Number(document.querySelector('input[name="soal-jawaban-benar"]:checked').value);
+    const jawaban = document.getElementById("soal-pilihan-" + benarIdx).value.trim();
+    const mapel = document.getElementById("soal-mapel").value.trim();
+    const tingkat = document.getElementById("soal-tingkat").value.trim();
+    const editId = document.getElementById("soal-edit-id").value;
+
+    if (!pertanyaan || pilihan.length < 2) {
+      setStatus("soal-status", "Pertanyaan dan minimal 2 pilihan wajib diisi.", true);
+      return;
+    }
+    if (!jawaban) {
+      setStatus("soal-status", "Pilihan yang ditandai \"Benar\" masih kosong — isi teksnya dulu.", true);
+      return;
+    }
+    try {
+      const payload = { pertanyaan, pilihan, jawaban, mapel, tingkat };
+      if (editId) {
+        await updateDoc(doc(db, "bank_soal", editId), payload);
+        setStatus("soal-status", "Soal diperbarui.", false);
+      } else {
+        await addDoc(collection(db, "bank_soal"), payload);
+        setStatus("soal-status", "Soal ditambahkan.", false);
+      }
+      batalEditSoal();
+      loadSoal();
+    } catch (err) {
+      setStatus("soal-status", "Gagal menyimpan: " + err.message, true);
+    }
+  };
+
+  window.editSoal = function (id, data) {
+    document.getElementById("soal-edit-id").value = id;
+    document.getElementById("soal-pertanyaan").value = data.pertanyaan || "";
+    const pilihan = data.pilihan || [];
+    [0, 1, 2, 3].forEach((i) => { document.getElementById("soal-pilihan-" + i).value = pilihan[i] || ""; });
+    const benarIdx = pilihan.indexOf(data.jawaban);
+    const radio = document.querySelector(`input[name="soal-jawaban-benar"][value="${benarIdx >= 0 ? benarIdx : 0}"]`);
+    if (radio) radio.checked = true;
+    document.getElementById("soal-mapel").value = data.mapel || "";
+    document.getElementById("soal-tingkat").value = data.tingkat || "";
+    document.getElementById("soal-form-title").textContent = "Edit Soal";
+    document.getElementById("soal-submit-btn").textContent = "Update Soal";
+    document.getElementById("soal-cancel-btn").classList.remove("hidden");
+    document.getElementById("tab-soal").scrollIntoView({ behavior: "smooth" });
+  };
+
+  window.batalEditSoal = function () {
+    document.getElementById("soal-edit-id").value = "";
+    document.getElementById("soal-pertanyaan").value = "";
+    [0, 1, 2, 3].forEach((i) => { document.getElementById("soal-pilihan-" + i).value = ""; });
+    document.querySelector('input[name="soal-jawaban-benar"][value="0"]').checked = true;
+    document.getElementById("soal-mapel").value = "";
+    document.getElementById("soal-tingkat").value = "5";
+    document.getElementById("soal-form-title").textContent = "Tambah Soal Baru";
+    document.getElementById("soal-submit-btn").textContent = "Simpan Soal";
+    document.getElementById("soal-cancel-btn").classList.add("hidden");
+  };
+
+  window.hapusSoal = async function (id) {
+    if (!confirm("Hapus soal ini? Tindakan ini tidak bisa dibatalkan.")) return;
+    try {
+      await deleteDoc(doc(db, "bank_soal", id));
+      loadSoal();
+    } catch (err) {
+      alert("Gagal menghapus: " + err.message);
+    }
+  };
+
+  async function loadSoal() {
+    const wrap = document.getElementById("list-soal");
+    try {
+      const snap = await getDocs(collection(db, "bank_soal"));
+      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada soal.</div>'; return; }
+      const items = [];
+      snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
+      const grouped = {};
+      items.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
+
+      wrap.innerHTML = "";
+      Object.keys(grouped).sort().forEach((mapel) => {
+        const title = document.createElement("div");
+        title.className = "list-group-title";
+        title.textContent = `${mapel} (${grouped[mapel].length} soal)`;
+        wrap.appendChild(title);
+        grouped[mapel].forEach((it) => {
+          const item = document.createElement("div");
+          item.className = "list-item";
+          item.innerHTML = `
+            <div class="li-body">
+              <div class="li-title">${escHtml(it.pertanyaan || "")}</div>
+              <div class="li-desc">Jawaban benar: <b>${escHtml(it.jawaban || "-")}</b> · Tingkat ${escHtml(it.tingkat || "-")}</div>
+            </div>
+            <div class="li-actions">
+              <button class="btn btn-secondary btn-sm" onclick='editSoal(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusSoal('${it.id}')">Hapus</button>
+            </div>`;
+          wrap.appendChild(item);
+        });
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  // ═══════════════════════ TABS & UTIL ═══════════════════════
+  window.switchTab = function (name) {
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+    document.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("active", p.id === "tab-" + name));
+  };
+
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  document.addEventListener("guru-verified", (e) => {
+    window.__guruNama = e.detail.nama || "";
+    document.getElementById("checking").remove();
+    document.getElementById("app-admin").classList.remove("hidden");
+    loadPengumuman();
+    loadModul();
+    loadMateri();
+    loadSoal();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../index.html"));
+
+  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #materi / #soal
+  window.addEventListener("load", () => {
+    const hash = window.location.hash.replace("#", "");
+    if (["pengumuman", "modul", "materi", "soal"].includes(hash)) switchTab(hash);
+  });
+</script>
+</body>
+</html>

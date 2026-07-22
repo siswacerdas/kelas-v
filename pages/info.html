@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pengumuman · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-3: #e2dfd6; --danger: #c94040; --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--danger);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--danger); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 700px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  .pengumuman-card {
+    background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--danger);
+    border-radius: 0 var(--r) var(--r) 0; padding: 0.9rem 1rem; margin-bottom: 10px;
+  }
+  .pengumuman-card .p-tgl { font-size: 11px; color: var(--ink-3); }
+  .pengumuman-card .p-judul { font-size: 14px; font-weight: 700; margin-top: 3px; }
+  .pengumuman-card .p-isi { font-size: 13px; color: var(--ink-2); margin-top: 6px; line-height: 1.6; white-space: pre-wrap; }
+  .pengumuman-card .p-oleh { font-size: 11px; color: var(--ink-3); margin-top: 6px; font-style: italic; }
+  .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-info" class="hidden">
+  <div id="topbar">
+    <div class="brand">Pengumuman <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>📢 Semua Pengumuman</h1>
+    <p class="subtitle">Arsip lengkap pengumuman dari guru, terbaru di paling atas.</p>
+    <div id="list-pengumuman"><div class="empty-state">Memuat…</div></div>
+  </div>
+</div>
+
+<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module">
+  import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  const app = getApps()[0];
+  const db = getFirestore(app);
+
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  async function loadPengumuman() {
+    const wrap = document.getElementById("list-pengumuman");
+    try {
+      const snap = await getDocs(query(collection(db, "pengumuman"), orderBy("tanggal", "desc")));
+      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada pengumuman.</div>'; return; }
+      wrap.innerHTML = "";
+      snap.forEach((d) => {
+        const data = d.data();
+        const tgl = data.tanggal?.toDate?.()?.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) || "";
+        const card = document.createElement("div");
+        card.className = "pengumuman-card";
+        card.innerHTML = `
+          <div class="p-tgl">${tgl}</div>
+          <div class="p-judul">${escHtml(data.judul || "")}</div>
+          <div class="p-isi">${escHtml(data.isi || "")}</div>
+          ${data.oleh ? `<div class="p-oleh">— ${escHtml(data.oleh)}</div>` : ""}
+        `;
+        wrap.appendChild(card);
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-info").classList.remove("hidden");
+    loadPengumuman();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Materi Ajar · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --accent-2: #e8a020; --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--accent-2);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--accent-2); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .filter-chip {
+    padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
+    background: #fff; border: 1px solid var(--border); color: var(--ink-2); cursor: pointer;
+  }
+  .filter-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .list-group-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-3); margin: 1.5rem 0 0.6rem;
+  }
+  .materi-card {
+    background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--accent-2);
+    border-radius: 0 var(--r) var(--r) 0; padding: 0.9rem 1rem 1rem; margin-bottom: 10px;
+  }
+  .materi-card .m-head { display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; gap: 10px; }
+  .materi-card .m-title { font-weight: 600; font-size: 14px; }
+  .materi-card .m-tema { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .materi-card .m-toggle { font-size: 12px; color: var(--accent); font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+  .materi-card .m-isi {
+    display: none; font-size: 13.5px; line-height: 1.7; color: var(--ink-2);
+    margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed var(--border);
+    white-space: pre-wrap;
+  }
+  .materi-card.open .m-isi { display: block; }
+  .materi-card a.btn-lampiran {
+    display: inline-block; margin-top: 0.6rem; font-size: 12px; color: var(--accent); text-decoration: none; font-weight: 600;
+  }
+  .materi-card a.btn-lampiran:hover { text-decoration: underline; }
+  .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-materi" class="hidden">
+  <div id="topbar">
+    <div class="brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>📖 Materi Ajar</h1>
+    <p class="subtitle">Buku Belajar Mandiri — klik judul untuk membaca materinya langsung di halaman ini.</p>
+
+    <div id="filter-row" class="filter-row"></div>
+    <div id="list-materi"><div class="empty-state">Memuat materi…</div></div>
+  </div>
+</div>
+
+<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module">
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  const app = getApps()[0];
+  const db = getFirestore(app);
+
+  let allItems = [];
+  let activeMapel = "Semua";
+
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  async function loadMateri() {
+    const wrap = document.getElementById("list-materi");
+    try {
+      const snap = await getDocs(collection(db, "materi"));
+      allItems = [];
+      snap.forEach((d) => allItems.push({ id: d.id, ...d.data() }));
+      renderFilters();
+      renderList();
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat materi: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  function renderFilters() {
+    const mapelList = ["Semua", ...new Set(allItems.map((it) => it.mapel || "(Tanpa Mapel)"))];
+    const wrap = document.getElementById("filter-row");
+    wrap.innerHTML = "";
+    mapelList.forEach((m) => {
+      const chip = document.createElement("button");
+      chip.className = "filter-chip" + (m === activeMapel ? " active" : "");
+      chip.textContent = m;
+      chip.onclick = () => { activeMapel = m; renderFilters(); renderList(); };
+      wrap.appendChild(chip);
+    });
+  }
+
+  window.toggleMateri = function (cardEl) {
+    cardEl.classList.toggle("open");
+  };
+
+  function renderList() {
+    const wrap = document.getElementById("list-materi");
+    if (allItems.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Belum ada materi yang ditambahkan guru.</div>';
+      return;
+    }
+    const filtered = activeMapel === "Semua" ? allItems : allItems.filter((it) => (it.mapel || "(Tanpa Mapel)") === activeMapel);
+    if (filtered.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Tidak ada materi untuk mapel ini.</div>';
+      return;
+    }
+    const grouped = {};
+    filtered.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
+    Object.keys(grouped).forEach((k) => grouped[k].sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
+
+    wrap.innerHTML = "";
+    Object.keys(grouped).sort().forEach((mapel) => {
+      const title = document.createElement("div");
+      title.className = "list-group-title";
+      title.textContent = mapel;
+      wrap.appendChild(title);
+      grouped[mapel].forEach((it) => {
+        const urlOk = it.url_file && /^https?:\/\//.test(it.url_file);
+        const card = document.createElement("div");
+        card.className = "materi-card";
+        card.innerHTML = `
+          <div class="m-head" onclick="toggleMateri(this.parentElement)">
+            <div>
+              <div class="m-title">${escHtml(it.judul || "-")}</div>
+              <div class="m-tema">${escHtml(it.tema || "")}</div>
+            </div>
+            <div class="m-toggle">Baca ▾</div>
+          </div>
+          <div class="m-isi">${escHtml(it.isi || "")}${urlOk ? `<br/><a class="btn-lampiran" href="${escHtml(it.url_file)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📎 Buka lampiran</a>` : ""}</div>
+        `;
+        wrap.appendChild(card);
+      });
+    });
+  }
+
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-materi").classList.remove("hidden");
+    loadMateri();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+</script>
+</body>
+</html>

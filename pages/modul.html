@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Modul Pembelajaran · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --accent-2: #e8a020; --accent-3: #2a9d6f;
+    --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--accent-3);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--accent-3); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .filter-chip {
+    padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
+    background: #fff; border: 1px solid var(--border); color: var(--ink-2); cursor: pointer;
+  }
+  .filter-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .list-group-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-3); margin: 1.5rem 0 0.6rem;
+  }
+  .modul-card {
+    background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--accent-3);
+    border-radius: 0 var(--r) var(--r) 0; padding: 0.9rem 1rem; margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .modul-card .m-title { font-weight: 600; font-size: 13.5px; }
+  .modul-card .m-tema { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .modul-card a.btn-buka {
+    flex-shrink: 0; background: var(--accent-3); color: #fff; text-decoration: none;
+    padding: 7px 14px; border-radius: 7px; font-size: 12.5px; font-weight: 600;
+  }
+  .modul-card a.btn-buka:hover { background: #23815c; }
+  .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-modul" class="hidden">
+  <div id="topbar">
+    <div class="brand">Modul Pembelajaran <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>📚 Modul Pembelajaran</h1>
+    <p class="subtitle">Modul scaffolding per tema dan mata pelajaran. Pilih mata pelajaran untuk menyaring daftar.</p>
+
+    <div id="filter-row" class="filter-row"></div>
+    <div id="list-modul"><div class="empty-state">Memuat modul…</div></div>
+  </div>
+</div>
+
+<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module">
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  const app = getApps()[0];
+  const db = getFirestore(app);
+
+  let allItems = [];
+  let activeMapel = "Semua";
+
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  async function loadModul() {
+    const wrap = document.getElementById("list-modul");
+    try {
+      const snap = await getDocs(collection(db, "modul"));
+      allItems = [];
+      snap.forEach((d) => allItems.push({ id: d.id, ...d.data() }));
+      renderFilters();
+      renderList();
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat modul: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  function renderFilters() {
+    const mapelList = ["Semua", ...new Set(allItems.map((it) => it.mapel || "(Tanpa Mapel)"))];
+    const wrap = document.getElementById("filter-row");
+    wrap.innerHTML = "";
+    mapelList.forEach((m) => {
+      const chip = document.createElement("button");
+      chip.className = "filter-chip" + (m === activeMapel ? " active" : "");
+      chip.textContent = m;
+      chip.onclick = () => { activeMapel = m; renderFilters(); renderList(); };
+      wrap.appendChild(chip);
+    });
+  }
+
+  function renderList() {
+    const wrap = document.getElementById("list-modul");
+    if (allItems.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Belum ada modul yang ditambahkan guru.</div>';
+      return;
+    }
+    const filtered = activeMapel === "Semua" ? allItems : allItems.filter((it) => (it.mapel || "(Tanpa Mapel)") === activeMapel);
+    if (filtered.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Tidak ada modul untuk mapel ini.</div>';
+      return;
+    }
+    const grouped = {};
+    filtered.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
+    Object.keys(grouped).forEach((k) => grouped[k].sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
+
+    wrap.innerHTML = "";
+    Object.keys(grouped).sort().forEach((mapel) => {
+      const title = document.createElement("div");
+      title.className = "list-group-title";
+      title.textContent = mapel;
+      wrap.appendChild(title);
+      grouped[mapel].forEach((it) => {
+        const card = document.createElement("div");
+        card.className = "modul-card";
+        const urlOk = it.url_file && /^https?:\/\//.test(it.url_file);
+        card.innerHTML = `
+          <div>
+            <div class="m-title">${escHtml(it.judul || "-")}</div>
+            <div class="m-tema">${escHtml(it.tema || "")}</div>
+          </div>
+          ${urlOk ? `<a class="btn-buka" href="${escHtml(it.url_file)}" target="_blank" rel="noopener">Buka Modul</a>` : ""}
+        `;
+        wrap.appendChild(card);
+      });
+    });
+  }
+
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-modul").classList.remove("hidden");
+    loadModul();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+</script>
+</body>
+</html>
