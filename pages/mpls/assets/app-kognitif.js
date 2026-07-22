@@ -198,7 +198,8 @@ async function onStudentChange() {
 
   setSaveStatus("Memuat data sebelumnya…");
   try {
-    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?namaKognitif=" + encodeURIComponent(name));
+    // v0.7.0: endpoint ?namaKognitif= kini digerbang server-side (kode akses MPLS).
+    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?namaKognitif=" + encodeURIComponent(name) + "&kode=" + encodeURIComponent(MPLS_CONFIG.ACCESS_CODE || ""));
     const json = await res.json();
     if (json && json.found) {
       applyExistingData(json.data);
@@ -235,6 +236,8 @@ async function saveData() {
   setSaveStatus("Menyimpan…");
   const payload = Object.assign({}, state.data, {
     type: "mpls_kognitif",
+    // v0.7.0: endpoint ini kini digerbang server-side (kode akses MPLS).
+    kode: MPLS_CONFIG.ACCESS_CODE || "",
     "Nama Siswa": state.student,
     "No": MPLS_STUDENTS.indexOf(state.student) + 1,
     "Diisi Oleh": document.getElementById("inp-guru").value || "",

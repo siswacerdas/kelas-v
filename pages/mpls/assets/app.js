@@ -224,7 +224,8 @@ async function onStudentChange() {
 
   setSaveStatus("Memuat data sebelumnya…");
   try {
-    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?nama=" + encodeURIComponent(name));
+    // v0.7.0: endpoint ?nama= kini digerbang server-side (kode akses MPLS).
+    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?nama=" + encodeURIComponent(name) + "&kode=" + encodeURIComponent(MPLS_CONFIG.ACCESS_CODE || ""));
     const json = await res.json();
     if (json && json.found) {
       applyExistingData(json.data);
@@ -260,6 +261,8 @@ async function saveData() {
   btn.disabled = true;
   setSaveStatus("Menyimpan…");
   const payload = Object.assign({}, state.data, {
+    // v0.7.0: endpoint ini kini digerbang server-side (kode akses MPLS).
+    kode: MPLS_CONFIG.ACCESS_CODE || "",
     "Nama Siswa": state.student,
     "No": MPLS_STUDENTS.indexOf(state.student) + 1,
     "Diisi Oleh": document.getElementById("inp-guru").value || "",
