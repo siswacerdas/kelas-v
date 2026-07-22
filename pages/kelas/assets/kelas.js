@@ -148,6 +148,10 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
 
   const payload = {
     type: "siswa",
+    // v0.7.0: endpoint type:"siswa" kini digerbang server-side, wajib idToken guru
+    // (lihat wajibGuru_() di apps-script/Code.gs). window.guruIdToken diisi oleh
+    // guru-guard.js setelah verifikasi berhasil.
+    idToken: window.guruIdToken || "",
     "Nama Lengkap": nama,
     "Nama Panggilan": document.getElementById("f-panggilan").value.trim(),
     "Tempat Lahir": document.getElementById("f-tempat").value.trim(),
@@ -245,7 +249,8 @@ function renderSiswaList(filterText) {
 async function loadSiswaList() {
   document.getElementById("list-siswa").innerHTML = '<div class="info-box">Memuat data…</div>';
   try {
-    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1");
+    // v0.7.0: endpoint ?siswa=1 kini digerbang server-side, wajib idToken guru.
+    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(window.guruIdToken || ""));
     const json = await parseJsonAman_(res);
     state.siswaList = (json.data || []).slice().sort((a, b) =>
       String(a["Nama Lengkap"] || "").localeCompare(String(b["Nama Lengkap"] || ""), "id", { sensitivity: "base" })
