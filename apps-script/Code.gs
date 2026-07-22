@@ -37,6 +37,103 @@ const SISWA_SHEET_NAME = "Data Siswa";
 // ID folder Drive tempat foto siswa disimpan (dari link yang sudah dishare "siapa saja bisa mengedit")
 const FOTO_FOLDER_ID = "1b-ENsEQJeUFoVKKA6htZbVAxf7zr1IzG";
 
+// ── KUNCI AKSES (v0.7.0) ─────────────────────────────────────────────────
+// Sebelum ini, SEMUA endpoint di bawah bisa diakses siapa pun yang tahu URL Web
+// App (URL itu sendiri publik — ada di pages/mpls/assets/config.js yang ikut
+// ter-deploy ke GitHub Pages). Kode akses di input.html dan Firebase Auth di
+// rekap/laporan/pages/kelas HANYA gerbang tampilan (client-side) — endpoint di
+// balik layar sama sekali tidak mengecek apa pun. Siapa saja bisa memanggil
+// ?all=1 / ?siswa=1 / dst. langsung lewat browser/curl dan mendapat nama
+// lengkap, foto, tempat & tanggal lahir SEMUA siswa. Dua lapis di bawah ini
+// menutup celah itu di level server, bukan cuma di tampilan.
+//
+// LAPIS 1 — ACCESS_CODE_MPLS: kode akses SEDERHANA (sama persis levelnya
+// dengan ACCESS_CODE di pages/mpls/assets/config.js — BUKAN keamanan
+// sesungguhnya, cuma mencegah pemanggilan asal/tidak sengaja). Dipakai untuk
+// endpoint "1 siswa" yang dipanggil dari halaman input (nama/namaKognitif/
+// namaJurnal, dan penyimpanan nilai MPLS/kognitif/jurnal). HARUS diubah
+// bersamaan dengan ACCESS_CODE di config.js kalau mau diganti — dua file ini
+// tidak saling membaca, jadi disalin manual di masing-masing.
+const ACCESS_CODE_MPLS = "mpls2026";
+
+// LAPIS 2 — verifikasi GURU sungguhan lewat Firebase Auth ID Token (lihat
+// wajibGuru_() di bawah). Dipakai untuk endpoint yang mengembalikan/menulis
+// data SEMUA siswa sekaligus (nama, TTL, foto, seluruh hasil penilaian) —
+// data yang paling sensitif. Nilai di bawah sama dengan firebaseConfig di
+// index.html (apiKey & projectId Firebase memang didesain publik/terlihat di
+// klien; yang menjaga keamanan adalah verifikasi ID Token-nya, bukan
+// kerahasiaan apiKey ini).
+const FIREBASE_WEB_API_KEY = "AIzaSyBcpuD90Qk7z4Bdxkm5KhXrsKVzZWFc3_k";
+const FIREBASE_PROJECT_ID = "kelas-v-2026";
+
+/** Lempar Error kalau kode akses MPLS salah/tidak disertakan. Kalau
+ * ACCESS_CODE_MPLS di-set jadi "" (kosong), gerbang ini otomatis nonaktif —
+ * konsisten dengan perilaku ACCESS_CODE kosong di config.js sisi klien. */
+function wajibKodeAkses_(kode) {
+  if (!ACCESS_CODE_MPLS) return;
+  if (String(kode || "") !== ACCESS_CODE_MPLS) {
+    throw new Error("Kode akses salah atau tidak disertakan.");
+  }
+}
+
+/**
+ * Verifikasi bahwa idToken yang dikirim klien adalah sesi Firebase Auth yang
+ * valid DAN akun tsb berperan "guru" di Firestore (koleksi users/{uid}, field
+ * role) — pengecekan yang SAMA seperti yang dilakukan guru-guard.js di klien,
+ * tapi dijalankan ulang di server supaya tidak bisa dilewati begitu saja
+ * dengan langsung memanggil endpoint tanpa lewat halaman.
+ *
+ * Dua langkah, keduanya lewat REST API Google (Apps Script tidak butuh
+ * library/dependency tambahan untuk ini):
+ *  1. Identity Toolkit `accounts:lookup` — pastikan idToken valid & belum
+ *     kedaluwarsa/dipalsukan, dan dapatkan uid pemiliknya.
+ *  2. Firestore REST `GET users/{uid}` — dipanggil dengan idToken sebagai
+ *     Bearer token (BUKAN kredensial service account), memanfaatkan rule
+ *     Firestore yang sudah ada di README ("pemilik boleh baca dokumennya
+ *     sendiri"). Ambil field "role" dari situ.
+ * Melempar Error dengan pesan jelas kalau gagal di langkah manapun; pemanggil
+ * (doGet/doPost) yang menentukan bagaimana pesan itu ditampilkan.
+ */
+function wajibGuru_(idToken) {
+  if (!idToken) throw new Error("Sesi login guru tidak ditemukan — silakan login ulang.");
+
+  const lookupRes = UrlFetchApp.fetch(
+    "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=" + FIREBASE_WEB_API_KEY,
+    {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify({ idToken: idToken }),
+      muteHttpExceptions: true,
+    }
+  );
+  let lookupJson;
+  try { lookupJson = JSON.parse(lookupRes.getContentText() || "{}"); } catch (e) { lookupJson = {}; }
+  if (lookupRes.getResponseCode() !== 200 || !lookupJson.users || !lookupJson.users[0]) {
+    throw new Error("Sesi login tidak valid/kedaluwarsa — silakan login ulang di halaman utama.");
+  }
+  const uid = lookupJson.users[0].localId;
+
+  const docRes = UrlFetchApp.fetch(
+    "https://firestore.googleapis.com/v1/projects/" + FIREBASE_PROJECT_ID +
+      "/databases/(default)/documents/users/" + uid,
+    {
+      method: "get",
+      headers: { Authorization: "Bearer " + idToken },
+      muteHttpExceptions: true,
+    }
+  );
+  if (docRes.getResponseCode() !== 200) {
+    throw new Error("Profil pengguna tidak ditemukan/tidak terbaca — hubungi admin untuk cek data users/" + uid + ".");
+  }
+  let docJson;
+  try { docJson = JSON.parse(docRes.getContentText() || "{}"); } catch (e) { docJson = {}; }
+  const role = docJson.fields && docJson.fields.role && docJson.fields.role.stringValue;
+  if (role !== "guru") {
+    throw new Error("Akun ini bukan akun guru — akses ditolak.");
+  }
+  return uid;
+}
+
 const SISWA_HEADERS = [
   "Timestamp",
   "Nama Lengkap",
@@ -415,58 +512,71 @@ function sheetToObjects_(sheet) {
 function doGet(e) {
   const params = (e && e.parameter) || {};
 
-  // Proxy foto siswa — lihat komentar lengkap di serveFotoBinary_() untuk alasannya.
+  // Proxy foto siswa — LAPIS GURU (bukan JSON, lihat serveFotoBinary_()).
+  // Sengaja TIDAK melempar/mengembalikan JSON kalau verifikasi gagal — dikembalikan
+  // sebagai teks biasa (status 200) supaya <img onerror> tetap jalan sebagaimana
+  // mestinya dan lanjut ke kandidat berikutnya, bukan patah karena respons aneh.
   if (params.foto) {
+    try {
+      wajibGuru_(params.idToken);
+    } catch (err) {
+      return ContentService.createTextOutput("Akses ditolak: " + err.message)
+        .setMimeType(ContentService.MimeType.TEXT);
+    }
     return serveFotoBinary_(params.foto);
   }
 
-  if (params.siswa) {
-    const sheet = getSiswaSheet_();
-    return jsonOut_({ data: sheetToObjects_(sheet) });
-  }
-
-  if (params.allKognitif) {
-    const sheet = getSheetKognitif_();
-    return jsonOut_({ data: sheetToObjects_(sheet) });
-  }
-
-  if (params.namaKognitif) {
-    const sheet = getSheetKognitif_();
-    const row = findRowByColumn_(sheet, "Nama Siswa", params.namaKognitif);
-    if (row === -1) {
-      return jsonOut_({ found: false });
+  try {
+    if (params.siswa) {
+      wajibGuru_(params.idToken);
+      return jsonOut_({ data: sheetToObjects_(getSiswaSheet_()) });
     }
-    return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
-  }
 
-  if (params.allJurnal) {
-    const sheet = getSheetJurnal_();
-    return jsonOut_({ data: sheetToObjects_(sheet) });
-  }
-
-  if (params.namaJurnal) {
-    const sheet = getSheetJurnal_();
-    const row = findRowByColumn_(sheet, "Nama Siswa", params.namaJurnal);
-    if (row === -1) {
-      return jsonOut_({ found: false });
+    if (params.allKognitif) {
+      wajibGuru_(params.idToken);
+      return jsonOut_({ data: sheetToObjects_(getSheetKognitif_()) });
     }
-    return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
-  }
 
-  if (params.all) {
+    if (params.namaKognitif) {
+      wajibKodeAkses_(params.kode);
+      const sheet = getSheetKognitif_();
+      const row = findRowByColumn_(sheet, "Nama Siswa", params.namaKognitif);
+      if (row === -1) return jsonOut_({ found: false });
+      return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
+    }
+
+    if (params.allJurnal) {
+      wajibGuru_(params.idToken);
+      return jsonOut_({ data: sheetToObjects_(getSheetJurnal_()) });
+    }
+
+    if (params.namaJurnal) {
+      wajibKodeAkses_(params.kode);
+      const sheet = getSheetJurnal_();
+      const row = findRowByColumn_(sheet, "Nama Siswa", params.namaJurnal);
+      if (row === -1) return jsonOut_({ found: false });
+      return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
+    }
+
+    if (params.all) {
+      wajibGuru_(params.idToken);
+      return jsonOut_({ data: sheetToObjects_(getSheet_()) });
+    }
+
+    // Health-check tanpa parameter apa pun — tidak mengandung data siswa, jadi
+    // sengaja tidak digerbang supaya tetap gampang dites dari browser.
+    if (!params.nama) {
+      return jsonOut_({ status: "MPLS backend aktif", sheet: SHEET_NAME });
+    }
+
+    wajibKodeAkses_(params.kode);
     const sheet = getSheet_();
-    return jsonOut_({ data: sheetToObjects_(sheet) });
+    const row = findRowByColumn_(sheet, "Nama Siswa", params.nama);
+    if (row === -1) return jsonOut_({ found: false });
+    return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
+  } catch (err) {
+    return jsonOut_({ status: "error", message: String(err.message || err) });
   }
-
-  if (!params.nama) {
-    return jsonOut_({ status: "MPLS backend aktif", sheet: SHEET_NAME });
-  }
-  const sheet = getSheet_();
-  const row = findRowByColumn_(sheet, "Nama Siswa", params.nama);
-  if (row === -1) {
-    return jsonOut_({ found: false });
-  }
-  return jsonOut_({ found: true, data: readRowAsObject_(sheet, row) });
 }
 
 function doPost(e) {
@@ -474,10 +584,13 @@ function doPost(e) {
     const body = JSON.parse(e.postData.contents);
 
     if (body.type === "siswa") {
+      // LAPIS GURU — profil siswa (nama, TTL, foto) hanya boleh ditulis akun guru.
+      wajibGuru_(body.idToken);
       return doPostSiswa_(body);
     }
 
     if (body.type === "mpls_kognitif") {
+      wajibKodeAkses_(body.kode);
       const sheet = getSheetKognitif_();
       body["Timestamp"] = new Date();
       const existingRow = findRowByColumn_(sheet, "Nama Siswa", body["Nama Siswa"]);
@@ -491,6 +604,7 @@ function doPost(e) {
     }
 
     if (body.type === "jurnal") {
+      wajibKodeAkses_(body.kode);
       const sheet = getSheetJurnal_();
       body["Timestamp"] = new Date();
       const existingRow = findRowByColumn_(sheet, "Nama Siswa", body["Nama Siswa"]);
@@ -503,7 +617,9 @@ function doPost(e) {
       return jsonOut_({ status: "ok" });
     }
 
-    // default: data penilaian MPLS non-kognitif (perilaku lama, tidak diubah)
+    // default: data penilaian MPLS non-kognitif (perilaku lama tidak diubah, hanya
+    // ditambah gerbang kode akses)
+    wajibKodeAkses_(body.kode);
     const sheet = getSheet_();
     body["Timestamp"] = new Date();
     const existingRow = findRowByColumn_(sheet, "Nama Siswa", body["Nama Siswa"]);

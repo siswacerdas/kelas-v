@@ -70,6 +70,10 @@ URL Web App tetap sama — tidak perlu ganti `config.js` lagi.
 
 ## Cara kerja singkat
 
+> **Sejak v0.7.0**: hampir semua endpoint di bawah butuh parameter tambahan `kode` atau
+> `idToken` (lihat bagian "Keamanan" di bawah untuk detail lengkapnya) — ringkasan di
+> bawah ini fokus ke fungsi datanya, bukan gerbang aksesnya.
+
 - **Satu baris per siswa.** Mengisi ulang siswa yang sama akan meng-update
   baris yang sudah ada (dicocokkan lewat kolom "Nama Siswa"), bukan menambah
   baris baru — supaya bisa diisi bertahap selama minggu MPLS.
@@ -243,11 +247,36 @@ lengkapnya). Konsekuensinya:
 ## Keamanan
 
 - Web App di-deploy dengan akses **Anyone**, artinya siapa pun yang tahu URL-nya
-  bisa mengirim data. Ini standar untuk pola "situs statis + Apps Script"
-  tanpa server sendiri.
-- Mitigasi saat ini: kode akses sederhana di halaman input (`config.js` →
-  `ACCESS_CODE`) — cukup untuk mencegah orang random, **bukan** keamanan
-  sesungguhnya (kode terlihat di source file).
-- Kalau butuh keamanan lebih serius, opsi ke depan: pindahkan gerbang akses
-  ke Firebase Authentication yang sudah dipakai halaman utama (`index.html`
-  root repo), lalu kirim token login itu ke Apps Script untuk diverifikasi.
+  bisa mengirim permintaan. Ini standar untuk pola "situs statis + Apps Script"
+  tanpa server sendiri — yang membedakan aman/tidaknya adalah pengecekan **di dalam**
+  `doGet`/`doPost`, bukan siapa yang boleh mengakses URL-nya.
+- **Sejak v0.7.0**, setiap endpoint mengecek salah satu dari dua hal sebelum membalas data:
+  1. **Kode akses sederhana** (`wajibKodeAkses_()`, konstanta `ACCESS_CODE_MPLS`) — untuk
+     endpoint per-siswa yang dipakai halaman input (`?nama=`, `?namaKognitif=`,
+     `?namaJurnal=`, `POST` jenis `mpls`/`mpls_kognitif`/`jurnal`). Ini **level proteksi
+     yang sama** dengan `ACCESS_CODE` di `config.js` — cukup untuk mencegah pemanggilan
+     tidak sengaja/asal, **bukan** keamanan sesungguhnya (kodenya ada di source file publik).
+     `ACCESS_CODE_MPLS` di `Code.gs` dan `ACCESS_CODE` di `config.js` harus selalu disamakan
+     manual kalau salah satunya diganti — dua file ini tidak saling membaca.
+  2. **Verifikasi Firebase Auth sungguhan** (`wajibGuru_()`) — untuk endpoint yang
+     mengembalikan/menulis data SEMUA siswa sekaligus (`?all=1`, `?siswa=1`,
+     `?allKognitif=1`, `?allJurnal=1`, `?foto=`, `POST` jenis `siswa`), karena ini yang
+     paling sensitif (nama lengkap, foto, tempat & tanggal lahir semua siswa). Klien
+     mengirim `idToken` dari sesi Firebase Auth yang sedang login (diambil `guru-guard.js`
+     lewat `window.guruIdToken`); server memverifikasi token itu ke Identity Toolkit REST
+     API, lalu mengecek field `role` di Firestore (`users/{uid}`) lewat Firestore REST API.
+     Ini **keamanan sungguhan** — bukan cuma kode rahasia yang bisa dibaca di source.
+- **Redeploy WAJIB setelah menarik update ke v0.7.0**: kode lama (`Code.gs` versi lama yang
+  masih ter-deploy) tidak mengenal parameter `idToken`/`kode` sama sekali, jadi endpoint
+  akan tetap berjalan seperti sebelumnya sampai deployment aktif diganti ke versi baru
+  (lihat "Setiap kali kode Code.gs diubah" di atas). Saat redeploy, Apps Script akan
+  meminta izin tambahan untuk **menghubungkan ke layanan eksternal** (dipakai
+  `UrlFetchApp` di `wajibGuru_()` untuk memanggil Identity Toolkit & Firestore) — klik
+  Allow/Izinkan saat diminta, seperti otorisasi Drive yang sudah pernah diminta sebelumnya.
+- **Celah yang masih tersisa (belum ditutup, sengaja)**: 3 kandidat fallback foto di
+  `assets/js/foto-fallback.js` (hotlink langsung ke domain Google, peninggalan v0.5.2)
+  tidak melalui `wajibGuru_()` — file-nya sendiri di folder Drive masih di-share "siapa
+  saja yang punya link boleh melihat" (lihat `simpanFotoKeDrive_()`). Menutup ini berarti
+  mengubah setting share folder jadi privat + melepas 3 kandidat fallback tsb, yang akan
+  menghilangkan jaring pengaman kalau proxy Apps Script sedang down/timeout/kuota habis —
+  perlu didiskusikan dan diputuskan terpisah, bukan sekadar tempelan kecil.
