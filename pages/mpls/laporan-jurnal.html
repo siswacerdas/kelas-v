@@ -129,7 +129,8 @@
 
   async function loadSiswaProfile(nama) {
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1");
+      // v0.7.0: endpoint ?siswa=1 kini digerbang server-side, wajib idToken guru.
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(window.guruIdToken || ""));
       const json = await res.json();
       const list = json.data || [];
       return list.find((s) => String(s["Nama Lengkap"]).trim().toLowerCase() === nama.trim().toLowerCase()) || null;
@@ -147,7 +148,8 @@
 
     let dataRow;
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?namaJurnal=" + encodeURIComponent(nama));
+      // v0.7.0: endpoint ?namaJurnal= kini digerbang server-side (kode akses MPLS).
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?namaJurnal=" + encodeURIComponent(nama) + "&kode=" + encodeURIComponent(MPLS_CONFIG.ACCESS_CODE || ""));
       const json = await res.json();
       if (!json.found) {
         document.getElementById("status").textContent = "Belum ada data asesmen menulis untuk " + nama + ".";
