@@ -21,7 +21,110 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.9.0] — 2026-07-20
+## [0.9.2] — 2026-07-21
+
+> **Bugfix kritis** — dilaporkan pengguna: data hasil MPLS yang sebelumnya normal
+> tiba-tiba tidak bisa dilihat lagi setelah update v0.7.0 (kunci akses
+> server-side), walau sudah pakai kode terbaru dan sudah deploy ulang.
+
+### Diperbaiki
+- **Penyebab akar**: sejak v0.7.0, endpoint Apps Script yang gagal verifikasi
+  (idToken kedaluwarsa, akun bukan guru, kode akses salah, Apps Script belum
+  diberi izin `UrlFetchApp`, dll.) membalas `{status:"error", message:"..."}`
+  — TAPI kode di sisi klien (`rekap.html`, `rekap-kognitif.html`,
+  `rekap-jurnal.html`, `laporan.html`, `laporan-kognitif.html`,
+  `laporan-jurnal.html`, `pages/kelas/assets/kelas.js`) **belum diperbarui**
+  untuk mengecek `status === "error"` lebih dulu. Karena respons error tidak
+  punya field `data`/`found`, kode lama membaca ini sebagai "field data tidak
+  ada" dan menampilkan pesan **"Kemungkinan Apps Script belum ter-deploy versi
+  terbaru"** — pesan yang SALAH TOTAL untuk kasus ini, karena penyebab
+  sebenarnya sama sekali lain. Akibatnya guru diarahkan untuk redeploy
+  berulang kali, yang tidak pernah menyelesaikan masalah karena bukan itu
+  akar masalahnya, dan pesan error yang SEBENARNYA (yang sudah dirancang
+  informatif di `wajibGuru_()`/`wajibKodeAkses_()`) tidak pernah terlihat.
+  Di `pages/kelas/assets/kelas.js` malah lebih parah: errornya diam-diam
+  ditelan jadi daftar siswa kosong ("Belum ada siswa"), tanpa pesan apa pun.
+- Diperbaiki di ke-7 file di atas: sekarang SELALU cek `json.status ===
+  "error"` LEBIH DULU dan tampilkan `json.message` apa adanya ke guru, baru
+  setelah itu (kalau bukan error tapi tetap tidak ada `data`/`found`) baru
+  tampilkan pesan "kemungkinan belum deploy versi terbaru" — supaya kedua
+  jenis masalah ini tidak lagi tertukar.
+- **Tidak perlu deploy ulang Apps Script untuk perbaikan ini** — `Code.gs`
+  sendiri tidak berubah di versi ini (dia sudah benar sejak awal, mengirim
+  `message` yang informatif); yang salah adalah kode di sisi klien yang tidak
+  membacanya. Cukup upload ulang file HTML/JS yang disebut di atas ke GitHub.
+- **Ini TIDAK serta-merta menyelesaikan masalah akses yang sedang dialami** —
+  kalau memang ada error sungguhan (idToken/rules/otorisasi Apps Script),
+  error itu masih akan terjadi; bedanya sekarang PESANNYA akan terlihat jelas,
+  bukan lagi pesan generik yang menyesatkan. Lihat `ANTIREGRESI.md` §24 untuk
+  panduan diagnostik lanjutan berdasarkan pesan yang muncul.
+
+### Prinsip baru (dicatat di ANTIREGRESI.md §23)
+- Setiap kali menambah gerbang akses baru ke endpoint yang sudah ada, WAJIB
+  ditelusuri ulang SEMUA pemanggil endpoint itu untuk memastikan mereka
+  mengecek `status === "error"` lebih dulu sebelum mengasumsikan bentuk
+  respons sukses tertentu — bukan cuma menambah parameter yang dikirim.
+
+### Diuji
+- 15 skenario Playwright baru: memaksa server (mock) membalas
+  `{status:"error",...}` untuk ke-7 file yang diperbaiki, memastikan pesan
+  error ASLI tampil dan pesan menyesatkan TIDAK tampil; plus 1 skenario
+  regresi memastikan kasus deployment lama SUNGGUHAN (tanpa field status/data
+  sama sekali) tetap menampilkan pesan "kemungkinan belum deploy" seperti
+  seharusnya. Semua 82 skenario dari sesi-sesi sebelumnya dijalankan ulang —
+  tidak ada regresi.
+
+---
+
+## [0.9.1] — 2026-07-21
+
+> Sesi penyempurnaan atas fitur v0.8.0/v0.9.0 — bukan fitur baru, tapi audit ulang
+> kode yang baru dibangun untuk cari celah kecil sebelum lanjut ke halaman lain.
+
+### Diperbaiki
+- **Bank Soal (`admin.html`) sebelumnya tidak mewajibkan Mata Pelajaran** —
+  soal bisa tersimpan tanpa mapel dan jatuh ke kelompok "(Tanpa Mapel)" di
+  `bank-soal.html`, padahal Modul dan Materi sudah mewajibkannya. Disamakan:
+  mapel sekarang wajib untuk ketiganya.
+- **Bank Soal tidak mencegah 2 pilihan dengan teks sama persis** — kalau
+  guru tidak sengaja mengetik pilihan yang identik (mis. dua-duanya "20"),
+  penilaian di `bank-soal.html` bisa menandai lebih dari satu opsi sebagai
+  "benar" sekaligus karena pencocokan berdasar teks, bukan posisi. Sekarang
+  divalidasi saat simpan — guru diminta membedakan dulu.
+- **Celah XSS kecil** di atribut `href` untuk lampiran/`url_file` (`modul.html`,
+  `materi.html`) yang belum di-escape — sudah diperbaiki (ditemukan sekalian
+  saat audit ini, bukan celah baru).
+
+### Ditambahkan
+- **Datalist mapel** di `admin.html` — input "Mata Pelajaran" di tab Modul,
+  Materi, dan Bank Soal sekarang menyarankan nama mapel yang sudah pernah
+  dipakai (gabungan dari ketiga koleksi), supaya guru tinggal pilih alih-alih
+  mengetik ulang. Mencegah "Matematika" vs "matematika" dianggap 2 kelompok
+  berbeda gara-gara beda kapitalisasi/spasi — sebelumnya ini bisa terjadi tanpa
+  guru sadar (modul/materi/soal jadi "hilang" karena masuk kelompok yang salah).
+- **Peringatan format link** (tidak memblokir simpan) di tab Modul & Materi —
+  kalau "Link File"/"Lampiran" diisi tapi tidak diawali `http://`/`https://`,
+  guru langsung diberi tahu saat menyimpan, bukan baru bingung nanti waktu
+  tombol "Buka Modul"/lampiran tidak muncul di halaman siswa.
+- **Bank Soal (`bank-soal.html`)**: urutan tampil pilihan jawaban kini diacak
+  setiap kuis dimulai (Fisher-Yates), supaya siswa tidak bisa menghafal "jawaban
+  selalu di posisi ke-2" — pencocokan jawaban tetap berdasar teks pilihan,
+  bukan posisi, jadi pengacakan ini tidak memengaruhi logika penilaian.
+- **Bank Soal**: soal yang dilewati (tidak dijawab sama sekali) sekarang diberi
+  penanda "Belum dijawab" berwarna merah di nomor soal, dan skor mencantumkan
+  berapa soal yang belum dijawab — sebelumnya soal yang dilewati tidak diberi
+  tanda apa pun (tidak hijau, tidak merah), berisiko dikira "otomatis benar".
+
+### Diuji
+- 12 skenario Playwright baru: validasi mapel wajib & pilihan duplikat di
+  `admin.html` (termasuk memastikan soal yang ditolak validasi TIDAK ikut
+  tersimpan), datalist mapel terisi otomatis, penanda "Belum dijawab" tampil
+  dan tidak ikut ditandai merah, skor tetap menghitung soal terlewat sebagai
+  salah, dan pengacakan pilihan (dicoba 8x, urutan tidak selalu identik) —
+  semua lulus. 38 skenario lama (v0.8.0 + v0.9.0) dijalankan ulang untuk cek
+  regresi — semua tetap lulus (total 50 skenario).
+
+---
 
 ### Ditambahkan
 - **`pages/materi.html`** — Materi Ajar/Buku Belajar Mandiri untuk siswa & guru

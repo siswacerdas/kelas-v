@@ -303,7 +303,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 
 ---
 
-### 19. Bank Soal — Latihan Interaktif (`pages/bank-soal.html`, v0.9.0)
+### 19. Bank Soal — Latihan Interaktif (`pages/bank-soal.html`, v0.9.0 + v0.9.1)
 - [ ] Bisa dibuka akun **siswa** (bukan guru-only)
 - [ ] Kotak pilihan mapel menampilkan jumlah soal yang benar per mapel (mis.
       "5 soal") sesuai isi `bank_soal` yang sudah ditambahkan guru
@@ -313,8 +313,15 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       skor (x/y) muncul dan SESUAI dengan jumlah jawaban yang benar-benar cocok
 - [ ] Pilihan yang benar ditandai **hijau** untuk SEMUA soal (termasuk yang
       dijawab benar maupun salah); pilihan yang dipilih siswa tapi SALAH ditandai
-      **merah**; soal yang tidak dijawab sama sekali tidak menampilkan warna merah
-      di pilihan manapun (karena tidak ada yang dipilih)
+      **merah**
+- [ ] **Sejak v0.9.1**: soal yang TIDAK dijawab sama sekali diberi label merah
+      "Belum dijawab" di nomor soal (bukan dibiarkan tanpa tanda apa pun), dan
+      label skor mencantumkan "· N soal belum dijawab"; soal itu tetap dihitung
+      SALAH di skor (bukan benar, bukan dilewati dari perhitungan)
+- [ ] **Sejak v0.9.1**: urutan tampil pilihan diacak tiap kali kuis dibuka —
+      buka mapel yang sama beberapa kali, urutan pilihan seharusnya TIDAK selalu
+      persis sama; penilaian tetap benar walau urutan berubah (dicocokkan lewat
+      teks, bukan posisi)
 - [ ] Setelah dinilai: semua radio button terkunci (tidak bisa diubah lagi) dan
       tombol berubah jadi "Sudah Dinilai" (nonaktif)
 - [ ] Tombol "← Pilih mapel lain" mengembalikan ke daftar mapel, dan memilih
@@ -349,6 +356,112 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] **Kalau nanti sudah diisi dokumen CP/TP/ATP atau jadwal resmi**: pastikan
       kotak catatan kuning ("masih kerangka") ikut DIHAPUS supaya tidak
       membingungkan — jangan cuma menambah isi tanpa menghapus catatannya
+
+---
+
+### 22. Penyempurnaan Form Konten (`admin.html`, v0.9.1)
+- [ ] Tab Bank Soal: coba simpan soal TANPA mengisi Mata Pelajaran → ditolak
+      dengan pesan jelas, TIDAK ikut tersimpan ke list
+- [ ] Tab Bank Soal: isi 2 pilihan dengan teks yang PERSIS SAMA (mis. keduanya
+      "20") → ditolak dengan pesan soal pilihan duplikat, TIDAK ikut tersimpan
+- [ ] Ketik di kolom "Mata Pelajaran" (tab Modul/Materi/Bank Soal manapun) →
+      muncul saran nama mapel yang sudah pernah dipakai di ketiga tab (datalist
+      browser bawaan, bukan dropdown custom)
+- [ ] Isi "Link File"/"Lampiran" dengan teks yang BUKAN URL (mis. cuma
+      "modul1.pdf" tanpa `http`) → pesan sukses tetap muncul tapi disertai
+      peringatan format link; simpan dengan link yang benar (`https://...`) →
+      tidak ada peringatan tambahan
+
+---
+
+### 23. PRINSIP WAJIB: Jangan Menutupi Pesan Error Asli (sejak v0.9.2)
+> **Kronologi kenapa section ini ada**: setelah v0.7.0 menambahkan gerbang akses
+> server-side (`wajibGuru_()`/`wajibKodeAkses_()` di `Code.gs`), pengguna
+> melaporkan data hasil MPLS yang tadinya normal jadi tidak bisa dilihat, padahal
+> sudah pakai kode terbaru dan sudah deploy ulang. Setelah ditelusuri, penyebabnya
+> BUKAN masalah deploy — melainkan `rekap.html`/`laporan*.html`/`kelas.js` yang
+> sudah diubah untuk MENGIRIM `idToken`/`kode` (v0.7.0), tapi lupa diubah untuk
+> MEMBACA kalau server MENOLAKNYA. Respons error `{status:"error", message:"..."}`
+> ikut memicu kondisi "field data tidak ada", sehingga tampil pesan lama yang
+> keliru total ("kemungkinan belum deploy versi terbaru") padahal error
+> sebenarnya soal otorisasi/sesi login. Guru jadi disuruh redeploy berulang kali
+> tanpa pernah menyelesaikan masalah, karena pesan yang dilihatnya salah sasaran.
+
+**Aturan wajib ke depan, berlaku untuk SEMUA endpoint baru maupun lama:**
+- [ ] Setiap kali kode di `Code.gs` bisa membalas `{status:"error", message:...}`
+      untuk sebuah endpoint, SEMUA pemanggil endpoint itu di sisi klien WAJIB
+      mengecek `json.status === "error"` **PALING AWAL**, sebelum mengecek
+      keberadaan field lain (`data`, `found`, dst.) — bukan cuma menambah
+      pengiriman parameter baru (`idToken`/`kode`) tanpa mengubah cara membaca
+      balasannya
+- [ ] Kalau `json.status === "error"`, tampilkan `json.message` APA ADANYA ke
+      pengguna (guru) — jangan diterjemahkan ulang jadi pesan generik, dan
+      jangan ditelan diam-diam jadi "data kosong"/"belum ada"
+- [ ] Setiap kali menambah gerbang akses BARU ke endpoint yang SUDAH ADA dan
+      sudah dipakai fitur lain: telusuri ulang **SEMUA** file yang memanggil
+      endpoint itu (`grep -rn` nama endpoennya di seluruh `pages/`), bukan cuma
+      halaman yang sedang dikerjakan saat itu
+- [ ] Sebelum menganggap sebuah perubahan gerbang akses selesai: uji SKENARIO
+      GAGAL-nya juga (kirim idToken/kode yang salah/kosong sengaja), bukan cuma
+      skenario berhasil — lihat §24 kalau butuh cara mengujinya tanpa Firestore
+      sungguhan
+
+---
+
+### 24. Panduan Diagnostik: "Data MPLS/Kelas Tidak Bisa Dilihat Lagi"
+> Dipakai kalau rekap/laporan/data kelas yang biasanya normal tiba-tiba tidak
+> bisa dilihat. Sejak v0.9.2, pesan error yang tampil di halaman (atau di
+> Console browser untuk kasus foto) SEHARUSNYA sudah menunjukkan penyebab
+> asli — baca pesannya dulu sebelum menebak-nebak atau buru-buru redeploy.
+
+**Langkah 1 — Baca pesan errornya persis, jangan dilewati**
+- [ ] Buka halaman yang bermasalah (`rekap.html`, dsb.) → kalau ada kotak
+      merah "Gagal memuat data dari server: ..." → itu pesan asli dari
+      `Code.gs`, cocokkan dengan daftar di bawah
+- [ ] Kalau yang bermasalah foto di `laporan*.html`/`pages/kelas/`: buka
+      DevTools (F12) → tab Console → cari baris "Gagal memuat profil siswa"
+
+**Langkah 2 — Cocokkan pesan dengan penyebabnya**
+- [ ] **"Sesi login guru tidak ditemukan"** → `window.guruIdToken` kosong di
+      klien. Coba logout-login ulang; kalau tetap kosong, cek `guru-guard.js`
+      sudah versi yang mengisi `window.guruIdToken` SEBELUM event
+      `guru-verified` (lihat §15)
+- [ ] **"Sesi login tidak valid/kedaluwarsa"** → panggilan ke Identity Toolkit
+      gagal. Kemungkinan: (a) idToken beneran kedaluwarsa — coba login ulang;
+      (b) **Apps Script belum diberi izin akses layanan eksternal
+      (`UrlFetchApp`)** — ini penyebab yang PALING SERING kelewat: buka Apps
+      Script Editor → Deploy → Manage deployments → pastikan proses deploy
+      SEMPAT menampilkan layar izin "Aplikasi ini meminta akses ke..." dan
+      sudah diklik Allow/Izinkan (bukan ditutup/dibatalkan); (c) API key
+      Firebase (`FIREBASE_WEB_API_KEY` di `Code.gs`) punya PEMBATASAN di
+      Google Cloud Console (mis. dibatasi hanya untuk domain/referrer
+      tertentu) yang membuat panggilan dari server Apps Script ditolak
+      walau key-nya sendiri benar — cek di Google Cloud Console → APIs &
+      Services → Credentials → klik API key tsb → lihat "Application
+      restrictions"
+- [ ] **"Profil pengguna tidak ditemukan/tidak terbaca — hubungi admin untuk
+      cek data users/{uid}"** → dokumen `users/{uid}` guru tsb tidak ada di
+      Firestore, ATAU Firestore Rules yang aktif tidak mengizinkan pemilik
+      baca dokumennya sendiri (cek rules yang di-publish benar-benar yang
+      terbaru dari `README.md`, lihat §15-16)
+- [ ] **"Akun ini bukan akun guru"** → field `role` di dokumen `users/{uid}`
+      bukan `"guru"` persis (cek typo/kapitalisasi di Firestore Console)
+- [ ] **"Kode akses salah atau tidak disertakan"** → `ACCESS_CODE_MPLS` di
+      `Code.gs` tidak sama persis dengan `ACCESS_CODE` di
+      `pages/mpls/assets/config.js` — samakan manual keduanya
+- [ ] **Kotak "Backend belum mengenali permintaan ini... field data tidak
+      ada di respons, dan bukan respons error juga"** → ini baru benar-benar
+      soal deployment: cek `APPS_SCRIPT_URL` di `config.js` PERSIS sama dengan
+      URL deployment yang aktif sekarang (Deploy → Manage deployments), dan
+      pastikan versi yang di-deploy memang yang terbaru (bukan "Test
+      deployment" yang URL-nya beda dari Web App yang dipakai production)
+
+**Langkah 3 — Kalau masih buntu**
+- [ ] Coba panggil endpoint LANGSUNG dari address bar browser (contoh:
+      `<APPS_SCRIPT_URL>?all=1&idToken=` — sengaja tanpa token, harus balas
+      error yang jelas, BUKAN halaman kosong/HTML aneh) untuk memastikan Web
+      App-nya sendiri hidup dan merespons JSON dengan benar, sebelum menuduh
+      masalahnya ada di sisi klien
 
 ---
 
@@ -633,6 +746,8 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-20 | 0.7.1 | Claude (audit dokumen, tanpa perubahan kode aplikasi) | ⚠️ Lulus dengan catatan | Audit lanjutan: (1) rules Firestore README diverifikasi ke dokumentasi resmi Firebase — dikonfirmasi bug tabrakan aturan (rules di-OR-kan, wildcard `/{koleksi}/{id}` melumpuhkan `/users/{uid}`), sudah diperbaiki di README, **BELUM diuji dengan Firestore Rules Playground sungguhan** (perlu dilakukan manual di Firebase Console, dicatat sebagai item checklist baru); (2) audit isi `ANTIREGRESI.md` sendiri terhadap kode sungguhan menemukan 2 tempat checklist keliru soal jumlah kategori kognitif (bilang 5, sebenarnya 7 sejak v0.6.0) dan 1 tempat penjelasan grid laporan yang sudah basi sejak v0.6.2 — semua dikonfirmasi lewat `grep` langsung ke `mpls-kognitif-data.js`/`laporan-kognitif.html`, bukan tebakan. |
 | 2026-07-20 | 0.8.0 | Claude (Playwright + stub Firestore in-memory, tanpa Firestore sungguhan) | ⚠️ Lulus dengan catatan | `admin.html` (panel CRUD Pengumuman/Modul/Bank Soal) & `modul.html` (tampil siswa) baru. 18 skenario Playwright: tambah/edit/hapus untuk ketiga jenis konten (semua lulus), radio jawaban benar di Bank Soal tersimpan sesuai teks pilihan yang dicentang (lulus), anti-XSS pada judul/pertanyaan dengan tag HTML (lulus, di-escape bukan dieksekusi), penolakan akses akun bukan-guru di `admin.html` (lulus), pengelompokan+pengurutan+filter mapel di `modul.html` untuk akun siswa (lulus). Screenshot layar sempit (360-375px) untuk kedua halaman, termasuk tab Bank Soal yang paling padat — tidak ada elemen terpotong. **BELUM diuji**: dengan Firestore project sungguhan (`kelas-v-2026`) — stub in-memory tidak bisa memvalidasi apakah Firestore Rules produksi (v0.7.1) benar-benar mengizinkan guru menulis ke koleksi `modul`/`bank_soal` seperti diharapkan; WAJIB dicoba manual sebelum dipakai guru beneran (lihat §16-17 checklist baru). |
 | 2026-07-20 | 0.9.0 | Claude (Playwright + stub Firestore in-memory, tanpa Firestore sungguhan) | ⚠️ Lulus dengan catatan | `materi.html`, `bank-soal.html`, `info.html`, `cp-tp-atp.html`, `jadwal.html` baru + tab Materi di `admin.html`. 20 skenario Playwright baru (semua lulus): CRUD tab Materi, baca/tutup+lampiran di `materi.html`, alur kuis penuh di `bank-soal.html` (skor dihitung tepat, penandaan hijau/merah tepat, tombol terkunci setelah dinilai, ganti mapel mereset kuis), arsip penuh di `info.html`, dan pemastian `cp-tp-atp.html`/`jadwal.html` jujur menampilkan penanda "kerangka" (bukan konten karangan). 18 skenario lama (v0.8.0) dijalankan ulang untuk cek regresi dari tab Materi baru — semua tetap lulus (38 total). Ditemukan+diperbaiki sekalian: celah XSS kecil di atribut `href` untuk `url_file` di `modul.html`/`materi.html` (belum di-escape) — sekarang sudah di-escape. Cek overflow horizontal terprogram di 360px untuk 6 halaman baru — nol piksel di semuanya. **BELUM diuji**: dengan Firestore project sungguhan — sama seperti v0.8.0, checklist manual ada di §18-21. Konten `cp-tp-atp.html`/`jadwal.html` SENGAJA masih placeholder (bukan bug) — menunggu dokumen resmi dari sekolah. |
+| 2026-07-21 | 0.9.1 | Claude (Playwright, audit penyempurnaan atas fitur sendiri) | ⚠️ Lulus dengan catatan | Penyempurnaan (bukan fitur baru): mapel wajib di Bank Soal, validasi pilihan duplikat, datalist mapel lintas-tab, peringatan format link, pengacakan pilihan jawaban tiap kuis, penanda "Belum dijawab" di Bank Soal. 12 skenario Playwright baru (semua lulus, termasuk memastikan input yang gagal validasi TIDAK ikut tersimpan — bukan cuma pesan errornya yang dicek). 38 skenario lama dijalankan ulang — semua tetap lulus (total 50). **BELUM diuji**: dengan Firestore project sungguhan (masih stub in-memory di semua sesi sampai sekarang) — checklist manual §16-22 makin menumpuk dan sebaiknya segera dijalankan sekali secara menyeluruh sebelum dipakai guru/siswa beneran, daripada terus menunda di tiap sesi. |
+| 2026-07-21 | 0.9.2 | Claude (Playwright, bugfix dilaporkan pengguna) | ⚠️ Lulus dengan catatan | **Bugfix kritis dilaporkan pengguna**: data hasil MPLS tidak bisa dilihat setelah v0.7.0, padahal sudah deploy ulang. Akar masalah: 7 file (`rekap*.html`, `laporan*.html`, `kelas.js`) belum diperbarui membaca `status:"error"` dari server sejak gerbang akses v0.7.0 ditambahkan — error apa pun ditampilkan sebagai pesan generik "kemungkinan belum deploy" yang salah sasaran, atau (di `kelas.js`) ditelan diam-diam jadi "Belum ada siswa". Diperbaiki di ke-7 file: cek `status==="error"` lebih dulu, tampilkan `message` asli. 15 skenario Playwright baru (memaksa server mock membalas error, pastikan pesan asli tampil DAN pesan lama tidak tampil, plus 1 skenario regresi memastikan kasus deploy-lama-sungguhan tetap dapat pesan yang sesuai) — semua lulus. 82 skenario dari sesi-sesi sebelumnya dijalankan ulang — tidak ada regresi (total 97). Ditambahkan §23 (prinsip wajib cek status error di setiap pemanggil endpoint) dan §24 (panduan diagnostik langkah-demi-langkah) supaya kelas bug ini tidak terulang. **Catatan penting**: fix ini membuat pesan error terlihat JELAS, TAPI tidak serta-merta memperbaiki akar masalah akses yang pengguna alami (kalau memang ada masalah otorisasi/rules) — pengguna perlu redeploy sisi klien (bukan Apps Script) lalu baca pesan error yang baru muncul dan cocokkan dengan §24. |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
