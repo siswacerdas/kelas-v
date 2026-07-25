@@ -422,10 +422,13 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       DevTools (F12) → tab Console → cari baris "Gagal memuat profil siswa"
 
 **Langkah 2 — Cocokkan pesan dengan penyebabnya**
-- [ ] **"Sesi login guru tidak ditemukan"** → `window.guruIdToken` kosong di
-      klien. Coba logout-login ulang; kalau tetap kosong, cek `guru-guard.js`
-      sudah versi yang mengisi `window.guruIdToken` SEBELUM event
-      `guru-verified` (lihat §15)
+- [ ] **"Sesi login guru tidak ditemukan"** (KASUS NYATA PERNAH TERJADI, lihat
+      §25 untuk kronologi lengkap): sejak v0.9.3, pastikan `guru-guard.js` yang
+      dipakai TIDAK lagi mengandung `onIdTokenChanged` — itu sumber race
+      condition yang bikin token diam-diam ke-reset jadi kosong walau guru
+      sudah login benar. Kalau situs masih pakai `guru-guard.js` versi lama
+      (ada `onIdTokenChanged`), update dulu ke versi v0.9.3. Kalau sudah
+      versi v0.9.3 tapi tetap kosong, baru coba logout-login ulang.
 - [ ] **"Sesi login tidak valid/kedaluwarsa"** → panggilan ke Identity Toolkit
       gagal. Kemungkinan: (a) idToken beneran kedaluwarsa — coba login ulang;
       (b) **Apps Script belum diberi izin akses layanan eksternal
@@ -462,6 +465,81 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       error yang jelas, BUKAN halaman kosong/HTML aneh) untuk memastikan Web
       App-nya sendiri hidup dan merespons JSON dengan benar, sebelum menuduh
       masalahnya ada di sisi klien
+
+---
+
+### 25. Kronologi Bug: "Data MPLS Tidak Bisa Dilihat Lagi" (v0.9.2 → v0.9.3)
+> Dicatat lengkap atas permintaan pengguna, supaya kesalahan yang sama tidak
+> terulang. Ini kasus NYATA yang dialami, bukan skenario hipotetis.
+
+**Kronologi:**
+1. v0.7.0 menambahkan gerbang akses server-side (`wajibGuru_()`) — endpoint
+   guru butuh `idToken`. `guru-guard.js` diberi `window.guruIdToken` (diisi
+   oleh `onAuthStateChanged`) DAN `onIdTokenChanged` (dimaksudkan menjaga
+   token tetap segar tiap ~1 jam).
+2. Pengguna melaporkan: data hasil MPLS yang biasanya normal tiba-tiba tidak
+   bisa dilihat, padahal sudah pakai kode terbaru & sudah deploy ulang.
+3. v0.9.2 memperbaiki bug BERBEDA yang ditemukan lebih dulu (pesan error
+   server ditutupi pesan generik "belum deploy") — ini perbaikan yang BENAR
+   dan PERLU, tapi belum menyelesaikan laporan pengguna karena bukan akar
+   masalah sebenarnya, cuma menyingkap bahwa ada masalah lain di baliknya.
+4. Setelah v0.9.2 ditempel, pesan error yang SEBENARNYA baru terlihat:
+   **"Sesi login guru tidak ditemukan — silakan login ulang."** — muncul
+   SEKETIKA (tanpa jeda "memuat"), tanpa jejak apa pun di Console browser.
+5. Analisis: pesan itu berasal dari baris PALING AWAL `wajibGuru_()` di
+   `Code.gs` (`if (!idToken) throw ...`), yang dilempar SEBELUM ada panggilan
+   jaringan apa pun — cocok persis dengan gejala "seketika, tanpa jejak
+   console" (karena memang tidak ada request Identity Toolkit/Firestore yang
+   sempat terjadi). Ini membuktikan `window.guruIdToken` KOSONG di klien saat
+   `fetch()` dipanggil, padahal guru sudah login dengan benar (halaman sudah
+   lolos dari layar "Memeriksa akses").
+6. Ditemukan: `onIdTokenChanged` dan `onAuthStateChanged` adalah DUA listener
+   independen. Di Firebase SDK sungguhan, `onIdTokenChanged` bisa terpanggil
+   dengan `user: null` sesaat (sebelum sesi tersimpan browser selesai
+   dipulihkan) — kalau ini terjadi SETELAH `onAuthStateChanged` sempat mengisi
+   token dengan benar, baris `window.guruIdToken = null` di `onIdTokenChanged`
+   MENIMPA token yang baru saja benar, TANPA ERROR APAPUN (bukan exception,
+   cuma penugasan variabel biasa — makanya tidak ada jejak di console).
+7. v0.9.3 menghapus `onIdTokenChanged` sepenuhnya, mengganti dengan
+   `window.getFreshGuruIdToken()` yang SELALU baca `auth.currentUser`
+   LANGSUNG di saat dibutuhkan (satu sumber kebenaran, tidak ada listener
+   kedua yang bisa berlomba).
+
+**Pelajaran/prinsip untuk kode ke depan:**
+- [ ] **Jangan simpan token/kredensial penting di variabel cache
+      (`window.xxx`) yang di-maintain oleh LEBIH DARI SATU listener/callback
+      independen.** Kalau perlu selalu segar, ambil LANGSUNG dari sumbernya
+      (`auth.currentUser.getIdToken()`) di titik pemakaian, bukan dari cache
+      yang di-refresh "di suatu tempat lain" oleh kode yang terpisah.
+- [ ] **Bug berbasis race condition/timing async biasanya TIDAK muncul di
+      pengujian dengan stub/mock** (stub Playwright saya memanggil listener
+      secara sinkron & predictable, tidak mereplikasi timing SDK sungguhan).
+      Ini bukan berarti pengujian otomatis tidak berguna — tapi perlu diingat
+      "semua test lulus" tidak sama dengan "tidak ada bug", khususnya untuk
+      apa pun yang melibatkan Firebase Auth, timing, atau lebih dari satu
+      sumber kebenaran untuk data yang sama
+- [ ] Kalau pengguna melaporkan sesuatu "tadinya jalan normal, sekarang
+      tidak" setelah sebuah update: JANGAN asumsikan itu masalah
+      deploy/environment pengguna sampai pesan error ASLI (bukan yang
+      disimpulkan) benar-benar terlihat dan dibaca — lihat §23
+- [ ] **Uji manual dengan Firestore/Firebase Auth SUNGGUHAN masih tertunda**
+      sejak v0.8.0 (lihat catatan berulang di Log Ujicoba) — kasus ini contoh
+      nyata kenapa itu penting: bug ini TIDAK mungkin ketemu lewat stub,
+      hanya ketemu setelah dipakai pengguna sungguhan. Semakin lama uji nyata
+      ditunda, semakin besar risiko bug sejenis menumpuk tanpa terdeteksi.
+
+**Checklist regresi untuk perbaikan ini:**
+- [ ] `assets/js/guru-guard.js` TIDAK mengandung `onIdTokenChanged` sama
+      sekali (baik di `import` maupun pemanggilan)
+- [ ] `window.getFreshGuruIdToken` tersedia dan mengembalikan token yang
+      valid setelah event `guru-verified`
+- [ ] Buka halaman guru (`rekap.html`, dst.), BIARKAN TERBUKA lebih dari 1
+      jam (atau percepat dengan mengubah `30 * 60 * 1000` sementara jadi
+      angka kecil saat menguji), pastikan token tetap ter-refresh otomatis
+      dan endpoint tetap bisa diakses tanpa perlu login ulang
+- [ ] Refresh halaman (F5) berkali-kali berturut-turut (mensimulasikan
+      kondisi sesi tersimpan baru dipulihkan) — pastikan TIDAK PERNAH muncul
+      "Sesi login guru tidak ditemukan" padahal sudah login
 
 ---
 
@@ -748,6 +826,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-20 | 0.9.0 | Claude (Playwright + stub Firestore in-memory, tanpa Firestore sungguhan) | ⚠️ Lulus dengan catatan | `materi.html`, `bank-soal.html`, `info.html`, `cp-tp-atp.html`, `jadwal.html` baru + tab Materi di `admin.html`. 20 skenario Playwright baru (semua lulus): CRUD tab Materi, baca/tutup+lampiran di `materi.html`, alur kuis penuh di `bank-soal.html` (skor dihitung tepat, penandaan hijau/merah tepat, tombol terkunci setelah dinilai, ganti mapel mereset kuis), arsip penuh di `info.html`, dan pemastian `cp-tp-atp.html`/`jadwal.html` jujur menampilkan penanda "kerangka" (bukan konten karangan). 18 skenario lama (v0.8.0) dijalankan ulang untuk cek regresi dari tab Materi baru — semua tetap lulus (38 total). Ditemukan+diperbaiki sekalian: celah XSS kecil di atribut `href` untuk `url_file` di `modul.html`/`materi.html` (belum di-escape) — sekarang sudah di-escape. Cek overflow horizontal terprogram di 360px untuk 6 halaman baru — nol piksel di semuanya. **BELUM diuji**: dengan Firestore project sungguhan — sama seperti v0.8.0, checklist manual ada di §18-21. Konten `cp-tp-atp.html`/`jadwal.html` SENGAJA masih placeholder (bukan bug) — menunggu dokumen resmi dari sekolah. |
 | 2026-07-21 | 0.9.1 | Claude (Playwright, audit penyempurnaan atas fitur sendiri) | ⚠️ Lulus dengan catatan | Penyempurnaan (bukan fitur baru): mapel wajib di Bank Soal, validasi pilihan duplikat, datalist mapel lintas-tab, peringatan format link, pengacakan pilihan jawaban tiap kuis, penanda "Belum dijawab" di Bank Soal. 12 skenario Playwright baru (semua lulus, termasuk memastikan input yang gagal validasi TIDAK ikut tersimpan — bukan cuma pesan errornya yang dicek). 38 skenario lama dijalankan ulang — semua tetap lulus (total 50). **BELUM diuji**: dengan Firestore project sungguhan (masih stub in-memory di semua sesi sampai sekarang) — checklist manual §16-22 makin menumpuk dan sebaiknya segera dijalankan sekali secara menyeluruh sebelum dipakai guru/siswa beneran, daripada terus menunda di tiap sesi. |
 | 2026-07-21 | 0.9.2 | Claude (Playwright, bugfix dilaporkan pengguna) | ⚠️ Lulus dengan catatan | **Bugfix kritis dilaporkan pengguna**: data hasil MPLS tidak bisa dilihat setelah v0.7.0, padahal sudah deploy ulang. Akar masalah: 7 file (`rekap*.html`, `laporan*.html`, `kelas.js`) belum diperbarui membaca `status:"error"` dari server sejak gerbang akses v0.7.0 ditambahkan — error apa pun ditampilkan sebagai pesan generik "kemungkinan belum deploy" yang salah sasaran, atau (di `kelas.js`) ditelan diam-diam jadi "Belum ada siswa". Diperbaiki di ke-7 file: cek `status==="error"` lebih dulu, tampilkan `message` asli. 15 skenario Playwright baru (memaksa server mock membalas error, pastikan pesan asli tampil DAN pesan lama tidak tampil, plus 1 skenario regresi memastikan kasus deploy-lama-sungguhan tetap dapat pesan yang sesuai) — semua lulus. 82 skenario dari sesi-sesi sebelumnya dijalankan ulang — tidak ada regresi (total 97). Ditambahkan §23 (prinsip wajib cek status error di setiap pemanggil endpoint) dan §24 (panduan diagnostik langkah-demi-langkah) supaya kelas bug ini tidak terulang. **Catatan penting**: fix ini membuat pesan error terlihat JELAS, TAPI tidak serta-merta memperbaiki akar masalah akses yang pengguna alami (kalau memang ada masalah otorisasi/rules) — pengguna perlu redeploy sisi klien (bukan Apps Script) lalu baca pesan error yang baru muncul dan cocokkan dengan §24. |
+| 2026-07-24 | 0.9.3 | Claude (Playwright, root-cause dari laporan pengguna v0.9.2) | ⚠️ Lulus dengan catatan | **Lanjutan bugfix v0.9.2** — pesan error asli yang baru terlihat ("Sesi login guru tidak ditemukan") menunjukkan akar masalah sebenarnya: race condition antara 2 listener Firebase Auth independen (`onAuthStateChanged` vs `onIdTokenChanged`) di `guru-guard.js` sejak v0.7.0, di mana `onIdTokenChanged` bisa menimpa `window.guruIdToken` jadi `null` tanpa error apa pun. Diperbaiki: `onIdTokenChanged` dihapus, diganti `window.getFreshGuruIdToken()` yang selalu baca `auth.currentUser` langsung; 7 file pemanggil endpoint guru diubah memakainya. 5 skenario Playwright baru (token terdaftar & benar, token BARU terambil setelah simulasi refresh SDK, cek statis `onIdTokenChanged` sudah tidak dipakai) — semua lulus. 88 skenario sebelumnya dijalankan ulang — tidak ada regresi. **Keterbatasan jujur**: race condition asli ini terjadi di timing async Firebase SDK SUNGGUHAN yang tidak direplikasi stub Playwright (stub memanggil listener secara sinkron) — pengujian di atas memvalidasi desain barunya lebih kokoh (satu sumber kebenaran), TAPI kepastian penuh bug ini teratasi baru didapat dari konfirmasi pengguna setelah dipakai nyata. Ditambahkan §25: kronologi lengkap + prinsip "jangan cache kredensial lewat 2 listener independen" + checklist regresi khusus (termasuk uji refresh token & reload berulang). |
 
 **Keterangan:**
 - ✅ Lulus semua checklist

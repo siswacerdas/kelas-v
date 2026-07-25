@@ -21,7 +21,66 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
-## [0.9.2] — 2026-07-21
+## [0.9.3] — 2026-07-24
+
+> **Bugfix kritis lanjutan** — v0.9.2 membuat pesan error dari server terlihat
+> jelas, dan pengguna langsung melaporkan pesan aslinya: *"Sesi login guru
+> tidak ditemukan — silakan login ulang."* padahal sudah login sebagai guru
+> dengan benar. Pesan itu berhasil menunjukkan akar masalah SEBENARNYA:
+> `window.guruIdToken` kosong di browser padahal seharusnya terisi.
+
+### Diperbaiki
+- **Akar masalah**: `guru-guard.js` (sejak v0.7.0) memakai DUA listener Firebase
+  Auth terpisah — `onAuthStateChanged` (mengisi `window.guruIdToken` dengan
+  benar lalu memicu event `guru-verified`) dan `onIdTokenChanged` (dimaksudkan
+  cuma untuk menjaga token tetap segar). Keduanya berjalan independen. Di
+  Firebase SDK sungguhan (beda dari stub pengujian saya sebelumnya),
+  `onIdTokenChanged` bisa terpanggil dengan `user: null` pada saat sesi
+  tersimpan browser baru selesai dipulihkan — kalau ini terjadi SETELAH
+  `onAuthStateChanged` sempat mengisi token dengan benar, baris
+  `window.guruIdToken = null` di listener kedua **menimpa token yang baru saja
+  benar**, tanpa ada pesan error apa pun (makanya "tidak ada catatan di
+  console" — bukan error, cuma nilai yang diam-diam jadi kosong). Setiap
+  halaman yang memanggil endpoint guru (`?all=1`, `?siswa=1`, dst.) sesudahnya
+  mengirim `idToken=` kosong, ditolak Apps Script SEKETIKA (sebelum sempat
+  menghubungi jaringan sama sekali) dengan pesan "Sesi login guru tidak
+  ditemukan" — cocok persis dengan laporan pengguna (respons instan, tanpa
+  jejak di console).
+- **Perbaikan**: `onIdTokenChanged` dihapus total dari `guru-guard.js`.
+  Sebagai gantinya: (1) token di-refresh berkala tiap 30 menit lewat
+  `setInterval` yang membaca `auth.currentUser` LANGSUNG (satu-satunya sumber
+  kebenaran dari SDK, bukan listener kedua yang bisa balapan); (2) fungsi baru
+  `window.getFreshGuruIdToken()` — SELALU mengambil token terbaru langsung
+  dari `auth.currentUser.getIdToken()` di saat itu juga, dipakai di titik-titik
+  kritis (memuat data) sebagai pengganti membaca `window.guruIdToken` yang
+  cuma cache. Ketujuh file pemanggil (`rekap.html`, `rekap-kognitif.html`,
+  `rekap-jurnal.html`, `laporan.html`, `laporan-kognitif.html`,
+  `laporan-jurnal.html`, `pages/kelas/assets/kelas.js`) diubah memakai fungsi
+  baru ini. `assets/js/foto-fallback.js` tetap memakai cache `window.guruIdToken`
+  (dia butuh string sinkron untuk `<img src>`, tidak bisa `await`) — sekarang
+  lebih andal karena sumber race condition-nya sudah dihapus.
+- **WAJIB deploy ulang ke GitHub Pages** (bukan Apps Script — `Code.gs` tidak
+  berubah sama sekali di versi ini, cukup file statis di sisi klien).
+
+### Diuji
+- 5 skenario Playwright baru: `getFreshGuruIdToken` terdaftar & mengembalikan
+  token yang benar setelah `guru-verified`; simulasi token BERUBAH (mis. SDK
+  refresh) dan memastikan fungsi ini mengambil nilai TERBARU, bukan cache
+  basi; cek statis memastikan `onIdTokenChanged` benar-benar tidak lagi
+  diimpor/dipanggil di `guru-guard.js`. Ke-88 skenario dari sesi-sesi
+  sebelumnya dijalankan ulang — tidak ada regresi.
+- **Jujur soal keterbatasan pengujian**: race condition asli ini terjadi di
+  perilaku ASYNC Firebase SDK sungguhan yang TIDAK direplikasi oleh stub
+  pengujian saya (stub selalu memanggil listener secara sinkron/predictable).
+  Artinya pengujian di atas memvalidasi bahwa *desain barunya benar dan lebih
+  kokoh* (satu sumber kebenaran, bukan dua listener yang berlomba), TAPI tidak
+  bisa membuktikan 100% bahwa race condition PERSIS seperti dugaan di atas
+  yang dulu terjadi di sistem pengguna — teori ini paling cocok dengan gejala
+  yang dilaporkan (gagal seketika, tanpa jejak network, pesan persis
+  "idToken kosong"), tapi kepastian penuh baru didapat kalau pengguna
+  mengonfirmasi masalahnya hilang setelah update ini.
+
+---
 
 > **Bugfix kritis** — dilaporkan pengguna: data hasil MPLS yang sebelumnya normal
 > tiba-tiba tidak bisa dilihat lagi setelah update v0.7.0 (kunci akses
