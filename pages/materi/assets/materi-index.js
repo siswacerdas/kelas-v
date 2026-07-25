@@ -423,7 +423,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Menyusun Kerangka Ceritaku",
     ringkasan: "Menyusun kerangka awal-tengah-akhir dari pengalaman pribadi yang sudah dipilih.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menulis-pengalaman/02-menyusun-kerangka-ceritaku.html"
   },
   {
