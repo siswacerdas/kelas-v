@@ -252,6 +252,13 @@ async function loadSiswaList() {
     // v0.7.0: endpoint ?siswa=1 kini digerbang server-side, wajib idToken guru.
     const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(window.guruIdToken || ""));
     const json = await parseJsonAman_(res);
+    // PENTING (celah v0.7.0-v0.9.1, diperbaiki v0.9.2): sebelum ini, `json.data || []`
+    // membuat SEMUA jenis error (idToken kedaluwarsa, bukan akun guru, dll.) diam-diam
+    // jadi daftar kosong — guru melihat "Belum ada siswa" padahal datanya ADA, cuma
+    // gagal diverifikasi aksesnya. Sekarang errornya ditampilkan apa adanya.
+    if (json.status === "error") {
+      throw new Error(json.message || "(tidak ada pesan error dari server)");
+    }
     state.siswaList = (json.data || []).slice().sort((a, b) =>
       String(a["Nama Lengkap"] || "").localeCompare(String(b["Nama Lengkap"] || ""), "id", { sensitivity: "base" })
     );
