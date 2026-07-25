@@ -124,14 +124,27 @@
 
   function levelClass(level) { return level ? "lvl-" + level : ""; }
 
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
   async function loadSiswaProfile(nama) {
     try {
       // v0.7.0: endpoint ?siswa=1 kini digerbang server-side, wajib idToken guru.
       const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(window.guruIdToken || ""));
       const json = await res.json();
+      // v0.9.2: sebelumnya error di sini (idToken invalid, dll.) DIAM-DIAM ditelan
+      // jadi "null" tanpa jejak — foto/profil cuma hilang tanpa penjelasan sama
+      // sekali. Sekarang dicatat ke console supaya kalau foto tidak muncul,
+      // bukalah DevTools Console untuk lihat alasannya, bukan menebak-nebak.
+      if (json.status === "error") {
+        console.error("Gagal memuat profil siswa (?siswa=1):", json.message);
+        return null;
+      }
       const list = json.data || [];
       return list.find((s) => String(s["Nama Lengkap"]).trim().toLowerCase() === nama.trim().toLowerCase()) || null;
     } catch (e) {
+      console.error("Gagal memuat profil siswa (?siswa=1):", e.message);
       return null;
     }
   }
@@ -148,6 +161,14 @@
       // v0.7.0: endpoint ?nama= kini digerbang server-side (kode akses MPLS).
       const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?nama=" + encodeURIComponent(nama) + "&kode=" + encodeURIComponent(MPLS_CONFIG.ACCESS_CODE || ""));
       const json = await res.json();
+      // PENTING (celah v0.7.0-v0.9.1, diperbaiki v0.9.2): cek json.status === "error"
+      // LEBIH DULU — kalau tidak, error akses (kode salah, dll.) ikut membuat
+      // json.found bernilai falsy juga, sehingga guru melihat "belum ada data
+      // penilaian" padahal datanya ADA, cuma gagal diverifikasi aksesnya.
+      if (json.status === "error") {
+        document.getElementById("status").textContent = "Gagal memuat data: " + (json.message || "(tidak ada pesan error dari server)");
+        return;
+      }
       if (!json.found) {
         document.getElementById("status").textContent = "Belum ada data penilaian MPLS untuk " + nama + ".";
         return;
