@@ -204,7 +204,7 @@ disesuaikan tanpa mengubah struktur navigasi.
 | Berbicara dan Mempresentasikan | B2 | Tampil di Kelompok Besar (Siklus 5) | 🕓 Segera hadir (placeholder aktif) |
 | Berbicara dan Mempresentasikan | B2 ⭐ | Puncak Tahun: Karya Pilihanku (Siklus 6) | 🕓 Segera hadir (placeholder aktif) |
 | Menulis | TL-Pengalaman | Mencari Pengalaman yang "Berbahan Cerita" | ✅ Selesai |
-| Menulis | TL-Pengalaman | Menyusun Kerangka Ceritaku | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengalaman | Menyusun Kerangka Ceritaku | ✅ Selesai |
 | Menulis | TL-Pengalaman | Menulis Draf Pertama | 🕓 Segera hadir (placeholder aktif) |
 | Menulis | TL-Pengalaman ⭐ | Cerita Pengalamanku yang Hidup | 🕓 Segera hadir (placeholder aktif) |
 | Menulis | TL-Pengamatan | Mencatat dari Hasil Mengamati | 🕓 Segera hadir (placeholder aktif) |
