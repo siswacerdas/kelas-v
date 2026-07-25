@@ -130,7 +130,9 @@
     document.getElementById("list").innerHTML = '<div class="info-box">Memuat data…</div>';
     try {
       // v0.7.0: endpoint ?allJurnal=1 kini digerbang server-side, wajib idToken guru.
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?allJurnal=1&idToken=" + encodeURIComponent(window.guruIdToken || ""));
+      // v0.9.3: ambil token TERBARU langsung dari SDK (lihat ANTIREGRESI.md §25).
+      const idToken = await window.getFreshGuruIdToken();
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?allJurnal=1&idToken=" + encodeURIComponent(idToken));
       const json = await res.json();
       // Lihat komentar panjang di rekap.html soal kenapa urutan pengecekan ini penting
       // (v0.9.2) — jangan tampilkan pesan "belum deploy" untuk error yang sebenarnya lain.
