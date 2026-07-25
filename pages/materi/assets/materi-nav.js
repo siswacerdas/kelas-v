@@ -3,7 +3,11 @@
    Butuh materi-index.js sudah dimuat lebih dulu.
    Otomatis mengisi:
      - <div id="ma-prevnext"></div>  → kartu "sebelumnya/berikutnya"
-       berdasarkan urutan di mapel yang sama
+       berdasarkan urutan di mapel yang sama (kalau cuma ada 1 materi
+       di mapel itu, tampil placeholder, bukan kosong melompong)
+     - <div id="ma-related"></div>   → daftar "materi lain dalam tema
+       ini" (pengganti sementara pengelompokan TP/CP, sampai dokumen
+       resminya ada — lihat catatan field "tp" di materi-index.js)
      - tombol .ma-fsbtn[data-level]  → ukuran huruf (normal/besar/ekstra)
    Tidak perlu diedit setiap ada materi baru — cukup pastikan
    materi-index.js sudah berisi entri halaman ini.
@@ -20,33 +24,62 @@
     });
   }
 
-  function renderPrevNext() {
-    var el = document.getElementById("ma-prevnext");
-    if (!el || !window.MATERI_INDEX) return;
-
+  function currentEntry() {
+    if (!window.MATERI_INDEX) return null;
     var current = getRelFile();
-    var entry = window.MATERI_INDEX.find(function (e) { return e.file === current; });
-    if (!entry) return;
+    return window.MATERI_INDEX.find(function (e) { return e.file === current; }) || null;
+  }
+
+  function renderPrevNext(entry) {
+    var el = document.getElementById("ma-prevnext");
+    if (!el) return;
 
     var siblings = window.MATERI_INDEX
       .filter(function (e) { return e.mapelSlug === entry.mapelSlug; })
       .sort(function (a, b) { return a.urutan - b.urutan; });
-    var idx = siblings.findIndex(function (e) { return e.file === current; });
+    var idx = siblings.findIndex(function (e) { return e.file === entry.file; });
     var prev = idx > 0 ? siblings[idx - 1] : null;
     var next = idx < siblings.length - 1 ? siblings[idx + 1] : null;
 
-    var html = "";
-    if (prev) {
-      html += '<a class="ma-navcard ma-prev" href="../' + prev.file + '">' +
-        '<div class="ma-nav-dir">‹ Sebelumnya</div>' +
-        '<div class="ma-nav-title">' + esc(prev.judul) + "</div></a>";
+    el.innerHTML =
+      (prev
+        ? '<a class="ma-navcard ma-prev" href="../' + prev.file + '">' +
+          '<div class="ma-nav-dir">‹ Sebelumnya</div>' +
+          '<div class="ma-nav-title">' + esc(prev.judul) + "</div></a>"
+        : '<div class="ma-navempty">Ini materi pertama di ' + esc(entry.mapel) + "</div>") +
+      (next
+        ? '<a class="ma-navcard ma-next" href="../' + next.file + '">' +
+          '<div class="ma-nav-dir">Berikutnya ›</div>' +
+          '<div class="ma-nav-title">' + esc(next.judul) + "</div></a>"
+        : '<div class="ma-navempty">Materi berikutnya menyusul</div>');
+  }
+
+  function renderRelated(entry) {
+    var el = document.getElementById("ma-related");
+    if (!el) return;
+
+    // Sementara dikelompokkan berdasarkan "tema" (proksi TP/CP).
+    // Begitu field "tp" terisi dari dokumen resmi, ganti baris di
+    // bawah ini jadi: e.tp && e.tp === entry.tp
+    var related = window.MATERI_INDEX.filter(function (e) {
+      return e.tema === entry.tema && e.mapelSlug === entry.mapelSlug && e.file !== entry.file;
+    }).sort(function (a, b) { return a.urutan - b.urutan; });
+
+    if (related.length === 0) {
+      el.innerHTML =
+        '<div class="ma-related-title">Materi lain dalam tema "' + esc(entry.tema) + '"</div>' +
+        '<div class="ma-navempty">Belum ada materi lain dalam tema ini.</div>';
+      return;
     }
-    if (next) {
-      html += '<a class="ma-navcard ma-next" href="../' + next.file + '">' +
-        '<div class="ma-nav-dir">Berikutnya ›</div>' +
-        '<div class="ma-nav-title">' + esc(next.judul) + "</div></a>";
-    }
-    el.innerHTML = html;
+
+    var cards = related.map(function (r) {
+      return '<a class="ma-list-card" style="--m-color:' + entry.mapelColor + '" href="../' + r.file + '">' +
+        '<div class="ma-list-icon">' + entry.mapelIcon + '</div>' +
+        '<div><div class="ma-list-title">' + esc(r.judul) + '</div></div>' +
+        '<div class="ma-list-arrow">→</div></a>';
+    }).join("");
+
+    el.innerHTML = '<div class="ma-related-title">Materi lain dalam tema "' + esc(entry.tema) + '"</div>' + cards;
   }
 
   function setupFontSize() {
@@ -69,7 +102,11 @@
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    renderPrevNext();
+    var entry = currentEntry();
+    if (entry) {
+      renderPrevNext(entry);
+      renderRelated(entry);
+    }
     setupFontSize();
   });
 })();

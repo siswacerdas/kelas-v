@@ -15,7 +15,14 @@
                   baku di PROGRESS_MATERI.md)
      mapelColor — variabel warna CSS, format "var(--m-{slug})"
      mapelIcon  — satu emoji ciri khas mapel
-     tema       — nama tema/bab besar
+     tema       — nama tema/bab besar (SEMENTARA dipakai juga sebagai
+                  pengelompok pengganti TP/CP, sampai dokumen resmi
+                  CP/TP/ATP-nya ada)
+     tp         — (opsional, isi belakangan) kode/label Tujuan
+                  Pembelajaran resmi, mis. "B.5.2" — begitu dokumen
+                  CP/TP/ATP dikirim, field ini dipakai untuk
+                  mengelompokkan materi yang satu TP, menggantikan
+                  pengelompokan sementara berbasis "tema"
      urutan     — nomor urut BACA di dalam mapel itu saja (1, 2, 3, ...)
      judul      — judul materi
      ringkasan  — 1 kalimat pendek, tampil di daftar
@@ -30,6 +37,7 @@ window.MATERI_INDEX = [
     mapelColor: "var(--m-matematika)",
     mapelIcon: "🔢",
     tema: "Bilangan",
+    tp: null,
     urutan: 1,
     judul: "Bilangan Cacah dan Nilai Tempat",
     ringkasan: "Belajar membaca dan menulis bilangan besar lewat nilai tempat.",
