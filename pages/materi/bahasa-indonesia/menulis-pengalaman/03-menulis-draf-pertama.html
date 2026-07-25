@@ -11,9 +11,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  /* Komponen "poin ke draf", khusus halaman ini */
+  .p2d { margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+  .p2d-part { padding: 0.9rem 1.05rem; }
+  .p2d-part.poin { background: var(--paper-2); }
+  .p2d-part.draf { background: #fdf6f2; border-top: 1px dashed var(--border); }
+  .p2d-label {
+    display: block; font-weight: 700; font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--ink-3); margin-bottom: 0.5rem;
+  }
+  .p2d-part.draf .p2d-label { color: var(--m-color); }
+  .p2d ul { margin: 0; padding-left: 1.1em; font-size: calc(var(--content-fs) - 2px); }
+  .p2d-draf-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.7; }
+  .p2d-arrow { text-align: center; padding: 2px 0; color: var(--ink-3); font-size: 12px; background: var(--paper-2); }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +43,72 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis dari Pengalaman Pribadi</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis dari Pengalaman Pribadi · Materi 3 dari 4</div>
       <div class="ma-cover-title">Menulis Draf Pertama</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Mengembangkan kerangka menjadi draf cerita pengalaman pertama, fokus pada alurnya dulu.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Di materi sebelumnya, kamu sudah punya poin-poin pendek untuk bagian Awal, Tengah, dan Akhir. Sekarang saatnya mengubah poin-poin itu menjadi draf cerita yang sesungguhnya — kalimat demi kalimat.</p>
+
+      <p><strong>Aturan penting untuk hari ini: fokus HANYA pada alur ceritanya, bukan pada kerapian kalimat.</strong> Salah tulis, kalimat yang kurang pas, atau ejaan yang belum sempurna — semua itu tidak masalah dulu. Yang penting: apakah orang yang membaca bisa mengikuti ceritamu dari awal sampai akhir dengan jelas?</p>
+
+      <p>Yuk lihat bagaimana poin-poin berubah menjadi draf, memakai contoh "payung bolong":</p>
+
+      <div class="p2d">
+        <div class="p2d-part poin">
+          <span class="p2d-label">Poin-Poin (dari materi sebelumnya)</span>
+          <ul>
+            <li>Awal: mau berangkat sekolah seperti biasa</li>
+            <li>Tengah: hujan deras, payung bolong, basah kuyup</li>
+            <li>Akhir: ganti baju cadangan di loker, lega</li>
+          </ul>
+        </div>
+        <div class="p2d-arrow">↓ dikembangkan jadi ↓</div>
+        <div class="p2d-part draf">
+          <span class="p2d-label">Draf Paragraf</span>
+          <div class="p2d-draf-text">"Pagi itu aku bersiap berangkat sekolah seperti biasa. Tiba-tiba hujan turun sangat deras. Waktu kubuka payungku, ternyata payungnya bolong. Aku jadi basah kuyup sepanjang jalan sampai kelas. Untungnya aku punya baju cadangan di loker, jadi aku bisa ganti baju kering. Aku merasa lega, walaupun tadinya sempat malu karena basah semua."</div>
+        </div>
+      </div>
+
+      <p>Perhatikan: setiap poin pendek dikembangkan menjadi satu atau dua kalimat penuh, dan ada kata-kata penghubung seperti <em>"tiba-tiba"</em>, <em>"waktu"</em>, <em>"jadi"</em>, dan <em>"untungnya"</em> yang membuat kalimat-kalimatnya nyambung satu sama lain — bukan cuma daftar kejadian yang terpisah-pisah.</p>
+
+      <p>Bandingkan dengan draf yang <strong>kurang mengalir</strong> — masih benar isinya, tapi terasa seperti daftar, bukan cerita:</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">⚠️ Contoh yang Masih Perlu Diperbaiki</span>
+        "Aku berangkat sekolah. Hujan deras. Payungku bolong. Aku basah. Aku ganti baju. Aku lega."
+        <br/><br/>
+        Isinya sama persis, tapi setiap kalimat berdiri sendiri tanpa kata penghubung — jadi terasa kaku dan terputus-putus. Ini bukan salah besar untuk draf pertama, tapi coba perhatikan bedanya dengan contoh di atas.
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Cara Mengecek Draf Sendiri</span>
+        Setelah menulis draf, baca ulang dan tanyakan:
+        <ul style="margin: 0.5em 0 0.2em 1.1em; padding: 0;">
+          <li>Apakah ada bagian Awal, Tengah, dan Akhir — semuanya ada?</li>
+          <li>Apakah kalimat-kalimatnya nyambung (pakai kata seperti <em>lalu, tiba-tiba, akhirnya, untungnya</em>), bukan daftar terpisah?</li>
+          <li>Apakah orang lain yang membaca bisa mengikuti ceritanya tanpa bingung?</li>
+        </ul>
+        Kalau ketiganya sudah "ya" — draf pertamamu sudah cukup baik, walau kalimatnya belum sempurna. Itu wajar untuk draf pertama!
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Ambil poin-poin yang sudah kamu tulis di materi sebelumnya. Kembangkan setiap poin menjadi satu atau dua kalimat penuh, sambungkan dengan kata penghubung yang pas, sampai jadi satu paragraf cerita utuh dari Awal sampai Akhir.
+        <br/><br/>
+        Ingat: draf pertama tidak perlu sempurna. Yang penting alurnya jelas dulu.
+      </div>
+
+      <p>Di materi berikutnya (Materi Inti dari TP ini), kamu akan merevisi draf ini dengan menambahkan detail rasa dan indra supaya ceritanya semakin hidup — misalnya, seperti apa suara hujannya, atau bagaimana rasanya baju basah menempel di kulit.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
