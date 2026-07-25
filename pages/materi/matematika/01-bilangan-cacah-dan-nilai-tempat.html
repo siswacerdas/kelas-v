@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bilangan Cacah dan Nilai Tempat · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/materi.css" />
+<style>
+  /* Gaya khusus tabel nilai tempat pada halaman ini saja */
+  .tabel-nilai-tempat { width: 100%; border-collapse: collapse; margin: 1rem 0 1.4rem; font-size: calc(var(--content-fs) - 3px); }
+  .tabel-nilai-tempat th, .tabel-nilai-tempat td { border: 1px solid var(--border); padding: 7px 6px; text-align: center; }
+  .tabel-nilai-tempat th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .tabel-nilai-tempat td.angka { font-weight: 700; color: var(--m-color); font-size: 1.05em; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Matematika · Tema Bilangan · Materi 1</div>
+      <div class="ma-cover-title">Bilangan Cacah dan Nilai Tempat</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Pernah lihat harga rumah atau jumlah penonton konser di berita? Angkanya sering besar sekali, kadang sampai jutaan! Supaya tidak bingung membaca angka besar, kita perlu tahu tentang <strong>nilai tempat</strong>.</p>
+
+      <p><strong>Bilangan cacah</strong> adalah bilangan bulat yang dimulai dari 0, 1, 2, 3, dan seterusnya (tidak ada bilangan negatif atau pecahan). Setiap angka dalam sebuah bilangan punya "nilai tempat" tergantung posisinya, dibaca dari kanan ke kiri:</p>
+
+      <p style="text-align:center; font-weight:600; color:var(--ink);">Satuan → Puluhan → Ratusan → Ribuan → Puluh Ribuan → Ratus Ribuan → Jutaan</p>
+
+      <p>Contoh, mari kita bedah angka <strong>3.482.951</strong>:</p>
+
+      <table class="tabel-nilai-tempat">
+        <tr><th>Jutaan</th><th>Ratus Ribuan</th><th>Puluh Ribuan</th><th>Ribuan</th><th>Ratusan</th><th>Puluhan</th><th>Satuan</th></tr>
+        <tr><td class="angka">3</td><td class="angka">4</td><td class="angka">8</td><td class="angka">2</td><td class="angka">9</td><td class="angka">5</td><td class="angka">1</td></tr>
+        <tr><td>3.000.000</td><td>400.000</td><td>80.000</td><td>2.000</td><td>900</td><td>50</td><td>1</td></tr>
+      </table>
+
+      <p>Jadi 3.482.951 dibaca: <em>"tiga juta empat ratus delapan puluh dua ribu sembilan ratus lima puluh satu."</em></p>
+
+      <p>Cara mudah membaca bilangan besar: pisahkan tiap 3 angka dari kanan dengan titik (seperti contoh di atas), lalu baca kelompok per kelompok mulai dari kiri — kelompok jutaan, lalu ribuan, lalu ratusan-puluhan-satuan.</p>
+
+      <p>Nilai tempat juga berguna untuk membandingkan bilangan. Bilangan dengan lebih banyak angka biasanya lebih besar. Kalau jumlah angkanya sama, bandingkan dari angka paling kiri (nilai tempat tertinggi) dulu.</p>
+
+      <p>Contoh: <strong>245.700</strong> vs <strong>98.600</strong> → 245.700 lebih besar karena punya 6 angka, sedangkan 98.600 cuma 5 angka.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Tuliskan nilai tempat angka <strong>7</strong> pada bilangan <strong>5.734.219</strong>! Coba jawab dulu sebelum lihat kuncinya.
+        <br/><br/>
+        <em>Kunci: 7 ada di posisi ratus ribuan, jadi nilainya 700.000.</em>
+      </div>
+    </div>
+
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../assets/js/auth-guard.js"></script>
+<script src="../assets/materi-index.js"></script>
+<script src="../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../index.html"));
+</script>
+</body>
+</html>
