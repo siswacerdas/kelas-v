@@ -34,8 +34,10 @@
     var el = document.getElementById("ma-prevnext");
     if (!el) return;
 
+    // Dibatasi mapel + tema (tema = label TP untuk mapel yang punya banyak
+    // TP seperti Bahasa Indonesia) supaya navigasi tidak melompat ke TP lain
     var siblings = window.MATERI_INDEX
-      .filter(function (e) { return e.mapelSlug === entry.mapelSlug; })
+      .filter(function (e) { return e.mapelSlug === entry.mapelSlug && e.tema === entry.tema; })
       .sort(function (a, b) { return a.urutan - b.urutan; });
     var idx = siblings.findIndex(function (e) { return e.file === entry.file; });
     var prev = idx > 0 ? siblings[idx - 1] : null;
@@ -46,7 +48,7 @@
         ? '<a class="ma-navcard ma-prev" href="../' + prev.file + '">' +
           '<div class="ma-nav-dir">‹ Sebelumnya</div>' +
           '<div class="ma-nav-title">' + esc(prev.judul) + "</div></a>"
-        : '<div class="ma-navempty">Ini materi pertama di ' + esc(entry.mapel) + "</div>") +
+        : '<div class="ma-navempty">Ini materi pertama di ' + esc(entry.tema) + "</div>") +
       (next
         ? '<a class="ma-navcard ma-next" href="../' + next.file + '">' +
           '<div class="ma-nav-dir">Berikutnya ›</div>' +
@@ -58,28 +60,48 @@
     var el = document.getElementById("ma-related");
     if (!el) return;
 
-    // Sementara dikelompokkan berdasarkan "tema" (proksi TP/CP).
-    // Begitu field "tp" terisi dari dokumen resmi, ganti baris di
-    // bawah ini jadi: e.tp && e.tp === entry.tp
-    var related = window.MATERI_INDEX.filter(function (e) {
-      return e.tema === entry.tema && e.mapelSlug === entry.mapelSlug && e.file !== entry.file;
-    }).sort(function (a, b) { return a.urutan - b.urutan; });
+    var related, title;
+    if (entry.elemen) {
+      // Mapel dengan banyak TP (mis. Bahasa Indonesia): tampilkan TP LAIN
+      // dalam elemen yang sama (navigasi dalam-TP sudah ditangani prevnext)
+      related = window.MATERI_INDEX.filter(function (e) {
+        return e.mapelSlug === entry.mapelSlug && e.elemen === entry.elemen && e.tema !== entry.tema;
+      });
+      title = 'Tujuan Pembelajaran lain dalam elemen "' + esc(entry.elemen) + '"';
+      if (related.length === 0) {
+        related = window.MATERI_INDEX.filter(function (e) {
+          return e.mapelSlug === entry.mapelSlug && e.tema === entry.tema && e.file !== entry.file;
+        });
+        title = 'Materi lain dalam "' + esc(entry.tema) + '"';
+      }
+    } else {
+      // Mapel sederhana (belum berbasis TP): pola lama, kelompok per tema
+      related = window.MATERI_INDEX.filter(function (e) {
+        return e.mapelSlug === entry.mapelSlug && e.tema === entry.tema && e.file !== entry.file;
+      });
+      title = 'Materi lain dalam tema "' + esc(entry.tema) + '"';
+    }
+    related = related.filter(function (e, i, arr) {
+      // ambil 1 wakil per tema-berbeda supaya daftar tidak terlalu panjang
+      return arr.findIndex(function (x) { return x.tema === e.tema; }) === i;
+    }).sort(function (a, b) { return (a.tp || "").localeCompare(b.tp || ""); });
 
     if (related.length === 0) {
-      el.innerHTML =
-        '<div class="ma-related-title">Materi lain dalam tema "' + esc(entry.tema) + '"</div>' +
-        '<div class="ma-navempty">Belum ada materi lain dalam tema ini.</div>';
+      el.innerHTML = '<div class="ma-related-title">' + title + '</div>' +
+        '<div class="ma-navempty">Belum ada materi lain di sini.</div>';
       return;
     }
 
     var cards = related.map(function (r) {
+      var icon = r.icon || r.mapelIcon || "📖";
       return '<a class="ma-list-card" style="--m-color:' + entry.mapelColor + '" href="../' + r.file + '">' +
-        '<div class="ma-list-icon">' + entry.mapelIcon + '</div>' +
-        '<div><div class="ma-list-title">' + esc(r.judul) + '</div></div>' +
+        '<div class="ma-list-icon">' + icon + '</div>' +
+        '<div><div class="ma-list-title">' + esc(r.judul) + '</div>' +
+        '<div class="ma-list-tema">' + esc(r.tema) + '</div></div>' +
         '<div class="ma-list-arrow">→</div></a>';
     }).join("");
 
-    el.innerHTML = '<div class="ma-related-title">Materi lain dalam tema "' + esc(entry.tema) + '"</div>' + cards;
+    el.innerHTML = '<div class="ma-related-title">' + title + '</div>' + cards;
   }
 
   function setupFontSize() {

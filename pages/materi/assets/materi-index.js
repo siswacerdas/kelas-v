@@ -2,7 +2,7 @@
    MATERI-INDEX.JS — Sumber tunggal daftar Materi Ajar
    ============================================================
    Setiap kali menambah materi baru:
-     1. Buat file HTML-nya di pages/materi/{mapelSlug}/NN-judul.html
+     1. Buat file HTML-nya di pages/materi/{mapelSlug}/(subfolder/)NN-judul.html
      2. Tambahkan SATU objek baru di array MATERI_INDEX di bawah
      3. Unggah dua file itu (file materi baru + file ini) ke GitHub
    materi.html dan navigasi "sebelumnya/berikutnya" di tiap halaman
@@ -11,23 +11,30 @@
 
    Field:
      mapel      — nama tampilan (mis. "Matematika")
-     mapelSlug  — HARUS SAMA dengan nama folder (lihat daftar slug
-                  baku di PROGRESS_MATERI.md)
+     mapelSlug  — HARUS SAMA dengan nama folder mapel
      mapelColor — variabel warna CSS, format "var(--m-{slug})"
-     mapelIcon  — satu emoji ciri khas mapel
-     tema       — nama tema/bab besar (SEMENTARA dipakai juga sebagai
-                  pengelompok pengganti TP/CP, sampai dokumen resmi
-                  CP/TP/ATP-nya ada)
-     tp         — (opsional, isi belakangan) kode/label Tujuan
-                  Pembelajaran resmi, mis. "B.5.2" — begitu dokumen
-                  CP/TP/ATP dikirim, field ini dipakai untuk
-                  mengelompokkan materi yang satu TP, menggantikan
-                  pengelompokan sementara berbasis "tema"
-     urutan     — nomor urut BACA di dalam mapel itu saja (1, 2, 3, ...)
+     mapelIcon  — satu emoji ciri khas mapel (dipakai di daftar kalau
+                  "icon" per-item tidak diisi)
+     icon       — (opsional) emoji lebih spesifik per elemen/topik,
+                  menimpa mapelIcon di halaman ini
+     elemen     — (opsional) nama elemen CP besar (mis. "Menyimak").
+                  Dipakai untuk blok "materi lain" di halaman detail:
+                  kalau ada, menampilkan TP lain dalam elemen yang sama.
+     tp         — (opsional) kode Tujuan Pembelajaran resmi (mis. "M1").
+                  Dipakai (bersama mapelSlug) untuk membatasi lingkup
+                  navigasi sebelumnya/berikutnya supaya tidak melompat
+                  ke TP lain.
+     tema       — label yang DITAMPILKAN sebagai sub-judul kelompok di
+                  materi.html — sudah termasuk nama elemen (mis.
+                  "Menyimak · Informasi Penting dari Teks Aural") supaya
+                  siap tampil apa adanya, tanpa perlu digabung lagi.
+     urutan     — nomor urut BACA di dalam TP/tema itu saja (1, 2, 3, ...)
      judul      — judul materi
-     ringkasan  — 1 kalimat pendek, tampil di daftar
-     file       — path relatif dari folder pages/materi/, format
-                  "{mapelSlug}/NN-judul-kebab-case.html"
+     ringkasan  — 1 kalimat pendek, tampil di daftar & halaman "segera hadir"
+     status     — "selesai" (sudah ditulis penuh) atau "segera" (baru
+                  placeholder/coming-soon) — dipakai progress_materi.md,
+                  boleh diabaikan oleh kode tampilan
+     file       — path relatif dari folder pages/materi/
    ============================================================ */
 
 window.MATERI_INDEX = [
@@ -41,6 +48,637 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Bilangan Cacah dan Nilai Tempat",
     ringkasan: "Belajar membaca dan menulis bilangan besar lewat nilai tempat.",
+    status: "selesai",
     file: "matematika/01-bilangan-cacah-dan-nilai-tempat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 1,
+    judul: "Mendengarkan dan Menunjukkan Paham",
+    ringkasan: "Belajar menunjukkan paham isi teks pendek yang dibacakan guru, tanpa perlu menulis panjang.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp1/01-mendengarkan-dan-menunjukkan-paham.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 2,
+    judul: "Memilah Mana yang Penting",
+    ringkasan: "Berlatih memilih mana informasi yang penting dan mana yang bisa diabaikan saat mendengarkan.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp1/02-memilah-mana-yang-penting.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 3,
+    judul: "Mencatat dengan Caraku Sendiri",
+    ringkasan: "Mencoba mencatat hal penting dari yang didengar dengan caramu sendiri — gambar, simbol, atau kata kunci.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp1/03-mencatat-dengan-caraku-sendiri.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 4,
+    judul: "Menyimak Mandiri: Menangkap Info Penting",
+    ringkasan: "Menunjukkan kemampuan menyimak secara mandiri: menangkap dan mencatat info penting sendirian.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp1/04-menyimak-mandiri-menangkap-info-penting.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M2",
+    tema: "Menyimak · Hubungan Sebab-Akibat & Urutan",
+    urutan: 1,
+    judul: "Mengenali Kata Penghubung Sebab-Akibat",
+    ringkasan: "Mengenali kata-kata seperti “karena” dan “sehingga” yang menghubungkan sebab dan akibat.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp2/01-mengenali-kata-penghubung-sebab-akibat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M2",
+    tema: "Menyimak · Hubungan Sebab-Akibat & Urutan",
+    urutan: 2,
+    judul: "Memetakan Sebab dan Akibat",
+    ringkasan: "Menggambarkan hubungan sebab-akibat dari satu kalimat ke dalam diagram sederhana.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp2/02-memetakan-sebab-dan-akibat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M2",
+    tema: "Menyimak · Hubungan Sebab-Akibat & Urutan",
+    urutan: 3,
+    judul: "Merangkai Beberapa Kejadian Berurutan",
+    ringkasan: "Memetakan rangkaian sebab-akibat dari cerita pendek yang melibatkan beberapa langkah.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp2/03-merangkai-beberapa-kejadian-berurutan.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M2",
+    tema: "Menyimak · Hubungan Sebab-Akibat & Urutan",
+    urutan: 4,
+    judul: "Dua Hubungan dalam Satu Cerita",
+    ringkasan: "Memisahkan dua hubungan sebab-akibat berbeda yang muncul dalam satu cerita.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp2/04-dua-hubungan-dalam-satu-cerita.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M2",
+    tema: "Menyimak · Hubungan Sebab-Akibat & Urutan",
+    urutan: 5,
+    judul: "Menjelaskan Hubungan Antarkejadian",
+    ringkasan: "Menjelaskan hubungan sebab-akibat atau urutan kejadian dari teks yang didengar, secara mandiri.",
+    status: "segera",
+    file: "bahasa-indonesia/menyimak-tp2/05-menjelaskan-hubungan-antarkejadian.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎬",
+    elemen: "Membaca dan Memirsa",
+    tp: "MB2",
+    tema: "Membaca dan Memirsa · Menganalisis Tayangan (Video/Infografis)",
+    urutan: 1,
+    judul: "Menangkap Informasi dari Tayangan",
+    ringkasan: "Menangkap informasi yang jelas-jelas disampaikan dalam sebuah video atau infografis pendek.",
+    status: "segera",
+    file: "bahasa-indonesia/membaca-memirsa-tp2/01-menangkap-informasi-dari-tayangan.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎬",
+    elemen: "Membaca dan Memirsa",
+    tp: "MB2",
+    tema: "Membaca dan Memirsa · Menganalisis Tayangan (Video/Infografis)",
+    urutan: 2,
+    judul: "Menemukan Pesan Tersembunyi",
+    ringkasan: "Belajar menemukan pesan/nilai yang tidak dikatakan langsung, tapi tersirat dalam tayangan.",
+    status: "segera",
+    file: "bahasa-indonesia/membaca-memirsa-tp2/02-menemukan-pesan-tersembunyi.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎬",
+    elemen: "Membaca dan Memirsa",
+    tp: "MB2",
+    tema: "Membaca dan Memirsa · Menganalisis Tayangan (Video/Infografis)",
+    urutan: 3,
+    judul: "Membandingkan Dua Tayangan",
+    ringkasan: "Membandingkan nilai yang disampaikan oleh dua tayangan berbeda dengan tema yang mirip.",
+    status: "segera",
+    file: "bahasa-indonesia/membaca-memirsa-tp2/03-membandingkan-dua-tayangan.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎬",
+    elemen: "Membaca dan Memirsa",
+    tp: "MB2",
+    tema: "Membaca dan Memirsa · Menganalisis Tayangan (Video/Infografis)",
+    urutan: 4,
+    judul: "Menganalisis Informasi dan Nilai dalam Tayangan",
+    ringkasan: "Menganalisis sendiri informasi dan nilai dalam sebuah tayangan otentik berbahasa Indonesia.",
+    status: "segera",
+    file: "bahasa-indonesia/membaca-memirsa-tp2/04-menganalisis-informasi-dan-nilai-dalam-tayangan.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B1",
+    tema: "Berbicara dan Mempresentasikan · Presentasi Gagasan",
+    urutan: 1,
+    judul: "Bicara ke Satu Teman Dulu",
+    ringkasan: "Berlatih menyampaikan gagasan sederhana ke satu teman, tanpa naskah tertulis.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp1/01-bicara-ke-satu-teman-dulu.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B1",
+    tema: "Berbicara dan Mempresentasikan · Presentasi Gagasan",
+    urutan: 2,
+    judul: "Menyusun Awal-Isi-Akhir",
+    ringkasan: "Menyusun gagasan dengan struktur awal-isi-akhir, lalu menyampaikannya ke kelompok kecil.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp1/02-menyusun-awal-isi-akhir.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B1",
+    tema: "Berbicara dan Mempresentasikan · Presentasi Gagasan",
+    urutan: 3,
+    judul: "Presentasi dengan Alat Bantu",
+    ringkasan: "Presentasi dengan bantuan kartu poin atau gambar, bukan naskah lengkap yang dibaca.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp1/03-presentasi-dengan-alat-bantu.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B1",
+    tema: "Berbicara dan Mempresentasikan · Presentasi Gagasan",
+    urutan: 4,
+    judul: "Presentasi Gagasan di Depan Kelas",
+    ringkasan: "Mempresentasikan gagasan secara efektif dan santun di depan kelas penuh.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp1/04-presentasi-gagasan-di-depan-kelas.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B2",
+    tema: "Berbicara dan Mempresentasikan · Membacakan Karya Sastra (Siklus Berkelanjutan)",
+    urutan: 1,
+    judul: "Suara yang Mengikuti Rasa (Siklus 1)",
+    ringkasan: "Belajar bahwa cara membaca (suara, kecepatan) bisa mengikuti perasaan dalam sebuah teks.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp2/01-suara-yang-mengikuti-rasa-siklus-1.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B2",
+    tema: "Berbicara dan Mempresentasikan · Membacakan Karya Sastra (Siklus Berkelanjutan)",
+    urutan: 2,
+    judul: "Rasa yang Berubah dalam Satu Cerita (Siklus 2)",
+    ringkasan: "Menemukan titik di mana perasaan dalam sebuah cerita berubah, lalu menyesuaikan cara membaca.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp2/02-rasa-yang-berubah-dalam-satu-cerita-siklus-2.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B2",
+    tema: "Berbicara dan Mempresentasikan · Membacakan Karya Sastra (Siklus Berkelanjutan)",
+    urutan: 3,
+    judul: "Membacakan Karyaku Sendiri (Siklus 3 – Puncak Semester 1)",
+    ringkasan: "Membacakan karya (puisi/cerita) buatan sendiri di depan kelompok kecil.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp2/03-membacakan-karyaku-sendiri-siklus-3-puncak-semester-1.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B2",
+    tema: "Berbicara dan Mempresentasikan · Membacakan Karya Sastra (Siklus Berkelanjutan)",
+    urutan: 4,
+    judul: "Rasa yang Tersembunyi (Siklus 4)",
+    ringkasan: "Berlatih membaca teks yang perasaannya tidak dinyatakan langsung, harus disimpulkan sendiri.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp2/04-rasa-yang-tersembunyi-siklus-4.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B2",
+    tema: "Berbicara dan Mempresentasikan · Membacakan Karya Sastra (Siklus Berkelanjutan)",
+    urutan: 5,
+    judul: "Tampil di Kelompok Besar (Siklus 5)",
+    ringkasan: "Tampil membacakan karya di depan kelompok yang lebih besar dari sebelumnya.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp2/05-tampil-di-kelompok-besar-siklus-5.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎤",
+    elemen: "Berbicara dan Mempresentasikan",
+    tp: "B2",
+    tema: "Berbicara dan Mempresentasikan · Membacakan Karya Sastra (Siklus Berkelanjutan)",
+    urutan: 6,
+    judul: "Puncak Tahun: Karya Pilihanku (Siklus 6)",
+    ringkasan: "Memilih sendiri karya terbaik sepanjang tahun untuk dibacakan di depan kelas.",
+    status: "segera",
+    file: "bahasa-indonesia/berbicara-tp2/06-puncak-tahun-karya-pilihanku-siklus-6.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengalaman",
+    tema: "Menulis · Menulis dari Pengalaman Pribadi",
+    urutan: 1,
+    judul: "Mencari Pengalaman yang “Berbahan Cerita”",
+    ringkasan: "Belajar membedakan pengalaman yang “datar” dengan yang punya momen berkesan untuk diceritakan.",
+    status: "selesai",
+    file: "bahasa-indonesia/menulis-pengalaman/01-mencari-pengalaman-yang-berbahan-cerita.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengalaman",
+    tema: "Menulis · Menulis dari Pengalaman Pribadi",
+    urutan: 2,
+    judul: "Menyusun Kerangka Ceritaku",
+    ringkasan: "Menyusun kerangka awal-tengah-akhir dari pengalaman pribadi yang sudah dipilih.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengalaman/02-menyusun-kerangka-ceritaku.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengalaman",
+    tema: "Menulis · Menulis dari Pengalaman Pribadi",
+    urutan: 3,
+    judul: "Menulis Draf Pertama",
+    ringkasan: "Mengembangkan kerangka menjadi draf cerita pengalaman pertama, fokus pada alurnya dulu.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengalaman/03-menulis-draf-pertama.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengalaman",
+    tema: "Menulis · Menulis dari Pengalaman Pribadi",
+    urutan: 4,
+    judul: "Cerita Pengalamanku yang Hidup",
+    ringkasan: "Merevisi draf dengan menambahkan detail rasa dan indra supaya ceritanya lebih hidup.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengalaman/04-cerita-pengalamanku-yang-hidup.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengamatan",
+    tema: "Menulis · Menulis Laporan Pengamatan",
+    urutan: 1,
+    judul: "Mencatat dari Hasil Mengamati",
+    ringkasan: "Mencatat hasil mengamati benda di sekitar dalam bentuk kata/frasa pendek dulu.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengamatan/01-mencatat-dari-hasil-mengamati.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengamatan",
+    tema: "Menulis · Menulis Laporan Pengamatan",
+    urutan: 2,
+    judul: "Dari Kata Menjadi Kalimat",
+    ringkasan: "Mengubah catatan kata pendek menjadi beberapa kalimat lepas dari hasil pengamatan.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengamatan/02-dari-kata-menjadi-kalimat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengamatan",
+    tema: "Menulis · Menulis Laporan Pengamatan",
+    urutan: 3,
+    judul: "Menyusun Urutan yang Sistematis",
+    ringkasan: "Menyusun kalimat-kalimat hasil pengamatan menjadi urutan yang masuk akal.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengamatan/03-menyusun-urutan-yang-sistematis.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengamatan",
+    tema: "Menulis · Menulis Laporan Pengamatan",
+    urutan: 4,
+    judul: "Melaporkan Kejadian Nyata",
+    ringkasan: "Menulis laporan dari peristiwa nyata yang diamati langsung, pakai kalimat majemuk dasar.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengamatan/04-melaporkan-kejadian-nyata.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Pengamatan",
+    tema: "Menulis · Menulis Laporan Pengamatan",
+    urutan: 5,
+    judul: "Laporan Pengamatanku Sendiri",
+    ringkasan: "Menulis laporan pengamatan mandiri terhadap objek/peristiwa baru, urut dan sistematis.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-pengamatan/05-laporan-pengamatanku-sendiri.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Gagasan",
+    tema: "Menulis · Menulis Pendapat (Gagasan)",
+    urutan: 1,
+    judul: "Fakta atau Pendapat?",
+    ringkasan: "Belajar membedakan kalimat fakta dan kalimat pendapat.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-gagasan/01-fakta-atau-pendapat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Gagasan",
+    tema: "Menulis · Menulis Pendapat (Gagasan)",
+    urutan: 2,
+    judul: "Berani Berpendapat",
+    ringkasan: "Berlatih menuliskan satu kalimat pendapat dari sebuah gambar/situasi, tanpa alasan dulu.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-gagasan/02-berani-berpendapat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Gagasan",
+    tema: "Menulis · Menulis Pendapat (Gagasan)",
+    urutan: 3,
+    judul: "Pendapat Butuh Alasan",
+    ringkasan: "Menambahkan alasan pada pendapat menggunakan kata sambung “karena”.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-gagasan/03-pendapat-butuh-alasan.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Gagasan",
+    tema: "Menulis · Menulis Pendapat (Gagasan)",
+    urutan: 4,
+    judul: "Alasan yang Lebih Kuat",
+    ringkasan: "Menulis alasan yang lebih panjang dengan variasi kata sambung (karena, sehingga, meskipun).",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-gagasan/04-alasan-yang-lebih-kuat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Gagasan",
+    tema: "Menulis · Menulis Pendapat (Gagasan)",
+    urutan: 5,
+    judul: "Menulis Pendapat dan Alasanku",
+    ringkasan: "Menulis pendapat sendiri lengkap dengan alasan yang kuat dan terhubung logis.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-gagasan/05-menulis-pendapat-dan-alasanku.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Imajinasi",
+    tema: "Menulis · Menulis Cerita Imajinatif",
+    urutan: 1,
+    judul: "Melontarkan Ide-Ide Liar",
+    ringkasan: "Bermain melontarkan ide-ide aneh dan tidak biasa bersama kelompok, tanpa tekanan harus jadi cerita.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-imajinasi/01-melontarkan-ide-ide-liar.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Imajinasi",
+    tema: "Menulis · Menulis Cerita Imajinatif",
+    urutan: 2,
+    judul: "Tokoh dan Latar yang Tak Biasa",
+    ringkasan: "Menciptakan tokoh dan latar yang tidak biasa dari rangsangan gambar/cerita.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-imajinasi/02-tokoh-dan-latar-yang-tak-biasa.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Imajinasi",
+    tema: "Menulis · Menulis Cerita Imajinatif",
+    urutan: 3,
+    judul: "Menyusun Alur Cerita",
+    ringkasan: "Menyusun tokoh dan latar menjadi alur cerita sederhana dengan satu kejadian.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-imajinasi/03-menyusun-alur-cerita.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Imajinasi",
+    tema: "Menulis · Menulis Cerita Imajinatif",
+    urutan: 4,
+    judul: "Kata-Kata yang Punya Rasa",
+    ringkasan: "Mencoba kata-kata yang menciptakan kesan tertentu (makna konotatif) dalam cerita.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-imajinasi/04-kata-kata-yang-punya-rasa.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "✍️",
+    elemen: "Menulis",
+    tp: "TL-Imajinasi",
+    tema: "Menulis · Menulis Cerita Imajinatif",
+    urutan: 5,
+    judul: "Ceritaku, Imajinasiku Sendiri",
+    ringkasan: "Menulis cerita imajinatif utuh dari ide sendiri: ada tokoh, latar, dan alur.",
+    status: "segera",
+    file: "bahasa-indonesia/menulis-imajinasi/05-ceritaku-imajinasiku-sendiri.html"
   }
 ];
