@@ -148,10 +148,6 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
 
   const payload = {
     type: "siswa",
-    // v0.7.0: endpoint type:"siswa" kini digerbang server-side, wajib idToken guru
-    // (lihat wajibGuru_() di apps-script/Code.gs). window.guruIdToken diisi oleh
-    // guru-guard.js setelah verifikasi berhasil.
-    idToken: window.guruIdToken || "",
     "Nama Lengkap": nama,
     "Nama Panggilan": document.getElementById("f-panggilan").value.trim(),
     "Tempat Lahir": document.getElementById("f-tempat").value.trim(),
@@ -163,6 +159,11 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
   }
 
   try {
+    // v0.9.3: ambil token TERBARU langsung dari SDK (bukan cache window.guruIdToken
+    // yang pernah kena race condition — lihat ANTIREGRESI.md §25), sekaligus di
+    // dalam try supaya kalau gagal (sesi habis di tengah pengisian form), pesannya
+    // tetap muncul rapi di statusEl, bukan error JS mentah yang tidak tertangani.
+    payload.idToken = await window.getFreshGuruIdToken();
     const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
     const json = await parseJsonAman_(res);
     if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
@@ -250,7 +251,9 @@ async function loadSiswaList() {
   document.getElementById("list-siswa").innerHTML = '<div class="info-box">Memuat data…</div>';
   try {
     // v0.7.0: endpoint ?siswa=1 kini digerbang server-side, wajib idToken guru.
-    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(window.guruIdToken || ""));
+    // v0.9.3: ambil token TERBARU langsung dari SDK (lihat ANTIREGRESI.md §25).
+    const idToken = await window.getFreshGuruIdToken();
+    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(idToken));
     const json = await parseJsonAman_(res);
     // PENTING (celah v0.7.0-v0.9.1, diperbaiki v0.9.2): sebelum ini, `json.data || []`
     // membuat SEMUA jenis error (idToken kedaluwarsa, bukan akun guru, dll.) diam-diam
