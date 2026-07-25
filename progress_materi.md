@@ -76,9 +76,48 @@ diubah, cukup ubah satu tempat itu, semua halaman ikut berubah.
 - Belum memakai gambar/foto asli — sementara mengandalkan warna, ikon, dan tipografi supaya tetap ringan & tidak tergantung hosting gambar eksternal. Bisa didiskusikan lagi kalau suatu materi benar-benar butuh gambar.
 - `pages/materi.html.bak` sempat dibuat sebagai cadangan versi Firestore lama lalu dihapus — kalau sewaktu-waktu perlu rollback, versi lama masih ada di riwayat Git repo aslinya (bukan di sini).
 
-## 6. Isu lama yang masih terbuka (bukan dari perubahan ini)
+## 6. Isu lama — SUDAH SELESAI
 
-`assets/js/auth-guard.js` masih belum ditemukan di file yang kamu berikan — semua halaman materi (lama & baru) bergantung pada file ini untuk gerbang login. Mohon dipastikan file ini memang ada di GitHub sebelum materi baru diunggah, supaya halamannya tidak macet di "Memeriksa akses…".
+~~`assets/js/auth-guard.js` belum ditemukan~~ → sudah dibuat ulang
+(2026-07-25), pola disalin dari `guru-guard.js` tapi tanpa cek role.
+Sudah dicoba di sisi guru dan bisa diakses.
+
+## 6a. Perbaikan berdasarkan masukan (2026-07-25, sesudah tes pertama)
+
+- **Loading "Memeriksa akses…" lambat (5–10 detik):** `auth-guard.js`
+  disederhanakan — tidak lagi mengambil dokumen Firestore
+  `users/{uid}` (field role/nama), karena tidak ada satu pun halaman
+  yang memakainya dari event ini. Ini menghapus satu round-trip
+  jaringan dari setiap perpindahan halaman. Juga ditambahkan
+  `<link rel="preconnect">` ke domain Firebase di halaman materi,
+  supaya koneksinya sudah "dihangatkan" sebelum dibutuhkan.
+  Catatan jujur: karena situs ini banyak halaman terpisah (bukan
+  satu aplikasi/SPA), tiap pindah halaman tetap akan memuat ulang
+  Firebase dari awal — jeda "memeriksa akses" tidak akan hilang
+  100%, tapi seharusnya terasa jauh lebih cepat dari sebelumnya.
+  Kalau setelah ini masih terasa lambat, kemungkinan besar
+  penyebabnya koneksi internet saat itu, bukan kodenya lagi.
+- **Jarak antar paragraf terlalu lebar:** ternyata `.ma-content`
+  masih memakai `white-space: pre-wrap` peninggalan dari versi teks
+  polos lama — ini bikin baris kosong di kode sumber (yang sengaja
+  ditulis supaya kode rapi dibaca) ikut dirender jadi jarak kosong
+  sungguhan. Sudah dihapus; sekarang jarak antar paragraf normal
+  (murni dari `margin-bottom` saja).
+- **Navigasi sebelumnya/berikutnya "tidak ada":** sebenarnya sudah
+  ada di kode sejak awal, tapi baru muncul kalau ada ≥2 materi dalam
+  satu mapel — dengan 1 materi pilot, otomatis kosong. Supaya tidak
+  terlihat seperti fitur yang hilang, sekarang ditampilkan
+  placeholder ("Ini materi pertama di Matematika" / "Materi
+  berikutnya menyusul") alih-alih kosong melompong.
+- **Belum ada daftar materi dalam TP/CP yang sama:** ditambahkan
+  blok baru "Materi lain dalam tema ini" di tiap halaman detail,
+  dan daftar `materi.html` sekarang dikelompokkan dua tingkat
+  (mapel → tema), bukan cuma per mapel. Ini masih memakai field
+  `tema` sebagai pengganti sementara — begitu dokumen CP/TP/ATP
+  resmi kamu kirim, tinggal isi field `tp` di setiap entri
+  `materi-index.js` dan ganti pengelompokan dari `tema` ke `tp`
+  (satu baris kode di `materi-nav.js` & `materi.html`, sudah diberi
+  komentar penanda di kedua file).
 
 ---
 
