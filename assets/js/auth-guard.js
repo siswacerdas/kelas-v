@@ -8,21 +8,25 @@
  * bersama seperti Materi Ajar, Modul, Bank Soal, CP/TP/ATP, Jadwal,
  * dan Pengumuman.
  *
- * Konfigurasi Firebase disalin dari guru-guard.js / index.html supaya
- * memakai proyek Firebase yang sama persis (bukan bikin app baru).
+ * Sengaja TIDAK membaca dokumen Firestore "users/{uid}" (beda dengan
+ * guru-guard.js yang butuh field role). Tidak ada halaman yang
+ * memakai data itu dari event ini, jadi round-trip Firestore itu
+ * cuma menambah waktu tunggu "Memeriksa akses…" tanpa manfaat.
+ * Kalau nanti ADA halaman yang butuh nama/role, ambil sendiri di
+ * halaman itu setelah event user-verified, bukan di sini — supaya
+ * guard ini tetap ringan untuk semua halaman lain.
  *
  * Cara pakai di halaman lain:
  *   <script type="module" src="../assets/js/auth-guard.js"></script>
  *   <script>
  *     document.addEventListener('user-verified', (e) => {
- *       // e.detail.nama, e.detail.role, e.detail.user tersedia di sini
+ *       // e.detail.user tersedia di sini — mulai render halaman
  *     });
  *     document.addEventListener('DOMContentLoaded', () => window.guardLoggedInPage('../index.html'));
  *   </script>
  */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey:            "AIzaSyBcpuD90Qk7z4Bdxkm5KhXrsKVzZWFc3_k",
@@ -35,23 +39,13 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
 window.guardLoggedInPage = function (redirectPath) {
-  onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = redirectPath;
       return;
     }
-    try {
-      const snap = await getDoc(doc(db, "users", user.uid));
-      const data = snap.exists() ? snap.data() : {};
-      document.dispatchEvent(new CustomEvent("user-verified", {
-        detail: { user, role: data.role || "siswa", nama: data.nama || user.email },
-      }));
-    } catch (err) {
-      alert("Gagal memverifikasi akun: " + err.message);
-      window.location.href = redirectPath;
-    }
+    document.dispatchEvent(new CustomEvent("user-verified", { detail: { user } }));
   });
 };
