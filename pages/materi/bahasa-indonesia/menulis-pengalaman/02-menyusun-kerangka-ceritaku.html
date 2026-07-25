@@ -11,9 +11,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  /* Komponen "kerangka" (alur awal-tengah-akhir), khusus halaman ini */
+  .kerangka { margin: 1.1rem 0 1.4rem; border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+  .kerangka-judul { background: var(--paper-2); padding: 0.55rem 1.05rem; font-size: 12px; font-weight: 700; color: var(--ink-2); }
+  .kerangka-bagian { padding: 0.85rem 1.05rem; background: #fff; }
+  .kerangka-bagian:not(:last-child) { border-bottom: 1px dashed var(--border); }
+  .kerangka-label {
+    display: inline-block; font-weight: 700; font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #fff; background: var(--m-color); padding: 2px 10px;
+    border-radius: 20px; margin-bottom: 0.5rem;
+  }
+  .kerangka-isi { font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .kerangka-arrow { text-align: center; color: var(--ink-3); font-size: 13px; padding: 2px 0; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +42,90 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis dari Pengalaman Pribadi</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis dari Pengalaman Pribadi · Materi 2 dari 4</div>
       <div class="ma-cover-title">Menyusun Kerangka Ceritaku</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menyusun kerangka awal-tengah-akhir dari pengalaman pribadi yang sudah dipilih.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Di materi sebelumnya, kamu sudah memilih satu pengalaman yang "berbahan cerita" — ada momen tak terduga, perasaan yang berubah, atau masalah kecil di dalamnya. Sekarang saatnya menyusun pengalaman itu supaya rapi saat diceritakan: dari mana mulainya, apa yang jadi inti ceritanya, dan bagaimana selesainya.</p>
+
+      <p>Hampir semua cerita pengalaman punya <strong>3 bagian</strong>:</p>
+
+      <ul style="margin: 0.3em 0 1.1em 1.1em; padding: 0; line-height: 1.8;">
+        <li><strong>Awal</strong> — situasi biasa sebelum kejadian penting terjadi (di mana, kapan, sedang apa)</li>
+        <li><strong>Tengah</strong> — momen pentingnya sendiri (ini biasanya bagian yang paling banyak detailnya)</li>
+        <li><strong>Akhir</strong> — bagaimana semuanya selesai, dan bagaimana perasaanmu</li>
+      </ul>
+
+      <p>Yuk lihat contohnya pakai pengalaman "payung bolong" dari materi sebelumnya:</p>
+
+      <div class="kerangka">
+        <div class="kerangka-judul">Kerangka: "Hujan dan Payung Bolong"</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Awal</span>
+          <div class="kerangka-isi">Pagi itu aku bersiap berangkat sekolah seperti biasa.</div>
+        </div>
+        <div class="kerangka-arrow">↓</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Tengah</span>
+          <div class="kerangka-isi">Tiba-tiba hujan turun sangat deras. Waktu kubuka, ternyata payungku bolong — aku basah kuyup sepanjang jalan sampai kelas.</div>
+        </div>
+        <div class="kerangka-arrow">↓</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Akhir</span>
+          <div class="kerangka-isi">Untungnya aku punya baju cadangan di loker, jadi bisa ganti baju kering. Aku merasa lega, meskipun tadinya sempat malu karena basah semua.</div>
+        </div>
+      </div>
+
+      <p>Perhatikan: bagian <strong>Awal</strong> ditulis singkat saja — cukup untuk tahu situasinya. Bagian <strong>Tengah</strong> paling detail, karena itulah inti cerita. Bagian <strong>Akhir</strong> tidak cuma menjelaskan apa yang terjadi, tapi juga perasaannya.</p>
+
+      <p>Sekarang, contoh lain yang sedikit lebih rumit — ada dua kejadian kecil dalam satu bagian Tengah:</p>
+
+      <div class="kerangka">
+        <div class="kerangka-judul">Kerangka: "Uang di Kolong Meja"</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Awal</span>
+          <div class="kerangka-isi">Hari itu giliranku piket membersihkan kelas sepulang sekolah.</div>
+        </div>
+        <div class="kerangka-arrow">↓</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Tengah</span>
+          <div class="kerangka-isi">Waktu menyapu kolong meja, aku menemukan uang lima ribu rupiah. Aku bingung sebentar — mau diambil atau tidak. Akhirnya aku ingat kotak temuan di ruang guru, jadi kuputuskan menaruhnya di sana.</div>
+        </div>
+        <div class="kerangka-arrow">↓</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Akhir</span>
+          <div class="kerangka-isi">Aku pulang dengan perasaan lega, karena sudah bertindak jujur walau tidak ada yang melihat.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Pertanyaan Pemandu untuk Ceritamu Sendiri</span>
+        Ambil pengalaman yang sudah kamu pilih di materi sebelumnya, lalu jawab tiga pertanyaan ini:
+        <ul style="margin: 0.5em 0 0.2em 1.1em; padding: 0;">
+          <li><strong>Awal</strong> — Apa yang terjadi sebelum momen pentingnya? Sedang di mana dan sedang apa kamu?</li>
+          <li><strong>Tengah</strong> — Apa momen pentingnya? Ceritakan dengan detail — ini bagian paling penting.</li>
+          <li><strong>Akhir</strong> — Bagaimana semuanya selesai? Apa perasaanmu?</li>
+        </ul>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Sebelum menulis, coba <strong>ceritakan dulu secara lisan</strong> ke satu teman atau anggota keluargamu, mengikuti urutan Awal → Tengah → Akhir. Perhatikan reaksi mereka — bagian mana yang membuat mereka paling tertarik?
+        <br/><br/>
+        Setelah itu, tuliskan <strong>poin-poin pendek saja</strong> (belum perlu kalimat lengkap) untuk masing-masing dari tiga bagian tadi. Poin-poin inilah yang akan kita kembangkan jadi cerita utuh di materi berikutnya.
+      </div>
+
+      <p>Materi berikutnya akan membantumu mengubah poin-poin ini menjadi draf cerita pertama — fokus dulu pada alur ceritanya, belum perlu sempurna.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
