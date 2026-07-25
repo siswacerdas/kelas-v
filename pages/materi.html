@@ -71,7 +71,9 @@
     }
     const grouped = {};
     filtered.forEach((it) => { (grouped[it.mapel] = grouped[it.mapel] || []).push(it); });
-    Object.keys(grouped).forEach((k) => grouped[k].sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
+    // Catatan: TIDAK di-sort global di sini — "urutan" mulai dari 1 lagi di
+    // setiap tema/TP, jadi sort global akan mencampur urutan antar-TP.
+    // Pengurutan aman dilakukan per-tema di bawah (lihat byTema).
 
     wrap.innerHTML = "";
     Object.keys(grouped).sort().forEach((mapel) => {
@@ -84,12 +86,14 @@
       title.innerHTML = `<span class="ma-dot" style="--m-color:${color}"></span> ${esc(mapel)}`;
       wrap.appendChild(title);
 
-      // Sub-kelompok per tema — nanti diganti per TP/CP begitu
-      // dokumen resminya ada (lihat catatan field "tp" di materi-index.js)
+      // Sub-kelompok per tema (untuk mapel yang sudah berbasis TP resmi,
+      // "tema" berisi label elemen+TP, lihat catatan skema di materi-index.js)
       const byTema = {};
       items.forEach((it) => { (byTema[it.tema || "Lainnya"] = byTema[it.tema || "Lainnya"] || []).push(it); });
 
       Object.keys(byTema).forEach((tema) => {
+        byTema[tema].sort((a, b) => (a.urutan || 0) - (b.urutan || 0));
+
         const subTitle = document.createElement("div");
         subTitle.className = "ma-subgroup-title";
         subTitle.style.setProperty("--m-color", color);
@@ -102,8 +106,8 @@
           card.style.setProperty("--m-color", color);
           card.href = "materi/" + it.file;
           card.innerHTML = `
-            <div class="ma-list-icon">${icon}</div>
-            <div><div class="ma-list-title">${esc(it.judul)}</div></div>
+            <div class="ma-list-icon">${it.icon || icon}</div>
+            <div><div class="ma-list-title">${esc(it.judul)}${it.status === "segera" ? ' <span style="font-weight:400;color:var(--ink-3);font-size:11px;">(segera hadir)</span>' : ""}</div></div>
             <div class="ma-list-arrow">→</div>
           `;
           wrap.appendChild(card);
