@@ -121,10 +121,107 @@ Sudah dicoba di sisi guru dan bisa diakses.
 
 ---
 
+## 6b. Bahasa Indonesia — Roadmap TP dari Dokumen Resmi (2026-07-26)
+
+Tiga dokumen sudah diterima dan dipelajari penuh: **Dokumen 1** (Analisis
+CP Fase C), **Scaffolding_BahasaIndonesia_Kelas5.docx** (10 TP + tangga
+scaffolding), **PetaAktivitas_BahasaIndonesia_Kelas5.docx** (kalender
+mingguan Mg 1–24). Roadmap lengkap di bawah disusun mengikuti struktur
+resmi ini — bukan lagi perkiraan tema seperti pilot Matematika.
+
+**Konvensi tambahan khusus mapel dengan banyak TP** (baru berlaku untuk
+Bahasa Indonesia, karena Matematika/mapel lain kemungkinan cukup 1
+tingkat folder):
+```
+pages/materi/bahasa-indonesia/{tp-slug}/NN-judul.html
+```
+Slug TP yang dipakai: `menyimak-tp1`, `menyimak-tp2`,
+`membaca-memirsa-tp2`, `berbicara-tp1`, `berbicara-tp2`,
+`menulis-pengalaman`, `menulis-pengamatan`, `menulis-gagasan`,
+`menulis-imajinasi`. Karena ini SATU folder lebih dalam dari mapel
+lain, path ke `index.html`/`materi.html`/`auth-guard.js` di file-file
+ini butuh satu `../` ekstra dibanding pola Matematika — sudah
+diperhitungkan di template.
+
+Field baru di `materi-index.js`: `elemen` (Menyimak/Membaca dan
+Memirsa/Berbicara dan Mempresentasikan/Menulis), `tp` (kode resmi,
+mis. "M1"), `status` ("selesai"/"segera"). Field `tema` sekarang berisi
+label gabungan "Elemen · Nama TP" yang siap tampil apa adanya.
+Navigasi "sebelumnya/berikutnya" dibatasi per TP (tidak melompat ke TP
+lain); blok "materi lain" di tiap halaman menampilkan TP lain dalam
+elemen yang sama.
+
+**Semua 42 titik dalam roadmap sudah aktif linknya** (halaman "segera
+hadir" otomatis dibuat untuk yang belum ditulis) — sesuai permintaan,
+supaya navigasi dan gambaran keseluruhan bisa langsung dilihat siswa
+walau isinya menyusul.
+
+**Keputusan yang perlu dikonfirmasi:** untuk elemen **Menyimak** dan
+**Berbicara TP2** (pembacaan sastra), materi ajar TIDAK akan
+menerbitkan teks/audio latihan yang sama dengan yang dipakai guru untuk
+menilai di kelas — karena keduanya menguji kemampuan mendengar/tampil
+saat itu juga tanpa persiapan baca duluan; menerbitkannya online
+duluan berisiko membuat asesmennya tidak lagi mengukur yang seharusnya
+diukur. Materi ajar untuk kedua elemen ini akan berisi penjelasan
+konsep + contoh LAIN (bukan teks ujian) + tips berlatih di rumah.
+Elemen Membaca&Memirsa, Berbicara TP1, dan semua genre Menulis tidak
+punya masalah ini, karena produk akhirnya justru yang ditulis/tampilkan
+siswa sendiri.
+
+Setiap TP memakai **Alternatif 1** dari dokumen Scaffolding sebagai
+jalur default (karena paling umum diterapkan) — kalau ternyata di kelas
+dipakai Alternatif 2, atau kombinasi, kabari saja, materinya masih bisa
+disesuaikan tanpa mengubah struktur navigasi.
+
+---
+
 ## 7. Status & log progres
 
-| # | Mapel | Tema | Judul | File | Status | Tanggal |
-|---|---|---|---|---|---|---|
-| 1 | Matematika | Bilangan | Bilangan Cacah dan Nilai Tempat | `matematika/01-bilangan-cacah-dan-nilai-tempat.html` | ✅ Selesai (pilot pertama) | 2026-07-25 |
+| Elemen | TP | Judul | Status |
+|---|---|---|---|
+| Matematika | – | Bilangan Cacah dan Nilai Tempat | ✅ Selesai (pilot) |
+| Menyimak | M1 | Mendengarkan dan Menunjukkan Paham | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M1 | Memilah Mana yang Penting | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M1 | Mencatat dengan Caraku Sendiri | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M1 ⭐ | Menyimak Mandiri: Menangkap Info Penting | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M2 | Mengenali Kata Penghubung Sebab-Akibat | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M2 | Memetakan Sebab dan Akibat | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M2 | Merangkai Beberapa Kejadian Berurutan | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M2 | Dua Hubungan dalam Satu Cerita | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M2 ⭐ | Menjelaskan Hubungan Antarkejadian | 🕓 Segera hadir (placeholder aktif) |
+| Membaca dan Memirsa | MB2 | Menangkap Informasi dari Tayangan | 🕓 Segera hadir (placeholder aktif) |
+| Membaca dan Memirsa | MB2 | Menemukan Pesan Tersembunyi | 🕓 Segera hadir (placeholder aktif) |
+| Membaca dan Memirsa | MB2 | Membandingkan Dua Tayangan | 🕓 Segera hadir (placeholder aktif) |
+| Membaca dan Memirsa | MB2 ⭐ | Menganalisis Informasi dan Nilai dalam Tayangan | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B1 | Bicara ke Satu Teman Dulu | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B1 | Menyusun Awal-Isi-Akhir | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B1 | Presentasi dengan Alat Bantu | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B1 ⭐ | Presentasi Gagasan di Depan Kelas | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B2 | Suara yang Mengikuti Rasa (Siklus 1) | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B2 | Rasa yang Berubah dalam Satu Cerita (Siklus 2) | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B2 ⭐ | Membacakan Karyaku Sendiri (Siklus 3 – Puncak Semester 1) | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B2 | Rasa yang Tersembunyi (Siklus 4) | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B2 | Tampil di Kelompok Besar (Siklus 5) | 🕓 Segera hadir (placeholder aktif) |
+| Berbicara dan Mempresentasikan | B2 ⭐ | Puncak Tahun: Karya Pilihanku (Siklus 6) | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengalaman | Mencari Pengalaman yang "Berbahan Cerita" | ✅ Selesai |
+| Menulis | TL-Pengalaman | Menyusun Kerangka Ceritaku | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengalaman | Menulis Draf Pertama | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengalaman ⭐ | Cerita Pengalamanku yang Hidup | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengamatan | Mencatat dari Hasil Mengamati | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengamatan | Dari Kata Menjadi Kalimat | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengamatan | Menyusun Urutan yang Sistematis | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengamatan | Melaporkan Kejadian Nyata | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengamatan ⭐ | Laporan Pengamatanku Sendiri | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Gagasan | Fakta atau Pendapat? | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Gagasan | Berani Berpendapat | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Gagasan | Pendapat Butuh Alasan | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Gagasan | Alasan yang Lebih Kuat | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Gagasan ⭐ | Menulis Pendapat dan Alasanku | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Imajinasi | Melontarkan Ide-Ide Liar | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Imajinasi | Tokoh dan Latar yang Tak Biasa | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Imajinasi | Menyusun Alur Cerita | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Imajinasi | Kata-Kata yang Punya Rasa | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Imajinasi ⭐ | Ceritaku, Imajinasiku Sendiri | 🕓 Segera hadir (placeholder aktif) |
 
-**Legenda status:** 🕓 Menunggu bahan · ✍️ Sedang ditulis · ✅ Selesai, siap diunggah · 📤 Sudah diunggah ke GitHub
+**Legenda:** ⭐ = Pertemuan Inti/puncak TP tersebut · ✅ Selesai · 🕓 Segera hadir (halaman & link sudah aktif, isi menyusul)
+
