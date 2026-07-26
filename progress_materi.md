@@ -63,10 +63,20 @@ diubah, cukup ubah satu tempat itu, semua halaman ikut berubah.
 ## 4. Alur kerja setiap menambah 1 materi baru
 
 1. Aku (Claude) tulis file HTML materi barunya sesuai konvensi di atas.
-2. Aku tambahkan satu entri baru di `materi-index.js`.
-3. Aku update tabel status di bagian bawah file ini.
-4. Kamu unggah **3 file itu** (materi baru + `materi-index.js` + file ini) ke GitHub, ke folder yang sesuai.
-5. Setelah GitHub Pages selesai build (±1 menit), materi baru otomatis muncul di `materi.html` dan navigasi sebelumnya/berikutnya di materi tetangganya — tidak ada file lain yang perlu disentuh.
+2. Kamu unggah file itu ke folder yang sesuai di GitHub.
+3. **Bookkeeping (`materi-index.js` status + tabel di Bagian 7) HANYA
+   di-update sekali setelah SEMUA materi dalam 1 TP selesai ditulis —
+   bukan per materi.** Sebelum satu TP selesai penuh, entri di
+   `materi-index.js` tetap berstatus `"segera"` walau file aslinya
+   sudah lengkap (jadi "🕓 segera hadir" di listing bisa saja sudah
+   berisi konten sungguhan — sedikit tidak sinkron secara kosmetik,
+   tapi sengaja begini biar prosesnya ringan). Setelah TP-nya
+   lengkap, baru semua entrinya diubah ke `"selesai"` sekaligus dan
+   tabel Bagian 7 di-refresh dalam satu langkah.
+4. Setelah GitHub Pages selesai build (±1 menit), materi baru otomatis
+   muncul di `materi.html` dan navigasi sebelumnya/berikutnya di
+   materi tetangganya — tidak ada file lain yang perlu disentuh
+   kecuali saat batch update di atas.
 
 ## 5. Catatan desain (supaya konsisten ke depan)
 
@@ -175,6 +185,38 @@ disesuaikan tanpa mengubah struktur navigasi.
 
 ---
 
+## 6c. TP Menulis dari Pengalaman Pribadi — SELESAI 4/4 (2026-07-26)
+
+Semua 4 materi (Tangga 1–3 + Inti) sudah ditulis penuh. `materi-index.js`
+dan tabel di Bagian 7 sudah di-update sekaligus sesuai aturan batching
+di Bagian 4 (bukan per materi).
+
+## 6d. Perbaikan (2026-07-26) — Bug navigasi & fitur baru
+
+- **Bug kritis navigasi sebelumnya/berikutnya kosong di semua halaman
+  Bahasa Indonesia:** `materi-nav.js` sebelumnya mengambil "2 segmen
+  terakhir URL" untuk mencocokkan halaman saat ini dengan
+  `materi-index.js` — ini cukup untuk Matematika (`matematika/x.html`,
+  1 folder), tapi GAGAL untuk Bahasa Indonesia yang punya 1 folder
+  ekstra per TP (`bahasa-indonesia/menulis-pengalaman/x.html`, 2
+  folder). Akibatnya blok navigasi & "materi lain" selalu kosong di
+  semua halaman BI. Diperbaiki: sekarang dicocokkan dengan "URL
+  berakhiran .../{file}" (bukan hitung segmen), jadi otomatis benar
+  berapa pun kedalaman foldernya. Jumlah `../` pada link juga dihitung
+  otomatis dari kedalaman folder tujuan (`upPrefix()`), tidak lagi
+  di-hardcode `"../"`. **Perbaikan ini ada di file bersama
+  `materi-nav.js` — otomatis berlaku untuk SEMUA halaman materi
+  (termasuk 41 halaman "segera hadir") tanpa perlu mengedit satu per
+  satu file HTML-nya.**
+- **Fitur baru: daftar materi per mapel bisa dibuka/ditutup** di
+  `materi.html` — klik nama mapel untuk collapse/expand isinya
+  (berguna karena Bahasa Indonesia sendiri sudah 42 entri). Status
+  buka/tutup tidak disimpan permanen (reset tiap buka halaman lagi) —
+  cukup untuk sekarang, bisa ditingkatkan nanti kalau perlu diingat
+  antar-kunjungan.
+
+---
+
 ## 7. Status & log progres
 
 | Elemen | TP | Judul | Status |
@@ -205,8 +247,8 @@ disesuaikan tanpa mengubah struktur navigasi.
 | Berbicara dan Mempresentasikan | B2 ⭐ | Puncak Tahun: Karya Pilihanku (Siklus 6) | 🕓 Segera hadir (placeholder aktif) |
 | Menulis | TL-Pengalaman | Mencari Pengalaman yang "Berbahan Cerita" | ✅ Selesai |
 | Menulis | TL-Pengalaman | Menyusun Kerangka Ceritaku | ✅ Selesai |
-| Menulis | TL-Pengalaman | Menulis Draf Pertama | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengalaman ⭐ | Cerita Pengalamanku yang Hidup | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengalaman | Menulis Draf Pertama | ✅ Selesai |
+| Menulis | TL-Pengalaman ⭐ | Cerita Pengalamanku yang Hidup | ✅ Selesai |
 | Menulis | TL-Pengamatan | Mencatat dari Hasil Mengamati | 🕓 Segera hadir (placeholder aktif) |
 | Menulis | TL-Pengamatan | Dari Kata Menjadi Kalimat | 🕓 Segera hadir (placeholder aktif) |
 | Menulis | TL-Pengamatan | Menyusun Urutan yang Sistematis | 🕓 Segera hadir (placeholder aktif) |
