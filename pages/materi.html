@@ -40,6 +40,7 @@
 <script>
   const allItems = window.MATERI_INDEX || [];
   let activeMapel = "Semua";
+  const collapsedMapel = new Set(); // menyimpan nama mapel yang sedang ditutup (collapsed)
 
   function esc(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -80,11 +81,23 @@
       const items = grouped[mapel];
       const color = items[0].mapelColor || "var(--accent-2)";
       const icon = items[0].mapelIcon || "📖";
+      const groupId = "grp-" + mapel.replace(/[^a-zA-Z0-9]/g, "-");
+      const wasCollapsed = collapsedMapel.has(mapel);
 
       const title = document.createElement("div");
-      title.className = "ma-group-title";
-      title.innerHTML = `<span class="ma-dot" style="--m-color:${color}"></span> ${esc(mapel)}`;
+      title.className = "ma-group-title" + (wasCollapsed ? " ma-collapsed-title" : "");
+      title.innerHTML = `<span class="ma-dot" style="--m-color:${color}"></span> ${esc(mapel)} <span class="ma-group-count">(${items.length})</span><span class="ma-chevron">▾</span>`;
+      title.onclick = () => {
+        if (collapsedMapel.has(mapel)) collapsedMapel.delete(mapel);
+        else collapsedMapel.add(mapel);
+        renderList();
+      };
       wrap.appendChild(title);
+
+      const body = document.createElement("div");
+      body.className = "ma-group-body" + (wasCollapsed ? " ma-collapsed" : "");
+      body.id = groupId;
+      wrap.appendChild(body);
 
       // Sub-kelompok per tema (untuk mapel yang sudah berbasis TP resmi,
       // "tema" berisi label elemen+TP, lihat catatan skema di materi-index.js)
@@ -98,7 +111,7 @@
         subTitle.className = "ma-subgroup-title";
         subTitle.style.setProperty("--m-color", color);
         subTitle.textContent = tema;
-        wrap.appendChild(subTitle);
+        body.appendChild(subTitle);
 
         byTema[tema].forEach((it) => {
           const card = document.createElement("a");
@@ -110,7 +123,7 @@
             <div><div class="ma-list-title">${esc(it.judul)}${it.status === "segera" ? ' <span style="font-weight:400;color:var(--ink-3);font-size:11px;">(segera hadir)</span>' : ""}</div></div>
             <div class="ma-list-arrow">→</div>
           `;
-          wrap.appendChild(card);
+          body.appendChild(card);
         });
       });
     });
