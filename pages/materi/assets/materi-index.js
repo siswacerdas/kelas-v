@@ -438,7 +438,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Menulis Draf Pertama",
     ringkasan: "Mengembangkan kerangka menjadi draf cerita pengalaman pertama, fokus pada alurnya dulu.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menulis-pengalaman/03-menulis-draf-pertama.html"
   },
   {
@@ -453,7 +453,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Cerita Pengalamanku yang Hidup",
     ringkasan: "Merevisi draf dengan menambahkan detail rasa dan indra supaya ceritanya lebih hidup.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menulis-pengalaman/04-cerita-pengalamanku-yang-hidup.html"
   },
   {

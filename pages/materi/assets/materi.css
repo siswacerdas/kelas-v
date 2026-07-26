@@ -188,7 +188,15 @@
   display: flex; align-items: center; gap: 7px;
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--ink-3); margin: 1.5rem 0 0.6rem;
+  cursor: pointer; user-select: none; padding: 4px 0;
 }
+.ma-group-title .ma-group-count { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ink-3); }
+.ma-group-title .ma-chevron {
+  margin-left: auto; transition: transform 0.15s ease; color: var(--ink-3); font-size: 10px;
+}
+.ma-group-body { overflow: hidden; }
+.ma-group-body.ma-collapsed { display: none; }
+.ma-group-title.ma-collapsed-title .ma-chevron { transform: rotate(-90deg); }
 .ma-group-title .ma-dot {
   width: 9px; height: 9px; border-radius: 50%; background: var(--m-color, var(--accent));
   display: inline-block;

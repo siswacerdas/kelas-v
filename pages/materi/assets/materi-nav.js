@@ -13,11 +13,6 @@
    materi-index.js sudah berisi entri halaman ini.
    ============================================================ */
 (function () {
-  function getRelFile() {
-    var parts = window.location.pathname.split("/").filter(Boolean);
-    return parts.slice(-2).join("/"); // "{mapelSlug}/{file}.html"
-  }
-
   function esc(str) {
     return String(str).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
@@ -26,8 +21,25 @@
 
   function currentEntry() {
     if (!window.MATERI_INDEX) return null;
-    var current = getRelFile();
-    return window.MATERI_INDEX.find(function (e) { return e.file === current; }) || null;
+    var path = window.location.pathname;
+    // Dicocokkan dengan "berakhiran .../{file}" -- BUKAN cuma 2 segmen
+    // terakhir, karena kedalaman folder berbeda-beda per mapel (mis.
+    // Matematika 1 folder: "matematika/x.html", Bahasa Indonesia 2
+    // folder: "bahasa-indonesia/menulis-pengalaman/x.html").
+    return window.MATERI_INDEX.find(function (e) {
+      return path === e.file || path.endsWith("/" + e.file);
+    }) || null;
+  }
+
+  // Jumlah folder di dalam "pages/materi/" untuk entry ini -- dipakai
+  // untuk menghitung berapa kali "../" dibutuhkan agar link ke entry LAIN
+  // (yang juga relatif terhadap pages/materi/) resolve dengan benar,
+  // berapa pun kedalaman foldernya.
+  function upPrefix(entry) {
+    var depth = entry.file.split("/").length - 1; // -1 karena segmen terakhir adalah nama file
+    var up = "";
+    for (var i = 0; i < depth; i++) up += "../";
+    return up;
   }
 
   function renderPrevNext(entry) {
@@ -42,15 +54,16 @@
     var idx = siblings.findIndex(function (e) { return e.file === entry.file; });
     var prev = idx > 0 ? siblings[idx - 1] : null;
     var next = idx < siblings.length - 1 ? siblings[idx + 1] : null;
+    var up = upPrefix(entry);
 
     el.innerHTML =
       (prev
-        ? '<a class="ma-navcard ma-prev" href="../' + prev.file + '">' +
+        ? '<a class="ma-navcard ma-prev" href="' + up + prev.file + '">' +
           '<div class="ma-nav-dir">‹ Sebelumnya</div>' +
           '<div class="ma-nav-title">' + esc(prev.judul) + "</div></a>"
         : '<div class="ma-navempty">Ini materi pertama di ' + esc(entry.tema) + "</div>") +
       (next
-        ? '<a class="ma-navcard ma-next" href="../' + next.file + '">' +
+        ? '<a class="ma-navcard ma-next" href="' + up + next.file + '">' +
           '<div class="ma-nav-dir">Berikutnya ›</div>' +
           '<div class="ma-nav-title">' + esc(next.judul) + "</div></a>"
         : '<div class="ma-navempty">Materi berikutnya menyusul</div>');
@@ -92,9 +105,10 @@
       return;
     }
 
+    var up = upPrefix(entry);
     var cards = related.map(function (r) {
       var icon = r.icon || r.mapelIcon || "📖";
-      return '<a class="ma-list-card" style="--m-color:' + entry.mapelColor + '" href="../' + r.file + '">' +
+      return '<a class="ma-list-card" style="--m-color:' + entry.mapelColor + '" href="' + up + r.file + '">' +
         '<div class="ma-list-icon">' + icon + '</div>' +
         '<div><div class="ma-list-title">' + esc(r.judul) + '</div>' +
         '<div class="ma-list-tema">' + esc(r.tema) + '</div></div>' +
