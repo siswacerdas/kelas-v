@@ -1076,4 +1076,3 @@ window.MATERI_INDEX = [
     file: "ipas/sejarah-budaya/02-menghubungkan-geografis-ekonomi-dan-budaya-keluarga.html"
   }
 ];
-];
