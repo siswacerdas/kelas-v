@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tampil di Kelompok Besar (Siklus 5) · Materi Ajar Kelas 5</title>
+<title>Tampil di Kelompok Besar · Materi Ajar Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
@@ -11,9 +11,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .tips-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .tips-grid { grid-template-columns: 1fr 1fr; } }
+  .tips-card { border: 1px solid var(--border); border-radius: var(--r); padding: 0.7rem 0.85rem; background: #fff; font-size: calc(var(--content-fs) - 2px); line-height: 1.55; }
+  .tips-card .emoji { font-size: 1.2rem; margin-bottom: 4px; display: block; }
+  .teks-baca {
+    margin: 1rem 0 0; padding: 1rem 1.1rem; background: #fdfaf5; border: 1px solid var(--border);
+    border-radius: var(--r-lg) var(--r-lg) 0 0; font-size: calc(var(--content-fs) - 1px); line-height: 1.8;
+    font-style: italic; color: var(--ink);
+  }
+  .cara-baca {
+    margin: 0 0 1.4rem; padding: 0.85rem 1.1rem; background: var(--paper-2); border: 1px solid var(--border);
+    border-top: none; border-radius: 0 0 var(--r-lg) var(--r-lg); font-size: calc(var(--content-fs) - 2px);
+  }
+  .cara-baca .cb-label { font-weight: 700; color: var(--m-color); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.4rem; display: block; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +44,71 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🎤</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Membacakan Karya Sastra (Siklus Berkelanjutan)</div>
-      <div class="ma-cover-title">Tampil di Kelompok Besar (Siklus 5)</div>
+      <div class="ma-cover-eyebrow">Berbicara · Membacakan Karya Sastra · Siklus 5 dari 6</div>
+      <div class="ma-cover-title">Tampil di Kelompok Besar</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Tampil membacakan karya di depan kelompok yang lebih besar dari sebelumnya.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kemampuan menemukan dan menyampaikan rasa dalam teks sudah cukup terlatih dari siklus-siklus sebelumnya. Sekarang tantangannya bukan lagi soal <em>menemukan</em> rasanya, tapi soal <strong>menyampaikannya ke pendengar yang lebih banyak</strong> — kelompok gabungan, lebih besar dari kelompok kecil sebelumnya.</p>
+
+      <p>Membacakan karya sastra ke kelompok besar sedikit berbeda dengan menyampaikan gagasan (seperti di materi Berbicara sebelumnya), karena di sini kamu membawakan <strong>teks yang sudah tertulis</strong>, bukan bicara spontan. Ini artinya ada tantangan tambahan: bagaimana membaca teks sambil tetap terhubung dengan pendengar, tidak cuma menunduk terus ke kertas.</p>
+
+      <div class="tips-grid">
+        <div class="tips-card"><span class="emoji">👀</span><strong>Lirik teks, lalu angkat wajah</strong> — baca sepotong kalimat dalam hati dulu, lalu ucapkan sambil sesekali melihat ke arah pendengar, jangan menunduk terus-menerus.</div>
+        <div class="tips-card"><span class="emoji">🔊</span><strong>Proyeksikan suaramu</strong> — volume harus cukup untuk menjangkau yang paling belakang, tapi ekspresi (nada, perubahan rasa) tetap harus terasa, jangan sampai hilang karena fokus ke volume saja.</div>
+        <div class="tips-card"><span class="emoji">🐢</span><strong>Sedikit lebih lambat dari latihan biasa</strong> — kelompok besar butuh waktu sedikit lebih lama untuk menangkap tiap kata, apalagi kalau rasanya tersirat/halus.</div>
+        <div class="tips-card"><span class="emoji">📍</span><strong>Ingat titik-titik pentingnya</strong> — sebelum tampil, ingat-ingat di mana letak pergeseran rasa atau bagian yang perlu penekanan, supaya tidak kaget saat sampai di bagian itu.</div>
+      </div>
+
+      <p>Yuk lihat bagaimana salah satu teks dari Siklus 4 (rasa tersembunyi) disesuaikan untuk tampil di kelompok besar:</p>
+
+      <div class="teks-baca">"Halaman sekolah sudah sepi. Daun-daun kering berguguran pelan di sudut lapangan yang biasanya ramai. Ayunan besi berkarat itu berderit sendiri, tertiup angin sore, tanpa seorang pun yang menaikinya."</div>
+      <div class="cara-baca">
+        <span class="cb-label">Penyesuaian untuk Kelompok Besar</span>
+        Rasa yang disampaikan tetap sama (sepi/kesunyian), tapi volume dinaikkan sedikit supaya terdengar sampai baris paling belakang, TANPA menghilangkan kesan pelan dan penuh jeda yang jadi ciri khas rasa sepi itu. Caranya: pelan tapi <strong>jelas dan tegas</strong>, bukan pelan dan lirih seperti saat dibacakan ke satu-dua orang saja. Sesekali angkat wajah dari teks saat jeda antarkalimat, untuk tetap terhubung dengan pendengar.
+      </div>
+
+      <p>Perhatikan: menyesuaikan untuk kelompok besar <strong>bukan berarti mengubah rasa yang disampaikan</strong> — rasa sepi tetap sepi, cuma caranya disampaikan perlu diproyeksikan lebih kuat supaya sampai ke semua orang.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa tantangan tambahan saat membacakan karya sastra (dibanding menyampaikan gagasan secara spontan) di depan kelompok besar?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Harus membaca teks yang sudah tertulis sambil tetap terhubung dengan pendengar, tidak cuma menunduk ke kertas terus-menerus.</span>
+          Karena teksnya sudah tertulis (bukan bicara spontan), pembaca perlu berlatih melirik teks sebentar lalu mengangkat wajah, bukan menatap kertas sepanjang waktu.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Ketika menaikkan volume untuk kelompok besar, apa yang harus tetap dijaga supaya tidak hilang?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Ekspresi dan rasa yang ingin disampaikan (nada, perubahan rasa) — jangan sampai fokus ke volume saja membuat ekspresinya jadi datar.</span>
+          Menaikkan volume tanpa menjaga ekspresi akan membuat pembacaan terdengar seperti berteriak biasa, bukan lagi pembacaan sastra yang bermakna.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Pada contoh "halaman sekolah sepi" di atas, kenapa disebutkan harus dibaca "pelan tapi jelas dan tegas", bukan "pelan dan lirih" seperti saat dibacakan ke kelompok kecil?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena kelompok besar butuh volume yang cukup untuk menjangkau bagian paling belakang, sementara kesan "pelan" (mengikuti rasa sepi) tetap perlu dipertahankan lewat kejelasan, bukan lewat volume yang terlalu kecil.</span>
+          Ini contoh bagaimana rasa yang sama bisa disampaikan dengan cara berbeda tergantung ukuran audiensnya, tanpa mengubah rasa itu sendiri.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Pilih satu teks yang sudah kamu latih dari siklus-siklus sebelumnya (atau karya sendiri). Latih membacanya dengan volume yang lebih besar, sambil sesekali mengangkat wajah dari teks. Coba tampilkan ke kelompok yang lebih besar dari biasanya di rumahmu — kumpulkan beberapa anggota keluarga sekaligus kalau memungkinkan.
+      </div>
+
+      <p>Siklus terakhir adalah <strong>puncak tahun</strong> — kamu akan memilih sendiri karya terbaikmu sepanjang tahun untuk dibacakan di depan kelas.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

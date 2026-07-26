@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Puncak Tahun: Karya Pilihanku (Siklus 6) · Materi Ajar Kelas 5</title>
+<title>Puncak Tahun: Karya Pilihanku · Materi Ajar Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
@@ -11,9 +11,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .puncak-banner {
+    margin: 0 0 1.4rem; padding: 0.7rem 1rem; background: var(--m-color); color: #fff; border-radius: var(--r);
+    font-size: calc(var(--content-fs) - 1px); font-weight: 600; text-align: center;
+  }
+  .perjalanan-list { list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .perjalanan-item { display: flex; gap: 10px; align-items: flex-start; padding: 0.6rem 0; border-bottom: 1px dashed var(--border); }
+  .perjalanan-item:last-child { border-bottom: none; }
+  .perjalanan-num {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--m-color); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;
+  }
+  .perjalanan-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.5; padding-top: 2px; }
+  .perjalanan-text b { color: var(--ink); }
+  .pilih-kriteria {
+    margin: 1rem 0 1.4rem; padding: 0.9rem 1.05rem; background: var(--paper-2); border-radius: var(--r-lg);
+    border: 1px solid var(--border); font-size: calc(var(--content-fs) - 2px);
+  }
+  .pilih-kriteria ul { margin: 0.3em 0 0 1.1em; padding: 0; line-height: 1.7; }
+  .selesai-banner {
+    margin: 1.5rem 0; padding: 1.1rem 1.2rem; border-radius: var(--r-lg);
+    background: var(--paper-2); border: 1px solid var(--border); text-align: center;
+  }
+  .selesai-banner .judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .selesai-banner p { font-size: 13px; color: var(--ink-3); margin: 0; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -32,18 +53,98 @@
 
   <div class="ma-cover">
     <div class="ma-cover-inner">
-      <span class="ma-cover-icon">🎤</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Membacakan Karya Sastra (Siklus Berkelanjutan)</div>
-      <div class="ma-cover-title">Puncak Tahun: Karya Pilihanku (Siklus 6)</div>
+      <span class="ma-cover-icon">⭐</span>
+      <div class="ma-cover-eyebrow">Berbicara · Membacakan Karya Sastra · Siklus 6 dari 6 (Puncak Tahun)</div>
+      <div class="ma-cover-title">Puncak Tahun: Karya Pilihanku</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Memilih sendiri karya terbaik sepanjang tahun untuk dibacakan di depan kelas.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <div class="puncak-banner">🏆 Ini titik puncak — akhir dari seluruh perjalanan Membacakan Karya Sastra sepanjang tahun</div>
+
+      <p>Ini siklus terakhir dari perjalanan panjangmu belajar membacakan karya sastra. Mari lihat dulu seberapa jauh kamu sudah berkembang:</p>
+
+      <ul class="perjalanan-list">
+        <li class="perjalanan-item">
+          <span class="perjalanan-num">1</span>
+          <span class="perjalanan-text"><b>Suara mengikuti rasa</b> — menyesuaikan kecepatan, volume, dan nada dengan satu rasa yang jelas.</span>
+        </li>
+        <li class="perjalanan-item">
+          <span class="perjalanan-num">2</span>
+          <span class="perjalanan-text"><b>Rasa yang berubah</b> — menemukan titik pergeseran rasa dalam satu teks dan menyesuaikan suara tepat di situ.</span>
+        </li>
+        <li class="perjalanan-item">
+          <span class="perjalanan-num">3</span>
+          <span class="perjalanan-text"><b>Karya sendiri</b> — menganalisis dan membacakan tulisanmu sendiri ke kelompok kecil.</span>
+        </li>
+        <li class="perjalanan-item">
+          <span class="perjalanan-num">4</span>
+          <span class="perjalanan-text"><b>Rasa tersembunyi</b> — menyimpulkan rasa yang tidak dinyatakan langsung dari petunjuk tidak langsung.</span>
+        </li>
+        <li class="perjalanan-item">
+          <span class="perjalanan-num">5</span>
+          <span class="perjalanan-text"><b>Kelompok besar</b> — memproyeksikan suara untuk audiens yang lebih banyak, tanpa kehilangan ekspresi.</span>
+        </li>
+      </ul>
+
+      <p>Sekarang, gabungkan semuanya: pilih <strong>karya terbaikmu sepanjang tahun</strong> — boleh dari materi Menulis Pengalaman, Menulis Imajinasi, atau tulisan lain yang pernah kamu buat — untuk dibacakan di depan kelas.</p>
+
+      <div class="pilih-kriteria">
+        <strong>🔎 Cara Memilih Karya Terbaikmu</strong>
+        <ul>
+          <li>Karya yang punya rasa <strong>jelas atau menarik</strong> — entah tetap dari awal sampai akhir, atau berubah di tengah</li>
+          <li>Karya yang membuatmu <strong>merasa bangga atau terhubung</strong> saat menulisnya dulu</li>
+          <li>Karya yang <strong>tidak terlalu panjang</strong> — cukup untuk dibacakan dengan tenang tanpa terburu-buru</li>
+        </ul>
+      </div>
+
+      <p>Setelah memilih, ikuti proses yang sudah kamu kuasai dari siklus-siklus sebelumnya: baca ulang dalam hati, temukan rasanya (termasuk kalau ada yang tersembunyi atau berubah), tandai bagian pentingnya, lalu berlatih membaca keras beberapa kali sebelum tampil.</p>
+
+      <p>Untuk penampilan di depan kelas penuh, ingat kembali tips dari siklus sebelumnya: proyeksikan suaramu, sesekali angkat wajah dari teks, dan jangan lupa — rasa gugup itu wajar, ambil napas dulu sebelum mulai.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa yang membuat sebuah karya cocok dipilih untuk siklus puncak ini?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Punya rasa yang jelas atau menarik, membuatmu bangga/terhubung saat menulisnya, dan tidak terlalu panjang.</span>
+          Karya yang kamu benar-benar pahami dan sukai akan lebih mudah dibacakan dengan ekspresi yang tepat, dibanding karya yang kamu pilih asal-asalan.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Sebutkan urutan yang benar dari kemampuan yang dipelajari sepanjang enam siklus Berbicara TP2 ini!</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: (1) suara mengikuti satu rasa tetap, (2) rasa yang berubah di tengah teks, (3) membacakan karya sendiri ke kelompok kecil, (4) menemukan rasa tersembunyi, (5) tampil ke kelompok besar, (6) memilih karya terbaik untuk tampil di kelas.</span>
+          Setiap siklus membangun di atas kemampuan siklus sebelumnya — dari yang paling dasar (satu rasa jelas) sampai yang paling menantang (memilih dan menampilkan karya terbaik ke audiens terbesar).
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Kenapa penting untuk tetap membaca ulang dan menandai rasa sebelum tampil, walau kamu sudah sangat berpengalaman di siklus-siklus sebelumnya?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena setiap karya punya rasa dan titik pergeseran yang berbeda-beda, jadi persiapan itu tetap perlu dilakukan setiap kali memilih karya baru.</span>
+          Keterampilan yang sudah dikuasai tetap butuh persiapan pada karya yang spesifik — bukan sesuatu yang bisa dilakukan asal tanpa persiapan, meski sudah terlatih.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Tugasmu Sekarang (Penilaian Puncak Tahun)</span>
+        Pilih satu karya terbaikmu sepanjang tahun (dari materi Menulis mana pun, atau tulisan lain). Siapkan dengan langkah yang sudah kamu kuasai: temukan rasanya, tandai bagian penting, latihan membaca keras. Bacakan di depan kelas penuh.
+        <br/><br/>
+        Yang akan diperhatikan: apakah rasa dalam karyamu tersampaikan dengan jelas lewat suaramu (kecepatan, volume, nada), termasuk kalau ada pergeseran atau rasa yang tersirat — bukan soal seberapa gugup kamu tampil.
+      </div>
+
+      <div class="selesai-banner">
+        <div class="judul">🎉 Selamat, kamu sudah menyelesaikan seluruh perjalanan Berbicara: Membacakan Karya Sastra, dari Siklus 1 sampai Siklus 6!</div>
+        <p>Kemampuan menyampaikan rasa lewat suara ini bukan cuma untuk pelajaran — bisa kamu pakai kapan pun kamu ingin ceritamu benar-benar didengar dan dirasakan orang lain.</p>
+      </div>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
