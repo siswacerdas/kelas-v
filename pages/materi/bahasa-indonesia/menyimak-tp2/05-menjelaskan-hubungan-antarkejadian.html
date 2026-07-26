@@ -11,9 +11,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .catatan-khusus {
+    margin: 1.1rem 0; padding: 0.9rem 1.05rem; border-radius: var(--r);
+    background: var(--paper-2); border-left: 4px solid var(--ink-3); font-size: calc(var(--content-fs) - 3px);
+    color: var(--ink-3); line-height: 1.6;
+  }
+  .catatan-khusus b { color: var(--ink-2); }
+  .recap-list { list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .recap-item {
+    display: flex; gap: 10px; align-items: flex-start; padding: 0.7rem 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .recap-item:last-child { border-bottom: none; }
+  .recap-num {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--m-color); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .recap-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.5; padding-top: 2px; }
+  .recap-text b { color: var(--ink); }
+  .selesai-banner {
+    margin: 1.5rem 0; padding: 1.1rem 1.2rem; border-radius: var(--r-lg);
+    background: var(--paper-2); border: 1px solid var(--border); text-align: center;
+  }
+  .selesai-banner .judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .selesai-banner p { font-size: 13px; color: var(--ink-3); margin: 0; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -32,18 +53,62 @@
 
   <div class="ma-cover">
     <div class="ma-cover-inner">
-      <span class="ma-cover-icon">🎧</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Hubungan Sebab-Akibat & Urutan</div>
+      <span class="ma-cover-icon">⭐</span>
+      <div class="ma-cover-eyebrow">Menyimak · Hubungan Sebab-Akibat & Urutan · Materi 5 dari 5 (Inti)</div>
       <div class="ma-cover-title">Menjelaskan Hubungan Antarkejadian</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menjelaskan hubungan sebab-akibat atau urutan kejadian dari teks yang didengar, secara mandiri.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menggabungkan semua yang sudah kamu pelajari tentang sebab-akibat, kali ini mandiri — tanpa dikasih tahu dulu polanya seperti apa:</p>
+
+      <ul class="recap-list">
+        <li class="recap-item">
+          <span class="recap-num">1</span>
+          <span class="recap-text"><b>Mengenali kata penghubung</b> — karena, sebab, sehingga, akibatnya, jadi, maka.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">2</span>
+          <span class="recap-text"><b>Memisahkan Sebab dan Akibat</b> — dari satu kalimat sederhana.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">3</span>
+          <span class="recap-text"><b>Mengikuti rantai kejadian</b> — saat satu akibat menjadi sebab untuk kejadian berikutnya.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">4</span>
+          <span class="recap-text"><b>Membedakan hubungan yang terpisah</b> — mengenali kalau ada dua sebab-akibat yang tidak saling berhubungan.</span>
+        </li>
+      </ul>
+
+      <p>Nanti gurumu akan membacakan satu teks pendek — <strong>satu kali saja</strong>. Tugasmu: dengarkan baik-baik, lalu jelaskan (bisa lisan atau tertulis, sesuai instruksi gurumu) hubungan sebab-akibat atau urutan kejadian yang kamu tangkap dari teks itu.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Tips Terakhir Sebelum Menyimak</span>
+        <ul style="margin: 0.5em 0 0.2em 1.1em; padding: 0;">
+          <li>Dengarkan baik-baik <strong>kata penghubungnya</strong> — itu sinyal ada hubungan sebab-akibat</li>
+          <li>Tanyakan pada dirimu: <strong>apakah ini satu rantai, atau dua hubungan terpisah?</strong></li>
+          <li>Kalau perlu, catat singkat sambil mendengarkan (pakai gaya mencatatmu sendiri dari materi Menyimak sebelumnya)</li>
+        </ul>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Latihan Terakhir di Rumah</span>
+        Minta seseorang di rumah menceritakan sebuah kejadian nyata (bisa dari beritanya hari ini, atau pengalaman mereka sendiri) yang mengandung setidaknya satu hubungan sebab-akibat. Coba jelaskan ulang dengan kata-katamu sendiri: apa sebabnya, apa akibatnya, dan apakah ada lebih dari satu hubungan di dalamnya.
+      </div>
+
+      <div class="selesai-banner">
+        <div class="judul">🎉 Selamat, kamu sudah menyelesaikan seluruh materi Menyimak: Hubungan Sebab-Akibat & Urutan!</div>
+        <p>Kemampuan ini akan sangat berguna saat mendengarkan penjelasan di pelajaran lain — IPAS misalnya, sering menjelaskan kenapa sesuatu terjadi di alam.</p>
+      </div>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

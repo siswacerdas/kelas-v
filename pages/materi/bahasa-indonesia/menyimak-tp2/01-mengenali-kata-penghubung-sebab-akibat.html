@@ -11,9 +11,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .catatan-khusus {
+    margin: 1.1rem 0; padding: 0.9rem 1.05rem; border-radius: var(--r);
+    background: var(--paper-2); border-left: 4px solid var(--ink-3); font-size: calc(var(--content-fs) - 3px);
+    color: var(--ink-3); line-height: 1.6;
+  }
+  .catatan-khusus b { color: var(--ink-2); }
+  .kata-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0 1.4rem; }
+  .kata-chip {
+    background: #fff; border: 2px solid var(--m-color); color: var(--m-color); font-weight: 700;
+    font-size: calc(var(--content-fs) - 2px); padding: 5px 14px; border-radius: 20px;
+  }
+  .contoh-kalimat {
+    margin: 0.9rem 0; padding: 0.85rem 1.05rem; background: #fff; border: 1px solid var(--border);
+    border-radius: var(--r); font-size: calc(var(--content-fs) - 2px); line-height: 1.7;
+  }
+  .contoh-kalimat .kunci { color: var(--m-color); font-weight: 700; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +46,53 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🎧</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Hubungan Sebab-Akibat & Urutan</div>
+      <div class="ma-cover-eyebrow">Menyimak · Hubungan Sebab-Akibat & Urutan · Materi 1 dari 5</div>
       <div class="ma-cover-title">Mengenali Kata Penghubung Sebab-Akibat</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Mengenali kata-kata seperti “karena” dan “sehingga” yang menghubungkan sebab dan akibat.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang kita masuk ke keterampilan menyimak yang baru: menangkap <strong>hubungan sebab-akibat</strong>. Ini penting karena banyak cerita dan penjelasan yang kita dengar sehari-hari sebenarnya menjelaskan kenapa sesuatu bisa terjadi.</p>
+
+      <p>Langkah pertama: mengenali <strong>kata penghubung</strong> yang biasanya menandai hubungan sebab-akibat. Begitu kamu mendengar salah satu kata ini, itu tandanya sedang ada penjelasan sebab-akibat!</p>
+
+      <div class="kata-grid">
+        <span class="kata-chip">karena</span>
+        <span class="kata-chip">sebab</span>
+        <span class="kata-chip">sehingga</span>
+        <span class="kata-chip">akibatnya</span>
+        <span class="kata-chip">jadi</span>
+        <span class="kata-chip">maka</span>
+      </div>
+
+      <p>Yuk lihat bagaimana kata-kata ini muncul dalam kalimat:</p>
+
+      <div class="contoh-kalimat">"Hari ini hujan deras, <span class="kunci">sehingga</span> Andi memakai jas hujan ke sekolah."</div>
+      <div class="contoh-kalimat"><span class="kunci">Karena</span> bangun kesiangan, Dina jadi terlambat ke sekolah.</div>
+      <div class="contoh-kalimat">Lampu di rumah tiba-tiba mati, <span class="kunci">akibatnya</span> semua ruangan jadi gelap.</div>
+
+      <p>Perhatikan: kata penghubung ini bisa muncul di <strong>tengah</strong> kalimat (seperti "sehingga", "akibatnya") atau di <strong>awal</strong> kalimat (seperti "karena"). Yang penting, begitu kamu dengar salah satu kata ini, itu sinyal bahwa ada bagian yang jadi <strong>penyebab</strong> dan bagian lain yang jadi <strong>akibat</strong>.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Berlatih di Rumah</span>
+        Minta seseorang di rumah membacakan beberapa kalimat, campuran antara yang mengandung kata penghubung sebab-akibat dan yang tidak. Setiap kali dengar salah satu kata di atas (karena, sebab, sehingga, akibatnya, jadi, maka), <strong>tepuk tangan sekali</strong> atau angkat tanganmu.
+        <br/><br/>
+        Coba juga sebaliknya: buat kalimatmu sendiri yang memakai salah satu kata penghubung itu, lalu ucapkan ke keluargamu.
+      </div>
+
+      <div class="catatan-khusus">
+        <b>Catatan:</b> seperti materi menyimak sebelumnya, contoh dan latihan di sini sengaja berbeda dari yang akan dipakai gurumu untuk menilai di kelas.
+      </div>
+
+      <p>Materi berikutnya akan mengajarkan cara menggambarkan sebab dan akibat itu ke dalam diagram sederhana.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

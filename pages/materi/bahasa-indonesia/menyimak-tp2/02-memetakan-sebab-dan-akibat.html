@@ -11,9 +11,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .catatan-khusus {
+    margin: 1.1rem 0; padding: 0.9rem 1.05rem; border-radius: var(--r);
+    background: var(--paper-2); border-left: 4px solid var(--ink-3); font-size: calc(var(--content-fs) - 3px);
+    color: var(--ink-3); line-height: 1.6;
+  }
+  .catatan-khusus b { color: var(--ink-2); }
+  .diagram-2 { display: flex; align-items: stretch; gap: 8px; margin: 1rem 0 1.3rem; }
+  .diagram-box {
+    flex: 1; border-radius: var(--r); padding: 0.8rem 0.9rem; font-size: calc(var(--content-fs) - 2px);
+    line-height: 1.5; display: flex; flex-direction: column; justify-content: center;
+  }
+  .diagram-box.sebab { background: var(--paper-2); border: 1px solid var(--border); }
+  .diagram-box.akibat { background: var(--m-color); color: #fff; }
+  .diagram-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; opacity: 0.8; }
+  .diagram-arrow { display: flex; align-items: center; font-size: 20px; color: var(--ink-3); }
+  .kalimat-asal { font-size: calc(var(--content-fs) - 2px); color: var(--ink-3); font-style: italic; margin-bottom: 0.5rem; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +46,62 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🎧</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Hubungan Sebab-Akibat & Urutan</div>
+      <div class="ma-cover-eyebrow">Menyimak · Hubungan Sebab-Akibat & Urutan · Materi 2 dari 5</div>
       <div class="ma-cover-title">Memetakan Sebab dan Akibat</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menggambarkan hubungan sebab-akibat dari satu kalimat ke dalam diagram sederhana.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang setelah kamu bisa mengenali kata penghubungnya, langkah berikutnya: memisahkan satu kalimat menjadi dua bagian — <strong>Sebab</strong> (yang menyebabkan) dan <strong>Akibat</strong> (yang terjadi karenanya) — lalu menggambarkannya ke dalam dua kotak sederhana.</p>
+
+      <p>Yuk lihat contohnya:</p>
+
+      <div class="kalimat-asal">"Karena hujan sangat deras, jalanan depan rumah jadi becek."</div>
+      <div class="diagram-2">
+        <div class="diagram-box sebab">
+          <div class="diagram-tag">Sebab</div>
+          Hujan sangat deras
+        </div>
+        <div class="diagram-arrow">→</div>
+        <div class="diagram-box akibat">
+          <div class="diagram-tag">Akibat</div>
+          Jalanan jadi becek
+        </div>
+      </div>
+
+      <div class="kalimat-asal">"Ban sepeda Rian bocor, sehingga ia terpaksa berjalan kaki ke sekolah."</div>
+      <div class="diagram-2">
+        <div class="diagram-box sebab">
+          <div class="diagram-tag">Sebab</div>
+          Ban sepeda bocor
+        </div>
+        <div class="diagram-arrow">→</div>
+        <div class="diagram-box akibat">
+          <div class="diagram-tag">Akibat</div>
+          Berjalan kaki ke sekolah
+        </div>
+      </div>
+
+      <p>Cara mudah menemukan mana Sebab dan mana Akibat: bagian yang ada kata penghubungnya di depan (seperti "karena hujan deras") biasanya jadi <strong>Sebab</strong>, dan bagian sesudahnya jadi <strong>Akibat</strong>. Kalau kata penghubungnya di tengah (seperti "...sehingga..."), bagian sebelum kata itu jadi Sebab, dan sesudahnya jadi Akibat.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Berlatih di Rumah</span>
+        Minta seseorang di rumah mengucapkan satu kalimat sebab-akibat (boleh tentang kejadian sehari-hari, seperti cuaca, sekolah, atau rumah). Coba gambar dua kotak di kertas — tulis Sebab di kotak pertama, Akibat di kotak kedua. Ulangi dengan beberapa kalimat lain.
+      </div>
+
+      <div class="catatan-khusus">
+        <b>Catatan:</b> contoh dan latihan di sini sengaja berbeda dari yang akan dipakai gurumu untuk menilai di kelas.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu memetakan sebab-akibat dari cerita pendek, bukan cuma satu kalimat saja.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
