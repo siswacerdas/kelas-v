@@ -11,9 +11,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  /* Komponen "revisi" (kalimat datar -> kalimat berdetail), khusus halaman ini */
+  .revisi { margin: 0.9rem 0 1.3rem; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+  .revisi-baris { padding: 0.75rem 1.05rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .revisi-baris.sebelum { background: #fff; color: var(--ink-3); }
+  .revisi-baris.sesudah { background: #fdf6f2; border-top: 1px dashed var(--border); color: var(--ink-2); }
+  .revisi-tag {
+    display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; padding: 2px 9px; border-radius: 20px; margin-bottom: 0.4rem;
+  }
+  .revisi-tag.sebelum { background: var(--paper-3); color: var(--ink-2); }
+  .revisi-tag.sesudah { background: var(--m-color); color: #fff; }
+  .selesai-banner {
+    margin: 1.5rem 0; padding: 1.1rem 1.2rem; border-radius: var(--r-lg);
+    background: var(--paper-2); border: 1px solid var(--border); text-align: center;
+  }
+  .selesai-banner .judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .selesai-banner p { font-size: 13px; color: var(--ink-3); margin: 0; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -32,18 +46,86 @@
 
   <div class="ma-cover">
     <div class="ma-cover-inner">
-      <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis dari Pengalaman Pribadi</div>
+      <span class="ma-cover-icon">⭐</span>
+      <div class="ma-cover-eyebrow">Menulis · Menulis dari Pengalaman Pribadi · Materi 4 dari 4 (Inti)</div>
       <div class="ma-cover-title">Cerita Pengalamanku yang Hidup</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Merevisi draf dengan menambahkan detail rasa dan indra supaya ceritanya lebih hidup.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Draf pertamamu (dari materi sebelumnya) sudah punya alur yang jelas — Awal, Tengah, Akhir sudah nyambung. Sekarang, langkah terakhir: membuat ceritamu terasa lebih <strong>hidup</strong>, dengan menambahkan detail yang bisa dirasakan pembaca — bukan cuma dibaca sebagai daftar kejadian.</p>
+
+      <p>Caranya sederhana: ambil kalimat yang masih "datar", lalu tambahkan <strong>satu detail indrawi atau perasaan</strong> — bagaimana bunyinya, bagaimana rasanya di badan, apa yang terlihat, atau apa yang kamu rasakan saat itu. Tidak perlu mengubah semua kalimat, cukup 2–3 kalimat kunci saja.</p>
+
+      <p>Yuk lihat contohnya, memakai draf "payung bolong":</p>
+
+      <div class="revisi">
+        <div class="revisi-baris sebelum">
+          <span class="revisi-tag sebelum">Sebelum (datar)</span><br/>
+          "Aku basah kuyup sepanjang jalan sampai kelas."
+        </div>
+        <div class="revisi-baris sesudah">
+          <span class="revisi-tag sesudah">Sesudah (ditambah detail indrawi)</span><br/>
+          "Bajuku basah kuyup, air menetes dari ujung rambutku, dan sepatuku berbunyi 'cit cit' setiap aku melangkah sampai ke kelas."
+        </div>
+      </div>
+
+      <div class="revisi">
+        <div class="revisi-baris sebelum">
+          <span class="revisi-tag sebelum">Sebelum (datar)</span><br/>
+          "Aku merasa lega."
+        </div>
+        <div class="revisi-baris sesudah">
+          <span class="revisi-tag sesudah">Sesudah (ditambah perasaan)</span><br/>
+          "Aku merasa lega sekali, seperti ada beban berat yang baru saja turun dari pundakku."
+        </div>
+      </div>
+
+      <p>Sekarang contoh dari cerita "uang di kolong meja":</p>
+
+      <div class="revisi">
+        <div class="revisi-baris sebelum">
+          <span class="revisi-tag sebelum">Sebelum (datar)</span><br/>
+          "Aku bingung sebentar."
+        </div>
+        <div class="revisi-baris sesudah">
+          <span class="revisi-tag sesudah">Sesudah (ditambah detail indrawi)</span><br/>
+          "Jantungku berdegup agak kencang, tanganku sedikit gemetar memegang uang itu, sambil berpikir keras harus kuapakan."
+        </div>
+      </div>
+
+      <p>Perhatikan: kalimat "sesudah" tidak sekadar lebih panjang — ia menjawab pertanyaan seperti <em>bagaimana bunyinya? bagaimana rasanya di badan? apa yang terlihat?</em> Itulah yang membuatnya terasa lebih hidup, bukan sekadar ditambah kata.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Pertanyaan untuk Menambah Detail</span>
+        Pilih 2–3 kalimat "datar" dari draf pertamamu, lalu tanyakan salah satu dari ini untuk masing-masing kalimat:
+        <ul style="margin: 0.5em 0 0.2em 1.1em; padding: 0;">
+          <li>Bagaimana <strong>bunyinya</strong> saat itu?</li>
+          <li>Bagaimana <strong>rasanya di badan/kulit</strong>?</li>
+          <li>Apa yang <strong>terlihat</strong> di sekitarmu?</li>
+          <li>Apa yang kamu <strong>rasakan/pikirkan</strong> saat itu?</li>
+        </ul>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Tugasmu Sekarang (Penilaian Akhir TP Ini)</span>
+        Ambil draf pertamamu dari materi sebelumnya. Pilih minimal <strong>2 kalimat datar</strong>, lalu revisi keduanya dengan menambahkan detail indrawi/perasaan seperti contoh di atas. Tulis ulang cerita lengkapmu (Awal–Tengah–Akhir) dengan revisi itu sudah dimasukkan.
+        <br/><br/>
+        Yang akan dinilai: (1) alur Awal-Tengah-Akhir tetap jelas dan nyambung, (2) ada momen/perasaan yang menonjol — bukan cuma daftar kejadian, (3) ada perbedaan terlihat antara draf pertama dan draf revisimu. Ejaan dan tulisan tangan yang rapi TIDAK jadi penilaian utama.
+      </div>
+
+      <div class="selesai-banner">
+        <div class="judul">🎉 Selamat, kamu sudah menyelesaikan seluruh materi Menulis dari Pengalaman Pribadi!</div>
+        <p>Dari mengenali pengalaman berbahan cerita, menyusun kerangka, menulis draf, sampai merevisinya jadi hidup — empat langkah ini bisa kamu pakai lagi setiap kali menulis cerita pengalaman lainnya.</p>
+      </div>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
