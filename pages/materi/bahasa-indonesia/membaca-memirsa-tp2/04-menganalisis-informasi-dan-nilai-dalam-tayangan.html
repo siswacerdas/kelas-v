@@ -11,9 +11,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .tayangan { margin: 1.1rem 0 0.6rem; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+  .tayangan-header { background: var(--ink); color: #fff; padding: 0.55rem 1rem; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .tayangan-header .titik { width: 8px; height: 8px; border-radius: 50%; background: #e05252; }
+  .tayangan-body { background: #fdfaf5; padding: 1rem 1.1rem; }
+  .tayangan-narasi { font-size: calc(var(--content-fs) - 1px); line-height: 1.7; color: var(--ink-2); margin-bottom: 0.6rem; }
+  .tayangan-narasi .label { font-weight: 700; color: var(--m-color); font-size: 11px; text-transform: uppercase; margin-right: 4px; }
+  .tayangan-teks-layar {
+    background: var(--ink); color: #fff; display: inline-block; padding: 4px 10px; border-radius: 4px;
+    font-size: calc(var(--content-fs) - 3px); font-weight: 700; margin: 3px 4px 3px 0;
+  }
+  .model-analisis {
+    margin: 0 0 1.5rem; padding: 1rem 1.1rem; background: var(--paper-2); border: 2px solid var(--m-color);
+    border-radius: var(--r-lg); font-size: calc(var(--content-fs) - 2px);
+  }
+  .model-analisis .step-label {
+    font-weight: 700; color: var(--m-color); font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.04em; margin: 0.9rem 0 0.4rem; display: block;
+  }
+  .model-analisis .step-label:first-child { margin-top: 0; }
+  .model-analisis ul { margin: 0; padding-left: 1.2em; line-height: 1.65; }
+  .recap-list { list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .recap-item { display: flex; gap: 10px; align-items: flex-start; padding: 0.7rem 0; border-bottom: 1px dashed var(--border); }
+  .recap-item:last-child { border-bottom: none; }
+  .recap-num {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--m-color); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .recap-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.5; padding-top: 2px; }
+  .recap-text b { color: var(--ink); }
+  .selesai-banner {
+    margin: 1.5rem 0; padding: 1.1rem 1.2rem; border-radius: var(--r-lg);
+    background: var(--paper-2); border: 1px solid var(--border); text-align: center;
+  }
+  .selesai-banner .judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .selesai-banner p { font-size: 13px; color: var(--ink-3); margin: 0; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -32,18 +64,97 @@
 
   <div class="ma-cover">
     <div class="ma-cover-inner">
-      <span class="ma-cover-icon">🎬</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menganalisis Tayangan (Video/Infografis)</div>
+      <span class="ma-cover-icon">⭐</span>
+      <div class="ma-cover-eyebrow">Membaca dan Memirsa · Menganalisis Tayangan · Materi 4 dari 4 (Inti)</div>
       <div class="ma-cover-title">Menganalisis Informasi dan Nilai dalam Tayangan</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menganalisis sendiri informasi dan nilai dalam sebuah tayangan otentik berbahasa Indonesia.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menggabungkan dua keterampilan yang sudah kamu pelajari — menemukan <strong>informasi eksplisit</strong> dan menemukan <strong>pesan tersirat</strong> — menjadi satu analisis yang utuh dan lengkap. Sebelum kamu mengerjakannya sendiri, mari lihat dulu contoh analisis lengkap sebagai model.</p>
+
+      <div class="tayangan">
+        <div class="tayangan-header"><span class="titik"></span> VIDEO SEKOLAH — "Piket Kelas" (durasi 35 detik)</div>
+        <div class="tayangan-body">
+          <div class="tayangan-narasi"><span class="label">Adegan:</span> Lima anak bergiliran menyapu, mengelap papan tulis, dan merapikan meja-kursi di kelas kosong sepulang sekolah. Awalnya mereka terlihat agak malas dan bekerja sendiri-sendiri tanpa saling bicara, gerakannya lambat. Setelah beberapa saat, salah satu anak mulai bersenandung sambil menyapu, lalu yang lain ikut tertawa dan mulai saling membantu — yang selesai menyapu ikut membantu merapikan meja. Kelas selesai dibersihkan lebih cepat dari perkiraan, dan mereka pulang bersama sambil tertawa.</div>
+          <div class="tayangan-narasi"><span class="label">Narasi (di akhir video):</span> "Piket kelas dilakukan bergiliran setiap hari oleh 5 siswa sesuai jadwal yang ditempel di mading."</div>
+          <div class="tayangan-narasi"><span class="label">Teks di layar:</span></div>
+          <span class="tayangan-teks-layar">Jadwal Piket: Senin–Jumat</span>
+          <span class="tayangan-teks-layar">5 siswa per hari</span>
+        </div>
+      </div>
+
+      <p>Yuk lihat bagaimana video ini dianalisis lengkap, langkah demi langkah:</p>
+
+      <div class="model-analisis">
+        <span class="step-label">Langkah 1 — Informasi Eksplisit (dari narasi & teks layar)</span>
+        <ul>
+          <li>Piket kelas dilakukan bergiliran setiap hari</li>
+          <li>Dilakukan oleh 5 siswa per hari</li>
+          <li>Jadwalnya ditempel di mading</li>
+          <li>Piket berlangsung Senin sampai Jumat</li>
+        </ul>
+
+        <span class="step-label">Langkah 2 — Apa yang Ditonjolkan (dari adegan)</span>
+        <ul>
+          <li>Perubahan dari bekerja sendiri-sendiri dan malas → bekerja sambil tertawa dan saling membantu</li>
+          <li>Pekerjaan selesai lebih cepat setelah mereka mulai bekerja sama</li>
+        </ul>
+
+        <span class="step-label">Langkah 3 — Pesan Tersirat</span>
+        <ul>
+          <li>Pekerjaan yang terasa berat kalau dikerjakan sendiri-sendiri, jadi terasa ringan dan menyenangkan kalau dikerjakan bersama-sama</li>
+          <li>Tanggung jawab bersama (piket) bisa jadi momen kebersamaan, bukan cuma kewajiban</li>
+        </ul>
+
+        <span class="step-label">Langkah 4 — Menggabungkan Jadi Satu Kesimpulan</span>
+        <ul>
+          <li>Video ini menjelaskan <em>aturan piket kelas secara eksplisit</em> (siapa, kapan, berapa orang), sekaligus menyampaikan <em>pesan tersirat</em> bahwa piket bukan cuma soal kewajiban membersihkan kelas, tapi juga bisa mempererat kekompakan teman sekelas kalau dikerjakan bersama-sama dengan semangat.</li>
+        </ul>
+      </div>
+
+      <p>Perhatikan struktur analisis di atas: mulai dari fakta yang paling jelas (eksplisit), lalu ke hal yang ditonjolkan lewat adegan, baru disimpulkan menjadi pesan tersirat, dan terakhir digabungkan menjadi satu kesimpulan utuh. Susunan inilah yang akan kamu pakai untuk analisis mandirimu.</p>
+
+      <p>Sekarang, rangkuman seluruh keterampilan yang sudah kamu pelajari di TP ini:</p>
+
+      <ul class="recap-list">
+        <li class="recap-item">
+          <span class="recap-num">1</span>
+          <span class="recap-text"><b>Menangkap informasi eksplisit</b> — dari narasi maupun teks di layar, mengikuti tayangan dari awal sampai akhir.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">2</span>
+          <span class="recap-text"><b>Menemukan pesan tersirat</b> — lewat apa yang ditonjolkan, kontras, musik/suasana, dan urutan adegan.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">3</span>
+          <span class="recap-text"><b>Membandingkan nilai antar-tayangan</b> — dengan melihat bagaimana tokoh menghadapi situasi, bukan sekadar topik permukaannya.</span>
+        </li>
+      </ul>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Tugasmu Sekarang (Penilaian Akhir TP Ini)</span>
+        Gurumu akan menunjukkan satu tayangan otentik berbahasa Indonesia (video, infografis, atau iklan layanan masyarakat). Analisis tayangan itu mengikuti struktur yang sudah kamu pelajari:
+        <ol style="margin: 0.5em 0 0.2em 1.2em; padding: 0; line-height: 1.7;">
+          <li>Tuliskan informasi eksplisit yang kamu temukan</li>
+          <li>Tuliskan apa yang ditonjolkan dalam tayangan itu</li>
+          <li>Simpulkan pesan tersirat yang kamu tangkap</li>
+          <li>Gabungkan jadi satu kesimpulan singkat tentang isi dan nilai tayangan itu</li>
+        </ol>
+      </div>
+
+      <div class="selesai-banner">
+        <div class="judul">🎉 Selamat, kamu sudah menyelesaikan seluruh materi Membaca dan Memirsa: Menganalisis Tayangan!</div>
+        <p>Keterampilan ini akan sangat berguna di luar sekolah juga — setiap kali kamu menonton video, iklan, atau berita, kamu sekarang tahu cara membacanya lebih dalam, bukan cuma menerima begitu saja.</p>
+      </div>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

@@ -11,9 +11,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .tayangan { margin: 1.1rem 0 0.6rem; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+  .tayangan-header { background: var(--ink); color: #fff; padding: 0.55rem 1rem; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .tayangan-header .titik { width: 8px; height: 8px; border-radius: 50%; background: #e05252; }
+  .tayangan-body { background: #fdfaf5; padding: 1rem 1.1rem; }
+  .tayangan-adegan { font-size: calc(var(--content-fs) - 1px); color: var(--ink-2); line-height: 1.7; }
+  .tayangan-adegan em { color: var(--ink-3); }
+  .analisis-box {
+    margin: 0 0 1.5rem; padding: 0.9rem 1.05rem; background: var(--paper-2); border-radius: 0 0 var(--r-lg) var(--r-lg);
+    border: 1px solid var(--border); border-top: none; font-size: calc(var(--content-fs) - 2px);
+  }
+  .analisis-box .analisis-label { font-weight: 700; color: var(--ink); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem; display: block; }
+  .analisis-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .analisis-row .tag { flex-shrink: 0; font-weight: 700; font-size: 11px; text-transform: uppercase; color: var(--ink-3); width: 90px; }
+  .analisis-row .val { line-height: 1.5; }
+  .analogi-box {
+    margin: 1rem 0 1.3rem; padding: 0.9rem 1.05rem; border-radius: var(--r-lg); background: #fff;
+    border: 2px dashed var(--border); font-size: calc(var(--content-fs) - 1px); line-height: 1.7;
+  }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +48,96 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🎬</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menganalisis Tayangan (Video/Infografis)</div>
+      <div class="ma-cover-eyebrow">Membaca dan Memirsa · Menganalisis Tayangan · Materi 2 dari 4</div>
       <div class="ma-cover-title">Menemukan Pesan Tersembunyi</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Belajar menemukan pesan/nilai yang tidak dikatakan langsung, tapi tersirat dalam tayangan.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Materi sebelumnya melatihmu menemukan informasi yang <strong>jelas-jelas dikatakan</strong> dalam sebuah tayangan. Sekarang kita belajar sesuatu yang lebih menantang: menemukan <strong>pesan tersirat</strong> — pesan atau nilai yang tidak diucapkan langsung, tapi tetap bisa kamu pahami dari cara tayangan itu dibuat.</p>
+
+      <div class="analogi-box">
+        💬 Bayangkan temanmu bilang, <em>"Wah, rajin banget ya, baru belajar jam segini,"</em> sambil tersenyum sinis padahal saat itu sudah jam 11 malam. Kata-katanya memuji ("rajin"), tapi maksud sebenarnya justru menyindir — mengingatkan supaya kamu tidur lebih awal. Yang <strong>dikatakan</strong> berbeda dengan yang <strong>dimaksud</strong>. Itulah yang disebut pesan tersirat: ada di balik kata-kata atau gambar yang terlihat, bukan diucapkan apa adanya.
+      </div>
+
+      <p>Dalam tayangan, pesan tersirat biasanya muncul lewat beberapa hal ini:</p>
+      <ul style="margin: 0.3em 0 1.1em 1.1em; padding: 0; line-height: 1.8;">
+        <li><strong>Apa yang ditonjolkan</strong> — bagian mana yang ditampilkan lebih lama, lebih besar, atau lebih detail dari bagian lain</li>
+        <li><strong>Perbandingan/kontras</strong> — dua hal yang sengaja ditampilkan berdampingan supaya terlihat bedanya</li>
+        <li><strong>Musik dan suasana</strong> — musik ceria, sedih, atau menegangkan bisa mengarahkan perasaanmu tanpa kata-kata</li>
+        <li><strong>Urutan kejadian</strong> — bagaimana satu adegan disusun sebelum/sesudah adegan lain, untuk membentuk cerita</li>
+      </ul>
+
+      <p>Yuk lihat contohnya, dari yang pesannya cukup terasa sampai yang harus benar-benar jeli menangkapnya.</p>
+
+      <p><strong>Contoh 1 — pesan tersirat cukup terasa</strong></p>
+      <div class="tayangan">
+        <div class="tayangan-header"><span class="titik"></span> VIDEO PENDEK — "Bekal Sekolah" (durasi 25 detik, tanpa narasi)</div>
+        <div class="tayangan-body">
+          <div class="tayangan-adegan">Seorang anak duduk sendirian di kelas saat jam istirahat, melihat ke bekalnya yang kosong. Anak lain di sebelahnya membuka kotak bekal berisi nasi dan lauk, lalu menoleh, tersenyum, dan membagi separuh bekalnya. Musik yang tadinya sepi berubah menjadi hangat dan ceria. Kedua anak makan bersama sambil tertawa. <em>(Tidak ada narasi maupun teks di layar sama sekali dalam video ini.)</em></div>
+        </div>
+      </div>
+      <div class="analisis-box">
+        <span class="analisis-label">🔎 Menemukan Pesannya</span>
+        <div class="analisis-row"><span class="tag">Ditonjolkan</span><span class="val">Ekspresi wajah anak yang kesepian → berubah gembira setelah dibagi makanan</span></div>
+        <div class="analisis-row"><span class="tag">Musik</span><span class="val">Berubah dari sepi menjadi hangat, tepat saat momen berbagi terjadi</span></div>
+        <div class="analisis-row"><span class="tag">Pesan tersirat</span><span class="val">Berbagi dengan teman yang kekurangan membuat semua orang lebih bahagia — meski tidak ada satu kata pun yang mengatakan "berbagi itu baik"</span></div>
+      </div>
+
+      <p><strong>Contoh 2 — perlu memperhatikan perbandingan</strong></p>
+      <div class="tayangan">
+        <div class="tayangan-header"><span class="titik"></span> IKLAN LAYANAN MASYARAKAT — "Hemat Air" (durasi 30 detik)</div>
+        <div class="tayangan-body">
+          <div class="tayangan-adegan">Adegan pertama: kran air menyala terus mengalir deras selama seseorang menyikat gigi sambil bermain ponsel santai, air terbuang banyak ke wastafel. Adegan kedua (langsung berikutnya, tanpa jeda): sawah yang kering dan retak-retak, seorang petani menatap langit yang cerah tanpa awan. Lalu muncul teks di layar: <em>"Air bersih semakin sulit didapat."</em></div>
+        </div>
+      </div>
+      <div class="analisis-box">
+        <span class="analisis-label">🔎 Menemukan Pesannya</span>
+        <div class="analisis-row"><span class="tag">Kontras</span><span class="val">Air terbuang sia-sia (adegan 1) vs. sawah kering kekurangan air (adegan 2), ditampilkan berurutan langsung</span></div>
+        <div class="analisis-row"><span class="tag">Ditonjolkan</span><span class="val">Air yang mengalir terus tanpa dimatikan meski tidak sedang dipakai langsung</span></div>
+        <div class="analisis-row"><span class="tag">Pesan tersirat</span><span class="val">Membuang-buang air saat menyikat gigi berkontribusi pada kelangkaan air untuk orang lain — walau iklan ini tidak pernah bilang langsung "matikan keranmu"</span></div>
+      </div>
+
+      <p><strong>Contoh 3 — paling halus, harus benar-benar jeli</strong></p>
+      <div class="tayangan">
+        <div class="tayangan-header"><span class="titik"></span> ANIMASI PENDEK — "Puzzle Besar" (durasi 40 detik, tanpa dialog)</div>
+        <div class="tayangan-body">
+          <div class="tayangan-adegan">Seorang anak mencoba menyusun puzzle raksasa sendirian di lantai. Ia mencoba berkali-kali, potongan-potongan berserakan, wajahnya terlihat lelah dan kesal, jam dinding menunjukkan waktu berlalu cukup lama, puzzle masih jauh dari selesai. Lalu dua teman datang dan duduk di sebelahnya tanpa banyak bicara, mulai membantu memilah potongan. Bertiga, mereka menyusun potongan-potongan itu — dan puzzle selesai jauh lebih cepat dari sebelumnya, ketiganya tertawa senang melihat hasilnya.</div>
+        </div>
+      </div>
+      <div class="analisis-box">
+        <span class="analisis-label">🔎 Menemukan Pesannya</span>
+        <div class="analisis-row"><span class="tag">Urutan</span><span class="val">Usaha sendirian yang lambat dan melelahkan ditampilkan LEBIH DULU, baru kemudian usaha bersama yang jauh lebih cepat</span></div>
+        <div class="analisis-row"><span class="tag">Ditonjolkan</span><span class="val">Perubahan raut wajah — dari lelah/kesal menjadi tertawa senang — persis saat teman-teman datang membantu</span></div>
+        <div class="analisis-row"><span class="tag">Pesan tersirat</span><span class="val">Bekerja sama membuat pekerjaan besar menjadi lebih ringan dan lebih cepat selesai dibanding mengerjakannya sendirian</span></div>
+      </div>
+
+      <p>Perhatikan: di Contoh 3 tidak ada satu kata pun yang diucapkan, bahkan tidak ada teks di layar. Pesannya harus ditangkap murni dari <strong>urutan adegan</strong> dan <strong>perubahan ekspresi</strong>. Ini contoh paling menantang karena kamu benar-benar harus menyimpulkan sendiri, bukan menemukan petunjuk kata-kata.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Pertanyaan untuk Menemukan Pesan Tersirat</span>
+        <ul style="margin: 0.5em 0 0.2em 1.1em; padding: 0;">
+          <li>Bagian mana yang paling <strong>ditonjolkan</strong> (ditampilkan lebih lama, lebih detail, atau diulang)?</li>
+          <li>Apakah ada dua hal yang sengaja <strong>dibandingkan atau dikontraskan</strong>?</li>
+          <li>Bagaimana <strong>musik atau suasana</strong> berubah, dan kapan perubahan itu terjadi?</li>
+          <li>Kalau semua informasi eksplisit digabungkan, kira-kira apa yang <strong>ingin disampaikan pembuatnya</strong> — walau tidak diucapkan langsung?</li>
+        </ul>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Tonton satu iklan (boleh iklan TV, iklan di YouTube, atau iklan layanan masyarakat) di rumah. Catat dulu informasi eksplisitnya (apa yang benar-benar dikatakan/ditampilkan). Lalu coba jawab: menurutmu, apa pesan tersirat di balik iklan itu? Bagian mana yang membuatmu berpikir begitu?
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu membandingkan dua tayangan berbeda yang ternyata menyampaikan nilai yang mirip.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

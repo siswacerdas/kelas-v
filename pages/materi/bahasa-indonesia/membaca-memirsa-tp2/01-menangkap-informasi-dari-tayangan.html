@@ -11,9 +11,39 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .tayangan {
+    margin: 1.1rem 0 0.6rem; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border);
+  }
+  .tayangan-header {
+    background: var(--ink); color: #fff; padding: 0.55rem 1rem; font-size: 11.5px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tayangan-header .titik { width: 8px; height: 8px; border-radius: 50%; background: #e05252; }
+  .tayangan-body { background: #fdfaf5; padding: 1rem 1.1rem; }
+  .tayangan-adegan {
+    font-size: calc(var(--content-fs) - 2px); color: var(--ink-3); font-style: italic; line-height: 1.6;
+    margin-bottom: 0.7rem; padding-bottom: 0.7rem; border-bottom: 1px dashed var(--border);
+  }
+  .tayangan-narasi { font-size: calc(var(--content-fs) - 1px); line-height: 1.7; color: var(--ink-2); margin-bottom: 0.6rem; }
+  .tayangan-narasi .label { font-weight: 700; color: var(--m-color); font-size: 11px; text-transform: uppercase; margin-right: 4px; }
+  .tayangan-teks-layar {
+    background: var(--ink); color: #fff; display: inline-block; padding: 4px 10px; border-radius: 4px;
+    font-size: calc(var(--content-fs) - 3px); font-weight: 700; margin: 3px 4px 3px 0;
+  }
+  .analisis-box {
+    margin: 0 0 1.5rem; padding: 0.9rem 1.05rem; background: var(--paper-2); border-radius: 0 0 var(--r-lg) var(--r-lg);
+    border: 1px solid var(--border); border-top: none; font-size: calc(var(--content-fs) - 2px);
+  }
+  .analisis-box .analisis-label { font-weight: 700; color: var(--ink); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.5rem; display: block; }
+  .analisis-box ul { margin: 0; padding-left: 1.2em; line-height: 1.7; }
+  .langkah-list { counter-reset: langkah; list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .langkah-item { counter-increment: langkah; display: flex; gap: 12px; padding: 0.6rem 0; }
+  .langkah-item::before {
+    content: counter(langkah); flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--m-color); color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+  }
+  .langkah-text { font-size: calc(var(--content-fs) - 1px); line-height: 1.6; padding-top: 3px; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +63,128 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🎬</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menganalisis Tayangan (Video/Infografis)</div>
+      <div class="ma-cover-eyebrow">Membaca dan Memirsa · Menganalisis Tayangan · Materi 1 dari 4</div>
       <div class="ma-cover-title">Menangkap Informasi dari Tayangan</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menangkap informasi yang jelas-jelas disampaikan dalam sebuah video atau infografis pendek.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Selama ini kita banyak berlatih memahami sesuatu yang <strong>dibaca</strong> (teks tertulis) atau <strong>didengar</strong> (teks aural). Sekarang kita masuk ke keterampilan yang berbeda lagi: <strong>memirsa</strong> — memahami informasi dari tayangan, yaitu video pendek, infografis, animasi, atau iklan layanan masyarakat.</p>
+
+      <p>Kenapa ini penting dilatih secara khusus? Karena tayangan itu unik — informasinya tidak datang dari satu sumber saja seperti teks biasa. Dalam satu tayangan, informasi bisa muncul lewat <strong>tiga saluran sekaligus</strong>, dan seringkali bersamaan:</p>
+
+      <ul style="margin: 0.3em 0 1.1em 1.1em; padding: 0; line-height: 1.8;">
+        <li><strong>Narasi / suara orang bicara</strong> — apa yang diucapkan dalam tayangan itu</li>
+        <li><strong>Teks yang muncul di layar</strong> — tulisan, judul, atau keterangan yang ditampilkan</li>
+        <li><strong>Gambar / adegan yang terlihat</strong> — apa yang ditunjukkan secara visual</li>
+      </ul>
+
+      <p>Di materi ini, kita fokus dulu pada <strong>informasi eksplisit</strong> — yaitu informasi yang benar-benar dinyatakan secara jelas dan langsung, entah lewat narasi maupun teks di layar. Belum masuk ke pesan yang tersembunyi atau makna di baliknya (itu untuk materi berikutnya). Sekarang, tugas kita sederhana: menemukan fakta-fakta yang memang benar-benar disebutkan.</p>
+
+      <p>Karena kita tidak sedang menonton video sungguhan bersama, di materi ini setiap "tayangan" digambarkan seperti transkrip — apa yang terlihat, apa yang terdengar, dan teks apa yang muncul di layar — supaya kamu bisa berlatih menganalisisnya lewat kata-kata dulu. Yuk mulai dari yang paling sederhana.</p>
+
+      <p><strong>Contoh 1 — semua informasi ada di satu tempat (teks layar)</strong></p>
+
+      <div class="tayangan">
+        <div class="tayangan-header"><span class="titik"></span> INFOGRAFIS — "Cara Mencuci Tangan yang Benar" (durasi 20 detik)</div>
+        <div class="tayangan-body">
+          <div class="tayangan-adegan">Animasi tangan sedang dicuci di bawah keran air, dengan gambar sabun berbusa. Musik ceria mengalun pelan di latar belakang.</div>
+          <div class="tayangan-narasi"><span class="label">Teks di layar:</span></div>
+          <span class="tayangan-teks-layar">1. Basahi tangan dengan air</span>
+          <span class="tayangan-teks-layar">2. Gosok dengan sabun 20 detik</span>
+          <span class="tayangan-teks-layar">3. Bilas sampai bersih</span>
+        </div>
+      </div>
+      <div class="analisis-box">
+        <span class="analisis-label">🔎 Informasi Eksplisit yang Ditemukan</span>
+        <ul>
+          <li>Ada 3 langkah mencuci tangan</li>
+          <li>Langkah pertama: membasahi tangan dengan air</li>
+          <li>Langkah kedua: menggosok dengan sabun selama 20 detik</li>
+          <li>Langkah ketiga: membilas sampai bersih</li>
+        </ul>
+      </div>
+
+      <p>Pada contoh ini, semua informasi eksplisit ada di satu tempat saja — teks yang muncul di layar. Cukup mudah menemukannya karena tidak perlu menggabungkan sumber lain.</p>
+
+      <p><strong>Contoh 2 — informasi tersebar di dua saluran (narasi + teks layar)</strong></p>
+
+      <div class="tayangan">
+        <div class="tayangan-header"><span class="titik"></span> VIDEO PENGUMUMAN SEKOLAH — "Lomba Mewarnai HUT Kemerdekaan" (durasi 30 detik)</div>
+        <div class="tayangan-body">
+          <div class="tayangan-adegan">Seorang guru berdiri di depan mading sekolah yang dihias bendera merah putih, sambil memegang selembar kertas gambar.</div>
+          <div class="tayangan-narasi"><span class="label">Narasi (guru berbicara):</span> "Dalam rangka memperingati Hari Kemerdekaan, sekolah kita akan mengadakan lomba mewarnai untuk siswa kelas 1 sampai 3. Ayo siapkan pensil warna terbaikmu!"</div>
+          <div class="tayangan-narasi"><span class="label">Teks di layar:</span></div>
+          <span class="tayangan-teks-layar">Sabtu, 17 Agustus 2026</span>
+          <span class="tayangan-teks-layar">Pukul 08.00 — Aula Sekolah</span>
+        </div>
+      </div>
+      <div class="analisis-box">
+        <span class="analisis-label">🔎 Informasi Eksplisit yang Ditemukan</span>
+        <ul>
+          <li>Acara: lomba mewarnai (dari narasi)</li>
+          <li>Dalam rangka: Hari Kemerdekaan (dari narasi)</li>
+          <li>Peserta: siswa kelas 1 sampai 3 (dari narasi)</li>
+          <li>Hari/tanggal: Sabtu, 17 Agustus 2026 (dari teks layar)</li>
+          <li>Waktu dan tempat: pukul 08.00 di Aula Sekolah (dari teks layar)</li>
+        </ul>
+      </div>
+
+      <p>Perhatikan bedanya dengan Contoh 1: di sini, kamu <strong>tidak bisa</strong> mendapatkan gambaran lengkap hanya dari narasi saja, atau hanya dari teks layar saja. Informasi "apa acaranya dan untuk siapa" ada di narasi, sedangkan "kapan dan di mana" ada di teks layar. Keduanya harus digabungkan.</p>
+
+      <p><strong>Contoh 3 — narasi dan teks layar muncul di waktu yang berbeda</strong></p>
+
+      <div class="tayangan">
+        <div class="tayangan-header"><span class="titik"></span> VIDEO EDUKASI — "Cara Memilah Sampah" (durasi 40 detik)</div>
+        <div class="tayangan-body">
+          <div class="tayangan-adegan">Seorang kakak memperlihatkan tiga tempat sampah berwarna berbeda: hijau, kuning, dan merah, sambil memasukkan berbagai jenis sampah satu per satu.</div>
+          <div class="tayangan-narasi"><span class="label">Detik 0–15, narasi:</span> "Sampah itu ada macam-macam jenisnya, dan masing-masing harus dibuang ke tempat yang berbeda supaya bisa didaur ulang dengan benar."</div>
+          <div class="tayangan-narasi"><span class="label">Detik 15, teks muncul di layar:</span></div>
+          <span class="tayangan-teks-layar">HIJAU = Sampah Organik</span>
+          <div class="tayangan-narasi"><span class="label">Detik 22, teks muncul di layar:</span></div>
+          <span class="tayangan-teks-layar">KUNING = Sampah Anorganik</span>
+          <div class="tayangan-narasi"><span class="label">Detik 30, teks muncul di layar:</span></div>
+          <span class="tayangan-teks-layar">MERAH = Sampah B3 (Berbahaya)</span>
+          <div class="tayangan-narasi"><span class="label">Detik 35, narasi:</span> "Yuk mulai memilah sampah dari sekarang, dari rumah kita masing-masing!"</div>
+        </div>
+      </div>
+      <div class="analisis-box">
+        <span class="analisis-label">🔎 Informasi Eksplisit yang Ditemukan</span>
+        <ul>
+          <li>Ada 3 jenis tempat sampah berdasarkan warna</li>
+          <li>Tempat sampah hijau = untuk sampah organik</li>
+          <li>Tempat sampah kuning = untuk sampah anorganik</li>
+          <li>Tempat sampah merah = untuk sampah B3 (berbahaya)</li>
+          <li>Ajakan: memilah sampah dimulai dari rumah masing-masing</li>
+        </ul>
+      </div>
+
+      <p>Di contoh ini, teks di layar muncul <strong>satu per satu secara berurutan</strong>, tidak sekaligus seperti Contoh 1. Kalau kamu tidak memperhatikan dengan sabar dari awal sampai akhir, kamu bisa melewatkan salah satu pasangan warna-jenis sampah. Inilah pentingnya mengikuti tayangan sampai selesai, bukan cuma menonton sepintas di awal.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Langkah Menangkap Informasi Eksplisit</span>
+        <ol class="langkah-list" style="margin:0.4em 0 0; padding:0;">
+          <li class="langkah-item"><span class="langkah-text">Perhatikan tayangan dari awal sampai akhir — jangan lewat bagian mana pun, karena informasi bisa muncul kapan saja.</span></li>
+          <li class="langkah-item"><span class="langkah-text">Dengarkan narasinya — catat fakta yang benar-benar diucapkan.</span></li>
+          <li class="langkah-item"><span class="langkah-text">Perhatikan teks yang muncul di layar — catat juga, walau kadang beda waktu dengan narasinya.</span></li>
+          <li class="langkah-item"><span class="langkah-text">Gabungkan semua catatan dari narasi dan teks layar menjadi satu daftar informasi lengkap.</span></li>
+        </ol>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Tonton satu video pendek yang biasa kamu tonton di rumah (video edukasi, iklan, atau tayangan anak-anak — durasi sekitar 1-2 menit saja). Sambil menonton, catat <strong>minimal 5 informasi eksplisit</strong> yang kamu temukan — baik dari yang diucapkan maupun dari teks yang muncul di layar. Setelah selesai, coba tonton ulang sekali lagi untuk mengecek: apakah ada informasi yang terlewat saat pertama kali menonton?
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu melangkah lebih jauh: menemukan pesan yang tidak dikatakan secara langsung, tapi tersirat dalam sebuah tayangan.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
