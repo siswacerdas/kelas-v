@@ -230,6 +230,22 @@ Sama seperti M1: pendekatan "konsep + latihan berbeda di rumah", bukan
 teks yang dipakai menilai di kelas. Progresi materinya: kata penghubung
 → diagram 2 kotak → rantai kejadian → dua hubungan terpisah → mandiri.
 
+## 6g. TP Membaca dan Memirsa TP2 (Menganalisis Tayangan) — SELESAI 4/4 (2026-07-26)
+
+**Standar kualitas dinaikkan mulai TP ini**, sesuai masukan: penjelasan
+lebih detail, tiap konsep dijelaskan dengan 3 contoh berjenjang
+kerumitannya (bukan 1-2 seperti TP-TP sebelumnya), dan langkah analisis
+ditunjukkan eksplisit, bukan cuma hasil akhirnya. Materi Inti-nya
+memuat satu model analisis LENGKAP (gabungan info eksplisit + pesan
+tersirat) sebagai contoh sebelum siswa mengerjakan sendiri. TP-TP
+berikutnya akan mengikuti standar kedalaman ini — TP-TP lama
+(TL-Pengalaman, M1, M2) TIDAK diperbarui ulang, sesuai arahan (fokus
+ke depan, bukan revisi ke belakang).
+
+Karena elemen ini bukan oral seperti Menyimak, tidak ada risiko
+"bocor" ke penilaian kelas — semua contoh tayangan di sini boleh
+sekaya dan sedetail apa pun tanpa masalah.
+
 ---
 
 ## 7. Status & log progres
@@ -246,10 +262,10 @@ teks yang dipakai menilai di kelas. Progresi materinya: kata penghubung
 | Menyimak | M2 | Merangkai Beberapa Kejadian Berurutan | ✅ Selesai |
 | Menyimak | M2 | Dua Hubungan dalam Satu Cerita | ✅ Selesai |
 | Menyimak | M2 ⭐ | Menjelaskan Hubungan Antarkejadian | ✅ Selesai |
-| Membaca dan Memirsa | MB2 | Menangkap Informasi dari Tayangan | 🕓 Segera hadir (placeholder aktif) |
-| Membaca dan Memirsa | MB2 | Menemukan Pesan Tersembunyi | 🕓 Segera hadir (placeholder aktif) |
-| Membaca dan Memirsa | MB2 | Membandingkan Dua Tayangan | 🕓 Segera hadir (placeholder aktif) |
-| Membaca dan Memirsa | MB2 ⭐ | Menganalisis Informasi dan Nilai dalam Tayangan | 🕓 Segera hadir (placeholder aktif) |
+| Membaca dan Memirsa | MB2 | Menangkap Informasi dari Tayangan | ✅ Selesai |
+| Membaca dan Memirsa | MB2 | Menemukan Pesan Tersembunyi | ✅ Selesai |
+| Membaca dan Memirsa | MB2 | Membandingkan Dua Tayangan | ✅ Selesai |
+| Membaca dan Memirsa | MB2 ⭐ | Menganalisis Informasi dan Nilai dalam Tayangan | ✅ Selesai |
 | Berbicara dan Mempresentasikan | B1 | Bicara ke Satu Teman Dulu | 🕓 Segera hadir (placeholder aktif) |
 | Berbicara dan Mempresentasikan | B1 | Menyusun Awal-Isi-Akhir | 🕓 Segera hadir (placeholder aktif) |
 | Berbicara dan Mempresentasikan | B1 | Presentasi dengan Alat Bantu | 🕓 Segera hadir (placeholder aktif) |
