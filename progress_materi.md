@@ -224,6 +224,12 @@ di rumah (respons non-verbal, mendengarkan dengan kriteria, mencatat
 dengan gaya sendiri), dan catatan singkat di tiap halaman menjelaskan
 kenapa teks latihannya sengaja tidak sama dengan yang dipakai menilai.
 
+## 6f. TP Menyimak TP2 (Hubungan Sebab-Akibat & Urutan) — SELESAI 5/5 (2026-07-26)
+
+Sama seperti M1: pendekatan "konsep + latihan berbeda di rumah", bukan
+teks yang dipakai menilai di kelas. Progresi materinya: kata penghubung
+→ diagram 2 kotak → rantai kejadian → dua hubungan terpisah → mandiri.
+
 ---
 
 ## 7. Status & log progres
@@ -235,11 +241,11 @@ kenapa teks latihannya sengaja tidak sama dengan yang dipakai menilai.
 | Menyimak | M1 | Memilah Mana yang Penting | ✅ Selesai |
 | Menyimak | M1 | Mencatat dengan Caraku Sendiri | ✅ Selesai |
 | Menyimak | M1 ⭐ | Menyimak Mandiri: Menangkap Info Penting | ✅ Selesai |
-| Menyimak | M2 | Mengenali Kata Penghubung Sebab-Akibat | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 | Memetakan Sebab dan Akibat | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 | Merangkai Beberapa Kejadian Berurutan | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 | Dua Hubungan dalam Satu Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 ⭐ | Menjelaskan Hubungan Antarkejadian | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M2 | Mengenali Kata Penghubung Sebab-Akibat | ✅ Selesai |
+| Menyimak | M2 | Memetakan Sebab dan Akibat | ✅ Selesai |
+| Menyimak | M2 | Merangkai Beberapa Kejadian Berurutan | ✅ Selesai |
+| Menyimak | M2 | Dua Hubungan dalam Satu Cerita | ✅ Selesai |
+| Menyimak | M2 ⭐ | Menjelaskan Hubungan Antarkejadian | ✅ Selesai |
 | Membaca dan Memirsa | MB2 | Menangkap Informasi dari Tayangan | 🕓 Segera hadir (placeholder aktif) |
 | Membaca dan Memirsa | MB2 | Menemukan Pesan Tersembunyi | 🕓 Segera hadir (placeholder aktif) |
 | Membaca dan Memirsa | MB2 | Membandingkan Dua Tayangan | 🕓 Segera hadir (placeholder aktif) |
