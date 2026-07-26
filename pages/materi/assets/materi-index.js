@@ -123,7 +123,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Mengenali Kata Penghubung Sebab-Akibat",
     ringkasan: "Mengenali kata-kata seperti “karena” dan “sehingga” yang menghubungkan sebab dan akibat.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp2/01-mengenali-kata-penghubung-sebab-akibat.html"
   },
   {
@@ -138,7 +138,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Memetakan Sebab dan Akibat",
     ringkasan: "Menggambarkan hubungan sebab-akibat dari satu kalimat ke dalam diagram sederhana.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp2/02-memetakan-sebab-dan-akibat.html"
   },
   {
@@ -153,7 +153,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Merangkai Beberapa Kejadian Berurutan",
     ringkasan: "Memetakan rangkaian sebab-akibat dari cerita pendek yang melibatkan beberapa langkah.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp2/03-merangkai-beberapa-kejadian-berurutan.html"
   },
   {
@@ -168,7 +168,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Dua Hubungan dalam Satu Cerita",
     ringkasan: "Memisahkan dua hubungan sebab-akibat berbeda yang muncul dalam satu cerita.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp2/04-dua-hubungan-dalam-satu-cerita.html"
   },
   {
@@ -183,7 +183,7 @@ window.MATERI_INDEX = [
     urutan: 5,
     judul: "Menjelaskan Hubungan Antarkejadian",
     ringkasan: "Menjelaskan hubungan sebab-akibat atau urutan kejadian dari teks yang didengar, secara mandiri.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp2/05-menjelaskan-hubungan-antarkejadian.html"
   },
   {
