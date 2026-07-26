@@ -220,6 +220,27 @@
 
 .ma-empty { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
 
+/* ── Cek Pemahamanmu (accordion tanya-jawab, tanpa skor) ──── */
+.ma-cek-title {
+  font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--ink); margin: 1.4rem 0 0.7rem;
+}
+.ma-cek-item {
+  margin-bottom: 9px; border: 1px solid var(--border); border-radius: var(--r);
+  background: #fff; overflow: hidden;
+}
+.ma-cek-item summary {
+  padding: 0.75rem 1rem; cursor: pointer; font-size: calc(var(--content-fs) - 1px);
+  font-weight: 600; color: var(--ink); list-style: none; display: flex; gap: 8px; align-items: flex-start;
+  line-height: 1.4;
+}
+.ma-cek-item summary::-webkit-details-marker { display: none; }
+.ma-cek-item summary::before { content: "❓"; flex-shrink: 0; }
+.ma-cek-item[open] summary::before { content: "👇"; }
+.ma-cek-item[open] summary { border-bottom: 1px dashed var(--border); }
+.ma-cek-jawaban { padding: 0.8rem 1rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; background: var(--paper-2); }
+.ma-cek-jawaban .ma-jawaban-benar { color: var(--m-color); font-weight: 700; display: block; margin-bottom: 0.35rem; }
+
 @media (max-width: 480px) {
   .ma-cover-title { font-size: 1.32rem; }
   .ma-content { font-size: calc(var(--content-fs) - 1px); }
