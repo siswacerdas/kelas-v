@@ -1,1 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memprediksi Bunyi dan Cahaya · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .prediksi-kartu { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); }
+  .prediksi-tanya { font-weight: 700; color: var(--ink); margin-bottom: 0.5rem; font-size: calc(var(--content-fs) - 1px); }
+  .prediksi-pilihan { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 0.5rem 0; }
+  .prediksi-opsi { border: 1px dashed var(--border); border-radius: 20px; padding: 4px 12px; font-size: calc(var(--content-fs) - 3px); color: var(--ink-2); }
+  .prediksi-alasan { font-size: calc(var(--content-fs) - 3px); color: var(--ink-3); font-style: italic; margin-top: 0.4rem; }
 
+  .bingung-box { border: 1px solid #cfe0dc; border-left: 5px solid #2f8f7a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f7fbfa; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #2f8f7a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #2f8f7a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔦</span>
+      <div class="ma-cover-eyebrow">Gelombang Bunyi dan Cahaya · Materi 2 dari 5</div>
+      <div class="ma-cover-title">Memprediksi Bunyi dan Cahaya</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Pernahkah kamu melihat detektif di film atau komik? Sebelum tahu siapa pelakunya, detektif itu tidak asal tebak — dia mengumpulkan petunjuk kecil (jejak sepatu, waktu kejadian, saksi mata), lalu menyusun dugaan berdasarkan petunjuk itu. Dugaannya bisa saja meleset, tapi karena disusun dari petunjuk yang masuk akal, dugaan itu tetap berharga untuk diselidiki lebih lanjut.</p>
+
+      <p>Di materi ini, kamu akan jadi "detektif" gelombang bunyi dan cahaya. Di materi sebelumnya kamu sudah mengamati: bunyi merambat, cahaya memantul. Sekarang saatnya <strong>menebak</strong> — sebelum benar-benar mencoba, coba pikirkan dulu apa yang menurutmu akan terjadi kalau bahan/permukaannya diganti-ganti. Ini yang disebut <strong>memprediksi</strong>: menebak hasil sebelum diuji, lengkap dengan alasannya — persis seperti detektif tadi.</p>
+
+      <p>Kenapa harus menebak dulu, bukan langsung coba saja? Karena itulah cara ilmuwan bekerja — dengan menebak dulu (berdasarkan apa yang sudah diketahui), lalu menguji apakah tebakannya benar atau meleset. <strong>Boleh salah menebak</strong>, yang penting ada alasannya. Bahkan tebakan yang meleset itu berguna — nanti kita jadi tahu bagian mana dari pemahaman kita yang masih perlu diperbaiki.</p>
+
+      <div class="prediksi-kartu">
+        <div class="prediksi-tanya">🤔 Pertanyaan 1 — Bunyi</div>
+        Menurutmu, apakah bunyi terdengar lebih kencang atau lebih lemah kalau melewati kain tebal (misalnya selimut)?
+        <div class="prediksi-pilihan">
+          <span class="prediksi-opsi">Lebih kencang</span>
+          <span class="prediksi-opsi">Lebih lemah</span>
+          <span class="prediksi-opsi">Sama saja</span>
+        </div>
+        <div class="prediksi-alasan">Coba tuliskan alasanmu memilih jawaban itu — apa yang membuatmu berpikir begitu?</div>
+      </div>
+
+      <div class="prediksi-kartu">
+        <div class="prediksi-tanya">🤔 Pertanyaan 2 — Cahaya</div>
+        Menurutmu, cahaya senter akan memantul lebih terang kalau disorotkan ke cermin, atau ke kain hitam?
+        <div class="prediksi-pilihan">
+          <span class="prediksi-opsi">Cermin</span>
+          <span class="prediksi-opsi">Kain hitam</span>
+          <span class="prediksi-opsi">Sama terang</span>
+        </div>
+        <div class="prediksi-alasan">Coba tuliskan alasanmu memilih jawaban itu — apa yang membuatmu berpikir begitu?</div>
+      </div>
+
+      <p>Perhatikan: yang dinilai bukan tebakanmu benar atau salah, melainkan <strong>ada tidaknya alasan</strong> di balik tebakan itu. Jawaban "lebih lemah, karena kain itu tebal dan padat" jauh lebih berharga daripada jawaban "lebih lemah" saja tanpa alasan — walaupun keduanya sama-sama menjawab "lebih lemah".</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan seorang peramal cuaca di TV.</span> Dia tidak asal bilang "besok hujan" begitu saja — dia menunjukkan gambar awan gelap yang menumpuk di langit sore ini, lalu bilang "karena awannya sudah setebal ini, kemungkinan besar besok hujan." Kalau ternyata besok tidak hujan, dia tidak dianggap "gagal total" — karena alasannya (awan gelap dan tebal) tetap masuk akal, cuma kali ini cuacanya berubah tak terduga.</p>
+        <p>Prediksimu tentang bunyi dan cahaya sama persis: <strong>tebakan + alasan</strong>, bukan tebakan doang. Alasannya boleh dari pengalamanmu sehari-hari — misalnya "aku pernah dengar suara jadi pelan waktu ada bantal di depan speaker" — itu sudah cukup jadi alasan yang bagus.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">💭 Bandingkan dengan Pengalamanmu</span>
+        Pernahkah kamu menutup telinga dengan bantal saat ingin tidur nyenyak karena berisik? Atau pernah memperhatikan kenapa ruang ber-AC dengan gorden tebal terasa lebih "sepi" dibanding ruang kosong berlantai keramik? Pengalaman sehari-hari seperti itu bisa jadi petunjuk untuk menyusun alasan prediksimu.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Rian menjawab: "Bunyi lebih kencang lewat kain tipis, soalnya kainnya kurang tebal jadi nggak banyak yang meredam bunyinya." Sari menjawab: "Lebih kencang lewat kain tipis." saja, tanpa tambahan apa pun. Menurut cara menilai prediksi ilmiah yang sudah kita pelajari, jawaban siapa yang lebih baik, dan kenapa?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jawaban Rian lebih baik — bukan karena tebakannya pasti benar, tapi karena dia menyertakan alasan yang menghubungkan sebab (kain tipis, sedikit yang meredam) dengan akibat (bunyi jadi lebih kencang). Jawaban Sari mungkin saja kebetulan benar, tapi tanpa alasan kita tidak tahu apakah dia benar-benar memahami konsepnya atau cuma menebak asal.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Kalau nanti hasil eksperimenmu di materi berikutnya ternyata berbeda dari prediksi yang kamu tulis hari ini, apakah itu berarti nilaimu jadi jelek?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Tidak. Meleset itu bagian normal dari cara kerja sains — bahkan ilmuwan sungguhan sering salah menebak. Yang dinilai dari materi ini adalah proses bernalarmu (ada alasan yang masuk akal atau tidak), bukan apakah tebakanmu tepat. Prediksi yang meleset justru membantu kamu belajar sesuatu yang baru saat membandingkannya dengan hasil nyata nanti.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Budi menjawab Pertanyaan 1 dengan: "Bunyi lebih lemah lewat kain tebal." Apa yang masih kurang dari jawaban Budi supaya menjadi prediksi ilmiah yang lengkap?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jawaban Budi sudah punya tebakan (lebih lemah), tapi belum punya <em>alasan</em> kenapa dia berpikir begitu. Supaya lengkap, Budi perlu menambahkan sebab-akibatnya, misalnya: "...karena kain tebal punya banyak serat rapat yang bisa menghalangi/meredam getaran bunyi."</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Tuliskan prediksimu untuk kedua pertanyaan di atas beserta alasannya di buku catatanmu. Simpan baik-baik — di materi berikutnya kita akan benar-benar menguji lewat eksperimen, dan kamu akan membandingkan sendiri: tebakanmu tadi cocok atau meleset?
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

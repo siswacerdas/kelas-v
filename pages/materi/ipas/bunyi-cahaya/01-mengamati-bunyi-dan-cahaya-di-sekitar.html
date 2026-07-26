@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengamati Bunyi dan Cahaya di Sekitar · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .amati-grid { display: grid; grid-template-columns: 1fr; gap: 0.7rem; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .amati-grid { grid-template-columns: 1fr 1fr; } }
+  .amati-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .amati-box.bunyi { background: #f2f8f6; }
+  .amati-box.cahaya { background: #fffaf0; }
+  .amati-tag { display: inline-block; font-size: 11px; font-weight: 700; margin-bottom: 0.5rem; padding: 2px 9px; border-radius: 20px; color: #fff; }
+  .amati-tag.bunyi { background: #2f8f7a; }
+  .amati-tag.cahaya { background: #d9a021; }
+  .amati-box ul { margin: 0.3em 0 0 1.1em; padding: 0; }
+
+  .bingung-box { border: 1px solid #cfe0dc; border-left: 5px solid #2f8f7a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f7fbfa; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #2f8f7a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #2f8f7a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔦</span>
+      <div class="ma-cover-eyebrow">Gelombang Bunyi dan Cahaya · Materi 1 dari 5</div>
+      <div class="ma-cover-title">Mengamati Bunyi dan Cahaya di Sekitar</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Bayangkan pagi hari di rumahmu. Sebelum berangkat sekolah, telingamu sebenarnya sudah "bekerja" tanpa kamu sadari: suara ayam berkokok dari kejauhan, suara ibu memanggil dari dapur, suara motor tetangga yang dipanaskan mesinnya. Matamu juga begitu — melihat pantulan cahaya matahari pagi di genangan air sisa hujan semalam, atau kilau cahaya di kaca jendela tetangga. Semua itu terjadi setiap hari, tapi jarang sekali kita benar-benar berhenti dan bertanya: "kenapa bisa begitu?"</p>
+
+      <p>Di materi ini, kita mulai dari langkah paling sederhana tapi paling penting dalam belajar sains: <strong>mengamati dengan sengaja</strong>. Bukan sekadar mendengar dan melihat seperti biasa, tapi benar-benar memperhatikan detailnya — pelan atau kencang, terang atau redup, dari dekat atau dari jauh.</p>
+
+      <p>Kita akan mengamati dua hal secara bergantian: <strong>bunyi</strong> dulu, baru <strong>cahaya</strong>. Bunyi kita dahulukan karena mengamati bunyi butuh telinga yang benar-benar fokus mendengarkan — paling pas dilakukan saat masih segar di awal pelajaran, sebelum kelas ramai dan konsentrasi mulai buyar.</p>
+
+      <div class="amati-grid">
+        <div class="amati-box bunyi">
+          <span class="amati-tag bunyi">🔊 Bunyi</span>
+          Coba dengarkan dan bedakan:
+          <ul>
+            <li>Tepuk tangan sekali — pendek dan tegas</li>
+            <li>Ketuk meja pelan lalu keras — ada bedanya?</li>
+            <li>Suara teman bicara dari dekat vs dari ujung kelas</li>
+          </ul>
+        </div>
+        <div class="amati-box cahaya">
+          <span class="amati-tag cahaya">💡 Cahaya</span>
+          Coba sorotkan senter dan amati:
+          <ul>
+            <li>Ke permukaan kaca — apa yang terjadi?</li>
+            <li>Ke selembar kertas putih</li>
+            <li>Ke kain — apakah cahayanya "hilang" atau balik?</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>Dari pengamatan sederhana itu, ada dua hal menarik yang sedang terjadi:</p>
+
+      <p><strong>Bunyi merambat</strong> — artinya bunyi "berjalan" dari sumbernya (misalnya tepuk tangan) sampai ke telingamu, lewat udara. Semakin jauh sumbernya, biasanya semakin lemah bunyi yang kamu dengar. Coba rasakan: suara temanmu dari dekat pasti terdengar lebih jelas daripada dari ujung kelas.</p>
+
+      <p><strong>Cahaya memantul</strong> — artinya saat cahaya mengenai suatu permukaan, sebagian cahaya itu "balik lagi" ke arah lain. Itulah sebabnya kamu bisa melihat permukaan kaca atau cermin jadi terang saat disorot senter — cahaya senter memantul balik ke matamu.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu melempar batu kecil ke tengah kolam yang airnya tenang.</span> Riak air itu menyebar melingkar ke segala arah, makin jauh dari titik jatuhnya batu, riaknya makin kecil dan makin lemah — sampai akhirnya menghilang di tepi kolam. <strong>Bunyi merambat mirip seperti itu</strong>: menyebar dari sumbernya ke segala arah lewat udara, dan makin jauh, makin lemah.</p>
+        <p><span class="analogi">Sekarang bayangkan kamu melempar bola karet ke tembok.</span> Bola itu tidak menempel di tembok — dia memantul balik ke arahmu. <strong>Cahaya memantul mirip seperti itu</strong>: begitu mengenai suatu permukaan (kaca, cermin, air), sebagian cahaya "memantul balik" alih-alih menempel atau diam di situ. Itulah sebabnya matamu bisa "menangkap" cahaya pantulan itu dan melihat kilaunya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Waktu kamu menyorotkan senter ke kain tadi, apakah pantulannya sama terang dengan ke kaca? Kemungkinan besar tidak — dan itu petunjuk penting yang akan kita selidiki lebih lanjut di materi-materi berikutnya. Simpan dulu pengamatanmu, jangan buru-buru menyimpulkan kenapa.
+      </div>
+
+      <p>Materi ini belum meminta kamu menjawab "kenapa". Tugas kamu sekarang baru satu: <strong>membiasakan diri benar-benar mengamati</strong> — mendengarkan dengan telinga yang fokus, dan melihat dengan mata yang jeli. Pertanyaan "kenapa bisa begitu" akan kita kejar di materi selanjutnya, lewat prediksi dan eksperimen.</p>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Kenapa suara temanmu yang duduk tepat di sebelahmu terdengar lebih jelas dibanding suara gurumu yang sedang berjalan di koridor luar kelas?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena bunyi merambat dari sumbernya lewat udara, dan makin jauh jaraknya, makin lemah bunyi yang sampai ke telingamu. Teman di sebelahmu jaraknya sangat dekat, jadi bunyinya masih "kuat" saat sampai. Suara guru di koridor harus merambat lebih jauh (dan melewati tembok/pintu), jadi yang sampai ke telingamu sudah jauh lebih lemah.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Saat kamu menyorotkan senter ke permukaan kaca jendela di malam hari, kenapa kamu bisa melihat titik terang di kaca itu, padahal senter tidak menempel di kaca?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena cahaya dari senter mengenai permukaan kaca, lalu sebagian cahayanya memantul balik ke arah matamu. Titik terang yang kamu lihat itu bukan cahaya yang "menempel", melainkan cahaya pantulan yang balik menuju matamu — persis seperti bola karet yang memantul balik setelah mengenai tembok.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span> Padit bertanya, "Kalau bunyi dan cahaya sama-sama tidak terlihat wujudnya, kenapa bunyi disebut merambat dan cahaya disebut memantul, bukan sebaliknya?" Bagaimana kamu menjelaskannya ke Padit?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Keduanya memang sama-sama tidak terlihat wujud aslinya, tapi caranya "berjalan" beda. Bunyi butuh menyebar terus dari sumbernya sampai ke telinga kita (seperti riak air) — itu disebut merambat. Cahaya, begitu mengenai suatu permukaan, langsung berbelok arah dan "balik" (seperti bola memantul tembok) — itu disebut memantul. Istilahnya beda karena perilakunya memang beda, bukan sekadar nama yang ditukar-tukar.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Di rumah, cari <strong>3 sumber bunyi</strong> yang berbeda (misalnya air keran, TV, suara langkah) dan <strong>3 permukaan berbeda</strong> yang bisa memantulkan cahaya (misalnya sendok, jendela, meja kayu). Amati saja dulu — belum perlu ditulis, cukup diingat-ingat untuk didiskusikan di kelas.
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

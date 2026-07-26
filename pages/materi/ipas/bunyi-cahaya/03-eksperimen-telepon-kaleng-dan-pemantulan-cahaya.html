@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eksperimen Telepon Kaleng dan Pemantulan Cahaya · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.55rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .bahan-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); }
+  .bahan-box b { color: var(--m-color); }
+
+  .bingung-box { border: 1px solid #cfe0dc; border-left: 5px solid #2f8f7a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f7fbfa; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #2f8f7a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #2f8f7a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔦</span>
+      <div class="ma-cover-eyebrow">Gelombang Bunyi dan Cahaya · Materi 3 dari 5</div>
+      <div class="ma-cover-title">Eksperimen Telepon Kaleng dan Pemantulan Cahaya</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya membuktikan sendiri: apakah prediksimu di materi sebelumnya benar? Kita akan melakukan dua eksperimen cepat — <strong>telepon kaleng</strong> untuk bunyi, dan <strong>senter</strong> untuk cahaya — dan mengulanginya dengan beberapa bahan berbeda. Ingat: yang penting bukan kalengmu jadi telepon paling bagus sedunia, tapi pengalamanmu benar-benar mencoba dan membandingkan.</p>
+
+      <p><strong>Eksperimen 1 — Telepon Kaleng (Bunyi)</strong></p>
+      <div class="bahan-box"><b>Bahan:</b> 2 kaleng/gelas plastik bekas, benang/tali sepanjang ±3 meter, paku/gunting kecil untuk melubangi (minta bantuan orang dewasa untuk bagian ini).</div>
+      <ol class="langkah">
+        <li>Lubangi dasar tiap kaleng, masukkan ujung benang, ikat simpul supaya tidak lepas.</li>
+        <li>Berpasangan dengan teman, rentangkan benang sampai tegang (tidak kendur).</li>
+        <li>Satu orang bicara pelan ke kalengnya, satu orang menempelkan kaleng ke telinga. Dengar apa yang terjadi.</li>
+        <li>Ulangi sambil benangnya sengaja dikendurkan (tidak tegang) — bandingkan hasilnya dengan saat tegang.</li>
+        <li>Kalau memungkinkan, coba juga ganti benang dengan tali rafia atau senar — apakah hasilnya beda?</li>
+      </ol>
+
+      <p><strong>Eksperimen 2 — Pemantulan Cahaya</strong></p>
+      <div class="bahan-box"><b>Bahan:</b> senter (boleh senter HP), dan 4 permukaan untuk diuji: cermin, kertas putih, kertas/kain hitam, permukaan air di mangkuk kecil.</div>
+      <ol class="langkah">
+        <li>Redupkan lampu ruangan sedikit kalau memungkinkan supaya pantulannya lebih jelas terlihat.</li>
+        <li>Sorotkan senter ke cermin dari jarak yang sama tiap kali, amati seberapa terang pantulannya.</li>
+        <li>Ulangi ke kertas putih, lalu ke kertas/kain hitam, lalu ke permukaan air.</li>
+        <li>Lakukan tiap permukaan <strong>lebih dari sekali</strong> supaya kamu yakin dengan hasilnya, bukan cuma kebetulan.</li>
+      </ol>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan lomba lari yang adil.</span> Supaya bisa membandingkan siapa yang lebih cepat, semua pelari harus start bersamaan dari garis yang sama, dan jaraknya juga harus sama. Kalau satu anak start duluan atau jaraknya lebih pendek, perbandingannya jadi tidak adil.</p>
+        <p>Eksperimen ini sama — supaya perbandingan "kain tebal vs kain tipis" atau "cermin vs kertas hitam" adil, hal-hal lain harus dibuat <strong>sama persis</strong>: jarak senter yang sama, kekuatan bicara yang sama, cara mengukur yang sama. Hanya SATU hal yang boleh diubah-ubah (bahannya), sisanya dijaga tetap. Itulah kenapa langkah-langkahnya ditulis rinci — supaya perbandinganmu benar-benar adil dan bisa dipercaya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">📝 Catat Sambil Mencoba</span>
+        Untuk tiap percobaan, catat singkat: bahan/permukaan apa yang diuji, dan bagaimana hasilnya (bunyi terdengar jelas/lemah/hilang; cahaya memantul terang/redup/hampir tidak terlihat). Tidak perlu kalimat panjang — cukup kata kunci, nanti kita susun jadi tabel perbandingan di materi berikutnya.
+      </div>
+
+      <p>Satu hal penting: eksperimen ini <strong>tidak dituntut menghasilkan produk akhir tertentu</strong> — bukan telepon kaleng paling bagus atau cahaya paling terang yang dinilai, melainkan pengalaman kamu benar-benar mencoba dan mengamati berkali-kali dengan bahan berbeda.</p>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Kenapa dalam eksperimen telepon kaleng, benangnya harus direntangkan setegang mungkin, bukan dibiarkan kendur?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena getaran bunyi merambat lewat benang menuju kaleng satunya. Benang yang tegang meneruskan getaran itu dengan baik dari ujung ke ujung. Kalau benangnya kendur, getarannya tidak merambat dengan rapi (banyak yang "hilang" di jalan), sehingga bunyi yang sampai jadi lemah atau bahkan tidak terdengar — bukan berarti telepon kalengnya rusak, tapi menunjukkan pentingnya media yang tepat untuk bunyi merambat.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Kenapa percobaan pemantulan cahaya sebaiknya dilakukan di ruangan yang agak redup, bukan ruangan yang sangat terang benderang?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Supaya perbedaan terang-redup pantulan dari tiap permukaan lebih mudah dibedakan. Kalau ruangannya sudah sangat terang, pantulan lemah dari permukaan gelap (seperti kain hitam) bisa "tenggelam" di antara cahaya ruangan yang sudah terang, jadi susah dinilai bedanya dengan pantulan dari cermin.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Kenapa setiap percobaan (misalnya menyorot senter ke satu permukaan) sebaiknya dilakukan lebih dari sekali, bukan cukup sekali saja lalu langsung dicatat?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Supaya kita yakin hasilnya bukan sekadar kebetulan. Kalau cuma dicoba sekali dan hasilnya aneh (misalnya tanganmu bergetar saat menyorot atau posisinya kurang pas), kita tidak tahu apakah itu hasil yang benar-benar mewakili atau cuma kesalahan sesaat. Mengulang beberapa kali membuat kita lebih yakin dengan kesimpulan yang akan diambil.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Setelah mencoba kedua eksperimen di atas, bandingkan hasilnya dengan prediksi yang kamu tulis di materi sebelumnya. Apakah tebakanmu tepat? Kalau meleset, menurutmu kenapa bisa berbeda dari yang kamu bayangkan?
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
