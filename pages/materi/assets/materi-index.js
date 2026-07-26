@@ -63,7 +63,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Mendengarkan dan Menunjukkan Paham",
     ringkasan: "Belajar menunjukkan paham isi teks pendek yang dibacakan guru, tanpa perlu menulis panjang.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp1/01-mendengarkan-dan-menunjukkan-paham.html"
   },
   {
@@ -78,7 +78,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Memilah Mana yang Penting",
     ringkasan: "Berlatih memilih mana informasi yang penting dan mana yang bisa diabaikan saat mendengarkan.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp1/02-memilah-mana-yang-penting.html"
   },
   {
@@ -93,7 +93,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Mencatat dengan Caraku Sendiri",
     ringkasan: "Mencoba mencatat hal penting dari yang didengar dengan caramu sendiri — gambar, simbol, atau kata kunci.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp1/03-mencatat-dengan-caraku-sendiri.html"
   },
   {
@@ -108,7 +108,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Menyimak Mandiri: Menangkap Info Penting",
     ringkasan: "Menunjukkan kemampuan menyimak secara mandiri: menangkap dan mencatat info penting sendirian.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/menyimak-tp1/04-menyimak-mandiri-menangkap-info-penting.html"
   },
   {
