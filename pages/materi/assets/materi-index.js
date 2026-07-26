@@ -198,7 +198,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Menangkap Informasi dari Tayangan",
     ringkasan: "Menangkap informasi yang jelas-jelas disampaikan dalam sebuah video atau infografis pendek.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/membaca-memirsa-tp2/01-menangkap-informasi-dari-tayangan.html"
   },
   {
@@ -213,7 +213,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Menemukan Pesan Tersembunyi",
     ringkasan: "Belajar menemukan pesan/nilai yang tidak dikatakan langsung, tapi tersirat dalam tayangan.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/membaca-memirsa-tp2/02-menemukan-pesan-tersembunyi.html"
   },
   {
@@ -228,7 +228,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Membandingkan Dua Tayangan",
     ringkasan: "Membandingkan nilai yang disampaikan oleh dua tayangan berbeda dengan tema yang mirip.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/membaca-memirsa-tp2/03-membandingkan-dua-tayangan.html"
   },
   {
@@ -243,7 +243,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Menganalisis Informasi dan Nilai dalam Tayangan",
     ringkasan: "Menganalisis sendiri informasi dan nilai dalam sebuah tayangan otentik berbahasa Indonesia.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/membaca-memirsa-tp2/04-menganalisis-informasi-dan-nilai-dalam-tayangan.html"
   },
   {
