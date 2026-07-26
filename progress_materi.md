@@ -215,6 +215,15 @@ di Bagian 4 (bukan per materi).
   cukup untuk sekarang, bisa ditingkatkan nanti kalau perlu diingat
   antar-kunjungan.
 
+## 6e. TP Menyimak TP1 (Informasi Penting dari Teks Aural) — SELESAI 4/4 (2026-07-26)
+
+Semua 4 materi ditulis dengan pendekatan "konsep + latihan di rumah",
+BUKAN transkrip teks yang dipakai guru menilai di kelas (lihat 6b).
+Tiap materi punya latihan berbeda yang bisa dilakukan bersama keluarga
+di rumah (respons non-verbal, mendengarkan dengan kriteria, mencatat
+dengan gaya sendiri), dan catatan singkat di tiap halaman menjelaskan
+kenapa teks latihannya sengaja tidak sama dengan yang dipakai menilai.
+
 ---
 
 ## 7. Status & log progres
@@ -222,10 +231,10 @@ di Bagian 4 (bukan per materi).
 | Elemen | TP | Judul | Status |
 |---|---|---|---|
 | Matematika | – | Bilangan Cacah dan Nilai Tempat | ✅ Selesai (pilot) |
-| Menyimak | M1 | Mendengarkan dan Menunjukkan Paham | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M1 | Memilah Mana yang Penting | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M1 | Mencatat dengan Caraku Sendiri | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M1 ⭐ | Menyimak Mandiri: Menangkap Info Penting | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M1 | Mendengarkan dan Menunjukkan Paham | ✅ Selesai |
+| Menyimak | M1 | Memilah Mana yang Penting | ✅ Selesai |
+| Menyimak | M1 | Mencatat dengan Caraku Sendiri | ✅ Selesai |
+| Menyimak | M1 ⭐ | Menyimak Mandiri: Menangkap Info Penting | ✅ Selesai |
 | Menyimak | M2 | Mengenali Kata Penghubung Sebab-Akibat | 🕓 Segera hadir (placeholder aktif) |
 | Menyimak | M2 | Memetakan Sebab dan Akibat | 🕓 Segera hadir (placeholder aktif) |
 | Menyimak | M2 | Merangkai Beberapa Kejadian Berurutan | 🕓 Segera hadir (placeholder aktif) |
