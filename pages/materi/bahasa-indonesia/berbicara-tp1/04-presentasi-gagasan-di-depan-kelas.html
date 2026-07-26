@@ -11,9 +11,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .model-lengkap {
+    margin: 1.1rem 0 1.4rem; padding: 1rem 1.1rem; background: var(--paper-2); border: 2px solid var(--m-color);
+    border-radius: var(--r-lg); font-size: calc(var(--content-fs) - 1px);
+  }
+  .model-lengkap .bagian-label {
+    display: inline-block; font-weight: 700; font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.05em; color: #fff; background: var(--ink-3); padding: 2px 10px; border-radius: 20px; margin: 0.9rem 0 0.4rem;
+  }
+  .model-lengkap .bagian-label:first-child { margin-top: 0; }
+  .model-lengkap .ucapan { font-style: italic; line-height: 1.65; color: var(--ink-2); margin-bottom: 0.5rem; }
+  .model-lengkap .catatan-alat { font-size: calc(var(--content-fs) - 3px); color: var(--m-color); font-weight: 600; }
+  .recap-list { list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .recap-item { display: flex; gap: 10px; align-items: flex-start; padding: 0.7rem 0; border-bottom: 1px dashed var(--border); }
+  .recap-item:last-child { border-bottom: none; }
+  .recap-num {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--m-color); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .recap-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.5; padding-top: 2px; }
+  .recap-text b { color: var(--ink); }
+  .tips-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .tips-grid { grid-template-columns: 1fr 1fr; } }
+  .tips-card { border: 1px solid var(--border); border-radius: var(--r); padding: 0.7rem 0.85rem; background: #fff; font-size: calc(var(--content-fs) - 2px); line-height: 1.55; }
+  .tips-card .emoji { font-size: 1.2rem; margin-bottom: 4px; display: block; }
+  .selesai-banner {
+    margin: 1.5rem 0; padding: 1.1rem 1.2rem; border-radius: var(--r-lg);
+    background: var(--paper-2); border: 1px solid var(--border); text-align: center;
+  }
+  .selesai-banner .judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .selesai-banner p { font-size: 13px; color: var(--ink-3); margin: 0; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -32,18 +59,100 @@
 
   <div class="ma-cover">
     <div class="ma-cover-inner">
-      <span class="ma-cover-icon">🎤</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Presentasi Gagasan</div>
+      <span class="ma-cover-icon">⭐</span>
+      <div class="ma-cover-eyebrow">Berbicara · Presentasi Gagasan · Materi 4 dari 4 (Inti)</div>
       <div class="ma-cover-title">Presentasi Gagasan di Depan Kelas</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Mempresentasikan gagasan secara efektif dan santun di depan kelas penuh.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menggabungkan semua yang sudah kamu pelajari — poin-poin gagasan, struktur Awal-Isi-Akhir, dan alat bantu visual — untuk presentasi di depan <strong>kelas penuh</strong>. Sebelum kamu mencoba sendiri, mari lihat dulu satu model presentasi lengkap sebagai contoh.</p>
+
+      <div class="model-lengkap">
+        <div class="bagian-label">Alat Bantu</div>
+        <div class="catatan-alat">📋 Poster dengan 3 ikon: 🚰 Air Minum, ⏰ Jam Istirahat, 🙋 Antre Rapi</div>
+
+        <div class="bagian-label">Awal</div>
+        <div class="ucapan">"Selamat pagi, teman-teman! Aku mau menyampaikan gagasan tentang dispenser air minum di kelas kita."</div>
+
+        <div class="bagian-label">Isi</div>
+        <div class="ucapan">"Menurutku, sebaiknya kita punya dispenser air minum sendiri di kelas. Soalnya, sekarang kalau mau minum, kita harus bolak-balik ke kantin, dan itu makan waktu istirahat yang sudah singkat. Aku tahu, mungkin ada yang khawatir nanti jadi berebutan atau airnya cepat habis. Tapi menurutku itu bisa diatur dengan jadwal antre sederhana — misalnya, tiap baris bangku gantian duluan tiap harinya."</div>
+
+        <div class="bagian-label">Akhir</div>
+        <div class="ucapan">"Jadi, menurutku ini bisa menghemat waktu istirahat kita, dan tetap tertib kalau diatur dengan antrean yang jelas. Terima kasih!"</div>
+      </div>
+
+      <p>Perhatikan bagaimana model ini menggabungkan semua keterampilan: ada alat bantu (poster ikon, bukan kalimat panjang), ada struktur Awal-Isi-Akhir yang jelas, dan di bagian Isi ada pengakuan terhadap kekhawatiran orang lain sebelum menjelaskan solusinya — persis seperti yang kamu pelajari di materi-materi sebelumnya.</p>
+
+      <p>Karena sekarang audiensnya kelas penuh (bukan lagi kelompok kecil atau gabungan), ada beberapa hal baru yang perlu diperhatikan:</p>
+
+      <div class="tips-grid">
+        <div class="tips-card"><span class="emoji">👀</span><strong>Lihat ke arah pendengar</strong> — tidak perlu ke satu titik terus, boleh menyapu pandangan ke beberapa bagian kelas secara bergantian.</div>
+        <div class="tips-card"><span class="emoji">🔊</span><strong>Suara harus lebih besar</strong> dari sebelumnya — kelas penuh lebih luas daripada kelompok kecil, pastikan yang duduk di belakang juga bisa dengar.</div>
+        <div class="tips-card"><span class="emoji">⏸️</span><strong>Beri jeda sebentar</strong> antara Awal, Isi, dan Akhir — supaya pendengar sempat mencerna, tidak terburu-buru.</div>
+        <div class="tips-card"><span class="emoji">😌</span><strong>Wajar kalau gugup</strong> — ambil napas dulu sebelum mulai bicara, itu membantu suaramu lebih stabil.</div>
+      </div>
+
+      <p>Rangkuman seluruh keterampilan yang sudah kamu pelajari di TP ini:</p>
+
+      <ul class="recap-list">
+        <li class="recap-item">
+          <span class="recap-num">1</span>
+          <span class="recap-text"><b>Menyampaikan poin-poin gagasan</b> — tanpa naskah lengkap, ke satu pendengar.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">2</span>
+          <span class="recap-text"><b>Menyusun struktur Awal-Isi-Akhir</b> — gagasan utama di depan, alasan di tengah, kesimpulan di akhir.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">3</span>
+          <span class="recap-text"><b>Memakai alat bantu visual</b> — kata kunci/ikon/angka, bukan kalimat panjang yang dibaca.</span>
+        </li>
+      </ul>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Dalam contoh model di atas, kalimat "Aku tahu, mungkin ada yang khawatir nanti jadi berebutan..." ada di bagian mana, dan kenapa?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Bagian Isi, karena itu bagian dari penjelasan alasan dan cara mengatasi kekhawatiran, bukan gagasan utama (Awal) atau kesimpulan (Akhir).</span>
+          Mengakui kekhawatiran orang lain sebelum menjelaskan solusi adalah bagian dari argumen yang matang — dan argumen selalu ada di bagian Isi.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Apa yang berubah dari presentasi ke kelompok kecil/gabungan menuju presentasi ke kelas penuh?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Suara harus lebih besar, pandangan perlu menyapu ke seluruh kelas, dan perlu jeda antarbagian supaya pendengar yang lebih banyak bisa mencerna.</span>
+          Strukturnya (Awal-Isi-Akhir) dan alat bantunya tetap sama — yang berubah adalah cara menyesuaikan diri dengan audiens yang lebih besar.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Kenapa alat bantu di model contoh (poster 3 ikon) dianggap tepat, bukan "kurang tepat" seperti yang dibahas di materi sebelumnya?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena hanya berisi ikon dan kata kunci singkat (Air Minum, Jam Istirahat, Antre Rapi), bukan kalimat panjang yang dibaca langsung.</span>
+          Poster ini berfungsi sebagai pengingat poin, sementara penjelasan lengkapnya tetap diucapkan dengan kata-kata sendiri saat presentasi.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Tugasmu Sekarang (Penilaian Akhir TP Ini)</span>
+        Siapkan satu gagasan (boleh melanjutkan dari materi-materi sebelumnya, atau gagasan baru), susun dengan struktur Awal-Isi-Akhir, siapkan satu alat bantu visual sederhana, lalu presentasikan di depan kelas.
+        <br/><br/>
+        Yang akan dinilai: (1) apakah gagasan utama disampaikan jelas di Awal, (2) apakah alasan-alasan di Isi masuk akal dan disampaikan dengan sopan, (3) apakah ada kesimpulan/ajakan yang jelas di Akhir. Rasa gugup itu wajar dan tidak akan mengurangi nilai.
+      </div>
+
+      <div class="selesai-banner">
+        <div class="judul">🎉 Selamat, kamu sudah menyelesaikan seluruh materi Berbicara: Presentasi Gagasan!</div>
+        <p>Keterampilan menyampaikan pendapat dengan jelas dan sopan ini akan terus terpakai — mulai dari rapat OSIS nanti, sampai kehidupan sehari-hari saat kamu perlu menyuarakan pendapatmu.</p>
+      </div>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

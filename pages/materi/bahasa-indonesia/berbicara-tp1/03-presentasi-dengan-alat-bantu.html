@@ -11,9 +11,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .alat-bantu { margin: 1rem 0 1.4rem; }
+  .alat-visual {
+    border: 2px solid var(--m-color); border-radius: var(--r-lg); padding: 1rem; background: #fff;
+    text-align: center; margin-bottom: 0.6rem;
+  }
+  .kartu-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .kartu {
+    background: var(--paper-2); border: 1px solid var(--border); border-radius: var(--r);
+    padding: 0.6rem 0.9rem; font-weight: 700; font-size: calc(var(--content-fs) - 2px); color: var(--ink);
+  }
+  .poster-icon-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 0.3rem 0; }
+  .poster-icon { text-align: center; font-size: calc(var(--content-fs) - 3px); max-width: 90px; }
+  .poster-icon .emoji { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+  .poster-diagram { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .poster-diagram .kotak { background: var(--paper-2); border-radius: var(--r); padding: 0.6rem 0.8rem; font-size: calc(var(--content-fs) - 3px); text-align:center; }
+  .poster-diagram .kotak b { display: block; font-size: 1.1rem; color: var(--m-color); }
+  .alat-keterangan { font-size: calc(var(--content-fs) - 3px); color: var(--ink-3); font-style: italic; }
+  .bandingkan-buruk-baik { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .bandingkan-buruk-baik { grid-template-columns: 1fr 1fr; } }
+  .bb-card { border-radius: var(--r-lg); padding: 0.85rem 0.95rem; font-size: calc(var(--content-fs) - 2px); }
+  .bb-card.buruk { background: #fdeeee; border: 1px solid #f0c8c8; }
+  .bb-card.baik { background: #eef7f0; border: 1px solid #c5e5cd; }
+  .bb-tag { font-weight: 700; font-size: 11px; text-transform: uppercase; margin-bottom: 0.4rem; display: block; }
+  .bb-card.buruk .bb-tag { color: #b04242; }
+  .bb-card.baik .bb-tag { color: #2a9d6f; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +55,110 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🎤</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Presentasi Gagasan</div>
+      <div class="ma-cover-eyebrow">Berbicara · Presentasi Gagasan · Materi 3 dari 4</div>
       <div class="ma-cover-title">Presentasi dengan Alat Bantu</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Presentasi dengan bantuan kartu poin atau gambar, bukan naskah lengkap yang dibaca.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang audiensmu bertambah lagi menjadi <strong>kelompok gabungan</strong> — beberapa kelompok kecil digabung jadi satu, jadi pendengarnya lebih banyak dari sebelumnya. Untuk membantu presentasimu, kali ini kamu boleh memakai <strong>alat bantu visual sederhana</strong> — bisa poster gambar, kartu kata kunci, atau diagram sederhana.</p>
+
+      <p>Tapi ada satu aturan penting: <strong>alat bantu bukan naskah yang dibaca kata demi kata</strong>. Fungsinya cuma mengingatkanmu tentang poin-poin penting, sementara penjelasannya tetap kamu ucapkan dengan kata-katamu sendiri — persis seperti latihan di materi-materi sebelumnya.</p>
+
+      <p>Yuk lihat tiga jenis alat bantu, dari yang paling sederhana:</p>
+
+      <p><strong>Contoh 1 — kartu kata kunci</strong></p>
+      <div class="alat-bantu">
+        <div class="alat-visual">
+          <div class="kartu-row">
+            <div class="kartu">🧹 Dibagi Kelompok</div>
+            <div class="kartu">⚖️ Tugas Jelas</div>
+            <div class="kartu">🕐 Coba 1 Minggu</div>
+          </div>
+        </div>
+        <div class="alat-keterangan">Untuk gagasan "Piket kelas dibagi per kelompok kecil" — cukup 3 kartu kata kunci, tidak ada kalimat panjang.</div>
+      </div>
+      <p>Dengan kartu ini, kamu cukup melihat sekilas untuk ingat urutan bicaramu: mulai dari usulan dibagi kelompok, lalu jelaskan soal tugas yang jelas, lalu tutup dengan ajakan coba dulu 1 minggu. Kata-kata penjelasannya tetap kamu susun sendiri saat bicara.</p>
+
+      <p><strong>Contoh 2 — poster dengan ikon</strong></p>
+      <div class="alat-bantu">
+        <div class="alat-visual">
+          <div class="poster-icon-row">
+            <div class="poster-icon"><span class="emoji">💡</span>Kotak Saran</div>
+            <div class="poster-icon"><span class="emoji">🤫</span>Bisa Diam-Diam</div>
+            <div class="poster-icon"><span class="emoji">💬</span>Dibahas Bareng</div>
+          </div>
+        </div>
+        <div class="alat-keterangan">Untuk gagasan "Kelas punya kotak saran" — tiga ikon mewakili Awal (usulan), Isi (alasan: bisa diam-diam), dan Akhir (dibahas bersama).</div>
+      </div>
+      <p>Poster ini sedikit lebih rumit karena menggabungkan simbol (ikon) dengan struktur Awal-Isi-Akhir yang sudah kamu pelajari — setiap ikon mewakili satu bagian dari presentasimu, membantu pendengar mengikuti alurnya secara visual juga, tidak cuma dari suara.</p>
+
+      <p><strong>Contoh 3 — diagram perbandingan dengan angka</strong></p>
+      <div class="alat-bantu">
+        <div class="alat-visual">
+          <div class="poster-diagram">
+            <div class="kotak"><b>Sekarang</b>15 menit</div>
+            <div style="font-size:20px;color:var(--ink-3);">→</div>
+            <div class="kotak"><b>Usulan</b>20-25 menit</div>
+          </div>
+        </div>
+        <div class="alat-keterangan">Untuk gagasan "Waktu istirahat diperpanjang" — diagram ini menonjolkan angka yang dibandingkan, lebih kuat daripada cuma diucapkan.</div>
+      </div>
+      <p>Diagram ini paling rumit karena menampilkan perbandingan angka secara visual. Angka yang ditulis besar di poster akan lebih diingat pendengar dibanding kalau cuma disebutkan lisan sekali saja.</p>
+
+      <p>Sekarang, mari bandingkan alat bantu yang <strong>kurang tepat</strong> dengan yang <strong>tepat</strong>, untuk gagasan yang sama:</p>
+
+      <div class="bandingkan-buruk-baik">
+        <div class="bb-card buruk">
+          <span class="bb-tag">⚠️ Kurang Tepat</span>
+          Poster berisi paragraf lengkap: <em>"Menurut saya sebaiknya waktu istirahat diperpanjang karena waktu yang sekarang terlalu singkat untuk makan sekaligus bermain, sehingga murid-murid sering terburu-buru..."</em> (dan seterusnya, satu paragraf penuh)
+        </div>
+        <div class="bb-card baik">
+          <span class="bb-tag">✅ Tepat</span>
+          Poster cukup berisi: <strong>"15 menit → 20-25 menit"</strong> dan ikon jam. Penjelasan lengkapnya diucapkan langsung, bukan dibaca dari poster.
+        </div>
+      </div>
+
+      <p>Kenapa poster berisi paragraf lengkap kurang tepat? Karena kamu jadi tergoda untuk <strong>membaca</strong> poster itu kata demi kata, bukan berbicara natural. Alat bantu yang baik justru membuatmu tetap harus mengingat dan menyusun kalimat sendiri saat bicara — poster hanya jadi pengingat poin, bukan pengganti kata-katamu.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa fungsi utama alat bantu visual dalam presentasi?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Mengingatkan poin-poin penting, bukan menggantikan kata-kata yang diucapkan.</span>
+          Alat bantu membantu kamu (dan pendengar) mengikuti alur presentasi, tapi penjelasan tetap harus diucapkan dengan kata-katamu sendiri, bukan dibaca langsung dari alat bantunya.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Kenapa poster yang berisi satu paragraf penuh dianggap "kurang tepat" sebagai alat bantu?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena akan membuat pembicara tergoda membaca poster kata demi kata, bukan berbicara secara natural.</span>
+          Alat bantu yang baik cukup berisi kata kunci, ikon, atau angka penting — bukan kalimat lengkap yang siap dibaca.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Pada Contoh 3 (diagram 15 menit → 20-25 menit), kenapa menampilkan angka secara visual dianggap lebih kuat dibanding hanya diucapkan?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena angka yang ditulis besar dan terlihat langsung lebih mudah diingat pendengar dibanding hanya didengar sekali secara lisan.</span>
+          Visual yang menonjolkan perbandingan (seperti angka sebelum-sesudah) membantu pendengar menangkap dan mengingat poin penting lebih kuat.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Buat satu alat bantu visual sederhana untuk gagasanmu (boleh kartu kata kunci, poster ikon, atau diagram angka — pilih salah satu, tidak perlu semuanya). Ingat: cukup kata kunci/ikon/angka, jangan tulis kalimat lengkap. Lalu presentasikan ke kelompok yang lebih besar di rumahmu (kalau memungkinkan, kumpulkan beberapa anggota keluarga sekaligus).
+      </div>
+
+      <p>Materi berikutnya adalah <strong>Materi Inti</strong> — kamu akan mempresentasikan gagasanmu secara lengkap di depan kelas, menggabungkan semua yang sudah dipelajari.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

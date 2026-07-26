@@ -11,9 +11,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .gagasan-card {
+    margin: 1.1rem 0; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border);
+  }
+  .gagasan-topik {
+    background: var(--m-color); color: #fff; padding: 0.7rem 1.05rem; font-size: calc(var(--content-fs) - 1px);
+    font-weight: 700;
+  }
+  .gagasan-topik .tag { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; opacity: 0.85; margin-bottom: 3px; }
+  .gagasan-poin { background: #fff; padding: 0.9rem 1.05rem; }
+  .poin-item { display: flex; gap: 10px; align-items: flex-start; padding: 0.4rem 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.55; }
+  .poin-num {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--paper-2); color: var(--m-color);
+    display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 1px solid var(--m-color);
+  }
+  .kalimat-ucap {
+    margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px dashed var(--border);
+    font-size: calc(var(--content-fs) - 2px); font-style: italic; color: var(--ink-3); line-height: 1.6;
+  }
+  .kalimat-ucap b { color: var(--ink-2); font-style: normal; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +49,75 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🎤</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Presentasi Gagasan</div>
+      <div class="ma-cover-eyebrow">Berbicara · Presentasi Gagasan · Materi 1 dari 4</div>
       <div class="ma-cover-title">Bicara ke Satu Teman Dulu</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Berlatih menyampaikan gagasan sederhana ke satu teman, tanpa naskah tertulis.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang kita mulai belajar mempresentasikan <strong>gagasan</strong> — yaitu pendapat, usulan, atau ide tentang sesuatu. Ini beda dengan menceritakan pengalaman pribadi: gagasan bukan tentang "apa yang terjadi padaku", tapi tentang "menurutku, sebaiknya begini, dan ini alasannya".</p>
+
+      <p>Kita akan berlatih bertahap — mulai dari yang paling ringan dulu: berbicara ke <strong>satu pendengar saja</strong>. Kenapa dimulai dari satu orang? Karena bicara di depan banyak orang itu butuh keberanian yang dilatih pelan-pelan. Kalau langsung disuruh presentasi di depan kelas, yang diuji jadi bukan "apakah gagasanmu jelas", tapi "apakah kamu berani tampil". Dengan satu pendengar dulu, kamu bisa fokus pada hal yang paling penting: <strong>menyampaikan gagasan dengan jelas</strong>.</p>
+
+      <p>Aturan penting di tahap ini: <strong>tidak perlu naskah tertulis lengkap</strong>. Cukup siapkan 2–3 poin utama di kepalamu (atau dicatat singkat di kertas kecil), lalu coba ucapkan dengan kata-katamu sendiri — bukan membaca dari tulisan.</p>
+
+      <p>Yuk lihat tiga contoh, dari gagasan yang paling sederhana sampai yang sedikit lebih matang:</p>
+
+      <div class="gagasan-card">
+        <div class="gagasan-topik"><span class="tag">Contoh 1 — gagasan sederhana</span>Sebaiknya kelas kita punya tanaman hias</div>
+        <div class="gagasan-poin">
+          <div class="poin-item"><span class="poin-num">1</span><span>Tanaman membuat kelas terlihat lebih segar dan tidak gersang</span></div>
+          <div class="poin-item"><span class="poin-num">2</span><span>Kita bisa bergiliran menyiramnya setiap pagi</span></div>
+          <div class="kalimat-ucap"><b>Contoh cara mengucapkannya:</b> "Menurutku, sebaiknya kelas kita punya tanaman hias. Soalnya kelas jadi terlihat lebih segar, nggak gersang. Kita juga bisa gantian nyiram setiap pagi, jadi nggak berat sebelah."</div>
+        </div>
+      </div>
+
+      <div class="gagasan-card">
+        <div class="gagasan-topik"><span class="tag">Contoh 2 — gagasan dengan sedikit penjelasan</span>Waktu istirahat sebaiknya diperpanjang</div>
+        <div class="gagasan-poin">
+          <div class="poin-item"><span class="poin-num">1</span><span>Waktu istirahat sekarang terasa terlalu singkat untuk makan sekaligus bermain</span></div>
+          <div class="poin-item"><span class="poin-num">2</span><span>Kalau diperpanjang 5-10 menit, murid bisa lebih siap kembali belajar</span></div>
+          <div class="poin-item"><span class="poin-num">3</span><span>Contohnya, aku sering harus buru-buru makan supaya sempat main sebentar</span></div>
+          <div class="kalimat-ucap"><b>Contoh cara mengucapkannya:</b> "Aku punya usul, gimana kalau waktu istirahat kita diperpanjang sedikit? Soalnya waktu yang sekarang itu rasanya kurang buat makan sekaligus main. Aku sendiri sering buru-buru banget makannya biar sempat main walau cuma sebentar. Kalau ditambah 5-10 menit aja, aku rasa kita bisa lebih segar pas balik belajar."</div>
+        </div>
+      </div>
+
+      <div class="gagasan-card">
+        <div class="gagasan-topik"><span class="tag">Contoh 3 — gagasan yang mempertimbangkan sisi lain</span>HP boleh dibawa ke sekolah untuk keperluan darurat</div>
+        <div class="gagasan-poin">
+          <div class="poin-item"><span class="poin-num">1</span><span>Kadang ada keperluan mendadak yang butuh menghubungi orang tua, misalnya sakit tiba-tiba</span></div>
+          <div class="poin-item"><span class="poin-num">2</span><span>Aku tahu ada yang khawatir HP bikin murid main-main saat pelajaran</span></div>
+          <div class="poin-item"><span class="poin-num">3</span><span>Tapi mungkin bisa diatur: HP dititip ke guru dan hanya dipakai kalau benar-benar darurat</span></div>
+          <div class="kalimat-ucap"><b>Contoh cara mengucapkannya:</b> "Menurutku, HP sebaiknya boleh dibawa, tapi khusus keperluan darurat aja — kayak kalau tiba-tiba sakit dan perlu telepon orang tua. Aku ngerti sih, mungkin ada yang khawatir jadi malah dipakai main-main pas belajar. Tapi menurutku itu bisa diatur, misalnya HP-nya dititip ke Bu Guru dulu, baru dipakai kalau memang mendesak."</div>
+        </div>
+      </div>
+
+      <p>Perhatikan bedanya: Contoh 1 cuma menyampaikan gagasan dan 2 alasan sederhana. Contoh 2 menambahkan sedikit pengalaman pribadi sebagai penguat. Contoh 3 paling matang, karena sudah mengakui ada pendapat lain yang berbeda ("ada yang khawatir...") sebelum menjelaskan solusinya — ini menunjukkan kamu benar-benar memikirkan gagasanmu, bukan cuma asal bicara.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Cara Menyiapkan Poin-Poin (Bukan Naskah)</span>
+        <ul style="margin: 0.5em 0 0.2em 1.1em; padding: 0;">
+          <li>Tentukan <strong>satu gagasan utama</strong> — apa yang menurutmu sebaiknya dilakukan/diubah</li>
+          <li>Pikirkan <strong>1-2 alasan</strong> kenapa itu penting menurutmu</li>
+          <li>Kalau bisa, tambahkan <strong>satu contoh nyata</strong> yang menguatkan alasanmu</li>
+          <li>Cukup ingat poin-poinnya saja — <strong>jangan hafalkan kalimat persis kata demi kata</strong>, supaya terdengar wajar saat diucapkan</li>
+        </ul>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Pikirkan satu gagasan sederhana tentang sesuatu di rumah atau sekolah (misalnya soal jadwal, kebiasaan, atau aturan). Siapkan 2-3 poin saja — jangan ditulis jadi naskah lengkap. Lalu sampaikan langsung ke satu orang di rumahmu, seperti mengobrol biasa. Tanyakan pendapat mereka setelahnya: apakah gagasanmu tersampaikan dengan jelas?
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu menambahkan struktur yang lebih rapi — Awal, Isi, Akhir — dan mencoba berbicara ke kelompok kecil, bukan cuma satu orang.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
