@@ -11,9 +11,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .catatan-khusus {
+    margin: 1.1rem 0; padding: 0.9rem 1.05rem; border-radius: var(--r);
+    background: var(--paper-2); border-left: 4px solid var(--ink-3); font-size: calc(var(--content-fs) - 3px);
+    color: var(--ink-3); line-height: 1.6;
+  }
+  .catatan-khusus b { color: var(--ink-2); }
+  .recap-list { list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .recap-item {
+    display: flex; gap: 10px; align-items: flex-start; padding: 0.7rem 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .recap-item:last-child { border-bottom: none; }
+  .recap-num {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--m-color); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .recap-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.5; padding-top: 2px; }
+  .recap-text b { color: var(--ink); }
+  .selesai-banner {
+    margin: 1.5rem 0; padding: 1.1rem 1.2rem; border-radius: var(--r-lg);
+    background: var(--paper-2); border: 1px solid var(--border); text-align: center;
+  }
+  .selesai-banner .judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.05rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .selesai-banner p { font-size: 13px; color: var(--ink-3); margin: 0; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -32,18 +53,59 @@
 
   <div class="ma-cover">
     <div class="ma-cover-inner">
-      <span class="ma-cover-icon">🎧</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Informasi Penting dari Teks Aural</div>
+      <span class="ma-cover-icon">⭐</span>
+      <div class="ma-cover-eyebrow">Menyimak · Informasi Penting dari Teks Aural · Materi 4 dari 4 (Inti)</div>
       <div class="ma-cover-title">Menyimak Mandiri: Menangkap Info Penting</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menunjukkan kemampuan menyimak secara mandiri: menangkap dan mencatat info penting sendirian.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menggabungkan tiga keterampilan yang sudah kamu pelajari — kali ini semuanya sekaligus, dan mandiri (tanpa dikasih kriteria dulu oleh guru):</p>
+
+      <ul class="recap-list">
+        <li class="recap-item">
+          <span class="recap-num">1</span>
+          <span class="recap-text"><b>Benar-benar mendengarkan</b> — bukan cuma dengar suara lewat, tapi fokus memahami apa yang disampaikan.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">2</span>
+          <span class="recap-text"><b>Memilah informasi penting</b> — kali ini tanpa dikasih tahu dulu apa yang harus dicari. Kamu sendiri yang menentukan mana yang inti (siapa, di mana, apa, kapan) dan mana yang bukan.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">3</span>
+          <span class="recap-text"><b>Mencatat dengan caramu sendiri</b> — pakai kata kunci, gambar kecil, atau simbol, apa pun yang paling nyaman buatmu.</span>
+        </li>
+      </ul>
+
+      <p>Nanti gurumu akan membacakan satu teks pendek (bukan cerita sastra, tapi teks seperti pengumuman atau penjelasan) — <strong>satu kali saja</strong>. Tugasmu: dengarkan baik-baik, lalu catat sendiri informasi yang menurutmu penting.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Tips Terakhir Sebelum Menyimak</span>
+        <ul style="margin: 0.5em 0 0.2em 1.1em; padding: 0;">
+          <li>Dengarkan <strong>dari kalimat pertama</strong> — informasi penting bisa muncul kapan saja, bahkan di awal</li>
+          <li>Cari jawaban <strong>siapa, di mana, apa, kapan</strong> sambil mendengarkan</li>
+          <li>Catat pakai <strong>kata kunci singkat</strong>, bukan kalimat panjang — tidak akan sempat</li>
+          <li>Kalau ketinggalan satu bagian, <strong>jangan berhenti mengejar</strong> — lanjut fokus ke bagian berikutnya</li>
+        </ul>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Latihan Terakhir di Rumah</span>
+        Minta seseorang di rumah membacakan sesuatu yang agak lebih panjang dari biasanya (misalnya penjelasan tentang cara membuat sesuatu, atau cerita tentang kejadian sehari-hari) — <strong>tanpa</strong> memberi tahu dulu apa yang harus kamu cari. Coba catat sendiri hal-hal yang menurutmu penting, lalu ceritakan ulang ke mereka. Tanyakan: apakah catatanmu sudah menangkap intinya?
+      </div>
+
+      <div class="selesai-banner">
+        <div class="judul">🎉 Selamat, kamu sudah menyelesaikan seluruh materi Menyimak: Informasi Penting dari Teks Aural!</div>
+        <p>Kemampuan mendengarkan-dan-memahami ini akan terus terpakai — bukan cuma di pelajaran Bahasa Indonesia, tapi juga saat gurumu menjelaskan pelajaran lain.</p>
+      </div>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
