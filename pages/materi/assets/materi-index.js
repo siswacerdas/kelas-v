@@ -108,6 +108,116 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Menyimak Mandiri: Menangkap Info Penting",
     ringkasan: "Menunjukkan kemampuan menyimak secara mandiri: menangkap dan mencatat info penting sendirian.",
+/* ============================================================
+   MATERI-INDEX.JS — Sumber tunggal daftar Materi Ajar
+   ============================================================
+   Setiap kali menambah materi baru:
+     1. Buat file HTML-nya di pages/materi/{mapelSlug}/(subfolder/)NN-judul.html
+     2. Tambahkan SATU objek baru di array MATERI_INDEX di bawah
+     3. Unggah dua file itu (file materi baru + file ini) ke GitHub
+   materi.html dan navigasi "sebelumnya/berikutnya" di tiap halaman
+   detail otomatis mengikuti isi array ini — tidak perlu mengubah
+   file lain.
+
+   Field:
+     mapel      — nama tampilan (mis. "Matematika")
+     mapelSlug  — HARUS SAMA dengan nama folder mapel
+     mapelColor — variabel warna CSS, format "var(--m-{slug})"
+     mapelIcon  — satu emoji ciri khas mapel (dipakai di daftar kalau
+                  "icon" per-item tidak diisi)
+     icon       — (opsional) emoji lebih spesifik per elemen/topik,
+                  menimpa mapelIcon di halaman ini
+     elemen     — (opsional) nama elemen CP besar (mis. "Menyimak").
+                  Dipakai untuk blok "materi lain" di halaman detail:
+                  kalau ada, menampilkan TP lain dalam elemen yang sama.
+     tp         — (opsional) kode Tujuan Pembelajaran resmi (mis. "M1").
+                  Dipakai (bersama mapelSlug) untuk membatasi lingkup
+                  navigasi sebelumnya/berikutnya supaya tidak melompat
+                  ke TP lain.
+     tema       — label yang DITAMPILKAN sebagai sub-judul kelompok di
+                  materi.html — sudah termasuk nama elemen (mis.
+                  "Menyimak · Informasi Penting dari Teks Aural") supaya
+                  siap tampil apa adanya, tanpa perlu digabung lagi.
+     urutan     — nomor urut BACA di dalam TP/tema itu saja (1, 2, 3, ...)
+     judul      — judul materi
+     ringkasan  — 1 kalimat pendek, tampil di daftar & halaman "segera hadir"
+     status     — "selesai" (sudah ditulis penuh) atau "segera" (baru
+                  placeholder/coming-soon) — dipakai progress_materi.md,
+                  boleh diabaikan oleh kode tampilan
+     file       — path relatif dari folder pages/materi/
+   ============================================================ */
+
+window.MATERI_INDEX = [
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    tema: "Bilangan",
+    tp: null,
+    urutan: 1,
+    judul: "Bilangan Cacah dan Nilai Tempat",
+    ringkasan: "Belajar membaca dan menulis bilangan besar lewat nilai tempat.",
+    status: "selesai",
+    file: "matematika/01-bilangan-cacah-dan-nilai-tempat.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 1,
+    judul: "Mendengarkan dan Menunjukkan Paham",
+    ringkasan: "Belajar menunjukkan paham isi teks pendek yang dibacakan guru, tanpa perlu menulis panjang.",
+    status: "selesai",
+    file: "bahasa-indonesia/menyimak-tp1/01-mendengarkan-dan-menunjukkan-paham.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 2,
+    judul: "Memilah Mana yang Penting",
+    ringkasan: "Berlatih memilih mana informasi yang penting dan mana yang bisa diabaikan saat mendengarkan.",
+    status: "selesai",
+    file: "bahasa-indonesia/menyimak-tp1/02-memilah-mana-yang-penting.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 3,
+    judul: "Mencatat dengan Caraku Sendiri",
+    ringkasan: "Mencoba mencatat hal penting dari yang didengar dengan caramu sendiri — gambar, simbol, atau kata kunci.",
+    status: "selesai",
+    file: "bahasa-indonesia/menyimak-tp1/03-mencatat-dengan-caraku-sendiri.html"
+  },
+  {
+    mapel: "Bahasa Indonesia",
+    mapelSlug: "bahasa-indonesia",
+    mapelColor: "var(--m-bahasa-indonesia)",
+    mapelIcon: "📝",
+    icon: "🎧",
+    elemen: "Menyimak",
+    tp: "M1",
+    tema: "Menyimak · Informasi Penting dari Teks Aural",
+    urutan: 4,
+    judul: "Menyimak Mandiri: Menangkap Info Penting",
+    ringkasan: "Menunjukkan kemampuan menyimak secara mandiri: menangkap dan mencatat info penting sendirian.",
     status: "selesai",
     file: "bahasa-indonesia/menyimak-tp1/04-menyimak-mandiri-menangkap-info-penting.html"
   },
@@ -258,7 +368,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Bicara ke Satu Teman Dulu",
     ringkasan: "Berlatih menyampaikan gagasan sederhana ke satu teman, tanpa naskah tertulis.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp1/01-bicara-ke-satu-teman-dulu.html"
   },
   {
@@ -273,7 +383,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Menyusun Awal-Isi-Akhir",
     ringkasan: "Menyusun gagasan dengan struktur awal-isi-akhir, lalu menyampaikannya ke kelompok kecil.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp1/02-menyusun-awal-isi-akhir.html"
   },
   {
@@ -288,7 +398,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Presentasi dengan Alat Bantu",
     ringkasan: "Presentasi dengan bantuan kartu poin atau gambar, bukan naskah lengkap yang dibaca.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp1/03-presentasi-dengan-alat-bantu.html"
   },
   {
@@ -303,7 +413,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Presentasi Gagasan di Depan Kelas",
     ringkasan: "Mempresentasikan gagasan secara efektif dan santun di depan kelas penuh.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp1/04-presentasi-gagasan-di-depan-kelas.html"
   },
   {
@@ -318,7 +428,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Suara yang Mengikuti Rasa (Siklus 1)",
     ringkasan: "Belajar bahwa cara membaca (suara, kecepatan) bisa mengikuti perasaan dalam sebuah teks.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp2/01-suara-yang-mengikuti-rasa-siklus-1.html"
   },
   {
@@ -333,7 +443,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Rasa yang Berubah dalam Satu Cerita (Siklus 2)",
     ringkasan: "Menemukan titik di mana perasaan dalam sebuah cerita berubah, lalu menyesuaikan cara membaca.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp2/02-rasa-yang-berubah-dalam-satu-cerita-siklus-2.html"
   },
   {
@@ -348,7 +458,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Membacakan Karyaku Sendiri (Siklus 3 – Puncak Semester 1)",
     ringkasan: "Membacakan karya (puisi/cerita) buatan sendiri di depan kelompok kecil.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp2/03-membacakan-karyaku-sendiri-siklus-3-puncak-semester-1.html"
   },
   {
@@ -363,7 +473,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Rasa yang Tersembunyi (Siklus 4)",
     ringkasan: "Berlatih membaca teks yang perasaannya tidak dinyatakan langsung, harus disimpulkan sendiri.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp2/04-rasa-yang-tersembunyi-siklus-4.html"
   },
   {
@@ -378,7 +488,7 @@ window.MATERI_INDEX = [
     urutan: 5,
     judul: "Tampil di Kelompok Besar (Siklus 5)",
     ringkasan: "Tampil membacakan karya di depan kelompok yang lebih besar dari sebelumnya.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp2/05-tampil-di-kelompok-besar-siklus-5.html"
   },
   {
@@ -393,7 +503,7 @@ window.MATERI_INDEX = [
     urutan: 6,
     judul: "Puncak Tahun: Karya Pilihanku (Siklus 6)",
     ringkasan: "Memilih sendiri karya terbaik sepanjang tahun untuk dibacakan di depan kelas.",
-    status: "segera",
+    status: "selesai",
     file: "bahasa-indonesia/berbicara-tp2/06-puncak-tahun-karya-pilihanku-siklus-6.html"
   },
   {
