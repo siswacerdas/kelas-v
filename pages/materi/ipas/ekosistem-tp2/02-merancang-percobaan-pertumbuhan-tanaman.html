@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Merancang Percobaan Pertumbuhan Tanaman · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .bahan-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); }
+  .bahan-box b { color: var(--m-color); }
+  .rancang-grid { display: grid; grid-template-columns: 1fr; gap: 0.7rem; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .rancang-grid { grid-template-columns: 1fr 1fr; } }
+  .rancang-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; background: #f4f8ef; }
+  .rancang-box .nama { font-weight: 700; color: #5a8a3a; display: block; margin-bottom: 0.3rem; }
+  .bingung-box { border: 1px solid #dcead0; border-left: 5px solid #5a8a3a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f4f8ef; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #5a8a3a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #5a8a3a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌱</span>
+      <div class="ma-cover-eyebrow">Ekosistem · Percobaan Pertumbuhan Tanaman (Proyek Andalan) · Materi 2 dari 5</div>
+      <div class="ma-cover-title">Merancang Percobaan Pertumbuhan Tanaman</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menerapkan konsep variabel yang kamu pelajari lewat pesawat kertas kemarin, ke percobaan sungguhan: menguji pengaruh air terhadap pertumbuhan tanaman kacang hijau. Kacang hijau dipilih karena tumbuh cepat — dalam hitungan hari kamu sudah bisa melihat perubahannya, cocok untuk diamati di dalam kelas dekat jendela.</p>
+
+      <div class="bahan-box"><b>Yang dibutuhkan per kelompok:</b> 2 pot/gelas plastik bekas berisi tanah, biji kacang hijau secukupnya, air, dan penggaris untuk mengukur.</div>
+
+      <p>Kerangka percobaan sudah disiapkan untukmu — tapi detail teknisnya kamu dan kelompokmu yang menentukan sendiri, seperti seorang peneliti sungguhan:</p>
+
+      <div class="rancang-grid">
+        <div class="rancang-box">
+          <span class="nama">🪴 Pot A — Disiram Rutin</span>
+          Disiram setiap hari sesuai kesepakatan kelompok (variabel bebas: jumlah/frekuensi air)
+        </div>
+        <div class="rancang-box">
+          <span class="nama">🪴 Pot B — Tidak/Jarang Disiram</span>
+          Sebagai pembanding (variabel kontrol untuk melihat efek TANPA air rutin)
+        </div>
+      </div>
+
+      <p>Yang perlu didiskusikan dan diputuskan kelompokmu sendiri: berapa banyak air untuk Pot A tiap kali disiram? Pakai gelas takar atau kira-kira saja? Bagaimana cara mengukur pertumbuhannya (tinggi batang pakai penggaris, jumlah daun dihitung manual)? Tidak ada jawaban "benar" tunggal — yang penting kelompokmu konsisten memakai cara yang sama sepanjang percobaan.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Ingat analogi resep kue dari materi sebelumnya? Sekarang bayangkan <span class="analogi">Pot A dan Pot B seperti dua loyang kue yang dipanggang bersamaan di oven yang sama</span> — supaya adil, keduanya harus pakai jenis tanah yang sama, ukuran pot yang sama, dan diletakkan di tempat yang mendapat cahaya matahari yang SAMA (misalnya sama-sama dekat jendela, bukan satu di jendela satu di lemari gelap). Kalau salah satu variabel selain air ikut berbeda, kamu jadi tidak yakin apakah perbedaan pertumbuhan nanti benar-benar disebabkan oleh air, atau oleh faktor lain yang ikut berbeda.</p>
+        <p>Ingat aturan emasnya: <strong>hanya SATU hal yang boleh sengaja dibedakan</strong> — dalam percobaan ini, itu adalah air. Semua yang lain harus sama persis.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Sebelum mulai menanam, coba tuliskan dulu prediksimu: menurutmu, seberapa besar bedanya pertumbuhan Pot A dan Pot B setelah 1-2 minggu? Simpan prediksi ini — kamu akan membandingkannya dengan hasil nyata di materi evaluasi nanti.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Kenapa kedua pot kacang hijau harus diletakkan di tempat yang sama (misalnya sama-sama dekat jendela), bukan satu di jendela dan satu di lemari gelap?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Supaya cahaya matahari (yang juga memengaruhi pertumbuhan tanaman) tidak ikut menjadi variabel yang berbeda. Kalau posisi cahayanya beda, kita tidak akan tahu apakah perbedaan pertumbuhan nanti disebabkan oleh air atau oleh cahaya — perbandingannya jadi tidak adil.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Kenapa jenis tanah untuk kedua pot juga harus sama?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena jenis tanah bisa memengaruhi seberapa banyak nutrisi yang tersedia untuk tanaman. Kalau tanahnya berbeda, itu bisa jadi variabel tambahan yang mengacaukan kesimpulan — kita ingin memastikan hanya AIR yang membedakan Pot A dan Pot B, bukan tanahnya.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Kelompok Budi menyiram Pot A setiap hari, dan Pot B cuma 2 hari sekali (bukan sama sekali tidak disiram). Variabel apa sebenarnya yang sedang mereka uji?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Mereka sedang menguji pengaruh FREKUENSI penyiraman (setiap hari vs 2 hari sekali) terhadap pertumbuhan tanaman — bukan sekadar "disiram vs tidak disiram sama sekali". Ini tetap sah sebagai rancangan percobaan, asalkan kelompok itu konsisten dengan frekuensinya masing-masing sepanjang percobaan.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Bersama kelompokmu, tuliskan rencana percobaan kalian: berapa banyak air untuk Pot A tiap kali disiram, bagaimana cara mengukur pertumbuhannya, dan apa prediksi awal kalian tentang hasilnya. Setelah rencananya jelas, mulai tanam kacang hijaunya!
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

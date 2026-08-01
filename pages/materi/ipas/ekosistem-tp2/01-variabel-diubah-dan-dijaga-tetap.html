@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Variabel yang Diubah dan yang Dijaga Tetap · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.55rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .proyek-banner { border: 1px solid #dcead0; border-radius: var(--r-lg); padding: 0.8rem 1.05rem; margin: 0 0 1.1rem; background: linear-gradient(135deg, #f4f8ef, #eef6e6); font-size: calc(var(--content-fs) - 2px); }
+  .proyek-banner b { color: #5a8a3a; }
+  .bingung-box { border: 1px solid #dcead0; border-left: 5px solid #5a8a3a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f4f8ef; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #5a8a3a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #5a8a3a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌱</span>
+      <div class="ma-cover-eyebrow">Ekosistem · Percobaan Pertumbuhan Tanaman (Proyek Andalan) · Materi 1 dari 5</div>
+      <div class="ma-cover-title">Variabel yang Diubah dan yang Dijaga Tetap</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <div class="proyek-banner">🌟 <b>Selamat datang di Proyek Andalan Ekosistem!</b> Ini proyek dengan waktu belajar terbesar di IPAS Kelas 5 — berjalan 1-2 minggu, bukan cuma satu kali pertemuan. Kamu akan benar-benar merancang dan menjalankan percobaan sains sendiri, dari awal sampai akhir.</div>
+
+      <p>Sebelum menguji dugaan tentang tanaman (dari materi Ekosistem sebelumnya), ada satu keterampilan penting yang perlu dikuasai dulu: membedakan mana yang boleh diubah-ubah dalam sebuah percobaan, dan mana yang harus dijaga tetap sama. Supaya konsepnya jelas, kita latihan dulu pakai <strong>pesawat kertas</strong> — bukan tanaman — supaya lebih cepat dicoba dan hasilnya langsung terlihat.</p>
+
+      <p><strong>Percobaan latihan: Pesawat Kertas</strong></p>
+      <ol class="langkah">
+        <li>Buat 2 pesawat kertas dengan <strong>bentuk yang SAMA persis</strong>, lalu jatuhkan dari ketinggian yang <strong>BERBEDA</strong> (misalnya satu dari meja, satu dari kepala berdiri). Amati mana yang jatuh lebih jauh/lebih lama di udara.</li>
+        <li>Sekarang buat 2 pesawat kertas dengan <strong>bentuk yang BERBEDA</strong> (misalnya satu lancip, satu lebar), lalu jatuhkan dari ketinggian yang <strong>SAMA</strong>. Amati lagi hasilnya.</li>
+      </ol>
+
+      <p>Perhatikan perbedaan dua percobaan itu: di percobaan pertama, yang <strong>diubah</strong> adalah ketinggian, sementara bentuk pesawat <strong>dijaga tetap</strong>. Di percobaan kedua, sebaliknya — bentuk yang diubah, ketinggian yang dijaga tetap. Istilahnya: hal yang sengaja diubah disebut <strong>variabel bebas</strong>, dan hal yang dijaga tetap supaya perbandingannya adil disebut <strong>variabel kontrol</strong>.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Bayangkan kamu sedang mencoba <span class="analogi">resep kue untuk mencari tahu apakah jumlah gula memengaruhi rasa manisnya.</span> Supaya adil, cuma jumlah gula yang boleh diubah-ubah — semua bahan lain (tepung, telur, mentega) dan cara memasaknya (suhu oven, lama memanggang) harus <strong>persis sama</strong>. Kalau kamu mengubah gula DAN suhu oven sekaligus, lalu rasanya beda, kamu jadi tidak tahu apakah itu karena gula atau karena suhu ovennya — perbandingannya jadi tidak adil dan hasilnya tidak bisa dipercaya.</p>
+        <p>Aturan emasnya: <strong>ubah HANYA SATU hal saja</strong> dalam satu percobaan, sisanya dijaga sama persis. Ini akan sangat penting saat kamu merancang percobaan tanaman di materi berikutnya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Coba pikirkan: kalau kamu ingin tahu pengaruh AIR terhadap pertumbuhan tanaman nanti, apa saja yang menurutmu perlu dijaga tetap sama antara dua pot yang dibandingkan (selain jumlah air)? Simpan jawabanmu untuk materi berikutnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Kalau kamu ingin tahu apakah WARNA kertas memengaruhi jarak lemparan pesawat kertas, apa yang harus DIUBAH dan apa yang harus DIJAGA TETAP?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Yang diubah: warna kertas. Yang dijaga tetap: bentuk pesawat, ukuran kertas, cara melipat, cara melempar, dan tempat melemparnya — supaya perbedaan hasil (kalau ada) benar-benar disebabkan oleh warna, bukan faktor lain yang ikut berbeda.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Kenapa kalau kamu mengubah DUA hal sekaligus (misalnya bentuk pesawat DAN ketinggian jatuh dalam satu percobaan yang sama), kamu jadi tidak bisa menyimpulkan penyebab sebenarnya dari perbedaan hasil?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena kamu tidak akan tahu apakah perbedaan hasilnya disebabkan oleh bentuk pesawat, ketinggian, atau gabungan keduanya. Supaya kesimpulannya jelas dan bisa dipercaya, hanya satu hal yang boleh diubah dalam satu percobaan, sementara yang lain dijaga sama.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Nanti kamu akan menguji pengaruh AIR terhadap pertumbuhan tanaman. Apa saja yang sebaiknya dijaga tetap sama supaya perbandingannya adil?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Beberapa contoh yang perlu dijaga sama: jenis tanaman yang sama, ukuran pot yang sama, jenis tanah yang sama, dan posisi/tempat yang mendapat cahaya matahari yang sama. Kalau semua itu dijaga sama dan cuma jumlah air yang dibedakan, perbedaan pertumbuhan yang muncul bisa dipastikan benar-benar disebabkan oleh air, bukan faktor lain.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Coba kedua percobaan pesawat kertas di atas bersama teman sekelompokmu. Untuk masing-masing percobaan, tuliskan: apa yang diubah, dan apa yang dijaga tetap. Latihan ini akan langsung kamu pakai di materi berikutnya untuk merancang percobaan tanaman sungguhan.
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
