@@ -11,9 +11,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .fp-compare { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 1rem 0 0.5rem; }
+  @media (min-width: 560px) { .fp-compare { grid-template-columns: 1fr 1fr; } }
+  .fp-card { border-radius: var(--r-lg); padding: 0.85rem 0.95rem; font-size: calc(var(--content-fs) - 1px); line-height: 1.6; }
+  .fp-card.fakta { background: #eef4fb; border: 1px solid #c3d8ee; }
+  .fp-card.pendapat { background: #fdf3e8; border: 1px solid #f0d8b0; }
+  .fp-tag { font-weight: 700; font-size: 11px; text-transform: uppercase; margin-bottom: 0.5rem; display: block; }
+  .fp-card.fakta .fp-tag { color: var(--accent); }
+  .fp-card.pendapat .fp-tag { color: #b8860b; }
+  .fp-kenapa { font-size: calc(var(--content-fs) - 3px); color: var(--ink-3); margin: 0.3rem 0 1.4rem; padding: 0 0.2rem; }
+  .indikator-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 0.6rem 0 1.4rem; }
+  .indikator-chip { background: #fdf3e8; border: 2px solid #b8860b; color: #b8860b; font-weight: 700; font-size: calc(var(--content-fs) - 2px); padding: 4px 12px; border-radius: 20px; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +41,88 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Pendapat (Gagasan)</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Pendapat (Gagasan) · Materi 1 dari 5</div>
       <div class="ma-cover-title">Fakta atau Pendapat?</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Belajar membedakan kalimat fakta dan kalimat pendapat.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang kita mulai keterampilan menulis <strong>gagasan</strong> — yaitu menuliskan pendapat tentang sesuatu, lengkap dengan alasannya. Sebelum bisa menulis pendapat dengan baik, kita perlu tahu dulu bedanya <strong>fakta</strong> dan <strong>pendapat</strong>.</p>
+
+      <p><strong>Fakta</strong> adalah sesuatu yang bisa dibuktikan benar atau salah, dan hasilnya sama untuk semua orang. <strong>Pendapat</strong> adalah pandangan pribadi seseorang tentang sesuatu — bisa berbeda-beda antar orang, dan tidak ada yang mutlak "benar" atau "salah".</p>
+
+      <p>Yuk lihat tiga pasang contoh, dari yang paling jelas bedanya sampai yang bisa menjebak:</p>
+
+      <p><strong>Contoh 1 — perbedaan yang jelas</strong></p>
+      <div class="fp-compare">
+        <div class="fp-card fakta"><span class="fp-tag">📏 Fakta</span>"Sekolah dimulai pukul 07.00 pagi."</div>
+        <div class="fp-card pendapat"><span class="fp-tag">💭 Pendapat</span>"Sekolah dimulai terlalu pagi."</div>
+      </div>
+      <div class="fp-kenapa">Kalimat pertama bisa dicek kebenarannya (lihat jadwal sekolah). Kalimat kedua tentang "terlalu pagi" — itu perasaan yang bisa berbeda untuk tiap orang, ada yang setuju, ada yang tidak.</div>
+
+      <p><strong>Contoh 2 — perlu diperhatikan kata-katanya</strong></p>
+      <div class="fp-compare">
+        <div class="fp-card fakta"><span class="fp-tag">📏 Fakta</span>"Buku ini memiliki 200 halaman."</div>
+        <div class="fp-card pendapat"><span class="fp-tag">💭 Pendapat</span>"Buku ini sangat menarik untuk dibaca."</div>
+      </div>
+      <div class="fp-kenapa">Jumlah halaman bisa dihitung dan dibuktikan sama untuk semua orang. Tapi "menarik" itu penilaian pribadi — ada yang menganggapnya menarik, ada yang menganggapnya membosankan.</div>
+
+      <p><strong>Contoh 3 — bisa menjebak, karena kedengarannya seperti fakta</strong></p>
+      <div class="fp-compare">
+        <div class="fp-card fakta"><span class="fp-tag">📏 Fakta</span>"Nasi goreng dibuat dari nasi yang digoreng dengan bumbu-bumbu."</div>
+        <div class="fp-card pendapat"><span class="fp-tag">💭 Pendapat</span>"Nasi goreng adalah makanan paling enak di dunia."</div>
+      </div>
+      <div class="fp-kenapa">Kalimat kedua diucapkan dengan yakin, seolah-olah pasti benar — tapi "paling enak di dunia" tetap penilaian pribadi. Orang lain mungkin punya makanan favorit yang berbeda. Kalimat yang disampaikan dengan yakin belum tentu itu fakta!</div>
+
+      <p>Beberapa kata sering menandai bahwa sebuah kalimat adalah pendapat, bukan fakta:</p>
+      <div class="indikator-grid">
+        <span class="indikator-chip">menurutku</span>
+        <span class="indikator-chip">sebaiknya</span>
+        <span class="indikator-chip">paling</span>
+        <span class="indikator-chip">terlalu</span>
+        <span class="indikator-chip">seharusnya</span>
+      </div>
+
+      <p>Tapi hati-hati — seperti Contoh 3, tidak semua pendapat memakai kata-kata ini secara terang-terangan. Cara paling pasti untuk mengecek: tanyakan, <strong>"apakah ini bisa dibuktikan sama untuk semua orang, atau tergantung penilaian masing-masing orang?"</strong></p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa perbedaan utama antara fakta dan pendapat?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Fakta bisa dibuktikan benar/salah dan sama untuk semua orang, sedangkan pendapat adalah pandangan pribadi yang bisa berbeda antar orang.</span>
+          Inilah kenapa fakta tidak bisa diperdebatkan (misalnya jumlah halaman buku), sedangkan pendapat wajar kalau berbeda-beda.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Kenapa kalimat "Nasi goreng adalah makanan paling enak di dunia" dianggap pendapat, padahal diucapkan dengan yakin seperti fakta?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena "paling enak" adalah penilaian pribadi yang bisa berbeda untuk tiap orang, bukan sesuatu yang bisa dibuktikan sama untuk semua orang.</span>
+          Cara kalimat itu diucapkan (yakin atau tidak) tidak menentukan apakah itu fakta atau pendapat — yang menentukan adalah apakah bisa dibuktikan sama untuk semua orang.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Apa cara paling pasti untuk mengecek apakah sebuah kalimat itu fakta atau pendapat?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Menanyakan apakah kalimat itu bisa dibuktikan sama untuk semua orang, atau tergantung penilaian masing-masing.</span>
+          Cara ini lebih pasti dibanding hanya mencari kata-kata penanda, karena tidak semua pendapat memakai kata-kata seperti "menurutku" secara terang-terangan.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Tuliskan 3 kalimat tentang sekolahmu — campur antara fakta dan pendapat, tanpa memberi tahu mana yang mana. Minta seseorang di rumah menebak: mana yang fakta, mana yang pendapat? Tanyakan alasan mereka menebak begitu.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu mulai menulis satu kalimat pendapat sendiri, tanpa perlu alasan dulu.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

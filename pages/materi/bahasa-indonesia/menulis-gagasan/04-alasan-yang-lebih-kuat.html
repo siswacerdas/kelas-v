@@ -11,9 +11,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .kata-hubung-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0 1.4rem; }
+  .kata-hubung-chip { background: #fff; border: 2px solid var(--m-color); color: var(--m-color); font-weight: 700; font-size: calc(var(--content-fs) - 2px); padding: 5px 14px; border-radius: 20px; }
+  .kata-hubung-chip .fungsi { display: block; font-size: 9.5px; font-weight: 500; color: var(--ink-3); text-transform: none; }
+  .gagasan-lengkap {
+    margin: 1rem 0 1.4rem; padding: 1rem 1.1rem; background: #fdf6f2; border-radius: var(--r-lg);
+    border: 1px solid var(--border); font-size: calc(var(--content-fs) - 1px); line-height: 1.75;
+  }
+  .gagasan-lengkap .kh { color: var(--m-color); font-weight: 700; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +38,76 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Pendapat (Gagasan)</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Pendapat (Gagasan) · Materi 4 dari 5</div>
       <div class="ma-cover-title">Alasan yang Lebih Kuat</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menulis alasan yang lebih panjang dengan variasi kata sambung (karena, sehingga, meskipun).</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Satu alasan saja terkadang belum cukup meyakinkan. Sekarang, kamu akan belajar menulis alasan yang <strong>lebih dari satu kalimat</strong>, dengan variasi kata sambung selain "karena":</p>
+
+      <div class="kata-hubung-grid">
+        <span class="kata-hubung-chip">karena<span class="fungsi">menjelaskan sebab</span></span>
+        <span class="kata-hubung-chip">sehingga<span class="fungsi">menjelaskan akibat</span></span>
+        <span class="kata-hubung-chip">meskipun<span class="fungsi">mengakui sisi lain</span></span>
+      </div>
+
+      <p>Kata sambung <strong>"meskipun"</strong> ini istimewa — dipakai untuk mengakui bahwa ada pertimbangan atau kekhawatiran lain, sebelum tetap mempertahankan pendapatmu. Ini membuat pendapatmu terasa lebih matang, karena menunjukkan kamu sudah memikirkan dari berbagai sisi, bukan cuma satu sisi saja.</p>
+
+      <p>Yuk lihat bagaimana pendapat dari materi sebelumnya dikembangkan dengan alasan yang lebih panjang:</p>
+
+      <div class="gagasan-lengkap">
+        "Menurutku, sebaiknya kelas punya aturan tanda 'diam' yang disepakati bersama, <span class="kh">karena</span> kalau kelas terlalu ramai, suara guru jadi tidak terdengar jelas. <span class="kh">Meskipun</span> aturan seperti ini kadang terasa mengekang, menurutku itu tetap perlu, <span class="kh">sehingga</span> semua bisa tetap belajar dengan nyaman tanpa terganggu suara berisik."
+      </div>
+
+      <p>Perhatikan strukturnya: <strong>karena</strong> menjelaskan alasan utama, <strong>meskipun</strong> mengakui bahwa ada yang mungkin merasa aturan itu "mengekang" (pertimbangan lain), lalu <strong>sehingga</strong> menutup dengan akibat baik yang diharapkan. Tiga kata sambung ini bekerja sama membuat argumen terasa lebih kuat dan matang.</p>
+
+      <p>Sekarang contoh kedua, dari pendapat tentang acara makan bersama:</p>
+
+      <div class="gagasan-lengkap">
+        "Aku rasa, sebaiknya sesekali kelas mengadakan acara makan bersama, <span class="kh">karena</span> itu bisa membuat suasana kelas lebih akrab. <span class="kh">Meskipun</span> mungkin perlu waktu ekstra untuk menyiapkannya, aku rasa itu sepadan, <span class="kh">sehingga</span> semua teman bisa merasakan kebersamaan tanpa ada yang merasa berbeda."
+      </div>
+
+      <p>Coba perhatikan: kata "meskipun" di sini mengakui adanya <strong>hambatan praktis</strong> (perlu waktu ekstra), bukan menyangkal pendapatnya sendiri. Ini justru memperkuat argumen, karena menunjukkan penulisnya sudah mempertimbangkan kesulitannya, bukan asal usul saja.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa fungsi kata sambung "meskipun" dalam menulis gagasan?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Mengakui bahwa ada pertimbangan atau kekhawatiran lain, sebelum tetap mempertahankan pendapat.</span>
+          Kata ini membuat pendapat terasa lebih matang karena menunjukkan penulis sudah memikirkan dari berbagai sisi, bukan cuma satu sisi.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Pada contoh "acara makan bersama", kalimat "meskipun mungkin perlu waktu ekstra untuk menyiapkannya" berfungsi untuk apa?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Mengakui adanya hambatan praktis (perlu waktu ekstra), yang justru memperkuat argumen karena menunjukkan pertimbangan yang matang.</span>
+          Mengakui kesulitan bukan berarti melemahkan pendapat — justru menunjukkan penulis sudah berpikir realistis, bukan asal usul.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Sebutkan tiga kata sambung yang dipelajari di materi ini beserta fungsinya masing-masing!</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: "Karena" (menjelaskan sebab), "sehingga" (menjelaskan akibat), "meskipun" (mengakui sisi lain sebelum mempertahankan pendapat).</span>
+          Ketiganya bisa dipakai bersama dalam satu gagasan untuk membuat argumennya lebih lengkap dan meyakinkan.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Ambil pendapat dan alasan yang sudah kamu tulis di materi sebelumnya. Kembangkan menjadi beberapa kalimat, tambahkan kata sambung "sehingga" untuk menjelaskan akibat baiknya, dan coba tambahkan "meskipun" untuk mengakui satu pertimbangan atau kekhawatiran lain sebelum mempertahankan pendapatmu.
+      </div>
+
+      <p>Materi berikutnya adalah <strong>Materi Inti</strong> — kamu akan menulis gagasan lengkap dari topik baru, menggabungkan semua yang sudah dipelajari.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

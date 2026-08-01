@@ -11,9 +11,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .situasi-card { margin: 1rem 0 0; padding: 0.9rem 1.05rem; background: #fdfaf5; border: 1px solid var(--border); border-radius: var(--r-lg) var(--r-lg) 0 0; font-size: calc(var(--content-fs) - 1px); line-height: 1.7; }
+  .situasi-card .tag { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-3); margin-bottom: 0.4rem; }
+  .pendapat-hasil { margin: 0 0 1.4rem; padding: 0.85rem 1.05rem; background: var(--paper-2); border: 1px solid var(--border); border-top: none; border-radius: 0 0 var(--r-lg) var(--r-lg); font-size: calc(var(--content-fs) - 1px); font-style: italic; color: var(--m-color); font-weight: 600; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +33,78 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Pendapat (Gagasan)</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Pendapat (Gagasan) · Materi 2 dari 5</div>
       <div class="ma-cover-title">Berani Berpendapat</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Berlatih menuliskan satu kalimat pendapat dari sebuah gambar/situasi, tanpa alasan dulu.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang giliranmu menulis pendapat sendiri. Aturannya sederhana untuk tahap ini: cukup tulis <strong>satu kalimat pendapat</strong> yang jelas — belum perlu alasan (itu untuk materi berikutnya). Yang penting sekarang: beranikan diri menyatakan pendapatmu dengan tegas, tidak ragu-ragu.</p>
+
+      <p>Supaya jelas bahwa kalimatmu memang pendapat (bukan disangka fakta), pakai kata pembuka seperti <em>"menurutku..."</em>, <em>"sebaiknya..."</em>, atau <em>"aku rasa..."</em>.</p>
+
+      <p>Yuk lihat contohnya — diberi satu situasi, lalu ditulis satu kalimat pendapat:</p>
+
+      <div class="situasi-card">
+        <span class="tag">Situasi 1</span>
+        Kelas sering ramai dan berisik saat jam pelajaran berlangsung, sehingga suara guru kadang tidak terdengar jelas.
+      </div>
+      <div class="pendapat-hasil">"Menurutku, sebaiknya kelas punya aturan tanda 'diam' yang disepakati bersama, misalnya guru mengangkat tangan sebagai tanda semua harus tenang."</div>
+
+      <div class="situasi-card">
+        <span class="tag">Situasi 2</span>
+        Beberapa siswa membawa bekal dari rumah setiap hari, sementara beberapa siswa lain tidak selalu membawa bekal.
+      </div>
+      <div class="pendapat-hasil">"Aku rasa, sebaiknya sesekali kelas mengadakan acara makan bersama, supaya semua bisa berbagi tanpa ada yang merasa berbeda."</div>
+
+      <p>Sekarang, situasi yang sedikit lebih rumit — ada beberapa sudut pandang yang mungkin muncul, jadi kamu perlu memilih <strong>satu pendapat yang jelas</strong>, bukan pendapat yang ragu-ragu atau mencampur semuanya:</p>
+
+      <div class="situasi-card">
+        <span class="tag">Situasi 3</span>
+        Sebagian teman sekelas ingin waktu istirahat dipakai untuk main di lapangan, sebagian lain ingin dipakai untuk membaca buku di perpustakaan. Wali kelas bingung harus mengikuti usulan yang mana.
+      </div>
+      <div class="pendapat-hasil">"Menurutku, sebaiknya waktu istirahat dibagi dua: setengah waktu untuk main, setengah waktu bebas untuk membaca atau istirahat tenang — supaya kedua kelompok sama-sama terpenuhi keinginannya."</div>
+
+      <p>Perhatikan: pada Situasi 3, pendapatnya <strong>tetap jelas dan tegas</strong> (dibagi dua), bukan kalimat yang membingungkan seperti "terserah saja, keduanya juga boleh" — itu bukan pendapat yang berani, karena tidak benar-benar mengambil sikap.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Kenapa penting memakai kata pembuka seperti "menurutku" atau "sebaiknya" saat menulis pendapat?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Supaya jelas bahwa kalimat itu adalah pendapat pribadi, bukan disangka sebagai fakta.</span>
+          Ini membantu pembaca langsung mengenali bahwa yang ditulis adalah pandangan penulis, bukan pernyataan yang harus diterima sebagai kebenaran mutlak.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Pada Situasi 3, kenapa jawaban seperti "terserah saja, keduanya juga boleh" dianggap BUKAN pendapat yang berani?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena kalimat itu tidak benar-benar mengambil sikap atau posisi yang jelas — hanya menghindar dari memilih.</span>
+          Pendapat yang baik menunjukkan sikap yang jelas, walau tetap bisa mempertimbangkan berbagai sisi (seperti solusi "dibagi dua" pada contoh).
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Di tahap materi ini, apakah pendapat yang ditulis sudah harus disertai alasan?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Belum — fokus dulu pada menulis satu kalimat pendapat yang jelas dan tegas. Alasan akan dipelajari di materi berikutnya.</span>
+          Memisahkan latihan "menyatakan pendapat" dari "memberi alasan" membantu setiap keterampilan dilatih dengan fokus, satu per satu.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Pikirkan satu situasi di sekolah atau rumahmu yang menurutmu bisa diperbaiki. Tulis <strong>satu kalimat pendapat</strong> yang jelas dan tegas, memakai kata pembuka seperti "menurutku" atau "sebaiknya". Belum perlu alasan dulu.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu menambahkan alasan pada pendapatmu, memakai kata sambung "karena".</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
