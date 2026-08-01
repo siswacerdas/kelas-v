@@ -11,9 +11,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .p2k { margin: 1rem 0 1.4rem; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+  .p2k-kata { background: var(--paper-2); padding: 0.8rem 1.05rem; display: flex; flex-wrap: wrap; gap: 6px; }
+  .p2k-kata .kata-chip { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: calc(var(--content-fs) - 3px); font-weight: 600; }
+  .p2k-arrow { text-align: center; padding: 3px 0; color: var(--ink-3); font-size: 12px; background: var(--paper-2); }
+  .p2k-kalimat { background: #fdf6f2; padding: 0.9rem 1.05rem; font-size: calc(var(--content-fs) - 1px); line-height: 1.75; font-style: italic; color: var(--ink-2); }
+  .bandingkan-buruk-baik { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .bandingkan-buruk-baik { grid-template-columns: 1fr 1fr; } }
+  .bb-card { border-radius: var(--r-lg); padding: 0.85rem 0.95rem; font-size: calc(var(--content-fs) - 2px); }
+  .bb-card.buruk { background: #fdeeee; border: 1px solid #f0c8c8; }
+  .bb-card.baik { background: #eef7f0; border: 1px solid #c5e5cd; }
+  .bb-tag { font-weight: 700; font-size: 11px; text-transform: uppercase; margin-bottom: 0.4rem; display: block; }
+  .bb-card.buruk .bb-tag { color: #b04242; }
+  .bb-card.baik .bb-tag { color: #2a9d6f; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +43,100 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Laporan Pengamatan</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Laporan Pengamatan · Materi 2 dari 5</div>
       <div class="ma-cover-title">Dari Kata Menjadi Kalimat</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Mengubah catatan kata pendek menjadi beberapa kalimat lepas dari hasil pengamatan.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Materi sebelumnya melatihmu mencatat hasil pengamatan dalam kata atau frasa pendek. Sekarang, ubah catatan itu menjadi <strong>3-5 kalimat lengkap</strong>. Belum perlu disusun berurutan rapi dulu (itu untuk materi berikutnya) — cukup pastikan tiap catatan sudah jadi kalimat yang utuh.</p>
+
+      <p>Caranya: setiap kata/frasa catatan biasanya cuma perlu ditambah <strong>kata kerja atau predikat</strong> yang sesuai supaya jadi kalimat lengkap. Yuk lihat contohnya, memakai catatan "Buah Jeruk" dari materi sebelumnya:</p>
+
+      <div class="p2k">
+        <div class="p2k-kata">
+          <span class="kata-chip">kulitnya oranye</span>
+          <span class="kata-chip">bintik-bintik kecil</span>
+          <span class="kata-chip">bentuk bulat agak lonjong</span>
+          <span class="kata-chip">permukaan agak kasar</span>
+          <span class="kata-chip">bau segar khas jeruk</span>
+        </div>
+        <div class="p2k-arrow">↓ dikembangkan jadi ↓</div>
+        <div class="p2k-kalimat">
+          "Kulit jeruk ini berwarna oranye. Ada beberapa bintik-bintik kecil yang tersebar di permukaannya. Bentuknya bulat, tapi agak lonjong di salah satu sisinya. Kalau diraba, permukaannya terasa agak kasar. Baunya segar, khas seperti bau jeruk pada umumnya."
+        </div>
+      </div>
+
+      <p>Perhatikan: setiap kalimat baru berasal dari satu catatan kata, dengan ditambahkan kata kerja seperti "berwarna", "ada", "kalau diraba", "baunya" — kata-kata ini yang mengubah catatan pendek jadi kalimat yang bisa dibaca utuh.</p>
+
+      <p>Sekarang contoh dari objek yang berbeda — "Pensil di Meja":</p>
+
+      <div class="p2k">
+        <div class="p2k-kata">
+          <span class="kata-chip">warna kuning</span>
+          <span class="kata-chip">ujungnya runcing</span>
+          <span class="kata-chip">bekas gigitan kecil</span>
+          <span class="kata-chip">panjang sekitar 15 cm</span>
+        </div>
+        <div class="p2k-arrow">↓ dikembangkan jadi ↓</div>
+        <div class="p2k-kalimat">
+          "Pensil ini berwarna kuning cerah. Ujungnya masih runcing, sepertinya baru saja diraut. Di bagian tengahnya, ada bekas gigitan kecil. Panjang pensil ini sekitar 15 sentimeter."
+        </div>
+      </div>
+
+      <p>Sekarang, mari bandingkan kalimat yang <strong>kurang detail</strong> dengan yang <strong>lebih detail</strong>, dari catatan yang sama:</p>
+
+      <div class="bandingkan-buruk-baik">
+        <div class="bb-card buruk">
+          <span class="bb-tag">⚠️ Kurang Detail</span>
+          "Pensilnya bagus. Warnanya kuning. Ujungnya runcing."
+        </div>
+        <div class="bb-card baik">
+          <span class="bb-tag">✅ Lebih Detail</span>
+          "Pensil ini berwarna kuning cerah. Ujungnya masih runcing, sepertinya baru saja diraut."
+        </div>
+      </div>
+
+      <p>Kalimat "Pensilnya bagus" itu bukan hasil pengamatan — itu <strong>pendapat</strong>, bukan fakta yang benar-benar terlihat. Laporan pengamatan harus berisi fakta yang benar-benar diamati (warna, bentuk, kondisi), bukan penilaian seperti "bagus" atau "jelek".</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa yang biasanya perlu ditambahkan pada catatan kata/frasa supaya menjadi kalimat lengkap?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Kata kerja atau predikat yang sesuai, seperti "berwarna", "ada", "terasa".</span>
+          Catatan seperti "warna kuning" perlu ditambah kata kerja menjadi kalimat lengkap seperti "Pensil ini berwarna kuning".
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Kenapa kalimat "Pensilnya bagus" dianggap bukan hasil pengamatan yang tepat?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena "bagus" adalah pendapat/penilaian, bukan fakta yang benar-benar terlihat dari pengamatan.</span>
+          Laporan pengamatan harus berisi fakta objektif (warna, bentuk, kondisi), bukan penilaian pribadi seperti bagus/jelek.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Pada tahap ini, apakah kalimat-kalimat hasil pengamatan sudah harus disusun berurutan secara rapi?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Belum — cukup pastikan tiap catatan sudah menjadi kalimat lengkap dulu. Urutan yang rapi akan dipelajari di materi berikutnya.</span>
+          Tahap ini fokus pada mengubah kata menjadi kalimat utuh, bukan menyusun urutannya.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Ambil catatan kata/frasa yang sudah kamu buat di materi sebelumnya. Ubah setiap catatan menjadi kalimat lengkap, sehingga kamu punya <strong>3-5 kalimat</strong>. Pastikan setiap kalimat berisi fakta yang benar-benar kamu amati, bukan pendapat seperti "bagus" atau "jelek".
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu menyusun kalimat-kalimat ini menjadi urutan yang lebih sistematis dan masuk akal.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

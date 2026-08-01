@@ -11,9 +11,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .kata-hubung-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0 1.4rem; }
+  .kata-hubung-chip { background: #fff; border: 2px solid var(--m-color); color: var(--m-color); font-weight: 700; font-size: calc(var(--content-fs) - 2px); padding: 5px 14px; border-radius: 20px; }
+  .laporan-card { margin: 1.1rem 0 1.4rem; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+  .laporan-judul { background: var(--m-color); color: #fff; padding: 0.6rem 1.05rem; font-size: calc(var(--content-fs) - 1px); font-weight: 700; }
+  .laporan-isi { background: #fff; padding: 0.9rem 1.05rem; font-size: calc(var(--content-fs) - 1px); line-height: 1.75; }
+  .laporan-isi .kh { color: var(--m-color); font-weight: 700; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +36,83 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Laporan Pengamatan</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Laporan Pengamatan · Materi 4 dari 5</div>
       <div class="ma-cover-title">Melaporkan Kejadian Nyata</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menulis laporan dari peristiwa nyata yang diamati langsung, pakai kalimat majemuk dasar.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Materi-materi sebelumnya melatihmu mengamati <strong>benda diam</strong>. Sekarang, objek pengamatanmu berubah jadi <strong>peristiwa atau aktivitas</strong> yang sedang berlangsung — misalnya proses menyiram tanaman, kucing yang sedang bermain, atau kegiatan piket kelas.</p>
+
+      <p>Bedanya besar: benda diam tidak berubah selama diamati, tapi peristiwa/aktivitas punya <strong>urutan waktu</strong> — ada yang terjadi duluan, lalu sesuatu terjadi setelahnya. Untuk menulis laporan seperti ini, kamu perlu memakai <strong>kalimat majemuk</strong> — kalimat yang menghubungkan dua kejadian dengan kata penghubung waktu.</p>
+
+      <p>Kata-kata penghubung yang biasa dipakai:</p>
+      <div class="kata-hubung-grid">
+        <span class="kata-hubung-chip">lalu</span>
+        <span class="kata-hubung-chip">kemudian</span>
+        <span class="kata-hubung-chip">setelah itu</span>
+        <span class="kata-hubung-chip">sambil</span>
+        <span class="kata-hubung-chip">saat</span>
+      </div>
+
+      <p>Yuk lihat contohnya, dari yang paling sederhana:</p>
+
+      <div class="laporan-card">
+        <div class="laporan-judul">Contoh 1 — Mengamati Kucing Bermain Bola</div>
+        <div class="laporan-isi">
+          "Kucing itu duduk diam di depan bola kecil, <span class="kh">lalu</span> ia menyentuhnya pelan dengan kaki depannya. <span class="kh">Kemudian</span>, bola itu menggelinding ke arah sofa, dan kucing itu langsung mengejarnya dengan cepat. <span class="kh">Setelah itu</span>, ia berhenti sejenak sambil menatap bola yang terjepit di bawah sofa."
+        </div>
+      </div>
+
+      <p>Perhatikan: setiap kata penghubung (lalu, kemudian, setelah itu) menandai <strong>langkah waktu baru</strong> dalam kejadian itu — dari duduk diam, ke menyentuh bola, ke mengejar, ke berhenti. Tanpa kata-kata ini, laporan akan terasa seperti daftar kejadian terpisah, bukan cerita yang mengalir.</p>
+
+      <div class="laporan-card">
+        <div class="laporan-judul">Contoh 2 — Mengamati Proses Menyiram Tanaman</div>
+        <div class="laporan-isi">
+          "Ibu mengambil gembor berisi air <span class="kh">sambil</span> berjalan menuju tanaman di teras. <span class="kh">Saat</span> air dituangkan ke tanah, tanahnya yang tadinya kering langsung berubah warna jadi lebih gelap. <span class="kh">Kemudian</span>, Ibu memeriksa daun-daun yang layu, <span class="kh">lalu</span> memangkas satu daun yang sudah menguning."
+        </div>
+      </div>
+
+      <p>Contoh ini sedikit lebih rumit karena memakai kata penghubung "sambil" dan "saat" — keduanya menunjukkan <strong>dua hal yang terjadi bersamaan</strong> (mengambil gembor sambil berjalan; air dituangkan saat tanah berubah warna), bukan cuma kejadian yang berurutan satu-satu.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa perbedaan utama antara mengamati benda diam dengan mengamati peristiwa/aktivitas?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Peristiwa/aktivitas punya urutan waktu (ada yang terjadi duluan, lalu berikutnya), sedangkan benda diam tidak berubah selama diamati.</span>
+          Inilah kenapa melaporkan peristiwa membutuhkan kalimat majemuk dengan kata penghubung waktu, sedangkan benda diam tidak.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Apa fungsi kata-kata seperti "lalu", "kemudian", dan "setelah itu" dalam laporan pengamatan peristiwa?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Menandai langkah waktu baru dalam kejadian, sehingga laporan terasa mengalir seperti cerita, bukan daftar kejadian terpisah.</span>
+          Tanpa kata penghubung ini, pembaca sulit mengikuti urutan kejadian yang sebenarnya terjadi.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Apa bedanya kata penghubung "sambil"/"saat" dengan "lalu"/"kemudian"?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: "Sambil" dan "saat" menunjukkan dua hal terjadi BERSAMAAN, sedangkan "lalu" dan "kemudian" menunjukkan kejadian yang BERURUTAN (satu selesai, baru yang berikutnya terjadi).</span>
+          Memilih kata penghubung yang tepat membantu pembaca memahami apakah kejadian terjadi bersamaan atau berurutan.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Amati satu aktivitas nyata yang sedang berlangsung di rumahmu (bisa orang memasak, hewan peliharaan bergerak, atau kegiatan sehari-hari lainnya). Tulis laporan pendek (3-5 kalimat) memakai kata penghubung waktu seperti "lalu", "kemudian", "sambil", atau "saat" untuk menghubungkan kejadian-kejadiannya.
+      </div>
+
+      <p>Materi berikutnya adalah <strong>Materi Inti</strong> — kamu akan menulis laporan pengamatan mandiri terhadap objek atau peristiwa baru, menggabungkan semua yang sudah dipelajari.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

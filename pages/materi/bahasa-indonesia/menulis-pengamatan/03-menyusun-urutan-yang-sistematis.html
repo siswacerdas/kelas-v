@@ -11,9 +11,21 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .urutan-compare { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .urutan-compare { grid-template-columns: 1fr 1fr; } }
+  .urutan-card { border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+  .urutan-label { padding: 0.5rem 0.9rem; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+  .urutan-card.acak .urutan-label { background: #fdeeee; color: #b04242; }
+  .urutan-card.rapi .urutan-label { background: #eef7f0; color: #2a9d6f; }
+  .urutan-isi { background: #fff; padding: 0.8rem 0.95rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .urutan-isi ol { margin: 0; padding-left: 1.1em; }
+  .urutan-isi li { margin-bottom: 4px; }
+  .pola-list { list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .pola-item { display: flex; gap: 10px; align-items: flex-start; padding: 0.6rem 0; border-bottom: 1px dashed var(--border); }
+  .pola-item:last-child { border-bottom: none; }
+  .pola-icon { flex-shrink: 0; font-size: 1.2rem; }
+  .pola-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.55; }
+  .pola-text b { color: var(--ink); }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +45,105 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Laporan Pengamatan</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Laporan Pengamatan · Materi 3 dari 5</div>
       <div class="ma-cover-title">Menyusun Urutan yang Sistematis</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menyusun kalimat-kalimat hasil pengamatan menjadi urutan yang masuk akal.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kalimat-kalimat pengamatanmu di materi sebelumnya masih <strong>lepas</strong> — urutannya belum tentu masuk akal kalau dibaca berurutan. Sekarang, susun ulang supaya urutannya <strong>sistematis</strong>, artinya mengikuti pola tertentu yang membuat pembaca lebih mudah membayangkan objeknya.</p>
+
+      <p>Ada beberapa pola urutan yang bisa dipakai untuk laporan pengamatan:</p>
+
+      <ul class="pola-list">
+        <li class="pola-item"><span class="pola-icon">🔭</span><span class="pola-text"><b>Umum ke khusus</b> — mulai dengan gambaran keseluruhan objek, baru masuk ke detail-detail kecil.</span></li>
+        <li class="pola-item"><span class="pola-icon">📐</span><span class="pola-text"><b>Berdasarkan posisi</b> — misalnya dari atas ke bawah, dari luar ke dalam, atau dari kiri ke kanan.</span></li>
+        <li class="pola-item"><span class="pola-icon">👀</span><span class="pola-text"><b>Berdasarkan indra</b> — kelompokkan dulu semua yang berasal dari penglihatan, baru perabaan, baru penciuman.</span></li>
+      </ul>
+
+      <p>Yuk lihat perbedaan antara kalimat yang masih acak dengan yang sudah disusun sistematis, memakai pengamatan "Buah Jeruk":</p>
+
+      <div class="urutan-compare">
+        <div class="urutan-card acak">
+          <div class="urutan-label">⚠️ Masih Acak</div>
+          <div class="urutan-isi">
+            <ol>
+              <li>Baunya segar, khas jeruk.</li>
+              <li>Kulit jeruk ini berwarna oranye.</li>
+              <li>Permukaannya terasa agak kasar.</li>
+              <li>Ada bintik-bintik kecil di permukaannya.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="urutan-card rapi">
+          <div class="urutan-label">✅ Sudah Sistematis (Umum ke Khusus)</div>
+          <div class="urutan-isi">
+            <ol>
+              <li>Kulit jeruk ini berwarna oranye.</li>
+              <li>Ada bintik-bintik kecil di permukaannya.</li>
+              <li>Permukaannya terasa agak kasar saat diraba.</li>
+              <li>Baunya segar, khas jeruk.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <p>Perhatikan versi yang sudah sistematis: dimulai dari <strong>gambaran umum</strong> (warna keseluruhan), lalu ke <strong>detail kecil</strong> (bintik-bintik), lalu ke <strong>sentuhan</strong> (kasar), dan terakhir <strong>penciuman</strong> (bau). Urutan ini mengikuti pola "umum ke khusus" sekaligus "berdasarkan indra" — pembaca jadi lebih mudah membayangkan jeruk itu langkah demi langkah, dibanding versi acak yang melompat-lompat.</p>
+
+      <p>Sekarang contoh lain, memakai pola "berdasarkan posisi" untuk pengamatan "Tanaman di Pot":</p>
+
+      <div class="urutan-card rapi" style="margin-bottom:1.4rem;">
+        <div class="urutan-label">✅ Sistematis (Atas ke Bawah)</div>
+        <div class="urutan-isi">
+          <ol>
+            <li>Daunnya berwarna hijau tua, dengan 3 daun yang mulai menguning di bagian atas.</li>
+            <li>Batangnya condong ke arah jendela, mencari cahaya matahari.</li>
+            <li>Tanahnya kering dan terlihat retak-retak di bagian dalam pot.</li>
+            <li>Potnya berwarna cokelat, dengan sedikit retak di bagian pinggirnya.</li>
+          </ol>
+        </div>
+      </div>
+
+      <p>Di sini, urutannya mengikuti posisi fisik tanaman: dari bagian paling atas (daun), turun ke batang, lalu tanah, dan terakhir pot yang menampung semuanya. Pola urutan ini berbeda dengan contoh jeruk, tapi sama-sama membuat laporan lebih mudah diikuti.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Sebutkan tiga pola urutan yang bisa dipakai untuk menyusun laporan pengamatan!</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Umum ke khusus, berdasarkan posisi (atas-bawah/luar-dalam), dan berdasarkan indra.</span>
+          Pemilihan pola tergantung objek yang diamati — tidak selalu harus sama untuk semua laporan.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Kenapa versi "acak" pada contoh jeruk terasa lebih sulit diikuti dibanding versi "sistematis"?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena urutannya melompat-lompat antarindra (bau, lalu warna, lalu raba, lalu bintik) tanpa pola yang jelas, membuat pembaca sulit membayangkan objeknya langkah demi langkah.</span>
+          Urutan sistematis membantu pembaca membangun gambaran objek secara bertahap, bukan melompat-lompat.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Pada contoh "Tanaman di Pot", pola urutan apa yang dipakai, dan kenapa itu masuk akal untuk objek tersebut?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Pola "berdasarkan posisi" (atas ke bawah) — masuk akal karena tanaman memang punya struktur fisik dari atas (daun) ke bawah (tanah dan pot).</span>
+          Memilih pola yang sesuai dengan struktur fisik objek membuat laporan terasa lebih alami dan mudah dibayangkan.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Ambil kalimat-kalimat pengamatan yang sudah kamu buat di materi sebelumnya. Pilih salah satu pola urutan (umum ke khusus, posisi, atau berdasarkan indra), lalu susun ulang kalimat-kalimatmu mengikuti pola itu. Baca ulang: apakah sekarang lebih mudah dibayangkan dibanding sebelumnya?
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu mengamati sesuatu yang berbeda: bukan lagi benda diam, tapi <strong>peristiwa atau aktivitas</strong> yang sedang berlangsung.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
