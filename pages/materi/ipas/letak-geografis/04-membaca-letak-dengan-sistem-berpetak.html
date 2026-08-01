@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Membaca Letak dengan Sistem Berpetak · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .grid-demo { display: grid; grid-template-columns: 28px repeat(5, 1fr); gap: 2px; max-width: 360px; margin: 1rem auto 1.4rem; font-size: 12px; }
+  .grid-demo .cell { background: #eef4fa; border: 1px solid #cfe0ee; border-radius: 4px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; color: var(--ink-2); }
+  .grid-demo .head { background: transparent; border: none; font-weight: 700; color: var(--ink-2); }
+  .grid-demo .mark { background: #2d6ca8; color: #fff; font-weight: 700; }
+  .catatan-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.8rem 1.05rem; margin: 0 0 1.1rem; background: var(--paper-2); font-size: calc(var(--content-fs) - 3px); color: var(--ink-2); font-style: italic; }
+  .bingung-box { border: 1px solid #cfe0ee; border-left: 5px solid #2d6ca8; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef4fa; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #2d6ca8; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #2d6ca8; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🗺️</span>
+      <div class="ma-cover-eyebrow">Letak Geografis Indonesia · Materi 4 dari 5</div>
+      <div class="ma-cover-title">Membaca Letak dengan Sistem Berpetak</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <div class="catatan-box">💡 Kalau kamu sudah belajar "sistem berpetak" atau koordinat baris-kolom di pelajaran Matematika, materi ini akan terasa familiar — anggap saja latihan tambahan. Kalau belum sempat belajar itu di Matematika, tidak masalah — kita bahas dasarnya bersama di sini.</div>
+
+      <p>Sejauh ini kamu sudah bisa menjelaskan letak Indonesia secara umum (di antara benua dan samudra, dekat garis khatulistiwa). Tapi bagaimana kalau kamu ingin menunjukkan letak yang lebih <strong>tepat</strong> — misalnya letak satu pulau tertentu di atas peta? Untuk itu, orang memakai <strong>sistem berpetak</strong>: kotak-kotak grid yang membagi peta jadi baris dan kolom, supaya tiap lokasi bisa ditunjuk dengan pasti.</p>
+
+      <p>Cara membacanya sederhana: tiap kolom (garis tegak) diberi huruf (A, B, C, ...), dan tiap baris (garis mendatar) diberi angka (1, 2, 3, ...). Untuk menunjuk satu titik, sebutkan kolom dan barisnya sekaligus — misalnya "C2" berarti kolom C, baris 2.</p>
+
+      <div class="grid-demo">
+        <div class="cell head"></div>
+        <div class="cell head">A</div>
+        <div class="cell head">B</div>
+        <div class="cell head">C</div>
+        <div class="cell head">D</div>
+        <div class="cell head">E</div>
+        <div class="cell head">1</div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+        <div class="cell head">2</div>
+        <div class="cell"></div><div class="cell"></div><div class="cell mark">★</div><div class="cell"></div><div class="cell"></div>
+        <div class="cell head">3</div>
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+      <p style="text-align:center; font-size: calc(var(--content-fs) - 3px); color: var(--ink-3); margin-top: -0.8rem;">Contoh: bintang di atas berada di posisi <strong>C2</strong> (kolom C, baris 2)</p>
+
+      <p>Sekarang terapkan cara membaca ini ke peta Indonesia berkoordinat yang disediakan gurumu. Coba tentukan: pulau besar tertentu (misalnya Sumatra, Jawa, atau Kalimantan) berada di kolom dan baris berapa?</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Bayangkan <span class="analogi">nomor kursi di bioskop</span> — biasanya ditulis seperti "F7", artinya baris F, kursi nomor 7. Kamu tidak perlu menghitung dari kursi paling depan satu-satu untuk menemukannya; cukup cari baris F dulu, lalu geser ke kursi nomor 7. Sistem berpetak pada peta bekerja persis seperti itu — cari kolomnya dulu (huruf), lalu turun/naik ke barisnya (angka), ketemu deh lokasinya.</p>
+        <p>Kalau masih bingung mana yang "kolom" dan mana yang "baris": kolom itu garis yang berdiri tegak (naik-turun), sedangkan baris itu garis yang mendatar (kiri-kanan) — sama seperti barisan bangku di kelas (baris) dan kolom meja dari depan ke belakang.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Urutan penulisan penting! "C2" (kolom C dulu, baru baris 2) berbeda posisinya dengan menyebut baris dulu baru kolom kalau formatnya terbalik — pastikan kamu tahu aturan format yang dipakai di peta yang kamu baca.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Pada grid contoh di atas, posisi apa yang ditunjukkan oleh bintang (★)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> C2 — kolom C, baris 2. Cara membacanya: temukan kolom C terlebih dahulu (garis tegak ketiga dari kiri), lalu turun ke baris 2 (baris kedua dari atas).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Kenapa sistem berpetak (kolom + baris) lebih memudahkan menunjukkan lokasi dibanding hanya menjelaskan dengan kata-kata seperti "agak ke kanan, sedikit ke bawah"?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena kata-kata seperti "agak ke kanan" bersifat kira-kira dan bisa ditafsirkan berbeda oleh orang lain, sementara kombinasi kolom-baris (misalnya C2) menunjuk lokasi yang persis dan sama artinya untuk siapa saja yang membaca peta itu.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Kalau kamu diminta mencari posisi "E1" pada grid contoh di atas, langkah apa yang kamu lakukan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cari kolom E terlebih dahulu (kolom paling kanan pada contoh di atas), lalu dari kolom itu turun/geser ke baris 1 (baris paling atas). Titik pertemuan kolom E dan baris 1 itulah lokasi yang dimaksud.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Pada peta Indonesia berkoordinat yang diberikan gurumu, tentukan lokasi salah satu pulau besar Indonesia (misalnya Sumatra, Jawa, Kalimantan, Sulawesi, atau Papua) menggunakan sistem berpetak, lalu jelaskan letaknya dengan kata-katamu sendiri.
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
