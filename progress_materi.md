@@ -276,6 +276,54 @@ yang belum ditulis sama sekali: Menulis-Pengamatan (5), Menulis-Gagasan
 (5), Menulis-Imajinasi (5) — total 15 materi lagi untuk menuntaskan
 seluruh Bahasa Indonesia.
 
+## 6j. TP Menulis-Pengamatan — SELESAI 5/5 (2026-07-26)
+
+Progresi: catat kata/frasa dari benda diam → kembangkan jadi kalimat
+→ susun urutan sistematis (umum-khusus/posisi/indra) → laporan
+peristiwa dengan kalimat majemuk (kata hubung waktu: lalu, kemudian,
+sambil, saat) → mandiri pada objek baru. Materi Inti (5) sempat
+kelewatan bagian "Cek Pemahamanmu" saat pertama ditulis, sudah
+ditambahkan sebelum dianggap selesai.
+
+**Sisa: Menulis-Gagasan (5) dan Menulis-Imajinasi (5) — 10 materi
+lagi untuk menuntaskan seluruh Bahasa Indonesia.**
+
+## 6k. TP Menulis-Gagasan — SELESAI 5/5 (2026-07-26)
+
+Progresi: bedakan fakta vs pendapat → nyatakan pendapat tegas tanpa
+alasan → tambah alasan dengan "karena" → variasi kata sambung
+("sehingga", "meskipun" untuk mengakui sisi lain) → mandiri pada
+topik baru. Teknik "meskipun" sengaja dihubungkan dengan teknik
+serupa yang sudah dipelajari di Berbicara TP1 (mengakui kekhawatiran
+sebelum menjelaskan solusi) sebagai penghubung lintas-elemen.
+
+**Sisa: Menulis-Imajinasi (5) — TP TERAKHIR untuk menuntaskan seluruh
+Bahasa Indonesia.**
+
+## 6l. TP Menulis-Imajinasi — SELESAI 5/5 (2026-07-26)
+
+Progresi: lontarkan ide liar bebas → kembangkan jadi tokoh & latar
+detail → susun alur Awal-Tengah-Akhir (dihubungkan balik ke struktur
+Menulis-Pengalaman) → kata konotatif untuk menambah kesan → cerita
+utuh mandiri. Materi Inti memakai contoh baru ("Do", sepatu yang
+bernyanyi lagu sedih) sebagai model, dan sekaligus jadi banner
+penutup untuk SELURUH mata pelajaran Bahasa Indonesia.
+
+---
+
+## ✅ SELURUH BAHASA INDONESIA SELESAI: 9 TP, 42 materi (2026-07-26)
+
+Semua elemen (Menyimak, Membaca dan Memirsa, Berbicara, Menulis)
+sudah lengkap ditulis dengan standar kualitas dari Bagian 5. Tidak
+ada lagi materi Bahasa Indonesia yang berstatus "segera hadir".
+
+**Fase berikutnya:** 7 mapel lain masih placeholder kosong —
+Matematika (baru 1 materi pilot), IPAS, Pendidikan Agama Islam dan
+Budi Pekerti, Pendidikan Pancasila, Seni Budaya, PJOK, Bahasa
+Inggris. Menunggu arahan mapel mana yang diprioritaskan berikutnya,
+dan dokumen CP/TP/ATP resmi untuk mapel tersebut kalau tersedia
+(seperti yang sudah diberikan untuk Bahasa Indonesia).
+
 ---
 
 ## 7. Status & log progres
@@ -310,21 +358,21 @@ seluruh Bahasa Indonesia.
 | Menulis | TL-Pengalaman | Menyusun Kerangka Ceritaku | ✅ Selesai |
 | Menulis | TL-Pengalaman | Menulis Draf Pertama | ✅ Selesai |
 | Menulis | TL-Pengalaman ⭐ | Cerita Pengalamanku yang Hidup | ✅ Selesai |
-| Menulis | TL-Pengamatan | Mencatat dari Hasil Mengamati | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan | Dari Kata Menjadi Kalimat | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan | Menyusun Urutan yang Sistematis | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan | Melaporkan Kejadian Nyata | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan ⭐ | Laporan Pengamatanku Sendiri | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Fakta atau Pendapat? | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Berani Berpendapat | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Pendapat Butuh Alasan | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Alasan yang Lebih Kuat | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan ⭐ | Menulis Pendapat dan Alasanku | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Melontarkan Ide-Ide Liar | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Tokoh dan Latar yang Tak Biasa | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Menyusun Alur Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Kata-Kata yang Punya Rasa | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi ⭐ | Ceritaku, Imajinasiku Sendiri | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengamatan | Mencatat dari Hasil Mengamati | ✅ Selesai |
+| Menulis | TL-Pengamatan | Dari Kata Menjadi Kalimat | ✅ Selesai |
+| Menulis | TL-Pengamatan | Menyusun Urutan yang Sistematis | ✅ Selesai |
+| Menulis | TL-Pengamatan | Melaporkan Kejadian Nyata | ✅ Selesai |
+| Menulis | TL-Pengamatan ⭐ | Laporan Pengamatanku Sendiri | ✅ Selesai |
+| Menulis | TL-Gagasan | Fakta atau Pendapat? | ✅ Selesai |
+| Menulis | TL-Gagasan | Berani Berpendapat | ✅ Selesai |
+| Menulis | TL-Gagasan | Pendapat Butuh Alasan | ✅ Selesai |
+| Menulis | TL-Gagasan | Alasan yang Lebih Kuat | ✅ Selesai |
+| Menulis | TL-Gagasan ⭐ | Menulis Pendapat dan Alasanku | ✅ Selesai |
+| Menulis | TL-Imajinasi | Melontarkan Ide-Ide Liar | ✅ Selesai |
+| Menulis | TL-Imajinasi | Tokoh dan Latar yang Tak Biasa | ✅ Selesai |
+| Menulis | TL-Imajinasi | Menyusun Alur Cerita | ✅ Selesai |
+| Menulis | TL-Imajinasi | Kata-Kata yang Punya Rasa | ✅ Selesai |
+| Menulis | TL-Imajinasi ⭐ | Ceritaku, Imajinasiku Sendiri | ✅ Selesai |
 
 **Legenda:** ⭐ = Pertemuan Inti/puncak TP tersebut · ✅ Selesai · 🕓 Segera hadir (halaman & link sudah aktif, isi menyusul)
 
