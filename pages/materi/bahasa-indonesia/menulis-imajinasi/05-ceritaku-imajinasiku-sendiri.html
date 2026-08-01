@@ -11,9 +11,33 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .model-analisis {
+    margin: 0 0 1.5rem; padding: 1rem 1.1rem; background: var(--paper-2); border: 2px solid var(--m-color);
+    border-radius: var(--r-lg); font-size: calc(var(--content-fs) - 2px);
+  }
+  .model-analisis .step-label {
+    font-weight: 700; color: var(--m-color); font-size: 12px; text-transform: uppercase;
+    letter-spacing: 0.04em; margin: 0.9rem 0 0.4rem; display: block;
+  }
+  .model-analisis .step-label:first-child { margin-top: 0; }
+  .model-analisis .cerita-final { background: #fff; border-radius: var(--r); padding: 0.85rem 0.95rem; line-height: 1.75; font-style: italic; }
+  .model-analisis .cerita-final .kk { color: var(--m-color); font-weight: 700; font-style: normal; }
+  .recap-list { list-style: none; margin: 1rem 0 1.4rem; padding: 0; }
+  .recap-item { display: flex; gap: 10px; align-items: flex-start; padding: 0.7rem 0; border-bottom: 1px dashed var(--border); }
+  .recap-item:last-child { border-bottom: none; }
+  .recap-num {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--m-color); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .recap-text { font-size: calc(var(--content-fs) - 2px); line-height: 1.5; padding-top: 2px; }
+  .recap-text b { color: var(--ink); }
+  .final-banner {
+    margin: 1.75rem 0; padding: 1.6rem 1.4rem; border-radius: var(--r-lg);
+    background: var(--ink); color: #fff; text-align: center;
+  }
+  .final-banner .judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.3rem; margin-bottom: 0.6rem; }
+  .final-banner p { font-size: 13.5px; opacity: 0.85; margin: 0.4rem 0 0; line-height: 1.6; }
+  .final-banner .daftar-tp { font-size: 12px; opacity: 0.75; margin-top: 1rem; line-height: 1.8; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -32,18 +56,109 @@
 
   <div class="ma-cover">
     <div class="ma-cover-inner">
-      <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Cerita Imajinatif</div>
+      <span class="ma-cover-icon">⭐</span>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Cerita Imajinatif · Materi 5 dari 5 (Inti)</div>
       <div class="ma-cover-title">Ceritaku, Imajinasiku Sendiri</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menulis cerita imajinatif utuh dari ide sendiri: ada tokoh, latar, dan alur.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menggabungkan semua keterampilan menulis cerita imajinatif menjadi satu cerita utuh. Sebelum kamu mengerjakannya sendiri, mari lihat dulu satu contoh lengkap sebagai model, dari ide baru yang belum pernah dipakai di materi-materi sebelumnya:</p>
+
+      <div class="model-analisis">
+        <span class="step-label">Langkah 1 — Ide Liar</span>
+        Sepatu yang bisa bernyanyi, tapi hanya bisa menyanyikan lagu sedih.
+
+        <span class="step-label">Langkah 2 — Tokoh dan Latar</span>
+        Sepatunya bernama <strong>Do</strong>, sepatu kanvas biru yang warnanya sudah agak pudar. Do punya kebiasaan bersenandung sangat pelan, hampir tidak terdengar, setiap kali pemiliknya sedang sedih tanpa disadari. Do tinggal di rak sepatu kecil dekat pintu sebuah rumah kontrakan sempit, tempat suara motor dan pedagang keliling sering terdengar sayup dari gang di luar jendela.
+
+        <span class="step-label">Langkah 3 — Alur (Awal-Tengah-Akhir)</span>
+        <strong>Awal:</strong> Do sering bersenandung pelan tanpa pernah benar-benar didengar pemiliknya, seorang anak bernama Rio yang selalu terburu-buru berangkat sekolah.<br/>
+        <strong>Tengah:</strong> Suatu pagi, Rio pulang dengan wajah murung karena nilai ulangannya jelek. Ia duduk lesu di dekat rak sepatu, dan tanpa sadar, Do mulai bersenandung lebih keras dari biasanya — sampai akhirnya Rio benar-benar mendengar suara itu untuk pertama kali.<br/>
+        <strong>Akhir:</strong> Rio terkejut, lalu justru tertawa kecil mendengar sepatunya bernyanyi sumbang. Sejak hari itu, setiap kali Rio merasa sedih, ia sengaja duduk dekat rak sepatu, menunggu Do bernyanyi untuknya.
+
+        <span class="step-label">Langkah 4 — Kata Konotatif</span>
+        Dipilih kata "murung" (bukan "sedih" saja), "lesu" (bukan "duduk" saja), dan "sumbang" (bukan "tidak merdu" saja) untuk menambah kesan yang lebih kuat.
+
+        <span class="step-label">Cerita Lengkap (Digabungkan)</span>
+        <div class="cerita-final">
+          "Do adalah sepatu kanvas biru yang warnanya sudah agak pudar. Ia punya kebiasaan bersenandung sangat pelan setiap kali pemiliknya sedang <span class="kk">murung</span>, meski hampir tidak pernah ada yang mendengarnya. Do tinggal di rak sepatu kecil dekat pintu, tempat suara motor dan pedagang keliling terdengar sayup dari gang sempit di luar jendela.<br/><br/>
+          Pemilik Do, seorang anak bernama Rio, selalu terburu-buru setiap pagi dan tidak pernah benar-benar memperhatikan sepatunya. Sampai suatu hari, Rio pulang dengan wajah <span class="kk">murung</span> karena nilai ulangannya jelek. Ia duduk <span class="kk">lesu</span> di dekat rak sepatu — dan tanpa sadar, senandung Do terdengar lebih keras dari biasanya, sampai akhirnya Rio benar-benar mendengarnya untuk pertama kali.<br/><br/>
+          Rio terkejut, lalu tertawa kecil mendengar suara <span class="kk">sumbang</span> sepatunya bernyanyi. Sejak hari itu, setiap kali merasa sedih, Rio sengaja duduk dekat rak sepatu — menunggu Do bernyanyi untuknya."
+        </div>
+      </div>
+
+      <p>Perhatikan bagaimana keempat langkah menyatu: ide liar yang sederhana (sepatu bernyanyi lagu sedih) dikembangkan jadi tokoh dan latar yang detail, diberi alur dengan masalah yang berhubungan dengan sifat uniknya, dan diperkaya dengan kata-kata konotatif yang menambah kesan tanpa mengubah cerita intinya.</p>
+
+      <p>Rangkuman seluruh perjalanan Menulis Cerita Imajinatif:</p>
+
+      <ul class="recap-list">
+        <li class="recap-item">
+          <span class="recap-num">1</span>
+          <span class="recap-text"><b>Melontarkan ide liar</b> — bebas berimajinasi tanpa tekanan harus langsung jadi cerita.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">2</span>
+          <span class="recap-text"><b>Tokoh dan latar</b> — memberi nama, ciri fisik, kebiasaan unik, dan detail indrawi.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">3</span>
+          <span class="recap-text"><b>Alur cerita</b> — Awal-Tengah-Akhir, dengan masalah yang berhubungan dengan sifat tokoh.</span>
+        </li>
+        <li class="recap-item">
+          <span class="recap-num">4</span>
+          <span class="recap-text"><b>Kata konotatif</b> — memilih kata yang menambah kesan/rasa, bukan sekadar kata netral.</span>
+        </li>
+      </ul>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Pada cerita "Do", masalah apa yang muncul di bagian Tengah, dan kenapa itu berhubungan dengan sifat unik tokoh?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Rio pulang dengan sedih, membuat Do bersenandung lebih keras dari biasa sampai akhirnya terdengar — ini berhubungan langsung dengan kebiasaan unik Do yang bersenandung saat pemiliknya sedih.</span>
+          Seperti dipelajari di Materi 3, masalah yang baik terhubung dengan sifat/kebiasaan unik tokoh yang sudah dibangun sejak awal.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Sebutkan tiga kata konotatif yang dipakai dalam cerita "Do", beserta kata netral yang bisa menggantikannya!</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: "Murung" (bisa diganti "sedih"), "lesu" (bisa diganti "duduk"), "sumbang" (bisa diganti "tidak merdu").</span>
+          Kata-kata konotatif ini menambah kesan yang lebih kuat dibanding kata netralnya, seperti dipelajari di Materi 4.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Sebutkan urutan lengkap proses menulis cerita imajinatif, dari ide sampai cerita jadi!</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: (1) Lontarkan ide liar, (2) kembangkan jadi tokoh dan latar yang detail, (3) susun alur Awal-Tengah-Akhir dengan masalah yang berhubungan dengan tokoh, (4) perkaya dengan kata-kata konotatif.</span>
+          Urutan ini menggabungkan seluruh keterampilan yang dipelajari sepanjang TP Menulis Cerita Imajinatif.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Tugasmu Sekarang (Penilaian Akhir TP Ini)</span>
+        Buat satu cerita imajinatif utuh dari ide BARU (belum pernah kamu tulis di materi-materi sebelumnya). Ikuti proses lengkap: lontarkan ide liar, kembangkan tokoh dan latar, susun alur Awal-Tengah-Akhir, lalu perkaya dengan minimal <strong>satu kata konotatif</strong> yang dipilih secara sadar.
+        <br/><br/>
+        Yang akan dinilai: (1) apakah tokoh dan latar tergambar jelas dengan detail, (2) apakah alurnya punya masalah yang berhubungan dengan tokoh, (3) apakah ada minimal satu kata konotatif yang dipilih dengan sengaja untuk menambah kesan.
+      </div>
+
+      <div class="final-banner">
+        <div class="judul">🏆 Selamat! Kamu baru saja menyelesaikan SELURUH perjalanan Bahasa Indonesia kelas 5A!</div>
+        <p>Dari menyimak, membaca dan memirsa, berbicara, sampai menulis dalam berbagai bentuk — pengalaman, pengamatan, gagasan, dan imajinasi — kamu sudah melatih hampir semua cara berbahasa Indonesia dengan baik. Kemampuan ini akan terus menemanimu, bukan cuma di sekolah, tapi sepanjang hidupmu setiap kali kamu perlu didengar, dipahami, dan memahami orang lain.</p>
+        <div class="daftar-tp">
+          🎧 Menyimak (Informasi Penting · Sebab-Akibat) &nbsp;·&nbsp; 🎬 Membaca &amp; Memirsa (Menganalisis Tayangan)<br/>
+          🎤 Berbicara (Presentasi Gagasan · Membacakan Karya Sastra)<br/>
+          ✍️ Menulis (Pengalaman · Pengamatan · Gagasan · Imajinasi)
+        </div>
+      </div>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

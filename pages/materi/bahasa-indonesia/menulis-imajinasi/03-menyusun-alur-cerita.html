@@ -11,9 +11,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .kerangka { margin: 1rem 0 1.4rem; border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+  .kerangka-judul { background: var(--paper-2); padding: 0.55rem 1.05rem; font-size: 12px; font-weight: 700; color: var(--ink-2); }
+  .kerangka-bagian { padding: 0.85rem 1.05rem; background: #fff; }
+  .kerangka-bagian:not(:last-child) { border-bottom: 1px dashed var(--border); }
+  .kerangka-label {
+    display: inline-block; font-weight: 700; font-size: 10.5px; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #fff; background: var(--m-color); padding: 2px 10px;
+    border-radius: 20px; margin-bottom: 0.5rem;
+  }
+  .kerangka-isi { font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +40,96 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Cerita Imajinatif</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Cerita Imajinatif · Materi 3 dari 5</div>
       <div class="ma-cover-title">Menyusun Alur Cerita</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Menyusun tokoh dan latar menjadi alur cerita sederhana dengan satu kejadian.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah punya tokoh dan latar. Sekarang saatnya memberi mereka <strong>alur cerita</strong> — kejadian atau masalah yang dialami tokohmu. Kabar baiknya, alur ini memakai struktur yang sama dengan yang sudah kamu pelajari di Menulis Pengalaman: <strong>Awal, Tengah, Akhir</strong> — bedanya, sekarang ceritanya dari khayalan, bukan pengalaman nyata.</p>
+
+      <ul style="margin: 0.3em 0 1.1em 1.1em; padding: 0; line-height: 1.8;">
+        <li><strong>Awal</strong> — situasi biasa si tokoh, sebelum masalah muncul</li>
+        <li><strong>Tengah</strong> — masalah atau kejadian yang tiba-tiba muncul</li>
+        <li><strong>Akhir</strong> — bagaimana masalah itu diselesaikan (atau setidaknya dihadapi)</li>
+      </ul>
+
+      <p>Yuk lihat bagaimana tokoh Momo (kucing terbang yang takut ketinggian) dari materi sebelumnya diberi alur cerita:</p>
+
+      <div class="kerangka">
+        <div class="kerangka-judul">Alur: "Momo dan Permen yang Tersangkut"</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Awal</span>
+          <div class="kerangka-isi">Seperti biasa, Momo bersembunyi di bawah meja setiap kali hujan permen mulai turun, karena ia paling takut terbang tinggi.</div>
+        </div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Tengah</span>
+          <div class="kerangka-isi">Tapi kali ini, segulung permen besar tersangkut di atap tertinggi Kota Manis, dan tidak ada kucing terbang lain yang berani mengambilnya. Semua warga kota memandang Momo dengan penuh harap.</div>
+        </div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Akhir</span>
+          <div class="kerangka-isi">Dengan telinga terlipat gemetar dan mata terpejam rapat, Momo akhirnya terbang naik, mengambil permen itu, lalu langsung meluncur turun secepat mungkin. Sesampainya di tanah, seluruh warga bersorak — dan untuk pertama kalinya, Momo membuka mata sebelum benar-benar mendarat.</div>
+        </div>
+      </div>
+
+      <p>Perhatikan: masalahnya ("permen tersangkut, tidak ada yang berani mengambil") berhubungan langsung dengan sifat unik tokoh yang sudah dibuat di materi sebelumnya (takut ketinggian) — ini membuat alur terasa pas dengan tokohnya, bukan masalah acak yang tidak berhubungan.</p>
+
+      <p>Sekarang contoh kedua, dari tokoh Kelam (bayangan yang punya kemauan sendiri):</p>
+
+      <div class="kerangka">
+        <div class="kerangka-judul">Alur: "Kelam yang Menghilang"</div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Awal</span>
+          <div class="kerangka-isi">Dara sudah terbiasa dengan Kelam yang selalu bergerak setengah detik lebih lambat dan suka membelokkan arah, jadi ia tidak pernah terlalu memperhatikannya.</div>
+        </div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Tengah</span>
+          <div class="kerangka-isi">Suatu sore, saat cahaya matahari makin redup, Dara sadar bayangannya sama sekali tidak bergerak — Kelam benar-benar menghilang. Dara mencari ke seluruh rumah kayu tua itu, panik memikirkan ke mana perginya bayangannya sendiri.</div>
+        </div>
+        <div class="kerangka-bagian">
+          <span class="kerangka-label">Akhir</span>
+          <div class="kerangka-isi">Ternyata Kelam bersembunyi di balik pintu, hanya ingin bermain petak umpet untuk pertama kalinya. Dara akhirnya tertawa lega, dan sejak itu mereka punya permainan rahasia setiap sore.</div>
+        </div>
+      </div>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Struktur alur apa yang dipakai untuk menyusun cerita imajinatif di materi ini, dan dari materi mana struktur itu berasal?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Awal-Tengah-Akhir, sama seperti yang dipelajari di Menulis Pengalaman.</span>
+          Struktur ini berlaku untuk hampir semua jenis cerita, baik dari pengalaman nyata maupun dari khayalan.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Pada contoh Momo, kenapa masalah "permen tersangkut" dianggap cocok untuk tokoh ini?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena masalah itu berhubungan langsung dengan sifat unik Momo (takut ketinggian), sehingga tokoh benar-benar diuji oleh masalahnya sendiri.</span>
+          Alur cerita yang baik biasanya menghubungkan masalah dengan sifat/kebiasaan unik tokoh yang sudah dibuat sebelumnya, bukan masalah acak yang tidak berhubungan.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Apakah bagian "Akhir" dalam cerita imajinatif harus selalu berakhir bahagia?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Tidak harus — yang penting masalahnya diselesaikan atau setidaknya dihadapi oleh tokoh, seperti Momo yang akhirnya berani terbang meski masih takut.</span>
+          Bagian Akhir bisa berbagai macam, yang terpenting menunjukkan bagaimana tokoh menghadapi masalah yang muncul di bagian Tengah.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Ambil tokoh dan latar yang sudah kamu buat di materi sebelumnya. Berikan satu masalah/kejadian yang berhubungan dengan sifat unik tokohmu. Susun menjadi Awal-Tengah-Akhir, seperti contoh di atas.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu mencoba kata-kata yang punya "rasa" tersendiri, untuk membuat ceritamu makin hidup.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>

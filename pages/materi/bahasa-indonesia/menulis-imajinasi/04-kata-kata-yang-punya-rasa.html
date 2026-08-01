@@ -11,9 +11,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .ma-soon { text-align:center; padding: 2.5rem 1rem; }
-  .ma-soon-icon { font-size: 2.4rem; margin-bottom: 0.75rem; }
-  .ma-soon-text { color: var(--ink-3); font-size: 14px; max-width: 42ch; margin: 0.5rem auto 0; line-height: 1.6; }
+  .kata-set { margin: 1rem 0 1.4rem; }
+  .kata-netral { text-align: center; font-size: calc(var(--content-fs) - 1px); color: var(--ink-3); margin-bottom: 0.5rem; }
+  .kata-netral b { color: var(--ink); font-size: 1.1em; }
+  .kata-pilihan { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  @media (min-width: 560px) { .kata-pilihan { grid-template-columns: 1fr 1fr; } }
+  .kata-opsi { border-radius: var(--r); padding: 0.7rem 0.9rem; background: #fff; border: 1px solid var(--border); font-size: calc(var(--content-fs) - 2px); }
+  .kata-opsi .kata-kuat { font-weight: 700; color: var(--m-color); font-size: calc(var(--content-fs)); display: block; margin-bottom: 3px; }
+  .revisi { margin: 0.9rem 0 1.4rem; border-radius: var(--r-lg); overflow: hidden; border: 1px solid var(--border); }
+  .revisi-baris { padding: 0.75rem 1.05rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .revisi-baris.sebelum { background: #fff; color: var(--ink-3); }
+  .revisi-baris.sesudah { background: #fdf6f2; border-top: 1px dashed var(--border); color: var(--ink-2); }
+  .revisi-tag { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 9px; border-radius: 20px; margin-bottom: 0.4rem; }
+  .revisi-tag.sebelum { background: var(--paper-3); color: var(--ink-2); }
+  .revisi-tag.sesudah { background: var(--m-color); color: #fff; }
 </style>
 </head>
 <body class="ma-root ma-mapel-bahasa-indonesia">
@@ -33,17 +44,93 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">✍️</span>
-      <div class="ma-cover-eyebrow">Bahasa Indonesia · Menulis Cerita Imajinatif</div>
+      <div class="ma-cover-eyebrow">Menulis · Menulis Cerita Imajinatif · Materi 4 dari 5</div>
       <div class="ma-cover-title">Kata-Kata yang Punya Rasa</div>
     </div>
   </div>
 
   <div class="ma-container">
-    <div class="ma-soon">
-      <div class="ma-soon-icon">🚧</div>
-      <div style="font-weight:700; font-size:15px;">Materi ini sedang disiapkan</div>
-      <p class="ma-soon-text">Mencoba kata-kata yang menciptakan kesan tertentu (makna konotatif) dalam cerita.</p>
-      <p class="ma-soon-text">Sudah masuk urutan belajar kelas 5A — tinggal menunggu giliran ditulis lengkap. Cek lagi nanti ya!</p>
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Beberapa kata dalam Bahasa Indonesia punya arti yang sama secara harfiah (disebut <strong>makna denotatif</strong>), tapi memberi <strong>"rasa" atau kesan</strong> yang berbeda (disebut <strong>makna konotatif</strong>). Memilih kata yang tepat bisa membuat ceritamu terasa jauh lebih hidup, tanpa perlu menambah kalimat baru.</p>
+
+      <p>Yuk lihat perbandingannya — semua kata di bawah ini artinya mirip, tapi kesannya berbeda-beda:</p>
+
+      <div class="kata-set">
+        <div class="kata-netral">Kata netral: <b>rumah</b></div>
+        <div class="kata-pilihan">
+          <div class="kata-opsi"><span class="kata-kuat">istana</span>memberi kesan megah dan mewah</div>
+          <div class="kata-opsi"><span class="kata-kuat">gubuk</span>memberi kesan kecil dan sederhana</div>
+        </div>
+      </div>
+
+      <div class="kata-set">
+        <div class="kata-netral">Kata netral: <b>berjalan</b></div>
+        <div class="kata-pilihan">
+          <div class="kata-opsi"><span class="kata-kuat">menyelinap</span>memberi kesan diam-diam, waspada</div>
+          <div class="kata-opsi"><span class="kata-kuat">melenggang</span>memberi kesan santai, percaya diri</div>
+        </div>
+      </div>
+
+      <div class="kata-set">
+        <div class="kata-netral">Kata netral: <b>berkata</b></div>
+        <div class="kata-pilihan">
+          <div class="kata-opsi"><span class="kata-kuat">membisikkan</span>memberi kesan rahasia, pelan</div>
+          <div class="kata-opsi"><span class="kata-kuat">menjerit</span>memberi kesan takut atau marah</div>
+        </div>
+      </div>
+
+      <p>Perhatikan: memilih kata yang tepat tergantung pada <strong>rasa apa yang ingin kamu sampaikan</strong> dalam ceritamu. Yuk lihat bagaimana ini mengubah kalimat dari cerita Momo (kucing terbang):</p>
+
+      <div class="revisi">
+        <div class="revisi-baris sebelum">
+          <span class="revisi-tag sebelum">Kata Netral</span><br/>
+          "Momo berjalan ke arah jendela, lalu berkata kepada dirinya sendiri bahwa ia harus berani."
+        </div>
+        <div class="revisi-baris sesudah">
+          <span class="revisi-tag sesudah">Dengan Kata Konotatif</span><br/>
+          "Momo <strong>menyelinap</strong> ke arah jendela, lalu <strong>membisikkan</strong> pada dirinya sendiri bahwa ia harus berani."
+        </div>
+      </div>
+
+      <p>Kalimat kedua terasa lebih hidup — "menyelinap" memberi kesan Momo sedang berhati-hati dan gugup, sementara "membisikkan" menambah kesan bahwa ia sedang menguatkan diri sendiri secara pelan dan pribadi. Ini semua tanpa mengubah artinya secara mendasar, hanya lewat pemilihan kata.</p>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 1: Apa bedanya makna denotatif dan makna konotatif?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Makna denotatif adalah arti harfiah/dasar sebuah kata, sedangkan makna konotatif adalah kesan atau "rasa" tambahan yang muncul dari kata itu.</span>
+          Dua kata bisa punya makna denotatif yang mirip (seperti "berjalan" dan "menyelinap"), tapi makna konotatifnya sangat berbeda.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 2: Kenapa kata "menyelinap" dipilih untuk menggambarkan Momo yang gugup, dibanding kata "melenggang"?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Karena "menyelinap" memberi kesan diam-diam dan waspada, cocok dengan perasaan gugup Momo, sedangkan "melenggang" memberi kesan santai dan percaya diri yang tidak sesuai dengan situasinya.</span>
+          Pemilihan kata konotatif harus disesuaikan dengan rasa/suasana yang ingin disampaikan dalam cerita.
+        </div>
+      </details>
+
+      <details class="ma-cek-item">
+        <summary>Pertanyaan 3: Apakah mengganti kata netral dengan kata konotatif mengubah arti dasar sebuah kalimat?</summary>
+        <div class="ma-cek-jawaban">
+          <span class="ma-jawaban-benar">Jawaban: Tidak secara mendasar — artinya tetap mirip, tapi kesan/rasa yang ditimbulkan jadi lebih kuat dan spesifik.</span>
+          Inilah kekuatan kata konotatif: menambah kesan tanpa perlu menambah kalimat baru.
+        </div>
+      </details>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Ambil cerita (alur) yang sudah kamu buat di materi sebelumnya. Cari minimal <strong>2 kata netral</strong> (seperti "berjalan", "berkata", "melihat"), lalu ganti dengan kata konotatif yang sesuai dengan rasa yang ingin kamu sampaikan di bagian itu.
+      </div>
+
+      <p>Materi berikutnya adalah <strong>Materi Inti</strong> — kamu akan menulis cerita imajinatif utuh, menggabungkan semua yang sudah dipelajari sepanjang tahun.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
