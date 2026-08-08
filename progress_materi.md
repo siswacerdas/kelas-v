@@ -85,6 +85,8 @@ diubah, cukup ubah satu tempat itu, semua halaman ikut berubah.
 - Isi materi memakai HTML asli (bukan lagi teks polos), jadi boleh pakai **tebal**, tabel, kotak "callout" (`.ma-callout`) untuk soal latihan/catatan penting.
 - Belum memakai gambar/foto asli — sementara mengandalkan warna, ikon, dan tipografi supaya tetap ringan & tidak tergantung hosting gambar eksternal. Bisa didiskusikan lagi kalau suatu materi benar-benar butuh gambar.
 - `pages/materi.html.bak` sempat dibuat sebagai cadangan versi Firestore lama lalu dihapus — kalau sewaktu-waktu perlu rollback, versi lama masih ada di riwayat Git repo aslinya (bukan di sini).
+- **Standar kualitas (berlaku sejak TP Membaca-Memirsa TP2):** tiap konsep dijelaskan dengan minimal 3 contoh berjenjang kerumitannya, langkah analisis ditunjukkan eksplisit (bukan cuma hasil akhir), dan materi Inti tiap TP memuat satu model analisis/pengerjaan lengkap sebelum instruksi tugas mandiri.
+- **Standar baru (berlaku sejak Berbicara TP1 materi ke-2, 2026-07-26): setiap materi WAJIB memuat bagian "✅ Cek Pemahamanmu"** — 2-3 pertanyaan pemahaman konsep, format `<details>/<summary>` (klik untuk lihat jawaban, TANPA sistem skor/kuis — itu tetap di luar cakupan proyek ini), tiap jawaban disertai penjelasan singkat kenapa itu benar. Tujuannya: siswa bisa memverifikasi & membenarkan sendiri pemahamannya, terlepas dari kemampuan dasar yang dibawa, tanpa perlu menunggu guru. Ditempatkan setelah contoh-contoh, sebelum bagian "Yuk Coba Sendiri". Materi yang dibuat SEBELUM aturan ini (TL-Pengalaman, Menyimak M1/M2, Membaca-Memirsa MB2, Berbicara TP1 materi 1) TIDAK diubah ulang, sesuai arahan.
 
 ## 6. Isu lama — SUDAH SELESAI
 
@@ -224,9 +226,107 @@ di rumah (respons non-verbal, mendengarkan dengan kriteria, mencatat
 dengan gaya sendiri), dan catatan singkat di tiap halaman menjelaskan
 kenapa teks latihannya sengaja tidak sama dengan yang dipakai menilai.
 
+## 6f. TP Menyimak TP2 (Hubungan Sebab-Akibat & Urutan) — SELESAI 5/5 (2026-07-26)
+
+Sama seperti M1: pendekatan "konsep + latihan berbeda di rumah", bukan
+teks yang dipakai menilai di kelas. Progresi materinya: kata penghubung
+→ diagram 2 kotak → rantai kejadian → dua hubungan terpisah → mandiri.
+
+## 6g. TP Membaca dan Memirsa TP2 (Menganalisis Tayangan) — SELESAI 4/4 (2026-07-26)
+
+**Standar kualitas dinaikkan mulai TP ini**, sesuai masukan: penjelasan
+lebih detail, tiap konsep dijelaskan dengan 3 contoh berjenjang
+kerumitannya (bukan 1-2 seperti TP-TP sebelumnya), dan langkah analisis
+ditunjukkan eksplisit, bukan cuma hasil akhirnya. Materi Inti-nya
+memuat satu model analisis LENGKAP (gabungan info eksplisit + pesan
+tersirat) sebagai contoh sebelum siswa mengerjakan sendiri. TP-TP
+berikutnya akan mengikuti standar kedalaman ini — TP-TP lama
+(TL-Pengalaman, M1, M2) TIDAK diperbarui ulang, sesuai arahan (fokus
+ke depan, bukan revisi ke belakang).
+
+Karena elemen ini bukan oral seperti Menyimak, tidak ada risiko
+"bocor" ke penilaian kelas — semua contoh tayangan di sini boleh
+sekaya dan sedetail apa pun tanpa masalah.
+
+## 6h. TP Berbicara TP1 (Presentasi Gagasan) — SELESAI 4/4 (2026-07-26)
+
+Progresi: poin bebas ke 1 pendengar → struktur Awal-Isi-Akhir ke
+kelompok kecil → alat bantu visual ke kelompok gabungan → mandiri di
+depan kelas. **Fitur "✅ Cek Pemahamanmu" (accordion tanya-jawab)
+diperkenalkan mulai materi ke-2 TP ini** — lihat Bagian 5 untuk
+standarnya. Materi 1 TP ini dibuat sebelum standar itu ada, jadi
+belum punya bagian tersebut (sengaja tidak diubah, sesuai arahan).
+
+## 6i. TP Berbicara TP2 (Membacakan Karya Sastra, siklus berkelanjutan) — SELESAI 6/6 (2026-07-26)
+
+Karena diminta lanjut tanpa memilih opsi (siklus asli vs sekaligus),
+dipilih pendekatan konsisten dengan TP-TP lain: keenam siklus ditulis
+sekaligus sekarang, sesuai jadwal asli (Siklus 1-2 & 3 semester ini,
+Siklus 4-6 semester depan) TAPI kontennya semua sudah siap sekarang —
+bisa dipakai persis sesuai jadwalnya nanti. Progresi: 1 rasa tetap →
+rasa berubah → karya sendiri (puncak semester 1) → rasa tersembunyi →
+kelompok besar → karya pilihan terbaik (puncak tahun). Siklus 3 & 6
+sengaja terhubung ke materi Menulis (siswa membacakan karya tulisan
+sendiri) sebagai penghubung lintas-elemen.
+
+**Koreksi penting: BUKAN seluruh Bahasa Indonesia selesai.** Yang
+sudah selesai: Menyimak TP1 & TP2, Membaca-Memirsa TP2, Berbicara TP1
+& TP2 (6 dari 9 TP, 27 dari 42 materi). **Masih tersisa 3 TP Menulis**
+yang belum ditulis sama sekali: Menulis-Pengamatan (5), Menulis-Gagasan
+(5), Menulis-Imajinasi (5) — total 15 materi lagi untuk menuntaskan
+seluruh Bahasa Indonesia.
+
+## 6j. TP Menulis-Pengamatan — SELESAI 5/5 (2026-07-26)
+
+Progresi: catat kata/frasa dari benda diam → kembangkan jadi kalimat
+→ susun urutan sistematis (umum-khusus/posisi/indra) → laporan
+peristiwa dengan kalimat majemuk (kata hubung waktu: lalu, kemudian,
+sambil, saat) → mandiri pada objek baru. Materi Inti (5) sempat
+kelewatan bagian "Cek Pemahamanmu" saat pertama ditulis, sudah
+ditambahkan sebelum dianggap selesai.
+
+**Sisa: Menulis-Gagasan (5) dan Menulis-Imajinasi (5) — 10 materi
+lagi untuk menuntaskan seluruh Bahasa Indonesia.**
+
+## 6k. TP Menulis-Gagasan — SELESAI 5/5 (2026-07-26)
+
+Progresi: bedakan fakta vs pendapat → nyatakan pendapat tegas tanpa
+alasan → tambah alasan dengan "karena" → variasi kata sambung
+("sehingga", "meskipun" untuk mengakui sisi lain) → mandiri pada
+topik baru. Teknik "meskipun" sengaja dihubungkan dengan teknik
+serupa yang sudah dipelajari di Berbicara TP1 (mengakui kekhawatiran
+sebelum menjelaskan solusi) sebagai penghubung lintas-elemen.
+
+**Sisa: Menulis-Imajinasi (5) — TP TERAKHIR untuk menuntaskan seluruh
+Bahasa Indonesia.**
+
+## 6l. TP Menulis-Imajinasi — SELESAI 5/5 (2026-07-26)
+
+Progresi: lontarkan ide liar bebas → kembangkan jadi tokoh & latar
+detail → susun alur Awal-Tengah-Akhir (dihubungkan balik ke struktur
+Menulis-Pengalaman) → kata konotatif untuk menambah kesan → cerita
+utuh mandiri. Materi Inti memakai contoh baru ("Do", sepatu yang
+bernyanyi lagu sedih) sebagai model, dan sekaligus jadi banner
+penutup untuk SELURUH mata pelajaran Bahasa Indonesia.
+
 ---
 
-## 6f. IPAS — Roadmap TP dari Dokumen Resmi (2026-07-26)
+## ✅ SELURUH BAHASA INDONESIA SELESAI: 9 TP, 42 materi (2026-07-26)
+
+Semua elemen (Menyimak, Membaca dan Memirsa, Berbicara, Menulis)
+sudah lengkap ditulis dengan standar kualitas dari Bagian 5. Tidak
+ada lagi materi Bahasa Indonesia yang berstatus "segera hadir".
+
+**Fase berikutnya (per 2026-07-27):** IPAS sudah tuntas 27/27 materi
+(lihat Bagian 7), dan Matematika sedang berjalan — 5/64 pertemuan
+selesai (lihat Bagian 8). Lima mapel lain masih placeholder kosong:
+Pendidikan Agama Islam dan Budi Pekerti, Pendidikan Pancasila, Seni
+Budaya, PJOK, Bahasa Inggris. Menunggu dokumen CP/TP/ATP resmi untuk
+mapel tersebut kalau tersedia.
+
+---
+
+## 7. IPAS — Roadmap TP dari Dokumen Resmi (2026-07-26)
 
 Delapan dokumen sudah diterima dan dipelajari penuh: **Dokumen 1** (Analisis
 CP Fase C IPAS), **Dokumen 2** (TP Kelas 5, total 58 JP), **6 dokumen
@@ -254,7 +354,7 @@ dokumen sumber:
    scaffolding sumbernya sendiri menyebut dirinya "bekal" untuk TP1.
 2. Organ Tubuh **TP1** (Respons Tubuh & Refleksi Kesehatan)
 3. Bunyi & Cahaya (pemanasan Keterampilan Proses skala kecil) — **ditulis
-   duluan atas permintaan eksplisit, lihat 6g di bawah**
+   duluan atas permintaan eksplisit, lihat 7a di bawah**
 4. Ekosistem TP1 (Observasi Biotik-Abiotik)
 5. Ekosistem TP2 ⭐ (Percobaan Pertumbuhan Tanaman — proyek andalan,
    berjalan 1–2 minggu kalender, bukan satu slot JP)
@@ -289,7 +389,7 @@ scaffolding sumber tapi "12 JP" dengan standar 2 JP/pertemuan) —
 dibiarkan apa adanya sesuai dokumen sumber, tidak memengaruhi struktur
 halaman/jumlah materi yang ditulis.
 
-## 6g. Bunyi & Cahaya — SELESAI 5/5 (2026-07-26)
+## 7a. Bunyi & Cahaya — SELESAI 5/5 (2026-07-26)
 
 Ditulis lebih dulu dari 8 unit TP IPAS atas permintaan eksplisit
 (bukan mengikuti urutan pedagogis PetaAktivitas yang menempatkan Organ
@@ -305,7 +405,7 @@ materi IPAS lainnya (7 unit TP tersisa) terdaftar dengan status
 `"segera"`, halaman placeholder aktif, siap dilanjutkan topik demi
 topik sesuai arahan berikutnya.
 
-## 6h. Standar Baru: "Kalau Masih Bingung" + "Contoh Soal & Pembahasan" (2026-07-26)
+## 7b. Standar Baru: "Kalau Masih Bingung" + "Contoh Soal & Pembahasan" (2026-07-26)
 
 Setelah dicek, versi awal 5 materi Bunyi & Cahaya dinilai kurang: minim
 contoh kontekstual yang panjang, dan **tidak ada soal cek pemahaman yang
@@ -340,29 +440,29 @@ ini. **22 materi IPAS lain yang masih placeholder "segera hadir" WAJIB
 ditulis mengikuti standar ini sejak awal**, bukan ditulis dulu baru
 direvisi belakangan.
 
-## 6i. Sistem Organ Tubuh TP2 — SELESAI 2/2 (2026-07-26)
+## 7c. Sistem Organ Tubuh TP2 — SELESAI 2/2 (2026-07-26)
 
 Unit kedua yang ditulis, menyusul urutan PetaAktivitas (organ tubuh
 didahulukan setelah Bunyi & Cahaya). Alternatif 1 ("Diagram Digital via
 Proyektor") dipakai sebagai jalur utama — organ dalam tidak diamati
 langsung (tidak mungkin bagi anak SD), jadi materi 1 murni pengenalan
 letak/bentuk lewat diagram, dan materi 2 (⭐ inti) fokus fungsi tiap
-organ dikaitkan kebiasaan sehat. Mengikuti standar 6h penuh: kotak
+organ dikaitkan kebiasaan sehat. Mengikuti standar 7b penuh: kotak
 "Kalau Masih Bingung" (analogi rumah — jantung=pompa air, paru-paru=
 balon kembar, pencernaan=selang panjang, dipakai konsisten di kedua
 halaman) dan "Contoh Soal & Pembahasan" (3 soal per halaman). `status`
 kedua entri di `materi-index.js` sudah diubah ke `"selesai"`.
 
-## 6j. Sistem Organ Tubuh TP1 — SELESAI 6/6 (2026-07-26)
+## 7d. Sistem Organ Tubuh TP1 — SELESAI 6/6 (2026-07-26)
 
 Unit ketiga IPAS yang ditulis. Alternatif 1 ("Lompat Tali") dipakai
 sebagai jalur utama. Siklus Keterampilan Proses lengkap: meraba nadi →
 memprediksi (analogi mesin motor) → mengukur sebelum-sesudah lompat
-tali (analogi lomba lari adil dari 6h, dipakai ulang untuk konsep
+tali (analogi lomba lari adil dari 7b, dipakai ulang untuk konsep
 "pengukuran yang adil") → menyusun tabel kelas (nomor urut/inisial,
 bukan nama — sesuai catatan privasi di dokumen sumber) → membandingkan
 prediksi vs kenyataan sambil dikaitkan kebiasaan pribadi → refleksi
-personal (⭐ inti). Mengikuti standar 6h penuh di keenam halaman. Status
+personal (⭐ inti). Mengikuti standar 7b penuh di keenam halaman. Status
 6 entri di `materi-index.js` sudah diubah ke `"selesai"`.
 
 **Progres IPAS sejauh ini: 13/27 materi selesai** (Bunyi & Cahaya 5/5,
@@ -371,7 +471,7 @@ Ekosistem TP1 (3), Ekosistem TP2 (5), Ekonomi Masyarakat (2), Letak
 Geografis (2, masih menunggu kepastian Geometri Matematika), Sejarah &
 Budaya (2, masih menunggu kepastian Pancasila BTI TP1).
 
-## 6k. Ekosistem TP1 + TP2 (Proyek Andalan) — SELESAI 8/8 (2026-07-26)
+## 7e. Ekosistem TP1 + TP2 (Proyek Andalan) — SELESAI 8/8 (2026-07-26)
 
 Unit keempat dan kelima IPAS. Alternatif 1 dipakai di kedua TP ("Kebun
 Pot Bawaan Siswa" untuk TP1, "Kacang Hijau di Kelas" untuk TP2).
@@ -391,7 +491,7 @@ hasil dengan argumen berbasis data (analogi reporter berita/pengacara
 di sidang, ⭐ inti, memakai kembali pola "kesimpulan lemah vs kuat" dari
 materi Bunyi & Cahaya).
 
-Standar 6h (Kalau Masih Bingung + Contoh Soal & Pembahasan) diterapkan
+Standar 7b (Kalau Masih Bingung + Contoh Soal & Pembahasan) diterapkan
 penuh di kedelapan halaman. Status kedelapan entri di `materi-index.js`
 sudah diubah ke `"selesai"`.
 
@@ -400,7 +500,7 @@ unit TP: Ekonomi Masyarakat (2), Letak Geografis (2, masih menunggu
 kepastian Geometri Matematika), Sejarah & Budaya (2, masih menunggu
 kepastian Pancasila BTI TP1).
 
-## 6l. Kegiatan Ekonomi Masyarakat — SELESAI 2/2 (2026-07-26)
+## 7f. Kegiatan Ekonomi Masyarakat — SELESAI 2/2 (2026-07-26)
 
 Unit keenam IPAS, satu-satunya di antara sisa 3 unit yang tidak punya
 ketergantungan lintas mapel sehingga dikerjakan lebih dulu. Alternatif
@@ -413,7 +513,7 @@ eksplisit ke siswa, cukup lewat framing non-menghakimi. Materi 2 (⭐
 inti): klasifikasi produksi/distribusi/konsumsi lewat analogi alur air
 PDAM dan alur nasi (petani→pedagang→keluarga), termasuk soal yang
 menunjukkan satu orang bisa berperan di kategori berbeda tergantung
-kegiatannya. Standar 6h diterapkan penuh. Status kedua entri di
+kegiatannya. Standar 7b diterapkan penuh. Status kedua entri di
 `materi-index.js` sudah diubah ke `"selesai"`.
 
 **Progres IPAS sejauh ini: 23/27 materi selesai.** Sisa 4 materi di 2
@@ -421,7 +521,7 @@ unit, keduanya masih menunggu kepastian mapel lain: Letak Geografis (2,
 menunggu Geometri Matematika) dan Sejarah & Budaya (2, menunggu
 Pancasila BTI TP1).
 
-## 6m. Letak Geografis + Sejarah & Budaya — SELESAI 4/4, IPAS TUNTAS 27/27 (2026-07-26)
+## 7g. Letak Geografis + Sejarah & Budaya — SELESAI 4/4, IPAS TUNTAS 27/27 (2026-07-26)
 
 Dua unit terakhir ditulis TANPA menunggu kepastian status Geometri
 Matematika/Pancasila BTI TP1 — atas instruksi untuk lanjut, keduanya
@@ -447,7 +547,7 @@ pengalaman lintas mapel yang mungkin belum dialami siswa:
   catatan dokumen sumber — tidak membahas peristiwa sejarah lokal
   secara mendalam, hanya sebagai pemantik rasa ingin tahu.
 
-Standar 6h diterapkan penuh di keempat halaman. Status keempat entri di
+Standar 7b diterapkan penuh di keempat halaman. Status keempat entri di
 `materi-index.js` sudah diubah ke `"selesai"`.
 
 **🎉 SELURUH 27 MATERI IPAS KELAS 5 SUDAH SELESAI DITULIS.** Delapan
@@ -457,6 +557,58 @@ Pembahasan). Kalau nanti dipastikan Geometri Matematika/Pancasila BTI
 sudah diajarkan lebih dulu di kelas nyata, kedua unit terakhir ini bisa
 disunting ulang untuk merujuk langsung ke pengalaman itu (opsional,
 tidak wajib — versi mandiri saat ini sudah berfungsi baik apa adanya).
+
+---
+
+---
+
+## 7h. Letak Geografis + Sejarah & Budaya — DITULIS ULANG jadi 5 Sub-Materi (2026-08-01)
+
+Atas permintaan eksplisit, kedua unit ini **ditulis ulang dari nol**
+dengan interpretasi bebas (tidak terikat literal pada dokumen
+Scaffolding aslinya, yang dinilai belum cukup mendalam) — dari
+masing-masing 2 halaman menjadi **5 sub-materi** (4 tangga + 1 inti),
+tetap berpegang pada teks CP resmi sebagai acuan, dan tetap menjaga
+kehati-hatian yang sama soal sejarah lokal sensitif dan keragaman latar
+ekonomi keluarga.
+
+**Letak Geografis Indonesia (5 halaman):**
+1. Mengenal Peta dan Bentuk Wilayah Indonesia — negara kepulauan
+   terbesar di dunia, ±17.000 pulau, lima pulau besar
+2. Posisi Indonesia di Antara Dua Benua dan Dua Samudra — posisi
+   silang dunia, kaitan historis jalur rempah-rempah
+3. Garis Khatulistiwa dan Iklim Tropis Indonesia — **materi baru**,
+   memperdalam cakupan CP dengan konsep iklim tropis/dua musim,
+   dihubungkan balik ke unit Kegiatan Ekonomi Masyarakat
+4. Membaca Letak dengan Sistem Berpetak — tetap mandiri
+   (self-contained), tidak mengasumsikan Geometri Matematika TP3 sudah
+   diajarkan
+5. ⭐ Menjelaskan Letak Geografis Indonesia — sintesis keempat materi
+   sebelumnya jadi satu penjelasan utuh dengan alur sebab-akibat
+
+**Sejarah dan Keragaman Budaya Sekitar (5 halaman):**
+1. Mengenal Keragaman Budaya di Sekitar Kita — **materi baru**,
+   Bhinneka Tunggal Ika, rumah/pakaian/bahasa/makanan adat
+2. Sejarah Asal-Usul Keluargaku — tetap mandiri, tidak mengasumsikan
+   proyek Pancasila "Peta Asal Keluarga" sudah ada
+3. Menghargai Perbedaan sebagai Kekayaan Bersama — **materi baru**,
+   sikap non-menghakimi terhadap perbedaan, memakai ulang prinsip dari
+   unit Ekonomi Masyarakat (jangan menilai latar keluarga)
+4. Mengenal Pahlawan di Lingkungan Sekitar — **materi baru**, "pahlawan"
+   didefinisikan luas (bukan cuma pahlawan nasional), sengaja TIDAK
+   menyinggung peristiwa sejarah lokal spesifik/sensitif apa pun,
+   eksplisit mengarahkan siswa untuk tidak mendalami cerita sensitif
+   yang mungkin muncul saat bertanya ke keluarga
+5. ⭐ Menghubungkan Geografis, Ekonomi, Sejarah, dan Budaya Keluargaku —
+   sintesis 4 unsur (bertambah satu dari versi lama yang cuma 3),
+   dengan Sejarah Keluarga sebagai unsur baru yang eksplisit dirangkai
+
+Standar 7b (Kalau Masih Bingung + Contoh Soal & Pembahasan) diterapkan
+penuh di seluruh 10 halaman baru. 4 entri lama di `materi-index.js`
+dihapus, digantikan 10 entri baru, semuanya `"selesai"`.
+
+**IPAS sekarang: 33/33 materi selesai** (bertambah dari 27, karena
+kedua unit ini masing-masing mendapat 3 halaman tambahan).
 
 ---
 
@@ -532,7 +684,7 @@ digit, contoh 3.482.951) — melebihi cakupan resmi Dokumen 2 TP1 yang
 membatasi sampai **100.000** (ratus ribuan, 6 digit). Versi baru
 dibatasi ketat sampai 100.000, sesuai dokumen sumber.
 
-Konten baru mengikuti standar 6h penuh: nilai tempat lewat contoh angka
+Konten baru mengikuti standar 7b penuh: nilai tempat lewat contoh angka
 nyata (40.508) dengan penekanan pada angka nol di tengah (titik rawan
 menurut rubrik Dokumen 2), analogi pecahan uang rupiah untuk nilai
 tempat, aturan 2 langkah membandingkan bilangan (jumlah digit dulu,
@@ -567,11 +719,42 @@ secara eksplisit menyoal PROSES peminjaman (bukan cuma jawaban akhir),
 konsisten dengan instruksi "asesmen dinilai per langkah, bukan hanya
 hasil akhir".
 
-Standar 6h diterapkan penuh. Status keempat entri di `materi-index.js`
+Standar 7b diterapkan penuh. Status keempat entri di `materi-index.js`
 sudah diubah ke `"selesai"`.
 
 **Progres Matematika sejauh ini: 5/64 pertemuan selesai** (Bilangan TP1
 1/1, Bilangan TP2 4/4).
+
+---
+
+## 8c. Bilangan TP3 — SELESAI 4/4 (2026-08-01)
+
+Unit ketiga Matematika: pembagian bersusun dengan pembagi multi-digit,
+mengikuti progresi Titik Berangkat → Garis Finis dokumen sumber
+(penyegaran pembagi 1 digit → pembagi kelipatan 10 → pembagi 2 digit
+sembarang → soal cerita). Komponen visual baru `.bagi-wrap`/`.bagi-bracket`
+dipakai konsisten di keempat halaman untuk menampilkan pembagian
+bersusun bergaya kurung siku standar.
+
+Materi 3 secara eksplisit menampilkan tebakan awal yang KELIRU lalu
+dikoreksi (78÷17: coba 5 dulu → gagal → koreksi ke 4) — bukan
+disembunyikan/dihapus, konsisten dengan penekanan dokumen sumber bahwa
+estimasi-coba-koreksi adalah proses sah, bukan tanda kesalahan. Materi
+4 (⭐ inti) memuat 3 skenario sisa pembagian yang perlu ditafsirkan
+berbeda sesuai konteks (hasil rapi tanpa sisa, sisa disimpan apa
+adanya, sisa yang menuntut pembulatan ke atas) — keterampilan
+interpretasi kontekstual yang tidak ada di soal angka polos biasa.
+
+Perhatian khusus pada peringatan dokumen sumber soal siswa yang
+"menghindari pembagi sembarang dengan membulatkan ke kelipatan 10
+tanpa sadar" — dijadikan soal & pembahasan eksplisit di materi 3 (soal
+nomor 3, kasus Dimas).
+
+Standar 7b diterapkan penuh. Status keempat entri di `materi-index.js`
+sudah diubah ke `"selesai"`.
+
+**Progres Matematika sejauh ini: 9/64 pertemuan selesai** (Bilangan
+TP1 1/1, TP2 4/4, TP3 4/4).
 
 ---
 
@@ -583,53 +766,86 @@ sudah diubah ke `"selesai"`.
 | Menyimak | M1 | Memilah Mana yang Penting | ✅ Selesai |
 | Menyimak | M1 | Mencatat dengan Caraku Sendiri | ✅ Selesai |
 | Menyimak | M1 ⭐ | Menyimak Mandiri: Menangkap Info Penting | ✅ Selesai |
-| Menyimak | M2 | Mengenali Kata Penghubung Sebab-Akibat | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 | Memetakan Sebab dan Akibat | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 | Merangkai Beberapa Kejadian Berurutan | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 | Dua Hubungan dalam Satu Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Menyimak | M2 ⭐ | Menjelaskan Hubungan Antarkejadian | 🕓 Segera hadir (placeholder aktif) |
-| Membaca dan Memirsa | MB2 | Menangkap Informasi dari Tayangan | 🕓 Segera hadir (placeholder aktif) |
-| Membaca dan Memirsa | MB2 | Menemukan Pesan Tersembunyi | 🕓 Segera hadir (placeholder aktif) |
-| Membaca dan Memirsa | MB2 | Membandingkan Dua Tayangan | 🕓 Segera hadir (placeholder aktif) |
-| Membaca dan Memirsa | MB2 ⭐ | Menganalisis Informasi dan Nilai dalam Tayangan | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B1 | Bicara ke Satu Teman Dulu | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B1 | Menyusun Awal-Isi-Akhir | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B1 | Presentasi dengan Alat Bantu | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B1 ⭐ | Presentasi Gagasan di Depan Kelas | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B2 | Suara yang Mengikuti Rasa (Siklus 1) | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B2 | Rasa yang Berubah dalam Satu Cerita (Siklus 2) | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B2 ⭐ | Membacakan Karyaku Sendiri (Siklus 3 – Puncak Semester 1) | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B2 | Rasa yang Tersembunyi (Siklus 4) | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B2 | Tampil di Kelompok Besar (Siklus 5) | 🕓 Segera hadir (placeholder aktif) |
-| Berbicara dan Mempresentasikan | B2 ⭐ | Puncak Tahun: Karya Pilihanku (Siklus 6) | 🕓 Segera hadir (placeholder aktif) |
+| Menyimak | M2 | Mengenali Kata Penghubung Sebab-Akibat | ✅ Selesai |
+| Menyimak | M2 | Memetakan Sebab dan Akibat | ✅ Selesai |
+| Menyimak | M2 | Merangkai Beberapa Kejadian Berurutan | ✅ Selesai |
+| Menyimak | M2 | Dua Hubungan dalam Satu Cerita | ✅ Selesai |
+| Menyimak | M2 ⭐ | Menjelaskan Hubungan Antarkejadian | ✅ Selesai |
+| Membaca dan Memirsa | MB2 | Menangkap Informasi dari Tayangan | ✅ Selesai |
+| Membaca dan Memirsa | MB2 | Menemukan Pesan Tersembunyi | ✅ Selesai |
+| Membaca dan Memirsa | MB2 | Membandingkan Dua Tayangan | ✅ Selesai |
+| Membaca dan Memirsa | MB2 ⭐ | Menganalisis Informasi dan Nilai dalam Tayangan | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B1 | Bicara ke Satu Teman Dulu | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B1 | Menyusun Awal-Isi-Akhir | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B1 | Presentasi dengan Alat Bantu | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B1 ⭐ | Presentasi Gagasan di Depan Kelas | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B2 | Suara yang Mengikuti Rasa (Siklus 1) | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B2 | Rasa yang Berubah dalam Satu Cerita (Siklus 2) | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B2 ⭐ | Membacakan Karyaku Sendiri (Siklus 3 – Puncak Semester 1) | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B2 | Rasa yang Tersembunyi (Siklus 4) | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B2 | Tampil di Kelompok Besar (Siklus 5) | ✅ Selesai |
+| Berbicara dan Mempresentasikan | B2 ⭐ | Puncak Tahun: Karya Pilihanku (Siklus 6) | ✅ Selesai |
 | Menulis | TL-Pengalaman | Mencari Pengalaman yang "Berbahan Cerita" | ✅ Selesai |
 | Menulis | TL-Pengalaman | Menyusun Kerangka Ceritaku | ✅ Selesai |
 | Menulis | TL-Pengalaman | Menulis Draf Pertama | ✅ Selesai |
 | Menulis | TL-Pengalaman ⭐ | Cerita Pengalamanku yang Hidup | ✅ Selesai |
-| Menulis | TL-Pengamatan | Mencatat dari Hasil Mengamati | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan | Dari Kata Menjadi Kalimat | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan | Menyusun Urutan yang Sistematis | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan | Melaporkan Kejadian Nyata | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Pengamatan ⭐ | Laporan Pengamatanku Sendiri | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Fakta atau Pendapat? | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Berani Berpendapat | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Pendapat Butuh Alasan | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan | Alasan yang Lebih Kuat | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Gagasan ⭐ | Menulis Pendapat dan Alasanku | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Melontarkan Ide-Ide Liar | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Tokoh dan Latar yang Tak Biasa | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Menyusun Alur Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi | Kata-Kata yang Punya Rasa | 🕓 Segera hadir (placeholder aktif) |
-| Menulis | TL-Imajinasi ⭐ | Ceritaku, Imajinasiku Sendiri | 🕓 Segera hadir (placeholder aktif) |
+| Menulis | TL-Pengamatan | Mencatat dari Hasil Mengamati | ✅ Selesai |
+| Menulis | TL-Pengamatan | Dari Kata Menjadi Kalimat | ✅ Selesai |
+| Menulis | TL-Pengamatan | Menyusun Urutan yang Sistematis | ✅ Selesai |
+| Menulis | TL-Pengamatan | Melaporkan Kejadian Nyata | ✅ Selesai |
+| Menulis | TL-Pengamatan ⭐ | Laporan Pengamatanku Sendiri | ✅ Selesai |
+| Menulis | TL-Gagasan | Fakta atau Pendapat? | ✅ Selesai |
+| Menulis | TL-Gagasan | Berani Berpendapat | ✅ Selesai |
+| Menulis | TL-Gagasan | Pendapat Butuh Alasan | ✅ Selesai |
+| Menulis | TL-Gagasan | Alasan yang Lebih Kuat | ✅ Selesai |
+| Menulis | TL-Gagasan ⭐ | Menulis Pendapat dan Alasanku | ✅ Selesai |
+| Menulis | TL-Imajinasi | Melontarkan Ide-Ide Liar | ✅ Selesai |
+| Menulis | TL-Imajinasi | Tokoh dan Latar yang Tak Biasa | ✅ Selesai |
+| Menulis | TL-Imajinasi | Menyusun Alur Cerita | ✅ Selesai |
+| Menulis | TL-Imajinasi | Kata-Kata yang Punya Rasa | ✅ Selesai |
+| Menulis | TL-Imajinasi ⭐ | Ceritaku, Imajinasiku Sendiri | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP2 | Mengamati Diagram Organ Utama Tubuh | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP2 ⭐ | Fungsi Organ dan Menjaga Kesehatan Tubuh | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP1 | Meraba Detak Jantung Sendiri | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP1 | Menebak Detak Jantung Setelah Bergerak | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP1 | Mengukur Detak Jantung Sebelum dan Sesudah Aktivitas | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP1 | Membandingkan Detak Jantung Antarteman | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP1 | Prediksi vs Kenyataan: Detak Jantung dan Kebiasaanku | ✅ Selesai |
+| Sistem Organ Tubuh | OT-TP1 ⭐ | Refleksiku tentang Aktivitas Fisik dan Kesehatan Jantung | ✅ Selesai |
+| Gelombang Bunyi dan Cahaya | BC-TP1 | Mengamati Bunyi dan Cahaya di Sekitar | ✅ Selesai |
+| Gelombang Bunyi dan Cahaya | BC-TP1 | Memprediksi Bunyi dan Cahaya | ✅ Selesai |
+| Gelombang Bunyi dan Cahaya | BC-TP1 | Eksperimen Telepon Kaleng dan Pemantulan Cahaya | ✅ Selesai |
+| Gelombang Bunyi dan Cahaya | BC-TP1 | Membandingkan Hasil Antarbahan | ✅ Selesai |
+| Gelombang Bunyi dan Cahaya | BC-TP1 ⭐ | Bunyi dan Cahaya dalam Kehidupan Sehari-hari | ✅ Selesai |
+| Ekosistem | EKOS-TP1 | Mengenali Ciri Benda Hidup dan Tak Hidup | ✅ Selesai |
+| Ekosistem | EKOS-TP1 | Mencatat Komponen Ekosistem di Sekitar Sekolah | ✅ Selesai |
+| Ekosistem | EKOS-TP1 ⭐ | Menduga Hubungan Antarkomponen Ekosistem | ✅ Selesai |
+| Ekosistem | EKOS-TP2 | Variabel yang Diubah dan yang Dijaga Tetap | ✅ Selesai |
+| Ekosistem | EKOS-TP2 | Merancang Percobaan Pertumbuhan Tanaman | ✅ Selesai |
+| Ekosistem | EKOS-TP2 | Mencatat Pertumbuhan Tanaman Secara Berkala | ✅ Selesai |
+| Ekosistem | EKOS-TP2 | Mengevaluasi Hasil Percobaan Tanaman | ✅ Selesai |
+| Ekosistem | EKOS-TP2 ⭐ | Menyajikan Hasil Percobaan dengan Data | ✅ Selesai |
+| Kegiatan Ekonomi Masyarakat | EKON-TP1 | Mencatat Jenis Usaha di Sekitarku | ✅ Selesai |
+| Kegiatan Ekonomi Masyarakat | EKON-TP1 ⭐ | Mengklasifikasikan Kegiatan Ekonomi | ✅ Selesai |
+| Letak Geografis Indonesia | GEO-TP1 | Mengenal Peta dan Bentuk Wilayah Indonesia | ✅ Selesai |
+| Letak Geografis Indonesia | GEO-TP1 | Posisi Indonesia di Antara Dua Benua dan Dua Samudra | ✅ Selesai |
+| Letak Geografis Indonesia | GEO-TP1 | Garis Khatulistiwa dan Iklim Tropis Indonesia | ✅ Selesai |
+| Letak Geografis Indonesia | GEO-TP1 | Membaca Letak dengan Sistem Berpetak | ✅ Selesai |
+| Letak Geografis Indonesia | GEO-TP1 ⭐ | Menjelaskan Letak Geografis Indonesia | ✅ Selesai |
+| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Mengenal Keragaman Budaya di Sekitar Kita | ✅ Selesai |
+| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Sejarah Asal-Usul Keluargaku | ✅ Selesai |
+| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Menghargai Perbedaan sebagai Kekayaan Bersama | ✅ Selesai |
+| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Mengenal Pahlawan di Lingkungan Sekitar | ✅ Selesai |
+| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 ⭐ | Menghubungkan Geografis, Ekonomi, Sejarah, dan Budaya Keluargaku | ✅ Selesai |
 | Bilangan | BIL-TP1 | Nilai Tempat dan Perbandingan Bilangan Cacah | ✅ Selesai |
 | Bilangan | BIL-TP2 | Pengurangan dengan Satu Kali Peminjaman | ✅ Selesai |
 | Bilangan | BIL-TP2 | Pengurangan dengan Dua Peminjaman Berurutan | ✅ Selesai |
 | Bilangan | BIL-TP2 | Pengurangan Peminjaman Berganda dan Angka Nol di Tengah | ✅ Selesai |
 | Bilangan | BIL-TP2 ⭐ | Pengurangan Bersusun dalam Soal Cerita | ✅ Selesai |
-| Bilangan | BIL-TP3 | Penyegaran Pembagian Pembagi Satu Digit | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP3 | Pembagian dengan Pembagi Kelipatan Sepuluh | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP3 | Pembagian dengan Pembagi Dua Digit Sembarang | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP3 ⭐ | Pembagian Bersusun dalam Soal Cerita | 🕓 Segera hadir (placeholder aktif) |
+| Bilangan | BIL-TP3 | Penyegaran Pembagian Pembagi Satu Digit | ✅ Selesai |
+| Bilangan | BIL-TP3 | Pembagian dengan Pembagi Kelipatan Sepuluh | ✅ Selesai |
+| Bilangan | BIL-TP3 | Pembagian dengan Pembagi Dua Digit Sembarang | ✅ Selesai |
+| Bilangan | BIL-TP3 ⭐ | Pembagian Bersusun dalam Soal Cerita | ✅ Selesai |
 | Bilangan | BIL-TP4 | Menyusun Daftar Kelipatan dan Faktor | 🕓 Segera hadir (placeholder aktif) |
 | Bilangan | BIL-TP4 | Soal Cerita KPK atau FPB Tunggal | 🕓 Segera hadir (placeholder aktif) |
 | Bilangan | BIL-TP4 | Mengidentifikasi KPK atau FPB dari Soal Cerita | 🕓 Segera hadir (placeholder aktif) |
@@ -685,33 +901,6 @@ sudah diubah ke `"selesai"`.
 | Analisis Data dan Peluang | DP-TP3 | Eksperimen Melempar Koin dan Dadu | 🕓 Segera hadir (placeholder aktif) |
 | Analisis Data dan Peluang | DP-TP3 | Membandingkan Kemungkinan Kejadian | 🕓 Segera hadir (placeholder aktif) |
 | Analisis Data dan Peluang | DP-TP3 ⭐ | Memprediksi dan Membuktikan Peluang pada Situasi Baru | 🕓 Segera hadir (placeholder aktif) |
-| Sistem Organ Tubuh | OT-TP2 | Mengamati Diagram Organ Utama Tubuh | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP2 ⭐ | Fungsi Organ dan Menjaga Kesehatan Tubuh | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Meraba Detak Jantung Sendiri | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Menebak Detak Jantung Setelah Bergerak | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Mengukur Detak Jantung Sebelum dan Sesudah Aktivitas | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Membandingkan Detak Jantung Antarteman | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Prediksi vs Kenyataan: Detak Jantung dan Kebiasaanku | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 ⭐ | Refleksiku tentang Aktivitas Fisik dan Kesehatan Jantung | ✅ Selesai |
-| Bunyi dan Cahaya | BC-TP1 | Mengamati Bunyi dan Cahaya di Sekitar | ✅ Selesai |
-| Bunyi dan Cahaya | BC-TP1 | Memprediksi Bunyi dan Cahaya | ✅ Selesai |
-| Bunyi dan Cahaya | BC-TP1 | Eksperimen Telepon Kaleng dan Pemantulan Cahaya | ✅ Selesai |
-| Bunyi dan Cahaya | BC-TP1 | Membandingkan Hasil Antarbahan | ✅ Selesai |
-| Bunyi dan Cahaya | BC-TP1 ⭐ | Bunyi dan Cahaya dalam Kehidupan Sehari-hari | ✅ Selesai |
-| Ekosistem | EKOS-TP1 | Mengenali Ciri Benda Hidup dan Tak Hidup | ✅ Selesai |
-| Ekosistem | EKOS-TP1 | Mencatat Komponen Ekosistem di Sekitar Sekolah | ✅ Selesai |
-| Ekosistem | EKOS-TP1 ⭐ | Menduga Hubungan Antarkomponen Ekosistem | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Variabel yang Diubah dan yang Dijaga Tetap | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Merancang Percobaan Pertumbuhan Tanaman | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Mencatat Pertumbuhan Tanaman Secara Berkala | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Mengevaluasi Hasil Percobaan Tanaman | ✅ Selesai |
-| Ekosistem | EKOS-TP2 ⭐ | Menyajikan Hasil Percobaan dengan Data (Proyek Andalan) | ✅ Selesai |
-| Kegiatan Ekonomi Masyarakat | EKON-TP1 | Mencatat Jenis Usaha di Sekitarku | ✅ Selesai |
-| Kegiatan Ekonomi Masyarakat | EKON-TP1 ⭐ | Mengklasifikasikan Kegiatan Ekonomi | ✅ Selesai |
-| Letak Geografis Indonesia | GEO-TP1 | Menandai Posisi Geografis Indonesia | ✅ Selesai |
-| Letak Geografis Indonesia | GEO-TP1 ⭐ | Membaca Letak Indonesia dengan Sistem Berpetak | ✅ Selesai |
-| Sejarah dan Budaya | BUDAYA-TP1 | Mengingat Kembali Peta Asal Keluarga Kelas Kami | ✅ Selesai |
-| Sejarah dan Budaya | BUDAYA-TP1 ⭐ | Menghubungkan Geografis, Ekonomi, dan Budaya Keluarga | ✅ Selesai |
 
 **Legenda:** ⭐ = Pertemuan Inti/puncak TP tersebut · ✅ Selesai · 🕓 Segera hadir (halaman & link sudah aktif, isi menyusul)
 
