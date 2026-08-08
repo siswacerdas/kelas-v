@@ -1093,7 +1093,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Penyegaran Pembagian Pembagi Satu Digit",
     ringkasan: "Melakukan pembagian bersusun dengan pembagi satu digit sebagai penyegaran sebelum melangkah ke pembagi multi-digit.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp3/01-penyegaran-pembagian-pembagi-satu-digit.html"
   },
   {
@@ -1108,7 +1108,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Pembagian dengan Pembagi Kelipatan Sepuluh",
     ringkasan: "Melakukan pembagian bersusun dengan pembagi dua digit kelipatan 10 sebagai jembatan sebelum pembagi sembarang.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp3/02-pembagian-pembagi-kelipatan-sepuluh.html"
   },
   {
@@ -1123,7 +1123,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Pembagian dengan Pembagi Dua Digit Sembarang",
     ringkasan: "Melakukan pembagian bersusun dengan pembagi dua digit sembarang, melatih estimasi-coba-koreksi.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp3/03-pembagian-pembagi-dua-digit-sembarang.html"
   },
   {
@@ -1138,7 +1138,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Pembagian Bersusun dalam Soal Cerita",
     ringkasan: "Melakukan operasi pembagian bersusun pembagi multi-digit secara konsisten dan akurat pada soal cerita kontekstual.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp3/04-pembagian-bersusun-dalam-soal-cerita.html"
   },
   {
