@@ -20,6 +20,19 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   diperlukan sebelum ditambahkan (butuh koleksi & rules baru)
 
 ### Ditambahkan
+- **Kelola Infografis per TP** (`pages/infografis/kelola-tp.html`) — halaman
+  baru khusus guru untuk kasus **1 materi = 1 infografis** (beda dari
+  Galeri Visual umum yang boleh banyak media per mapel): pilih Tujuan
+  Pembelajaran dari dropdown (dibangun otomatis dari `materi-index.js`,
+  sumber tunggal yang sama dipakai Materi Ajar — tidak perlu daftar manual
+  terpisah), lalu tiap materi di TP itu tampil sebagai 1 kartu dengan
+  tombol unggah/ganti. Mengunggah gambar baru untuk materi yang sudah
+  punya infografis MENIMPA (bukan menambah) — file lama di Drive otomatis
+  dipindah ke Trash. Ditautkan lewat "Materi Slug" (field `file` di
+  `materi-index.js`, sudah unik per materi, dipakai ulang tanpa skema ID
+  baru) — kolom baru "Materi Slug" ditambahkan ke sheet "Data Infografis"
+  (lihat catatan migrasi di `apps-script/README.md` kalau sheet-nya sudah
+  ada isinya).
 - **Galeri Visual** (`pages/infografis.html`, `pages/infografis/galeri.html`,
   `pages/infografis/admin.html`) — halaman baru berisi gambar, poster,
   infografis, dan tautan video singkat sebagai bahan ajar bentuk lain untuk
