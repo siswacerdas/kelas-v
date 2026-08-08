@@ -34,11 +34,18 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
     YouTube/Drive — lihat alasannya di `apps-script/README.md`).
   - Unggah & hapus media (`admin.html`) khusus guru (Firebase-gated, sama
     pola dengan `pages/kelas/index.html`): gambar diresize di klien lalu
-    diunggah ke folder Google Drive TERPISAH dari foto siswa
-    (`INFOGRAFIS_FOLDER_ID`, perlu dikonfigurasi manual — lihat
+    diunggah ke folder Google Drive milik mata pelajarannya masing-masing —
+    SATU FOLDER PER MAPEL, TERPISAH dari foto siswa
+    (`INFOGRAFIS_FOLDER_IDS`, 5 dari 8 mapel sudah dikonfigurasi — lihat
     `apps-script/README.md` bagian "Folder Drive untuk Galeri Visual").
     Hapus dari galeri SENGAJA tidak ikut menghapus file di Drive (bisa
     dipulihkan manual kalau salah hapus).
+  - **Bugfix di update ini juga**: `simpanFotoKeDrive_()` sebelumnya HANYA
+    bisa menulis ke `FOTO_FOLDER_ID` (folder foto siswa) — tanpa perbaikan
+    ini, upload gambar Galeri Visual akan diam-diam tersimpan ke folder foto
+    siswa, bukan folder mapel yang benar. Sekarang menerima `folderId`
+    opsional (default tetap `FOTO_FOLDER_ID` supaya `doPostSiswa_` tidak
+    berubah perilakunya).
   - Backend: sheet baru "Data Infografis" + endpoint `doPost` (`type:
     "infografis"`, `"infografis_hapus"`) dan `doGet` (`?infografis=1`,
     ?infografisFoto=`) di `apps-script/Code.gs`. Endpoint baca SENGAJA TIDAK
