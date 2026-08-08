@@ -14,6 +14,7 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
 | CP / TP / ATP | Capaian Pembelajaran, Tujuan Pembelajaran, Alur Tujuan Pembelajaran |
 | Modul Pembelajaran | Modul scaffolding per tema & mata pelajaran |
 | Materi Ajar | Buku Belajar Mandiri siswa |
+| Galeri Visual | Gambar, poster, infografis & video singkat pendukung belajar per mata pelajaran, khusus untuk gaya belajar visual |
 | Bank Soal | Soal latihan & ujian per mapel |
 | Pengumuman | Informasi penting dari guru |
 | Jadwal | Jadwal pelajaran & kalender akademik |
@@ -109,6 +110,7 @@ kelas-v/
     ├── cp-tp-atp.html     ← Kerangka statis, isi CP/TP/ATP menunggu dokumen resmi
     ├── modul.html         ← Daftar modul, bisa diakses guru & siswa yang login
     ├── materi.html        ← Materi Ajar (dibaca langsung), guru & siswa
+    ├── infografis.html    ← Landing Galeri Visual, menu per mata pelajaran
     ├── bank-soal.html     ← Latihan soal interaktif dengan skor, guru & siswa
     ├── info.html          ← Arsip lengkap pengumuman, guru & siswa
     ├── jadwal.html        ← Kerangka statis, isi jadwal menunggu jadwal resmi
@@ -118,6 +120,14 @@ kelas-v/
     │   └── assets/
     │       ├── kelas.css
     │       └── kelas.js
+    ├── infografis/        ← Galeri Visual: gambar/poster/infografis/video, guru & siswa
+    │   ├── galeri.html    ← Daftar media per mata pelajaran (?mapel=slug)
+    │   ├── admin.html     ← Tambah/hapus media, khusus guru (Firebase-gated)
+    │   └── assets/
+    │       ├── infografis-data.js   ← Daftar mata pelajaran (sumber tunggal, sama slug/warna dgn materi)
+    │       ├── infografis.css
+    │       ├── infografis-galeri.js
+    │       └── infografis-admin.js
     └── mpls/
         ├── index.html     ← Landing MPLS (daftar sub-halaman)
         ├── input.html     ← Form input penilaian (mobile-first)

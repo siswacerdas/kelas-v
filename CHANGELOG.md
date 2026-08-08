@@ -19,6 +19,32 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   di sisi klien, skor tidak direkap guru) — perlu didiskusikan dulu apakah memang
   diperlukan sebelum ditambahkan (butuh koleksi & rules baru)
 
+### Ditambahkan
+- **Galeri Visual** (`pages/infografis.html`, `pages/infografis/galeri.html`,
+  `pages/infografis/admin.html`) — halaman baru berisi gambar, poster,
+  infografis, dan tautan video singkat sebagai bahan ajar bentuk lain untuk
+  memfasilitasi siswa dengan gaya belajar visual, ditempatkan di menu utama
+  di antara Materi Ajar dan Bank Soal.
+  - Landing page berisi menu per mata pelajaran (memakai ulang warna & ikon
+    mapel yang sudah ada di `materi.css`/`materi-index.js` supaya konsisten
+    dengan Materi Ajar), tiap kartu menampilkan jumlah media yang tersedia.
+  - Halaman galeri per mapel (`galeri.html?mapel=slug`) menampilkan media
+    dalam grid dengan lightbox untuk gambar, dan tautan buka-tab-baru untuk
+    video (video TIDAK diunggah lewat form, hanya tautan luar seperti
+    YouTube/Drive — lihat alasannya di `apps-script/README.md`).
+  - Unggah & hapus media (`admin.html`) khusus guru (Firebase-gated, sama
+    pola dengan `pages/kelas/index.html`): gambar diresize di klien lalu
+    diunggah ke folder Google Drive TERPISAH dari foto siswa
+    (`INFOGRAFIS_FOLDER_ID`, perlu dikonfigurasi manual — lihat
+    `apps-script/README.md` bagian "Folder Drive untuk Galeri Visual").
+    Hapus dari galeri SENGAJA tidak ikut menghapus file di Drive (bisa
+    dipulihkan manual kalau salah hapus).
+  - Backend: sheet baru "Data Infografis" + endpoint `doPost` (`type:
+    "infografis"`, `"infografis_hapus"`) dan `doGet` (`?infografis=1`,
+    ?infografisFoto=`) di `apps-script/Code.gs`. Endpoint baca SENGAJA TIDAK
+    digerbang `wajibGuru_()` seperti endpoint foto siswa — kontennya materi
+    belajar untuk dibaca siswa juga, levelnya disamakan dengan Materi Ajar.
+
 ---
 
 ## [0.9.3] — 2026-07-24
