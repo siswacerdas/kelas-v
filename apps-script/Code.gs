@@ -183,6 +183,12 @@ const INFOGRAFIS_HEADERS = [
   "Timestamp",
   "ID",
   "Mapel",
+  "Materi Slug",   // opsional — diisi HANYA oleh pages/infografis/kelola-tp.html (1 infografis
+                    // per materi, upload baru MENIMPA yang lama). Kosong untuk infografis umum
+                    // yang diunggah lewat admin.html (tidak terikat 1 materi spesifik).
+                    // Nilainya = field "file" di materi-index.js TANPA akhiran ".html" (unik
+                    // per materi, sudah ada sebagai sumber tunggal, tidak perlu bikin skema ID
+                    // baru).
   "Judul",
   "Keterangan",
   "Jenis Media",   // "gambar" (file diunggah ke Drive) atau "video" (tautan luar, mis. YouTube)
@@ -846,9 +852,21 @@ function doPostSiswa_(body) {
   return jsonOut_({ status: "ok", urlFoto: urlFoto, fotoWarning: fotoWarning });
 }
 
-/** Tambah 1 baris BARU ke "Data Infografis" (SELALU baris baru, bukan upsert — beda dari
- * doPostSiswa_ — karena 1 mapel wajar punya banyak media, tidak ada satu "kunci" alami per
- * mapel seperti "Nama Lengkap" di data siswa).
+/** Simpan ke "Data Infografis". Ada DUA MODE tergantung ada-tidaknya body["Materi Slug"]:
+ *
+ * MODE A — body["Materi Slug"] KOSONG (dipakai admin.html, infografis umum per-mapel):
+ * SELALU TAMBAH baris baru (perilaku lama) — karena 1 mapel wajar punya banyak media, tidak
+ * ada "kunci" alami per mapel seperti "Nama Lengkap" di data siswa.
+ *
+ * MODE B — body["Materi Slug"] TERISI (dipakai pages/infografis/kelola-tp.html, 1 infografis
+ * per materi): UPSERT seperti doPostSiswa_ — kalau materi itu SUDAH punya infografis
+ * (baris lama ketemu lewat "Materi Slug"), baris lama DITIMPA (bukan ditambah baris baru),
+ * dan file Drive lamanya (kalau jenisnya "gambar") DIPINDAH KE TRASH — beda dari
+ * doPostInfografisHapus_() yang sengaja tidak menyentuh file Drive: di sini memang tujuannya
+ * "1 materi = 1 infografis", jadi versi lama SEHARUSNYA diganti total, bukan ditumpuk. Trash
+ * Drive (bukan hapus permanen) tetap dipilih supaya masih bisa dipulihkan manual dalam 30 hari
+ * kalau ternyata guru salah unggah.
+ *
  * jenisMedia "gambar": body.fotoBase64/fotoMime wajib ada, diunggah ke folder Drive milik
  * mapel tsb (lihat INFOGRAFIS_FOLDER_IDS[mapel]).
  * jenisMedia "video": body["URL Media"] wajib ada (tautan luar, mis. YouTube/Drive), TIDAK ada
@@ -858,11 +876,15 @@ function doPostInfografis_(body) {
   const mapel = String(body["Mapel"] || "").trim();
   const judul = String(body["Judul"] || "").trim();
   const jenisMedia = String(body["Jenis Media"] || "").trim();
+  const materiSlug = String(body["Materi Slug"] || "").trim();
   if (!mapel) return jsonOut_({ status: "error", message: "Mapel wajib diisi" });
   if (!judul) return jsonOut_({ status: "error", message: "Judul wajib diisi" });
   if (jenisMedia !== "gambar" && jenisMedia !== "video") {
     return jsonOut_({ status: "error", message: 'Jenis Media harus "gambar" atau "video"' });
   }
+
+  const sheet = getInfografisSheet_();
+  const existingRow = materiSlug ? findRowByColumn_(sheet, "Materi Slug", materiSlug) : -1;
 
   let urlMedia = String(body["URL Media"] || "").trim();
   if (jenisMedia === "gambar") {
@@ -886,21 +908,46 @@ function doPostInfografis_(body) {
     return jsonOut_({ status: "error", message: "URL Media (tautan video) wajib diisi" });
   }
 
-  const sheet = getInfografisSheet_();
-  // ID unik sederhana (waktu + acak) — cukup untuk kunci hapus di dalam 1 sheet ini, tidak perlu
-  // library UUID tambahan.
-  const id = "ig" + new Date().getTime() + Math.floor(Math.random() * 1000);
+  // MODE B, dan sebuah baris lama untuk materi ini ditemukan: pindahkan file lamanya (kalau
+  // gambar) ke Trash Drive SEBELUM menimpa barisnya — supaya "1 materi = 1 infografis" benar
+  // terjaga di Drive juga, bukan cuma di sheet. Dibungkus try/catch supaya kegagalan
+  // menghapus file lama TIDAK menggagalkan penyimpanan yang baru (baris baru tetap lebih
+  // penting daripada rapi-rapi file lama).
+  let id = "ig" + new Date().getTime() + Math.floor(Math.random() * 1000);
+  if (existingRow !== -1) {
+    try {
+      const headerRow = readHeaderRow_(sheet);
+      const rowValuesLama = sheet.getRange(existingRow, 1, 1, headerRow.length).getValues()[0];
+      const idIdx = headerRow.indexOf("ID");
+      const jenisIdx = headerRow.indexOf("Jenis Media");
+      const urlIdx = headerRow.indexOf("URL Media");
+      if (idIdx > -1 && rowValuesLama[idIdx]) id = rowValuesLama[idIdx]; // ID tetap sama, cuma isinya diganti
+      if (jenisIdx > -1 && rowValuesLama[jenisIdx] === "gambar" && urlIdx > -1 && rowValuesLama[urlIdx]) {
+        const oldFileId = ekstrakIdFotoDrive_(rowValuesLama[urlIdx]);
+        if (oldFileId) DriveApp.getFileById(oldFileId).setTrashed(true);
+      }
+    } catch (cleanupErr) {
+      Logger.log("Gagal membersihkan infografis lama untuk materi " + materiSlug + ": " + cleanupErr);
+    }
+  }
+
   const record = {
     "Timestamp": new Date(),
     "ID": id,
     "Mapel": mapel,
+    "Materi Slug": materiSlug,
     "Judul": judul,
     "Keterangan": body["Keterangan"] || "",
     "Jenis Media": jenisMedia,
     "URL Media": urlMedia,
     "Diunggah Oleh": body["Diunggah Oleh"] || "",
   };
-  sheet.appendRow(buildRowByHeaders_(sheet, record));
+  const rowValues = buildRowByHeaders_(sheet, record);
+  if (existingRow !== -1) {
+    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
+  } else {
+    sheet.appendRow(rowValues);
+  }
   return jsonOut_({ status: "ok", id: id, urlMedia: urlMedia });
 }
 

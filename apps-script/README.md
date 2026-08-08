@@ -35,6 +35,19 @@ Menghubungkan halaman `pages/mpls/input.html` ke Google Spreadsheet
    [Folder Drive untuk Galeri Visual](#folder-drive-untuk-galeri-visual)
    di bawah.
 
+   > ⚠️ **Kalau sheet "Data Infografis" SUDAH ADA ISINYA** (sudah pernah
+   > dipakai upload lewat `admin.html` sebelum kolom "Materi Slug"
+   > ditambahkan): **JANGAN** jalankan ulang `setupInfografisSheet` begitu
+   > saja — fungsi ini menimpa baris header (baris 1) ke posisi kolom yang
+   > BARU, tapi data yang SUDAH ADA di baris 2 dst. tetap di posisi kolom
+   > LAMA, jadi kolomnya jadi geser/tidak sinkron. Kalau ini terjadi:
+   > buka sheet-nya manual di Google Sheets, sisipkan 1 kolom kosong baru
+   > di ANTARA kolom "Mapel" dan "Judul", beri judul header "Materi Slug",
+   > biarkan isinya kosong untuk baris-baris lama (itu wajar — cuma
+   > infografis yang diunggah lewat `kelola-tp.html` yang mengisi kolom
+   > ini). Kalau sheet-nya masih kosong (belum ada data sama sekali),
+   > langsung jalankan `setupInfografisSheet` seperti biasa, aman.
+
 ### 3. Deploy sebagai Web App
 1. Klik **Deploy → New deployment** (Deploy → Deployment baru)
 2. Klik ikon ⚙️ di samping "Select type" → pilih **Web app**
