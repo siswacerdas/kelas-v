@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Galeri Visual · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../materi/assets/materi.css" />
+<link rel="stylesheet" href="assets/infografis.css" />
+<style>
+  .ma-page-container { max-width: 760px; margin: 0 auto; padding: 0 1.25rem 4rem; }
+</style>
+</head>
+<body class="ma-root">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-galeri" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Galeri Visual <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../infografis.html">← Semua Mapel</a>
+  </div>
+
+  <div class="ma-cover" id="ig-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon" id="ig-cover-icon"></span>
+      <div class="ma-cover-eyebrow">Galeri Visual</div>
+      <div class="ma-cover-title" id="ig-cover-title"></div>
+    </div>
+  </div>
+
+  <div class="ma-page-container">
+    <div id="ig-list" style="margin-top:1.25rem"><div class="ma-empty">Memuat…</div></div>
+  </div>
+</div>
+
+<div id="ig-lightbox">
+  <button class="ig-lightbox-close" id="ig-lightbox-close" aria-label="Tutup">✕</button>
+  <div>
+    <img id="ig-lightbox-img" alt="" />
+    <div class="ig-lightbox-info">
+      <div class="ig-lightbox-title" id="ig-lightbox-title"></div>
+      <div class="ig-lightbox-desc" id="ig-lightbox-desc"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../../assets/js/auth-guard.js"></script>
+<script src="../../assets/js/foto-fallback.js"></script>
+<script src="../mpls/assets/config.js"></script>
+<script src="assets/infografis-data.js"></script>
+<script src="assets/infografis-galeri.js"></script>
+</body>
+</html>
