@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kelola Infografis per TP · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../mpls/assets/mpls.css" />
+<link rel="stylesheet" href="../materi/assets/materi.css" />
+<link rel="stylesheet" href="assets/infografis.css" />
+<style>
+  .container { max-width: 640px; }
+  .ig-tp-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; margin-bottom: 0.15rem; }
+  .ig-tp-subtitle { font-size: 12.5px; color: var(--ink-3); margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+
+<div id="checking" style="position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-3);z-index:500">
+  Memeriksa akses…
+</div>
+
+<div id="topbar">
+  <a href="admin.html" class="back">←</a>
+  <div class="brand">Kelas <em>5</em> · Kelola Infografis per TP</div>
+</div>
+
+<div class="container">
+  <div class="info-box">
+    Satu materi = satu infografis. Mengunggah gambar baru untuk materi yang
+    sudah punya infografis akan MENIMPA (mengganti) yang lama — file lama di
+    Drive otomatis dipindah ke Trash (bisa dipulihkan manual dalam 30 hari
+    kalau ternyata salah unggah).
+  </div>
+
+  <div class="ig-tp-select-wrap">
+    <select id="pilih-tp">
+      <option value="">— pilih Tujuan Pembelajaran —</option>
+    </select>
+  </div>
+
+  <div id="tp-header" class="hidden">
+    <div class="ig-tp-title" id="tp-title"></div>
+    <div class="ig-tp-subtitle" id="tp-subtitle"></div>
+  </div>
+
+  <div id="materi-grid"></div>
+</div>
+
+<footer>Modul Galeri Visual · Kelas 5</footer>
+<div id="toast"></div>
+
+<script type="module" src="../../assets/js/guru-guard.js"></script>
+<script src="../../assets/js/foto-fallback.js"></script>
+<script src="../mpls/assets/config.js"></script>
+<script src="../materi/assets/materi-index.js"></script>
+<script src="assets/infografis-kelola-tp.js"></script>
+</body>
+</html>
