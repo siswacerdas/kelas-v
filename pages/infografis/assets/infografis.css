@@ -19,7 +19,52 @@
 .ig-mapel-card .ig-mapel-name { font-weight: 700; font-size: 13.5px; }
 .ig-mapel-card .ig-mapel-count { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; }
 
+/* ── Kelola per-TP (kelola-tp.html) — 1 kartu per materi, 1 infografis per materi ── */
+.ig-tp-select-wrap { margin: 1rem 0 1.5rem; }
+.ig-tp-select-wrap select {
+  width: 100%; font-family: inherit; font-size: 14px; color: var(--ink);
+  background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 11px 12px;
+}
+
+.ig-materi-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 1rem; }
+
+.ig-materi-card {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 0.9rem; display: flex; gap: 12px; align-items: flex-start;
+  border-left: 4px solid var(--m-color, var(--accent));
+}
+.ig-materi-thumb-wrap { flex-shrink: 0; width: 84px; }
+.ig-materi-thumb {
+  width: 84px; height: 112px; object-fit: cover; border-radius: 8px; display: block;
+  background: var(--paper-2); border: 1px solid var(--border);
+}
+.ig-materi-placeholder {
+  width: 84px; height: 112px; border-radius: 8px; border: 1.5px dashed var(--border);
+  background: var(--paper-2); display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--ink-3);
+}
+.ig-materi-info { flex: 1; min-width: 0; }
+.ig-materi-urutan {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--m-color, var(--accent));
+}
+.ig-materi-judul { font-weight: 700; font-size: 13.5px; margin-top: 2px; line-height: 1.35; }
+.ig-materi-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.ig-materi-btn {
+  font-size: 11.5px; font-weight: 600; padding: 6px 11px; border-radius: 7px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--paper); color: var(--ink-2);
+}
+.ig-materi-btn.ig-materi-btn-primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+.ig-materi-btn.ig-materi-btn-danger { color: var(--danger); border-color: var(--danger); background: #fff; }
+.ig-materi-status { font-size: 11px; color: var(--ink-3); margin-top: 6px; min-height: 14px; }
+.ig-materi-status.ig-err { color: var(--danger); }
+
 /* ── Grid galeri per-mapel (galeri.html) ── */
+/* aspect-ratio 3:4 (POTRET) — bukan 4:3 seperti versi awal — karena media Galeri Visual sejak
+   revisi prompt (lihat prompt-galeri-visual/) berupa POSTER INFOGRAFIS berisi informasi (judul,
+   label, langkah bernomor), bukan sekadar ilustrasi dekoratif. Format potret ini yang paling
+   nyaman dibaca di layar HP (siswa mengakses lewat smartphone) & paling wajar kalau nanti mau
+   dicetak (poster memang lazimnya potret, bukan lanskap). */
 .ig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1.25rem; }
 @media (max-width: 400px) { .ig-grid { grid-template-columns: 1fr; } }
 
@@ -29,11 +74,11 @@
   display: block; width: 100%; font-family: inherit;
 }
 .ig-item .ig-thumb {
-  width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block;
+  width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; display: block;
   background: var(--paper-2);
 }
 .ig-item .ig-thumb-video {
-  width: 100%; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center;
+  width: 100%; aspect-ratio: 3 / 4; display: flex; align-items: center; justify-content: center;
   background: var(--paper-2); font-size: 2rem;
 }
 .ig-item .ig-item-body { padding: 0.6rem 0.7rem; }
