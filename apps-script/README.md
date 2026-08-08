@@ -36,8 +36,8 @@ Menghubungkan halaman `pages/mpls/input.html` ke Google Spreadsheet
    di bawah.
 
    > ⚠️ **Kalau sheet "Data Infografis" SUDAH ADA ISINYA** (sudah pernah
-   > dipakai upload lewat `admin.html` sebelum kolom "Materi Slug"
-   > ditambahkan): **JANGAN** jalankan ulang `setupInfografisSheet` begitu
+   > dipakai upload sebelum kolom "Materi Slug" ditambahkan): **JANGAN**
+   > jalankan ulang `setupInfografisSheet` begitu
    > saja — fungsi ini menimpa baris header (baris 1) ke posisi kolom yang
    > BARU, tapi data yang SUDAH ADA di baris 2 dst. tetap di posisi kolom
    > LAMA, jadi kolomnya jadi geser/tidak sinkron. Kalau ini terjadi:
@@ -175,8 +175,8 @@ sudah pernah tersimpan otomatis ikut kebagian perbaikan tanpa perlu diedit.
 
 ## Folder Drive untuk Galeri Visual
 
-Fitur "Galeri Visual" (gambar/poster/infografis, menu di `pages/infografis.html`,
-upload di `pages/infografis/admin.html`) memakai **satu folder Drive per mata
+Fitur "Galeri Visual" (menu di `pages/infografis.html`, unggah di
+`pages/infografis/kelola-tp.html`) memakai **satu folder Drive per mata
 pelajaran** (bukan 1 folder untuk semuanya), dan semuanya TERPISAH dari folder
 foto siswa. ID-nya disimpan di konstanta `INFOGRAFIS_FOLDER_IDS` (objek/map) di
 `Code.gs`, dengan key = nama mapel PERSIS sama seperti di
@@ -196,8 +196,16 @@ foto siswa. ID-nya disimpan di konstanta `INFOGRAFIS_FOLDER_IDS` (objek/map) di
 | Bahasa Inggris | ⏳ belum — masih `"GANTI_..."` |
 
 Selama sebuah mapel masih `"GANTI_..."`, tombol unggah gambar untuk mapel itu di
-`admin.html` akan **gagal dengan pesan jelas** (bukan error tersembunyi) —
-video (tautan) tetap bisa diunggah untuk mapel manapun karena tidak lewat Drive.
+`kelola-tp.html` akan **gagal dengan pesan jelas** (bukan error tersembunyi).
+
+> Catatan: dukungan unggah "video" (tautan luar seperti YouTube, tanpa lewat
+> Drive) sempat ada di halaman `admin.html` versi awal, tapi halaman itu
+> sudah dihapus (digantikan sepenuhnya oleh `kelola-tp.html` yang lebih
+> sesuai kebutuhan nyata: 1 materi = 1 infografis gambar). Kalau nanti perlu
+> unggah video lagi, opsi paling sederhana adalah menambah tombol "Tempel
+> Tautan Video" di kartu `kelola-tp.html` — backend (`doPostInfografis_`) di
+> `Code.gs` sudah mendukung `jenisMedia: "video"`, tinggal UI-nya saja yang
+> belum ada.
 
 **Cara melengkapi mapel yang masih kosong** (atau mengganti folder yang sudah ada):
 
@@ -218,14 +226,27 @@ video (tautan) tetap bisa diunggah untuk mapel manapun karena tidak lewat Drive.
    fungsi ini otomatis mencoba SEMUA folder yang sudah terisi ID-nya (folder
    yang masih `"GANTI_..."` dilewati, dicatat di Logs, bukan error) — klik
    **Allow/Izinkan** saat diminta
-7. Uji coba: buka `pages/infografis/admin.html`, login sebagai guru, unggah
-   1 gambar contoh untuk mapel yang baru dikonfigurasi — cek file barunya
-   muncul di folder Drive yang benar & tampil di `pages/infografis/galeri.html`
+7. Uji coba: buka `pages/infografis/kelola-tp.html`, login sebagai guru,
+   pilih TP yang mapelnya baru dikonfigurasi, unggah 1 gambar contoh — cek
+   file barunya muncul di folder Drive yang benar & thumbnail-nya tampil di
+   kartu materi tsb
+
+> **Kalau muncul error "Gagal mengunggah gambar ke Drive: Exception: Akses
+> ditolak: DriveApp" TAPI filenya ternyata SUDAH ada di folder Drive
+> tujuan**: ini bug yang sudah diperbaiki (lihat CHANGELOG) — `Code.gs`
+> sebelumnya melempar file yang SUDAH berhasil dibuat sebagai "gagal total"
+> hanya karena langkah *setting sharing publik*-nya gagal (umum terjadi di
+> akun Google Workspace sekolah yang kebijakan adminnya membatasi berbagi
+> "siapa saja yang punya link"). Situs ini sebenarnya TIDAK butuh sharing
+> publik itu sama sekali — proxy `?foto=`/`?infografisFoto=` membaca file
+> langsung lewat akses pemilik skrip, bukan lewat link publik. Pastikan
+> `Code.gs` sudah versi terbaru (fungsi `simpanFotoKeDrive_` membungkus
+> `setSharing()` dalam try/catch terpisah) lalu deploy ulang.
 
 Sama seperti foto siswa, gambar Galeri Visual juga rawan kena masalah hotlink
 Drive yang diblokir untuk pengunjung anonim — solusinya sama: `Code.gs` punya
 endpoint proxy `?infografisFoto=<id>` (dipakai otomatis oleh
-`pages/infografis/assets/infografis-galeri.js` dan `infografis-admin.js`).
+`pages/infografis/assets/infografis-galeri.js` dan `infografis-kelola-tp.js`).
 **Beda penting dari `?foto=`**: endpoint ini SENGAJA TIDAK digerbang
 `wajibGuru_()`, karena isinya materi belajar untuk dibaca siswa juga (bukan
 data pribadi) — levelnya disamakan dengan Materi Ajar yang juga tidak

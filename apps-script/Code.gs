@@ -496,7 +496,23 @@ function simpanFotoKeDrive_(base64Data, mimeType, namaFile, folderId) {
   const bytes = Utilities.base64Decode(base64Data);
   const blob = Utilities.newBlob(bytes, mimeType || "image/jpeg", namaFile || "foto-siswa.jpg");
   const file = folder.createFile(blob);
-  file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  // PENTING: setSharing() dibungkus try/catch SENDIRI, TERPISAH dari createFile() di atas.
+  // Kenapa: di sebagian akun Google Workspace (mis. domain sekolah dengan kebijakan admin
+  // yang membatasi "berbagi ke siapa saja yang punya link"), createFile() BERHASIL (file
+  // benar-benar tersimpan di folder Drive) tapi setSharing() dilempar sebagai
+  // "Exception: Akses ditolak: DriveApp" — SEBELUM perbaikan ini, exception itu merambat ke
+  // pemanggil (doPostInfografis_ / doPostSiswa_) dan dilaporkan sebagai "gagal", padahal
+  // filenya SUDAH ada di Drive (persis gejala yang dilaporkan: file terlihat di folder, tapi
+  // situs bilang gagal). Ini AMAN untuk diabaikan (bukan cuma "diam-diam ditutupi") karena
+  // proxy ?foto= / ?infografisFoto= (lihat serveFotoBinary_/serveInfografisBinary_) membaca
+  // byte file lewat DriveApp sebagai SCRIPT OWNER, bukan lewat link publik — jadi TIDAK
+  // butuh sharing "anyone with link" sama sekali untuk berfungsi di situs ini. Sharing publik
+  // di sini cuma cadangan untuk kandidat hotlink langsung (lh3.googleusercontent.com dkk).
+  try {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+  } catch (sharingErr) {
+    Logger.log("setSharing gagal untuk file " + file.getId() + " (diabaikan, proxy tetap jalan): " + sharingErr);
+  }
   // "thumbnail?id=...&sz=..." jauh lebih reliable dipakai langsung sebagai <img src>
   // dibanding "uc?id=..." yang kadang menampilkan halaman interstitial Drive, bukan gambarnya.
   return "https://drive.google.com/thumbnail?id=" + file.getId() + "&sz=w1000";
