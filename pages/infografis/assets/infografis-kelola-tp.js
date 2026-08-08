@@ -126,7 +126,7 @@ function setStatus(card, msg, isErr) {
   el.classList.toggle("ig-err", !!isErr);
 }
 
-/* ── Resize gambar di klien (identik dengan pola infografis-admin.js/kelas.js) ─────── */
+/* ── Resize gambar di klien (identik dengan pola kelas.js) ─────── */
 function resizeImageFile(file, maxDim, quality) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -175,7 +175,7 @@ function showToast(msg, isErr) {
 async function handleUpload(card, m, slug, file) {
   setStatus(card, "Memproses gambar…");
   try {
-    // 1600px & kualitas 0.8 — sama seperti infografis-admin.js (bukan thumbnail kecil, dibuka
+    // 1600px & kualitas 0.8 (bukan thumbnail kecil, dibuka
     // penuh lewat lightbox).
     const resized = await resizeImageFile(file, 1600, 0.8);
     setStatus(card, "Mengunggah…");
