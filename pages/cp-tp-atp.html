@@ -6,41 +6,99 @@
 <title>CP, TP & ATP · Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
     --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
-    --paper: #faf9f6; --paper-3: #e2dfd6; --accent: #2e6fbc; --border: rgba(26,26,46,0.10); --r: 10px;
+    --paper: #faf9f6; --paper-2: #fff; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --border: rgba(26,26,46,0.10); --r: 10px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; line-height: 1.55; }
   #topbar {
     position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--accent);
+    padding: 0 1.25rem; height: 52px; border-bottom: 2px solid var(--accent);
   }
-  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1rem; }
   #topbar .brand span { color: var(--accent); }
-  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; white-space: nowrap; }
   #topbar a.back:hover { color: #fff; }
-  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .container { max-width: 880px; margin: 0 auto; padding: 1.75rem 1rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.55rem; margin-bottom: 0.25rem; }
   .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.25rem; }
   #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
   .hidden { display: none !important; }
 
   .notice {
     background: #fff7e6; border: 1px solid #e8c88a; border-radius: var(--r);
-    padding: 1rem 1.1rem; font-size: 12.5px; color: #6b5015; line-height: 1.6; margin-bottom: 1.75rem;
+    padding: 1rem 1.1rem; font-size: 12.5px; color: #6b5015; line-height: 1.65; margin-bottom: 1.5rem;
   }
   .notice b { color: #4a3600; }
+  .notice code { background: rgba(0,0,0,0.06); padding: 0 4px; border-radius: 3px; }
 
-  .mapel-section {
-    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
-    padding: 1rem 1.1rem; margin-bottom: 10px;
+  /* ── Rekap JP ── */
+  .rekap-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 1.75rem; background: var(--paper-2); }
+  table.rekap { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  table.rekap th { text-align: left; background: var(--ink); color: #fff; padding: 8px 12px; font-weight: 600; font-size: 11.5px; }
+  table.rekap td { padding: 8px 12px; border-top: 1px solid var(--border); }
+  table.rekap tr:hover td { background: #f7f6f2; }
+
+  /* ── Mapel accordion ── */
+  .mapel-block {
+    background: var(--paper-2); border: 1.5px solid var(--border); border-left: 5px solid var(--m-color, var(--accent));
+    border-radius: var(--r); margin-bottom: 12px; overflow: hidden;
   }
-  .mapel-section h2 { font-size: 14.5px; font-weight: 700; margin-bottom: 6px; }
-  .mapel-section .placeholder { font-size: 12.5px; color: var(--ink-3); font-style: italic; }
+  .mapel-block > summary {
+    list-style: none; cursor: pointer; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 8px;
+    flex-wrap: wrap; font-weight: 600; font-size: 14px;
+  }
+  .mapel-block > summary::-webkit-details-marker { display: none; }
+  .mapel-block > summary::before {
+    content: '▸'; color: var(--m-color, var(--accent)); font-size: 12px; transition: transform .15s; flex-shrink: 0;
+  }
+  .mapel-block[open] > summary::before { transform: rotate(90deg); }
+  .m-icon { font-size: 17px; }
+  .m-nama { color: var(--ink); }
+  .m-meta { font-size: 11px; font-weight: 400; color: var(--ink-3); flex-basis: 100%; margin-left: 25px; }
+  @media (min-width: 640px) { .m-meta { flex-basis: auto; margin-left: 0; } }
+  .badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .badge-ok { background: #e5f2ec; color: #1e4d3b; }
+  .badge-new { background: #fdeee0; color: #8b4a00; }
+
+  .mapel-body { padding: 0 1rem 1.1rem; border-top: 1px solid var(--border); }
+  .sumber-note { font-size: 11.5px; color: var(--ink-3); background: #f7f6f2; border-radius: 8px; padding: 0.7rem 0.85rem; margin: 0.85rem 0 1rem; line-height: 1.6; }
+  .sumber-note b { color: var(--ink-2); }
+
+  .elemen-block { margin-bottom: 1.25rem; }
+  .elemen-block h3, .seni-sub h3 { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--m-color, var(--ink)); margin-bottom: 5px; }
+  .cp-quote { font-size: 12.5px; font-style: italic; color: var(--ink-2); background: #fbfaf7; border-left: 3px solid var(--paper-3); padding: 6px 10px; margin-bottom: 6px; }
+  .bedah { font-size: 12px; color: var(--ink-2); background: #f4f0e8; border-radius: 7px; padding: 0.6rem 0.75rem; margin-bottom: 8px; line-height: 1.6; }
+  .bedah b { color: var(--ink); }
+
+  .tp-list { display: flex; flex-direction: column; gap: 8px; }
+  .tp-card { border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 0.8rem; background: #fff; }
+  .tp-head { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-bottom: 5px; }
+  .tp-kode { font-size: 10.5px; font-weight: 700; background: var(--m-color, var(--accent)); color: #fff; padding: 1px 7px; border-radius: 10px; }
+  .tp-nama { font-weight: 600; font-size: 13px; flex: 1 1 auto; min-width: 140px; }
+  .tp-sem { font-size: 10px; color: #fff; background: var(--ink-3); padding: 1px 7px; border-radius: 10px; }
+  .tp-jp { font-size: 11px; color: var(--ink-3); font-weight: 600; white-space: nowrap; }
+  .tp-row { font-size: 12px; color: var(--ink-2); line-height: 1.6; margin-top: 3px; }
+  .tp-row b { color: var(--ink); }
+  .tp-asesmen { color: #4a5a3d; }
+
+  .seni-sub { margin-bottom: 1.5rem; padding-top: 0.5rem; border-top: 1px dashed var(--paper-3); }
+  .seni-sub:first-of-type { border-top: none; padding-top: 0; }
+  .cp-table-wrap { overflow-x: auto; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; }
+  table.cp-mini-table { width: 100%; border-collapse: collapse; font-size: 11.5px; min-width: 460px; }
+  table.cp-mini-table th { background: #f4f0e8; text-align: left; padding: 6px 9px; font-size: 10.5px; }
+  table.cp-mini-table td { padding: 7px 9px; border-top: 1px solid var(--border); vertical-align: top; }
+  .cpe-el { font-weight: 600; white-space: nowrap; color: var(--m-color, var(--ink)); }
+
+  .footnote { font-size: 11.5px; color: var(--ink-3); margin-top: 1.5rem; line-height: 1.7; border-top: 1px solid var(--border); padding-top: 1rem; }
+  .footnote b { color: var(--ink-2); }
 </style>
 </head>
 <body>
@@ -55,55 +113,872 @@
 
   <div class="container">
     <h1>📋 Capaian, Tujuan &amp; Alur Tujuan Pembelajaran</h1>
-    <p class="subtitle">Kurikulum Merdeka — Kelas 5, Tahun Ajaran 2026/2027.</p>
+    <p class="subtitle">Kurikulum Merdeka — Kelas 5 (Fase C), Tahun Ajaran 2026/2027. Ketuk nama mapel untuk membuka/menutup rinciannya.</p>
 
     <div class="notice">
-      <b>Halaman ini masih kerangka.</b> Isinya belum diisi karena dokumen CP/TP/ATP
-      resmi dari sekolah belum tersedia untuk ditransfer ke sini. Kirim dokumen
-      Word/PDF CP-TP-ATP per mata pelajaran, nanti akan diisi persis sesuai
-      dokumen tsb — bukan dikarang. Halaman ini sengaja dibuat statis (bukan dari
-      Firestore) karena isinya biasanya tidak berubah sepanjang tahun ajaran.
-      <br/><br/>
-      Daftar mata pelajaran di bawah ini baru tebakan mapel Kurikulum Merdeka
-      SD pada umumnya — untuk SD Muhammadiyah biasanya ada mapel ciri khas
-      tambahan (mis. ISMUBA/Al-Islam Kemuhammadiyahan, Bahasa Arab) yang belum
-      saya masukkan karena belum tahu persis daftar resminya. Beri tahu kalau
-      ada mapel yang perlu ditambah atau dihapus.
+      <b>Status halaman ini:</b> lima mapel prioritas sudah diisi — Bahasa Indonesia, Matematika, dan IPAS
+      mengikuti persis roadmap TP resmi yang sudah dipakai membangun Materi Ajar (bertanda
+      <span class="badge badge-ok" style="vertical-align:middle">✅ Divalidasi dokumen resmi</span>).
+      Pendidikan Pancasila dan Seni Budaya baru pertama kali diturunkan langsung dari CP resmi
+      (<code>CP.html</code>) memakai protokol Buku Saku CP–ATP–TP, bertanda
+      <span class="badge badge-new" style="vertical-align:middle">🆕 Baru diturunkan dari CP (estimasi awal)</span> —
+      seluruh JP-nya belum divalidasi terhadap kalender pendidikan &amp; jadwal pelajaran riil (Buku Saku
+      Kalender-Jadwal-Prota/Promes). Mapel lain (PAI, PJOK, Bahasa Inggris, Bahasa Sunda, Informatika,
+      ISMUBA) menyusul di tahap berikutnya. Halaman ini statis (bukan Firestore) karena isinya jarang berubah
+      sepanjang tahun ajaran.
     </div>
 
-    <div class="mapel-section">
-      <h2>Bahasa Indonesia</h2>
-      <p class="placeholder">Belum diisi.</p>
-    </div>
-    <div class="mapel-section">
-      <h2>Matematika</h2>
-      <p class="placeholder">Belum diisi.</p>
-    </div>
-    <div class="mapel-section">
-      <h2>IPAS (Ilmu Pengetahuan Alam dan Sosial)</h2>
-      <p class="placeholder">Belum diisi.</p>
-    </div>
-    <div class="mapel-section">
-      <h2>Pendidikan Agama Islam dan Budi Pekerti</h2>
-      <p class="placeholder">Belum diisi.</p>
-    </div>
-    <div class="mapel-section">
-      <h2>Pendidikan Pancasila</h2>
-      <p class="placeholder">Belum diisi.</p>
-    </div>
-    <div class="mapel-section">
-      <h2>Seni Budaya</h2>
-      <p class="placeholder">Belum diisi.</p>
-    </div>
-    <div class="mapel-section">
-      <h2>PJOK (Pendidikan Jasmani, Olahraga dan Kesehatan)</h2>
-      <p class="placeholder">Belum diisi.</p>
-    </div>
-    <div class="mapel-section">
-      <h2>Bahasa Inggris</h2>
-      <p class="placeholder">Belum diisi.</p>
+    <div class="rekap-wrap">
+      <table class="rekap">
+        <thead><tr><th>Mapel</th><th>Cakupan</th><th>Total tercatat</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Bahasa Indonesia</td><td>9 TP / 4 elemen</td><td>42 pertemuan</td><td>✅ resmi (JP menyusul)</td></tr>
+<tr><td>Matematika</td><td>21 TP / 5 elemen</td><td>156 JP (64 pertemuan)</td><td>✅ resmi</td></tr>
+<tr><td>IPAS</td><td>8 TP / 6 topik</td><td>58 JP (27 pertemuan)</td><td>✅ resmi</td></tr>
+<tr><td>Pendidikan Pancasila</td><td>9 TP / 4 elemen</td><td>~72 JP</td><td>🆕 estimasi awal</td></tr>
+<tr><td>Seni Budaya (Musik+Rupa+Teater)</td><td>10 TP / 3 cabang</td><td>~72 JP</td><td>🆕 estimasi awal</td></tr>
+        </tbody>
+      </table>
     </div>
 
+    <details class="mapel-block" style="--m-color:#8c3d5f">
+  <summary>
+    <span class="m-icon">📝</span>
+    <span class="m-nama">Bahasa Indonesia</span>
+    <span class="m-meta">Semester 1 & 2 &middot; total tercatat 42 pertemuan</span>
+    <span class="badge badge-ok">✅ Divalidasi dokumen resmi</span>
+  </summary>
+  <div class="mapel-body">
+    <p class="sumber-note">TP di bawah mengikuti persis roadmap dari <b>Analisis CP Fase C</b>, <b>Scaffolding_BahasaIndonesia_Kelas5.docx</b>, dan <b>PetaAktivitas_BahasaIndonesia_Kelas5.docx</b> yang sudah dipelajari &amp; dipakai membangun 42 halaman Materi Ajar Bahasa Indonesia. Jumlah JP resmi per TP dari Dokumen 2 tidak ikut tersalin ke ringkasan progres sesi lalu — yang ditampilkan di sini adalah jumlah <b>pertemuan</b> (satuan yang tercatat), bukan JP. Kalau dokumen JP resminya diunggah lagi, kolom ini akan disinkronkan.</p>
+    <div class="elemen-block">
+  <h3>Menyimak</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menganalisis informasi dari teks nonsastra berbentuk teks aural (teks yang dibacakan dan/atau didengarkan); dan menganalisis isi teks sastra berbentuk teks aural.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">M1</span>
+    <span class="tp-nama">Informasi Penting dari Teks Aural</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mendengarkan &amp; menunjukkan paham → memilah info penting → mencatat dengan cara sendiri → menyimak mandiri (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Respons non-verbal (bukan tes tulis dulu) di tangga awal, observasi mencatat mandiri di pertemuan Inti — sesuai Bagian III: menyimak tak diukur lewat tulisan/lisan supaya tak tercampur kompetensi lain.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">M2</span>
+    <span class="tp-nama">Hubungan Sebab-Akibat &amp; Urutan Kejadian</span>
+    
+    <span class="tp-jp">5 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenali kata penghubung sebab-akibat → memetakan sebab-akibat → merangkai kejadian berurutan → dua hubungan dalam satu cerita → menjelaskan hubungan antarkejadian (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Diagram alur/pemetaan (respons visual) di tangga awal, penjelasan lisan/tulisan terbatas di Inti.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Membaca dan Memirsa</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Membaca kata-kata dengan berbagai pola kombinasi huruf dengan fasih dari bacaan dan/atau tayangan yang dipirsa; dan menganalisis informasi serta nilai-nilai dalam teks sastra dan nonsastra berwujud teks visual dan/atau audiovisual.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">MB2</span>
+    <span class="tp-nama">Menganalisis Informasi &amp; Nilai dalam Tayangan</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menangkap informasi dari tayangan → menemukan pesan tersembunyi → membandingkan dua tayangan → menganalisis informasi &amp; nilai (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Produk analisis tertulis/lisan dengan kriteria eksplisit (bukan kuis pilihan ganda) — kompetensi analisis butuh objek analisis yang jelas (Bagian II Langkah 2).</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Berbicara dan Mempresentasikan</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Mempresentasikan gagasan dari berbagai tipe teks dengan efektif dan santun; dan menyampaikan perasaan berdasarkan fakta, imajinasi secara indah dan menarik dalam bentuk teks sastra dengan penggunaan kosakata secara kreatif.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">B1</span>
+    <span class="tp-nama">Presentasi Gagasan (Retorika Informatif)</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Bicara ke satu teman dulu → menyusun awal-isi-akhir → presentasi dengan alat bantu → presentasi gagasan di depan kelas (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi performa langsung dengan rubrik struktur &amp; bukti saat presentasi berlangsung, bukan soal tertulis pascapresentasi.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">B2</span>
+    <span class="tp-nama">Membacakan Karya Sastra (Performatif-Ekspresif, Siklus Berkelanjutan)</span>
+    
+    <span class="tp-jp">6 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Siklus 1–2 (suara mengikuti rasa) → puncak semester 1 ⭐ → siklus 4–5 (kelompok besar) → puncak tahun ⭐</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi performa dengan rubrik keberanian tampil &amp; kepekaan rasa — dipisah dari B1 karena Uji Genre Retorika: informatif vs performatif-ekspresif butuh instrumen berbeda (Bagian IV).</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Menulis</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menulis berbagai tipe teks sederhana berdasarkan gagasan, hasil pengamatan, pengalaman, dan/atau imajinasi dengan rangkaian kalimat kompleks secara kreatif, menarik, dan/atau indah; kosakata denotatif dan konotatif.&rdquo;</p>
+  
+  <p class="bedah"><b>Catatan pemisahan:</b> Empat genre menulis (Pengalaman/Pengamatan/Gagasan/Imajinasi) sengaja dipecah jadi 4 TP terpisah — Uji Kerangka Penyusunan (Bagian IV): pengalaman=kerangka naratif, pengamatan=kerangka sistematis, gagasan=kerangka argumentasi, imajinasi=kerangka fiksi. Empat kerangka berpikir berbeda, wajib jadi 4 TP.</p>
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TL-Pengalaman</span>
+    <span class="tp-nama">Menulis dari Pengalaman Pribadi (Kerangka Naratif)</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mencari pengalaman berbahan cerita → menyusun kerangka → menulis draf pertama → cerita pengalamanku yang hidup (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Bandingkan draf awal vs revisi sebagai bukti proses, bukan cuma produk akhir (Bagian III — kompetensi produktif-proses).</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TL-Pengamatan</span>
+    <span class="tp-nama">Menulis Laporan Pengamatan (Kerangka Sistematis)</span>
+    
+    <span class="tp-jp">5 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mencatat dari hasil mengamati → dari kata menjadi kalimat → menyusun urutan sistematis → melaporkan kejadian nyata → laporan pengamatanku sendiri (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Rubrik struktur dibandingkan dengan catatan pengamatan awal — bukan format isian siap pakai sebagai produk akhir.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TL-Gagasan</span>
+    <span class="tp-nama">Menulis Pendapat / Gagasan (Kerangka Argumentasi)</span>
+    
+    <span class="tp-jp">5 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Fakta atau pendapat? → berani berpendapat → pendapat butuh alasan → alasan yang lebih kuat → menulis pendapat dan alasanku (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Tulisan argumentatif dinilai dari kekuatan alasan-bukti, bukan tes pilihan ganda.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TL-Imajinasi</span>
+    <span class="tp-nama">Menulis Cerita Imajinatif (Kerangka Fiksi)</span>
+    
+    <span class="tp-jp">5 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Melontarkan ide-ide liar → tokoh &amp; latar tak biasa → menyusun alur cerita → kata-kata yang punya rasa → ceritaku, imajinasiku sendiri (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Rubrik kreativitas diturunkan jadi indikator terajar &amp; teramati (mis. penggunaan kalimat majemuk, 1 contoh makna konotatif) — bukan penilaian rasa subjektif (Bagian III).</div>
+</div>
+  </div>
+</div>
+  </div>
+</details>
+
+<details class="mapel-block" style="--m-color:#1f6f78">
+  <summary>
+    <span class="m-icon">🔢</span>
+    <span class="m-nama">Matematika</span>
+    <span class="m-meta">Semester 1 & 2 · Total 156 JP (Dokumen 2 resmi) &middot; total tercatat 64 pertemuan</span>
+    <span class="badge badge-ok">✅ Divalidasi dokumen resmi</span>
+  </summary>
+  <div class="mapel-body">
+    <p class="sumber-note">TP di bawah mengikuti persis <b>Dokumen 2 (TP Kelas 5, 156 JP)</b> dan 5 dokumen Scaffolding per elemen yang sudah dipelajari &amp; dipakai membangun 64 halaman Materi Ajar Matematika. Total 21 TP / 64 pertemuan — angka JP resmi (156) sudah terverifikasi dari dokumen sumber, sedangkan rincian JP per TP individual tidak tersalin ke ringkasan progres sesi lalu (yang tercatat adalah jumlah pertemuan). Matematika memakai jalur tunggal per TP (bukan Alternatif 1/2) karena dokumen sumbernya sudah preskriptif.</p>
+    <div class="elemen-block">
+  <h3>Bilangan</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menunjukkan pemahaman dan intuisi bilangan (number sense) pada bilangan cacah sampai 1.000.000; operasi hitung sampai 100.000; KPK-FPB; pecahan termasuk operasi &amp; perbandingan.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BIL-TP1</span>
+    <span class="tp-nama">Nilai Tempat dan Perbandingan Bilangan Cacah (sampai 100.000)</span>
+    
+    <span class="tp-jp">1 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Pertemuan tunggal (Inti ⭐) — dibatasi ketat sampai 100.000 sesuai Dokumen 2, bukan sampai jutaan.</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal tertulis + observasi 2-langkah membandingkan bilangan (jumlah digit dulu, baru digit terkiri).</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BIL-TP2</span>
+    <span class="tp-nama">Pengurangan Bersusun dengan Peminjaman Berganda</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> 1× peminjaman → 2× peminjaman berurutan → peminjaman menembus angka nol → soal cerita (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Dinilai per langkah proses peminjaman, bukan hanya jawaban akhir — mengantisipasi miskonsepsi 'mencongak sebagian'.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BIL-TP3</span>
+    <span class="tp-nama">Pembagian Bersusun dengan Pembagi Multi-Digit</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Penyegaran pembagi 1 digit → pembagi kelipatan 10 → pembagi 2 digit sembarang → soal cerita (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal tertulis berjenjang + soal cerita di pertemuan Inti.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BIL-TP4</span>
+    <span class="tp-nama">KPK dan FPB melalui Soal Cerita Kontekstual</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Daftar kelipatan &amp; faktor → soal cerita tunggal → identifikasi KPK/FPB dari soal cerita → soal cerita campuran (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal cerita kontekstual, bukan hafalan prosedur kosong.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BIL-TP5</span>
+    <span class="tp-nama">Masalah Sehari-hari Berkaitan dengan Uang</span>
+    
+    <span class="tp-jp">1 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Pertemuan tunggal (Inti ⭐) — masalah uang kontekstual.</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal cerita transaksi uang sehari-hari.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BIL-TP6</span>
+    <span class="tp-nama">Pecahan: Representasi, Perbandingan, Penjumlahan-Pengurangan</span>
+    
+    <span class="tp-jp">7 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Pecahan sebagai bagian keseluruhan → representasi &amp; pecahan senilai → banding sepenyebut → banding beda penyebut → jumlah-kurang sepenyebut → jumlah-kurang beda penyebut → pecahan campuran soal cerita (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Representasi visual di tangga awal, soal cerita gabungan di Inti.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BIL-TP7</span>
+    <span class="tp-nama">Perkalian-Pembagian Pecahan dengan Bilangan Asli</span>
+    
+    <span class="tp-jp">3 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengalikan pecahan dgn bilangan asli → membagi pecahan dgn bilangan asli → mengubah bentuk pecahan + soal cerita gabungan (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal cerita gabungan operasi pecahan.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Aljabar</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menemukan nilai belum diketahui dalam kalimat matematika (4 operasi, bilangan cacah sampai 1.000); mengidentifikasi &amp; mengembangkan pola bilangan; bernalar proporsional dengan rasio satuan.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">ALJ-TP1</span>
+    <span class="tp-nama">Simbol "=" sebagai Relasi Kesetaraan — Remediasi Wajib</span>
+    
+    <span class="tp-jp">3 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menyeimbangkan timbangan dgn angka nyata → menerjemahkan situasi seimbang ke kalimat matematika → kalimat matematika dgn 1 kotak kosong (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> ⚠ Remediasi wajib, bukan pengayaan — miskonsepsi guru turun-temurun ("=" diajarkan sbg hasil, bukan kesetaraan dua arah). Observasi timbangan fisik + soal tertulis.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">ALJ-TP2</span>
+    <span class="tp-nama">Menemukan Nilai Belum Diketahui — Notasi Simbolik 4 Operasi</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> 1 operasi sampai 1.000 → 2 operasi gabungan → 4 operasi campuran → soal cerita nilai belum diketahui (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal cerita dengan nilai tersembunyi, bukan drill notasi kosong.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">ALJ-TP3</span>
+    <span class="tp-nama">Pola Bilangan Membesar/Mengecil (Perkalian-Pembagian)</span>
+    
+    <span class="tp-jp">3 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Membedakan pola aditif vs multiplikatif → mengidentifikasi &amp; meniru pola multiplikatif → mengembangkan pola dalam soal cerita (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Perlu bedakan tegas dari pola aditif fase B — pola multiplikatif kompetensi baru fase C.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">ALJ-TP4</span>
+    <span class="tp-nama">Bernalar Proporsional dengan Rasio Satuan</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Memahami rasio satuan lewat harga &amp; kecepatan → soal cerita proporsional (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal cerita proporsi harga/kecepatan sehari-hari.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Geometri</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Mengonstruksi dan mengurai bangun ruang serta visualisasi spasial; membandingkan karakteristik bangun datar &amp; ruang; menentukan lokasi pada peta sistem berpetak.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">GEOM-TP3</span>
+    <span class="tp-nama">Menentukan Lokasi pada Sistem Berpetak (Koordinat Sederhana)</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Membaca posisi pada bidang berpetak → tebak koordinat &amp; soal cerita peta (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> ⚠ Sengaja diajarkan berdekatan dengan Aljabar TP2 (konsep berpikirnya aljabaris — posisi = pasangan terurut), bukan geometri bentuk-ruang. Menjadi prasyarat IPAS Letak Geografis.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">GEOM-TP1</span>
+    <span class="tp-nama">Mengonstruksi &amp; Mengurai Bangun Ruang, Visualisasi Spasial</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Memprediksi jaring-jaring kubus valid → melipat jaring-jaring kubus → melipat &amp; mengurai jaring-jaring balok → menggambar tampak depan-atas-samping (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Manipulatif fisik (melipat) di tangga awal, gambar teknik di Inti.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">GEOM-TP2</span>
+    <span class="tp-nama">Membandingkan Karakteristik Bangun Datar &amp; Bangun Ruang</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenal istilah sisi-rusuk-titik sudut → menyusun tabel perbandingan (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Tabel perbandingan dengan kriteria eksplisit.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Pengukuran</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menentukan keliling &amp; luas bangun datar serta gabungannya; menghitung durasi waktu; mengukur besar sudut.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">UKUR-TP1</span>
+    <span class="tp-nama">Keliling &amp; Luas Persegi, Persegi Panjang, Segitiga (Potong-Susun Fisik)</span>
+    
+    <span class="tp-jp">5 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menghitung keliling → luas dgn petak satuan → menurunkan rumus luas jajar genjang → menurunkan rumus luas segitiga → keliling-luas gabungan soal cerita (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Manipulatif potong-susun fisik untuk menurunkan rumus (bukan hafalan rumus siap pakai).</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">UKUR-TP2</span>
+    <span class="tp-nama">Keliling &amp; Luas Segi Banyak Beraturan dan Bangun Gabungan</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Memecah bangun gabungan jadi bangun dasar → keliling-luas segi lima/enam &amp; gabungan (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal bangun gabungan kontekstual.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">UKUR-TP3</span>
+    <span class="tp-nama">Durasi Waktu (Konversi Antarsatuan, Lintas Tengah Malam)</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Konversi dasar jam-menit-detik → durasi perjalanan termasuk lintas tengah malam (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Soal cerita durasi realistis (jadwal perjalanan).</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">UKUR-TP4</span>
+    <span class="tp-nama">Mengukur Besar Sudut dengan Protractor</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengklasifikasikan jenis sudut secara visual → mengukur sudut dengan protraktor (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Praktik langsung mengukur dengan alat, bukan hanya soal gambar.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Analisis Data dan Peluang</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Mengurutkan, membandingkan, menyajikan, dan menganalisis data dalam gambar/piktogram/diagram batang/tabel frekuensi; menentukan kejadian dengan kemungkinan lebih besar/kecil dalam percobaan acak.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">DP-TP1</span>
+    <span class="tp-nama">Mengurutkan, Membandingkan, Menyajikan Data</span>
+    
+    <span class="tp-jp">4 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menyusun tabel frekuensi → menyajikan dalam piktogram → menyajikan dalam diagram batang → memilih bentuk penyajian yang sesuai (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Data kelas nyata, produk penyajian dinilai kesesuaiannya dengan jenis data.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">DP-TP2</span>
+    <span class="tp-nama">Mean, Median, Modus (Pengayaan Informal)</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menemukan rata-rata lewat aktivitas meratakan → mean-median-modus &amp; kerentanan rata-rata (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> ⚠ Pengayaan di luar tuntutan minimum CP (CP Fase C berhenti di penyajian data) — boleh disesuaikan/dipercepat kalau kalender ketat.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">DP-TP3</span>
+    <span class="tp-nama">Peluang — Pengenalan Awal dari Eksplorasi Konkret</span>
+    
+    <span class="tp-jp">3 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Eksperimen lempar koin &amp; dadu → membandingkan kemungkinan kejadian → memprediksi &amp; membuktikan peluang situasi baru (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Eksperimen konkret dicatat &amp; dibandingkan dengan prediksi awal.</div>
+</div>
+  </div>
+</div>
+  </div>
+</details>
+
+<details class="mapel-block" style="--m-color:#3f7d4a">
+  <summary>
+    <span class="m-icon">🌏</span>
+    <span class="m-nama">IPAS (Ilmu Pengetahuan Alam dan Sosial)</span>
+    <span class="m-meta">Semester 1 & 2 · Total 58 JP (Dokumen 2 resmi) &middot; total tercatat 27 pertemuan</span>
+    <span class="badge badge-ok">✅ Divalidasi dokumen resmi</span>
+  </summary>
+  <div class="mapel-body">
+    <p class="sumber-note">TP di bawah mengikuti persis <b>Analisis CP Fase C IPAS</b>, <b>Dokumen 2 (TP Kelas 5, 58 JP)</b>, 6 dokumen Scaffolding per topik, dan <b>PetaAktivitas_IPAS_Kelas5.docx</b> yang sudah dipelajari &amp; dipakai membangun 27 halaman Materi Ajar IPAS (TUNTAS). Urutan mengajar mengikuti PetaAktivitas (kesiapan pedagogis), bukan urutan penomoran resmi Dokumen 2. Topik Kelompok C (tata surya-rotasi-revolusi bumi; energi &amp; mitigasi iklim) sengaja <b>tidak</b> dibuatkan materi kelas 5 — didorong penuh ke kelas 6 sesuai keputusan Dokumen 1.</p>
+    <div class="elemen-block">
+  <h3>Pemahaman IPAS — Sistem Organ Tubuh</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Merefleksikan sistem organ tubuh manusia yang dikaitkan dengan cara menjaga kesehatan tubuhnya.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">OT-TP2</span>
+    <span class="tp-nama">Struktur dan Fungsi Organ (bekal untuk TP1)</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengamati diagram organ utama tubuh → fungsi organ &amp; menjaga kesehatan (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Diagram berlabel + kaitan fungsi-kesehatan.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">OT-TP1</span>
+    <span class="tp-nama">Respons Tubuh dan Kesehatan (Detak Jantung)</span>
+    
+    <span class="tp-jp">6 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Meraba detak jantung sendiri → menebak setelah bergerak → mengukur sebelum-sesudah aktivitas → membandingkan antarteman → prediksi vs kenyataan → refleksi aktivitas fisik &amp; kesehatan jantung (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Pengukuran langsung + jurnal prediksi-vs-kenyataan, bukan hafalan definisi organ.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Pemahaman IPAS — Keterampilan Proses (Bunyi &amp; Cahaya)</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menjelaskan fenomena gelombang bunyi dan cahaya dalam kehidupan sehari-hari. (dipakai juga sebagai pemanasan Keterampilan Proses skala kecil.)&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BC-TP1</span>
+    <span class="tp-nama">Gelombang Bunyi dan Cahaya</span>
+    
+    <span class="tp-jp">5 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengamati bunyi-cahaya di sekitar → memprediksi → eksperimen telepon kaleng &amp; pemantulan cahaya → membandingkan hasil antarbahan → bunyi-cahaya dalam kehidupan sehari-hari (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Eksperimen konkret dengan variabel diubah/dijaga tetap, dicatat &amp; dibandingkan dengan prediksi.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Pemahaman IPAS — Ekosistem</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menganalisis hubungan antar komponen biotik dan abiotik, serta pengaruhnya terhadap ekosistem.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">EKOS-TP1</span>
+    <span class="tp-nama">Observasi Biotik-Abiotik</span>
+    
+    <span class="tp-jp">3 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenali ciri benda hidup/tak hidup → mencatat komponen ekosistem sekitar sekolah → menduga hubungan antarkomponen (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi lapangan langsung di lingkungan sekolah.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">EKOS-TP2</span>
+    <span class="tp-nama">⭐ Percobaan Pertumbuhan Tanaman (Proyek Andalan)</span>
+    
+    <span class="tp-jp">5 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menentukan variabel diubah/dijaga tetap → merancang percobaan → mencatat pertumbuhan berkala → mengevaluasi hasil → menyajikan hasil dengan data (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Proyek berjalan 1–2 minggu kalender (bukan 1 slot JP) — laporan data pertumbuhan sebagai bukti proses.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Pemahaman IPAS — Kegiatan Ekonomi</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menerapkan kegiatan ekonomi masyarakat di lingkungan sekitar.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">EKON-TP1</span>
+    <span class="tp-nama">Kegiatan Ekonomi Masyarakat</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mencatat jenis usaha di sekitarku → mengklasifikasikan kegiatan ekonomi (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi lingkungan sekitar rumah/sekolah.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Pemahaman IPAS — Letak Geografis</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menjelaskan letak dan kondisi geografis negara Indonesia dengan menggunakan peta konvensional/digital.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">GEO-TP1</span>
+    <span class="tp-nama">Letak Geografis Indonesia</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menandai posisi geografis Indonesia (antara 2 benua/2 samudra) → membaca letak dengan sistem berpetak (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> ⚠ Butuh Geometri Matematika TP3 (sistem berpetak) — dibuat mandiri (self-contained) dengan pengantar dasar grid supaya berfungsi baik dipakai sebelum/sesudah Geometri.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Pemahaman IPAS — Sejarah dan Keragaman Budaya</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menemukan keragaman budaya nasional dalam konteks kebhinekaan berdasarkan pemahaman terhadap nilai-nilai kearifan lokal.&rdquo;</p>
+  
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BUDAYA-TP1</span>
+    <span class="tp-nama">Sejarah dan Keragaman Budaya Sekitar</span>
+    
+    <span class="tp-jp">2 pertemuan</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengingat kembali Peta Asal Keluarga Kelas Kami (lintas mapel dgn Pendidikan Pancasila BTI-C1) → menghubungkan geografis-ekonomi-budaya keluarga (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> ⚠ Butuh 3 prasyarat lintas topik/mapel: proyek Pendidikan Pancasila BTI-C1, IPAS Letak Geografis, IPAS Ekonomi Masyarakat — dibuat mandiri (self-contained) dengan pembuka bersyarat supaya tetap berfungsi kalau salah satu belum tuntas. Sensitivitas sejarah lokal dijaga: bukan pembahasan mendalam, hanya pemantik rasa ingin tahu.</div>
+</div>
+  </div>
+</div>
+  </div>
+</details>
+
+<details class="mapel-block" style="--m-color:#a13d3d">
+  <summary>
+    <span class="m-icon">🇮🇩</span>
+    <span class="m-nama">Pendidikan Pancasila</span>
+    <span class="m-meta">Semester 1 & 2 · ±72 JP (estimasi awal) &middot; total tercatat 72 JP</span>
+    <span class="badge badge-new">🆕 Baru diturunkan dari CP (estimasi awal)</span>
+  </summary>
+  <div class="mapel-body">
+    <p class="sumber-note">Belum ada dokumen resmi (Dokumen 1/2/Scaffolding) untuk mapel ini — TP di bawah baru pertama kali diturunkan langsung dari CP Fase C resmi (<code>CP.html</code>) memakai protokol lengkap Buku Saku CP–ATP–TP (bedah kritis 7 langkah + uji pemisahan 4 kriteria Bagian IV). <b>Seluruh angka JP di bawah adalah estimasi awal Claude</b> (asumsi ±2 JP/minggu × 36 minggu efektif setahun) — belum divalidasi terhadap kalender pendidikan &amp; jadwal pelajaran riil sekolah (Buku Saku Kalender-Jadwal-Prota/Promes). Mohon dikoreksi kalau ada pertimbangan guru yang belum diketahui.</p>
+    <div class="elemen-block">
+  <h3>Pancasila</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Memahami kronologi sejarah kelahiran Pancasila; meneladani sikap para perumus Pancasila dan menerapkan di lingkungan masyarakat; menghubungkan sila-sila dalam Pancasila sebagai suatu kesatuan yang utuh; menguraikan makna nilai-nilai Pancasila sebagai dasar negara, dan pandangan hidup bangsa.&rdquo;</p>
+  <p class="bedah"><b>Bedah kritis:</b> CP ini run-on 4 klausa dipisah ";". Uji Kerangka Penyusunan (Bagian IV): (a) kronologi sejarah = kerangka naratif-kronologis, (b) meneladani/menerapkan = kerangka sikap-perilaku (afektif), (c)+(d) menghubungkan sila &amp; menguraikan makna dasar negara = kerangka konseptual-analitis. Tiga kerangka berbeda → dipecah 3 TP. Klausa (b) rawan gagal Uji Validitas Pengukuran (Bagian III) kalau dipaksakan jadi tes tertulis — 'meneladani' adalah kompetensi sikap, instrumennya wajib observasi perilaku, bukan soal ulangan tentang keteladanan.</p>
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">PANC-C1a</span>
+    <span class="tp-nama">Kronologi Sejarah Kelahiran Pancasila</span>
+    
+    <span class="tp-jp">8 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mendengar &amp; menandai tokoh-peristiwa dalam garis waktu sederhana → menyusun ulang urutan peristiwa dgn kata sendiri → mengaitkan peristiwa dgn nilai yang lahir darinya → menceritakan kronologi lengkap secara runtut (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Tes lisan/tertulis naratif-kronologis (urutan peristiwa + kaitannya), bukan hafalan tanggal terisolasi.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">PANC-C1b</span>
+    <span class="tp-nama">Meneladani Sikap Perumus Pancasila dalam Kehidupan Sehari-hari</span>
+    
+    <span class="tp-jp">6 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenali contoh sikap tokoh perumus (musyawarah, rela berkorban, dsb.) → mendiskusikan situasi sehari-hari yang mirip → mempraktikkan salah satu sikap dalam kegiatan kelas → refleksi &amp; ceklis perilaku berkala (Inti ⭐, kompetensi berulang)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Ceklis observasi perilaku guru selama beberapa pekan (bukan tes tertulis sekali jalan) — kompetensi sikap dilatih berulang, bukan tuntas sekali (Bagian VII Buku Saku Scaffolding).</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">PANC-C1c</span>
+    <span class="tp-nama">Menghubungkan Sila-Sila sebagai Satu Kesatuan Nilai</span>
+    
+    <span class="tp-jp">8 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Meninjau ulang makna tiap sila (fondasi dari fase B) → mencari contoh nyata dua sila yang saling terkait → menyusun peta hubungan kelima sila → menguraikan makna gabungan sbg dasar negara &amp; pandangan hidup bangsa (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Diagram/peta hubungan + esai pendek berkriteria jelas. Catatan ATP: versi pengantar di kelas 5 ini diperdalam lagi di kelas 6 (penguatan kompleksitas — Bagian VII Buku Saku CP).</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>UUD 1945</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Mengimplementasikan bentuk-bentuk norma, hak, dan kewajiban dalam kedudukannya sebagai warga negara; mengenal Pembukaan Undang-Undang Dasar Negara Republik Indonesia tahun 1945; mempraktikkan musyawarah untuk membuat kesepakatan dan aturan bersama, serta menerapkannya dalam lingkungan keluarga dan sekolah.&rdquo;</p>
+  <p class="bedah"><b>Bedah kritis:</b> 3 klausa, 3 kerangka berbeda: (a) mengimplementasikan norma/hak/kewajiban = perilaku terapan, (b) mengenal Pembukaan UUD 1945 = kognitif-tekstual, (c) mempraktikkan musyawarah = prosedural-sosial. Uji Cara Ukur (Bagian IV): (a) &amp; (c) sama-sama diukur lewat observasi praktik, tapi objeknya beda (norma harian vs proses musyawarah formal) → tetap dipisah supaya masing-masing dapat instrumen yang presisi.</p>
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">UUD-C1</span>
+    <span class="tp-nama">Norma, Hak, dan Kewajiban sebagai Warga Negara</span>
+    
+    <span class="tp-jp">8 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengidentifikasi norma di rumah/sekolah/masyarakat → membedakan hak &amp; kewajiban dalam tiap peran → mensimulasikan situasi pelanggaran &amp; konsekuensinya → mempraktikkan &amp; melaporkan penerapan nyata selama sepekan (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Jurnal penerapan nyata (bukan hanya soal teori norma) + observasi guru.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">UUD-C2</span>
+    <span class="tp-nama">Mengenal Pembukaan UUD 1945</span>
+    
+    <span class="tp-jp">6 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mendengarkan &amp; menandai bagian-bagian Pembukaan → mencari kata kunci tiap alinea → menjelaskan makna kata kunci dengan bahasa sendiri → menceritakan garis besar isi Pembukaan (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Tes lisan/tertulis pemahaman makna (bukan hafalan verbatim tanpa pemahaman) — sesuai Bagian II Langkah 6, waspada risiko degradasi jadi hafalan template.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">UUD-C3</span>
+    <span class="tp-nama">Musyawarah Mufakat dalam Keluarga dan Sekolah</span>
+    
+    <span class="tp-jp">8 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenal tahapan musyawarah sederhana → berlatih musyawarah kelompok kecil (topik ringan) → memimpin/berperan dalam musyawarah kelas (topik nyata) → menerapkan hasil kesepakatan &amp; melapor tindak lanjutnya (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi proses musyawarah dengan rubrik peran (mengusulkan, mendengarkan, menerima keputusan) — bukan tes tertulis tentang definisi musyawarah.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Bhinneka Tunggal Ika</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Menyajikan hasil identifikasi sikap menghormati, menjaga, dan melestarikan keberagaman budaya sesuai semboyan dalam bingkai Bhinneka Tunggal Ika di lingkungan sekitar.&rdquo;</p>
+  <p class="bedah"><b>Bedah kritis:</b> Satu kalimat, satu KKO ("menyajikan") dengan objek jelas (hasil identifikasi keberagaman budaya lingkungan sekitar) — tidak perlu dipecah. Karena KKO-nya "menyajikan hasil identifikasi", ini secara alami berbentuk proyek investigasi + presentasi, bukan tes tertulis (Peta KKO → Bentuk Asesmen, Buku Saku Scaffolding Bagian VII: Menyajikan → presentasi/laporan/pameran hasil kerja).</p>
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">BTI-C1</span>
+    <span class="tp-nama">Menyajikan Hasil Identifikasi Keberagaman Budaya di Lingkungan Sekitar</span>
+    
+    <span class="tp-jp">10 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengumpulkan cerita asal-usul keluarga masing-masing siswa → memetakan asal daerah seluruh kelas (proyek "Peta Asal Keluarga Kelas Kami") → mengidentifikasi sikap menghormati/menjaga/melestarikan yang relevan → menyajikan &amp; memamerkan hasil (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Produk peta kelas + presentasi kelompok, dinilai dengan rubrik kinerja. ⚠ Proyek ini menjadi prasyarat lintas mapel untuk IPAS Sejarah &amp; Budaya (BUDAYA-TP1) — urutan pengajaran perlu mendahulukan TP ini.</div>
+</div>
+  </div>
+</div>
+<div class="elemen-block">
+  <h3>Negara Kesatuan Republik Indonesia</h3>
+  <p class="cp-quote">CP Fase C: &ldquo;Mengenal wilayahnya dalam konteks kabupaten/kota, dan provinsi sebagai bagian dari wilayah Negara Kesatuan Republik Indonesia; menunjukkan perilaku gotong royong untuk menjaga persatuan di lingkungan sekolah dan sekitar sebagai wujud bela negara.&rdquo;</p>
+  <p class="bedah"><b>Bedah kritis:</b> 2 klausa: (a) mengenal wilayah kab/kota &amp; provinsi = kognitif-geografis (skala lokal-regional, beda cakupan dari IPAS Letak Geografis yang bicara skala nasional/dunia — tidak tumpang tindih, lihat Buku Saku Scaffolding 1J); (b) perilaku gotong royong = sikap. Uji Kerangka: geografis-kognitif vs sikap-perilaku jelas berbeda → dipecah 2 TP.</p>
+  
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">NKRI-C1</span>
+    <span class="tp-nama">Mengenal Wilayah Kabupaten/Kota dan Provinsi sebagai Bagian NKRI</span>
+    
+    <span class="tp-jp">8 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenali batas wilayah kab/kota tempat tinggal → mencari posisi kab/kota dalam peta provinsi → membandingkan dgn kab/kota tetangga → menyajikan profil singkat wilayah sendiri sbg bagian NKRI (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Peta berlabel + profil wilayah singkat, skala lokal-regional (bukan skala nasional/dunia — itu ranah IPAS Letak Geografis).</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">NKRI-C2</span>
+    <span class="tp-nama">Gotong Royong Menjaga Persatuan (Wujud Bela Negara)</span>
+    
+    <span class="tp-jp">10 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenali contoh gotong royong di sekolah/sekitar → mendiskusikan manfaatnya bagi persatuan → merancang &amp; melaksanakan 1 kegiatan gotong royong kelas → refleksi dampaknya bagi kebersamaan (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi partisipasi selama kegiatan gotong royong nyata + refleksi tertulis/lisan singkat.</div>
+</div>
+  </div>
+</div>
+  </div>
+</details>
+
+<details class="mapel-block" style="--m-color:#c9861f">
+  <summary>
+    <span class="m-icon">🎨</span>
+    <span class="m-nama">Seni Budaya</span>
+    <span class="m-meta">Musik (Sem 1&amp;2) + Rupa (Sem 1) + Teater (Sem 2) &middot; total 72 JP</span>
+    <span class="badge badge-new">🆕 Baru diturunkan dari CP (estimasi awal)</span>
+  </summary>
+  <div class="mapel-body">
+    <p class="sumber-note">Belum ada dokumen resmi untuk mapel ini. Berdasarkan konfirmasi guru: <b>Semester 1</b>
+    = Seni Musik + Seni Rupa, <b>Semester 2</b> = Seni Musik + Seni Teater. Tiga cabang di bawah masing-masing
+    diturunkan dari CP Fase C resminya sendiri (CP tiap cabang seni berbeda total, tidak bisa disamaratakan).
+    Kelima elemen CP (Mengalami/Merefleksikan/Berpikir&amp;BekerjaArtistik/Menciptakan/Berdampak) diperlakukan
+    sebagai <b>satu siklus proses berkarya berurutan</b>, bukan 5 kompetensi paralel yang harus dipisah TP
+    (lihat catatan bedah kritis di tiap cabang). <b>Seluruh JP adalah estimasi awal</b> (asumsi berbagi ±2 JP/
+    minggu &times; 18 minggu efektif/semester antar-cabang yang berjalan semester itu) — belum divalidasi kalender
+    &amp; jadwal riil.</p>
+    <div class="seni-sub">
+  <h3>🎵 Seni Musik <span class="m-meta">&middot; Semester 1 &amp; 2 (berjalan sepanjang tahun) &middot; 20 JP</span></h3>
+  <div class="cp-table-wrap">
+    <table class="cp-mini-table">
+      <thead><tr><th>Elemen</th><th>CP Fase C</th></tr></thead>
+      <tbody><tr><td class="cpe-el">Mengalami</td><td>Mengenali dan menerapkan unsur-unsur musik (nada, irama dan melodi) menggunakan alat musik ritmis dan melodis serta menunjukkan tingkat kepekaan akan unsur-unsur musik.</td></tr><tr><td class="cpe-el">Berpikir dan Bekerja Artistik</td><td>Mengeksplorasi variasi pola irama, tempo dan melodi dengan alat musik ritmis dan melodis menggunakan notasi musik dan teknik dasar; menemukan alternatif bunyi musik sederhana melalui eksplorasi material lingkungan sekitar; menerapkan cara memainkan dan merawat alat musik dengan teknik yang tepat.</td></tr><tr><td class="cpe-el">Menciptakan</td><td>Membuat dan mengembangkan pola irama menggunakan anggota tubuh atau alat musik ritmis yang tersedia berdasarkan nilai kearifan lokal daerahnya.</td></tr><tr><td class="cpe-el">Merefleksikan</td><td>Melakukan umpan balik mengenai karya dan kemampuan bermusik diri sendiri atau orang lain menggunakan istilah musik yang tepat.</td></tr><tr><td class="cpe-el">Berdampak</td><td>Menunjukkan minat dan rasa ingin tahu dalam kegiatan bermusik.</td></tr></tbody>
+    </table>
+  </div>
+  <p class="bedah"><b>Bedah kritis &amp; pemisahan TP:</b> 5 elemen Seni Musik bukan 5 kompetensi paralel yang berdiri sendiri, melainkan tahapan berurutan dari SATU proses berkarya (Mengalami → Berpikir &amp; Bekerja Artistik → Menciptakan → Merefleksikan → Berdampak) — sehingga Uji Kerangka Penyusunan (Bagian IV) tidak berlaku sama seperti mapel lain: ini bukan kompetensi yang tercampur, tapi satu siklus kreatif utuh. Karena Musik berjalan di kedua semester, siklus ini dipecah jadi 2 TP mengikuti jenjang kerumitan: semester 1 fokus mengenali &amp; mengeksplorasi unsur dasar (fondasi), semester 2 fokus menciptakan &amp; berdampak (puncak) — sesuai prinsip pembagian Bagian VII Buku Saku CP.</p>
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">MUS-C1</span>
+    <span class="tp-nama">Mengenali &amp; Menerapkan Unsur Musik (Nada, Irama, Melodi)</span>
+    <span class="tp-sem">Semester 1</span>
+    <span class="tp-jp">10 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenal nada-irama-melodi lewat tepuk &amp; alat musik ritmis sederhana → menirukan pola irama pendek → mengeksplorasi variasi pola irama dgn notasi dasar → menunjukkan kepekaan unsur musik dlm permainan kelompok (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi performa langsung (memainkan pola irama) dengan rubrik kepekaan nada-irama, bukan tes tertulis teori musik semata.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">MUS-C2</span>
+    <span class="tp-nama">Menciptakan Pola Irama Berdasarkan Kearifan Lokal</span>
+    <span class="tp-sem">Semester 2</span>
+    <span class="tp-jp">10 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenal cara memainkan &amp; merawat alat musik dgn teknik tepat → mengeksplorasi material sekitar sbg sumber bunyi → membuat &amp; mengembangkan pola irama berdasarkan kearifan lokal daerah → menampilkan karya &amp; memberi/menerima umpan balik memakai istilah musik (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Produk pola irama orisinal + observasi minat dalam proses berkarya (elemen Berdampak) — dinilai dari proses menciptakan, bukan hanya hasil akhir.</div>
+</div>
+  </div>
+</div>
+<div class="seni-sub">
+  <h3>🎨 Seni Rupa <span class="m-meta">&middot; Semester 1 saja &middot; 26 JP</span></h3>
+  <div class="cp-table-wrap">
+    <table class="cp-mini-table">
+      <thead><tr><th>Elemen</th><th>CP Fase C</th></tr></thead>
+      <tbody><tr><td class="cpe-el">Mengalami</td><td>Menjelaskan unsur rupa dan prinsip desain dalam benda-benda di sekitar/karya seni rupa.</td></tr><tr><td class="cpe-el">Berpikir dan Bekerja Artistik</td><td>Mengenali dan menguji coba variasi teknik penggunaan alat dan/atau bahan.</td></tr><tr><td class="cpe-el">Menciptakan</td><td>Membuat karya seni rupa berdasarkan pengalaman dan/atau hasil pengamatan terhadap lingkungan sekitar melalui pengembangan imajinasi.</td></tr><tr><td class="cpe-el">Berdampak</td><td>Menghasilkan karya seni rupa yang mewakili minatnya.</td></tr><tr><td class="cpe-el">Merefleksikan</td><td>Merefleksikan dan mengapresiasi karya diri sendiri dan teman sekelas menggunakan kosa kata seni rupa yang sesuai.</td></tr></tbody>
+    </table>
+  </div>
+  <p class="bedah"><b>Bedah kritis &amp; pemisahan TP:</b> Sama seperti Musik, 5 elemen adalah 1 siklus berkarya berurutan. Klausa Menciptakan ("membuat karya") dan Berdampak ("karya yang mewakili minatnya") digabung jadi 1 TP karena Uji Cara Ukur: keduanya dinilai dari PRODUK KARYA YANG SAMA — tidak ada instrumen terpisah yang masuk akal untuk memisahkan "karya jadi" dari "karya mewakili minat", sehingga dipaksakan pisah justru melanggar prinsip 'jangan menyamaratakan metode tanpa memandang jenis kompetensi' (Bagian II).</p>
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">RUPA-C1</span>
+    <span class="tp-nama">Eksplorasi Unsur Rupa &amp; Prinsip Desain melalui Pengamatan Benda Sekitar</span>
+    <span class="tp-sem">Semester 1</span>
+    <span class="tp-jp">6 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengamati unsur rupa (garis, bentuk, warna, tekstur) pada benda sekitar → mengidentifikasi prinsip desain sederhana (keseimbangan, irama visual) → mendiskusikan contoh pada karya seni rupa nyata → menjelaskan unsur &amp; prinsip dengan kosakata seni rupa (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Penjelasan lisan/tertulis dengan kosakata seni rupa yang tepat, bukan sekadar sebutan warna/bentuk.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">RUPA-C2</span>
+    <span class="tp-nama">Menguji Coba Teknik &amp; Alat/Bahan dalam Berkarya</span>
+    <span class="tp-sem">Semester 1</span>
+    <span class="tp-jp">6 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengenal ragam alat &amp; bahan yang tersedia → menguji coba 1 teknik sederhana → menguji coba teknik kedua utk perbandingan → memilih teknik yang paling sesuai untuk rencana karya (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi proses uji coba (bukan hasil akhir dulu) — tahap eksplorasi teknik, toleran terhadap hasil belum sempurna.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">RUPA-C3</span>
+    <span class="tp-nama">Menciptakan Karya Seni Rupa dari Pengamatan &amp; Imajinasi (Proyek Karya)</span>
+    <span class="tp-sem">Semester 1</span>
+    <span class="tp-jp">10 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Menentukan ide dari pengamatan/pengalaman/imajinasi → membuat sketsa awal → mengembangkan jadi karya penuh dgn teknik terpilih → menyelesaikan &amp; memberi sentuhan akhir yang mewakili minat pribadi (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Penilaian kinerja dengan rubrik proses (sketsa→karya jadi), menilai sekaligus kesesuaian teknik DAN sejauh mana karya mewakili minat siswa — instrumen tunggal untuk elemen Menciptakan+Berdampak.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">RUPA-C4</span>
+    <span class="tp-nama">Merefleksikan &amp; Mengapresiasi Karya Sendiri dan Teman</span>
+    <span class="tp-sem">Semester 1</span>
+    <span class="tp-jp">4 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengamati karya sendiri dengan kosakata seni rupa → mengamati karya 1 teman → memberi apresiasi &amp; masukan santun → menyusun refleksi singkat tentang proses berkaryanya (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Sesi apresiasi berpasangan/kelompok kecil (kriteria kualitatif diturunkan jadi indikator teramati, bukan penilaian rasa subjektif guru semata).</div>
+</div>
+  </div>
+</div>
+<div class="seni-sub">
+  <h3>🎭 Seni Teater <span class="m-meta">&middot; Semester 2 saja &middot; 26 JP</span></h3>
+  <div class="cp-table-wrap">
+    <table class="cp-mini-table">
+      <thead><tr><th>Elemen</th><th>CP Fase C</th></tr></thead>
+      <tbody><tr><td class="cpe-el">Mengalami</td><td>Melakukan permainan peran berkelompok, seperti improvisasi untuk melatih aksi dan reaksi dalam mengelaborasi cerita atau tokoh dan melakukan pengenalan karakter melalui pengamatan kebiasaan tokoh yang diperankan.</td></tr><tr><td class="cpe-el">Berpikir dan Bekerja Artistik</td><td>Mengidentifikasi properti sederhana berdasarkan cerita yang akan dimainkan.</td></tr><tr><td class="cpe-el">Menciptakan</td><td>Mengenal dan memainkan ragam peran dari cerita sederhana berdasarkan hasil pengamatan.</td></tr><tr><td class="cpe-el">Berdampak</td><td>Memerankan lakon secara individu maupun berkelompok berdasarkan minat, pengamatan, dan pengalaman.</td></tr><tr><td class="cpe-el">Merefleksikan</td><td>Menceritakan pendapatnya tentang sebuah cerita sederhana (penokohan, perwatakan).</td></tr></tbody>
+    </table>
+  </div>
+  <p class="bedah"><b>Bedah kritis &amp; pemisahan TP:</b> Pola sama dengan Seni Rupa: Menciptakan ("memainkan ragam peran") dan Berdampak ("memerankan lakon") digabung jadi 1 TP karena keduanya dinilai dari PEMENTASAN YANG SAMA — sebuah pementasan sekaligus menunjukkan penguasaan ragam peran (Menciptakan) dan minat/pengalaman pribadi yang diekspresikan (Berdampak).</p>
+  <div class="tp-list">
+  <div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TEATER-C1</span>
+    <span class="tp-nama">Bermain Peran Berkelompok: Improvisasi &amp; Pengenalan Karakter</span>
+    <span class="tp-sem">Semester 2</span>
+    <span class="tp-jp">6 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Bermain permainan improvisasi aksi-reaksi sederhana → mengamati kebiasaan 1 tokoh dari cerita pendek → mencoba menirukan kebiasaan tokoh tsb → improvisasi kelompok berdasarkan tokoh yang diamati (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Observasi performa improvisasi dengan rubrik aksi-reaksi &amp; kemiripan karakter, bukan tes tertulis tentang teori akting.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TEATER-C2</span>
+    <span class="tp-nama">Mengidentifikasi Properti Sederhana Sesuai Cerita</span>
+    <span class="tp-sem">Semester 2</span>
+    <span class="tp-jp">6 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Membaca/mendengar cerita pendek yang akan dimainkan → mendaftar properti yang dibutuhkan tiap adegan → memilih/membuat properti sederhana yang tersedia → menguji coba properti dalam latihan singkat (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Daftar properti + uji coba praktis, dinilai kesesuaian dengan cerita.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TEATER-C3</span>
+    <span class="tp-nama">Memainkan Ragam Peran dari Cerita Sederhana (Pementasan)</span>
+    <span class="tp-sem">Semester 2</span>
+    <span class="tp-jp">10 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Memilih peran sesuai minat dari cerita sederhana → berlatih dialog &amp; gerak tokoh → gladi bersih kelompok → pementasan individu/kelompok berdasarkan minat, pengamatan, dan pengalaman (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Penilaian kinerja langsung saat pementasan dengan rubrik peran — instrumen tunggal untuk elemen Menciptakan+Berdampak, bukan tes tertulis pascapentas.</div>
+</div>
+<div class="tp-card">
+  <div class="tp-head">
+    <span class="tp-kode">TEATER-C4</span>
+    <span class="tp-nama">Merefleksikan Cerita: Penokohan dan Perwatakan</span>
+    <span class="tp-sem">Semester 2</span>
+    <span class="tp-jp">4 JP</span>
+  </div>
+  <div class="tp-row"><b>Tahapan Proses:</b> Mengingat kembali cerita yang baru dipentaskan → mengidentifikasi sifat/perwatakan tiap tokoh → membandingkan penokohan dgn kejadian nyata → menceritakan pendapat pribadi tentang cerita tsb (Inti ⭐)</div>
+  <div class="tp-row tp-asesmen"><b>Cara Asesmen:</b> Diskusi/tulisan pendek pendapat tentang penokohan-perwatakan, bukan hafalan sinopsis.</div>
+</div>
+  </div>
+</div>
+  </div>
+</details>
+
+    <div class="footnote">
+      <b>Catatan ATP (Alur Tujuan Pembelajaran):</b> seluruh TP di atas adalah porsi Kelas 5 (kelas awal Fase C).
+      Sesuai Buku Saku CP–ATP–TP Bagian VII, kompetensi fondasi proses ditempatkan &amp; dilatih berulang sejak
+      kelas awal fase, sedangkan penguatan kompleksitas diperdalam lagi di kelas 6 (kelas akhir fase) — bukan
+      pemisahan kaku, tapi penekanan yang berjalan kontinu. Beberapa TP di atas ditandai eksplisit sebagai
+      "pengantar di kelas 5, diperdalam lagi di kelas 6" (mis. Pancasila-C1c, IPAS topik Kelompok C yang
+      seluruhnya didorong ke kelas 6).<br /><br />
+      <b>Langkah lanjutan yang disarankan:</b> (1) lampirkan kalender pendidikan &amp; jadwal pelajaran riil
+      sekolah supaya seluruh angka JP — termasuk yang sudah bertanda "resmi" — bisa divalidasi ulang lewat
+      Buku Saku Kalender-Jadwal-Prota/Promes; (2) konfirmasi 9 TP Pendidikan Pancasila dan 10 TP Seni Budaya
+      di atas ke guru pengampu masing-masing sebelum dipakai sebagai dasar RPM; (3) lengkapi mapel yang belum
+      digarap (PAI, PJOK, Bahasa Inggris, dst.) menyusul sesuai urutan yang diminta.
+    </div>
   </div>
 </div>
 
