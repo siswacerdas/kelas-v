@@ -1,1 +1,95 @@
+/* ============================================================
+   infografis.css — gaya tambahan khusus Galeri Visual.
+   Dipakai BERSAMA materi.css (pages/infografis.html memuat
+   ../materi/assets/materi.css untuk topbar/card/token warna
+   --m-{slug} yang sudah ada), supaya tampilannya konsisten
+   dengan Materi Ajar tanpa duplikasi kode.
+   ============================================================ */
 
+/* ── Menu mata pelajaran di halaman landing (infografis.html) ── */
+.ig-mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1.25rem; }
+@media (max-width: 420px) { .ig-mapel-grid { grid-template-columns: 1fr; } }
+
+.ig-mapel-card {
+  display: block; text-decoration: none; color: var(--ink);
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 1rem 1.05rem; border-top: 4px solid var(--m-color, var(--accent));
+}
+.ig-mapel-card .ig-mapel-icon { font-size: 1.5rem; display: block; margin-bottom: 0.4rem; }
+.ig-mapel-card .ig-mapel-name { font-weight: 700; font-size: 13.5px; }
+.ig-mapel-card .ig-mapel-count { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; }
+
+/* ── Grid galeri per-mapel (galeri.html) ── */
+.ig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1.25rem; }
+@media (max-width: 400px) { .ig-grid { grid-template-columns: 1fr; } }
+
+.ig-item {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden; cursor: pointer; text-align: left; padding: 0;
+  display: block; width: 100%; font-family: inherit;
+}
+.ig-item .ig-thumb {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block;
+  background: var(--paper-2);
+}
+.ig-item .ig-thumb-video {
+  width: 100%; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center;
+  background: var(--paper-2); font-size: 2rem;
+}
+.ig-item .ig-item-body { padding: 0.6rem 0.7rem; }
+.ig-item .ig-item-title { font-weight: 600; font-size: 12.5px; line-height: 1.35; }
+.ig-item .ig-item-badge {
+  display: inline-block; margin-top: 4px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--m-color, var(--accent));
+}
+
+/* ── Lightbox sederhana (tanpa dependency) ── */
+#ig-lightbox {
+  position: fixed; inset: 0; background: rgba(15,15,25,0.92); z-index: 999;
+  display: none; align-items: center; justify-content: center; padding: 1.25rem;
+}
+#ig-lightbox.ig-open { display: flex; }
+#ig-lightbox img { max-width: 100%; max-height: 72vh; border-radius: var(--r); display: block; margin: 0 auto; }
+#ig-lightbox .ig-lightbox-info { max-width: 480px; margin: 0.9rem auto 0; color: #fff; text-align: center; }
+#ig-lightbox .ig-lightbox-title { font-weight: 700; font-size: 14px; }
+#ig-lightbox .ig-lightbox-desc { font-size: 12.5px; opacity: 0.85; margin-top: 5px; line-height: 1.5; }
+#ig-lightbox .ig-lightbox-close {
+  position: absolute; top: 14px; right: 16px; width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); color: #fff; border: none; font-size: 18px; cursor: pointer;
+}
+
+/* ── Form unggah (admin.html) — token dipinjam dari mpls.css yang sudah dimuat ── */
+.ig-jenis-toggle { display: flex; gap: 8px; margin-bottom: 0.9rem; }
+.ig-jenis-btn {
+  flex: 1; padding: 9px; border-radius: 8px; border: 1px solid var(--border);
+  background: #fff; color: var(--ink-2); font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.ig-jenis-btn.ig-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* select/textarea umum sudah distyle oleh mpls.css (dimuat sebelum file ini di admin.html) —
+   di sini cukup tambahkan input[type="url"] yang belum ada aturannya di sana. */
+input[type="url"] {
+  width: 100%; font-family: inherit; font-size: 15px; color: var(--ink);
+  background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 11px 12px;
+}
+input[type="url"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.ig-list-item {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+  padding: 0.7rem 0.85rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;
+}
+.ig-list-item .ig-list-thumb {
+  width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0;
+  background: var(--paper-2); border: 1px solid var(--border);
+}
+.ig-list-item .ig-list-thumb-video {
+  width: 44px; height: 44px; border-radius: 8px; flex-shrink: 0; background: var(--paper-2);
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.ig-list-item-info { min-width: 0; flex: 1; }
+.ig-list-item-title { font-weight: 700; font-size: 13px; }
+.ig-list-item-meta { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+.ig-btn-hapus {
+  flex-shrink: 0; background: none; border: 1px solid var(--danger, #c94040);
+  color: var(--danger, #c94040); border-radius: 7px; padding: 6px 10px; font-size: 11.5px; cursor: pointer;
+}
