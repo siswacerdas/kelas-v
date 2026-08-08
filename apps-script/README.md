@@ -27,6 +27,13 @@ Menghubungkan halaman `pages/mpls/input.html` ke Google Spreadsheet
    foto siswa). Saat run ini, akan muncul permintaan izin **tambahan** untuk
    akses Google Drive (dibutuhkan supaya foto siswa bisa disimpan ke folder
    Drive) — klik **Allow/Izinkan** lagi.
+6. Ulangi juga untuk fungsi **setupInfografisSheet** (pilih di dropdown →
+   Run) — ini membuat sheet baru **"Data Infografis"** (dipakai fitur
+   "Galeri Visual"). 5 dari 8 folder Drive per-mapel sudah dikonfigurasi;
+   3 sisanya (PAI, PJOK, Bahasa Inggris) perlu dilengkapi dulu sebelum guru
+   bisa mengunggah gambar untuk mapel-mapel itu — lihat bagian
+   [Folder Drive untuk Galeri Visual](#folder-drive-untuk-galeri-visual)
+   di bawah.
 
 ### 3. Deploy sebagai Web App
 1. Klik **Deploy → New deployment** (Deploy → Deployment baru)
@@ -152,6 +159,64 @@ diubah, karena `assets/js/foto-fallback.js` hanya menggunakan URL ini untuk
 **mengekstrak ID file**, lalu membangun ulang kandidat-kandidat tampilannya
 sendiri (termasuk proxy `?foto=` yang baru, lihat bawah). Foto lama yang
 sudah pernah tersimpan otomatis ikut kebagian perbaikan tanpa perlu diedit.
+
+## Folder Drive untuk Galeri Visual
+
+Fitur "Galeri Visual" (gambar/poster/infografis, menu di `pages/infografis.html`,
+upload di `pages/infografis/admin.html`) memakai **satu folder Drive per mata
+pelajaran** (bukan 1 folder untuk semuanya), dan semuanya TERPISAH dari folder
+foto siswa. ID-nya disimpan di konstanta `INFOGRAFIS_FOLDER_IDS` (objek/map) di
+`Code.gs`, dengan key = nama mapel PERSIS sama seperti di
+`pages/infografis/assets/infografis-data.js`.
+
+**Sudah dikonfigurasi** (per catatan pemilik proyek):
+
+| Mapel | Status |
+|---|---|
+| Bahasa Indonesia | ✅ terisi |
+| Matematika | ✅ terisi |
+| IPAS | ✅ terisi |
+| Pendidikan Pancasila | ✅ terisi |
+| Seni Budaya | ✅ terisi |
+| Pendidikan Agama Islam | ⏳ belum — masih `"GANTI_..."` |
+| PJOK | ⏳ belum — masih `"GANTI_..."` |
+| Bahasa Inggris | ⏳ belum — masih `"GANTI_..."` |
+
+Selama sebuah mapel masih `"GANTI_..."`, tombol unggah gambar untuk mapel itu di
+`admin.html` akan **gagal dengan pesan jelas** (bukan error tersembunyi) —
+video (tautan) tetap bisa diunggah untuk mapel manapun karena tidak lewat Drive.
+
+**Cara melengkapi mapel yang masih kosong** (atau mengganti folder yang sudah ada):
+
+1. Buat folder baru di Google Drive Anda, mis. beri nama "Galeri Visual — PJOK"
+2. Klik kanan folder → **Share** (Bagikan) → ubah akses jadi **"Anyone with
+   the link" / "Siapa saja yang punya link"** dengan peran **Editor**
+   *(sama seperti setup folder foto siswa — Apps Script perlu bisa menulis
+   file baru ke folder ini)*
+3. Salin **ID folder** dari URL folder tsb (bagian setelah `/folders/`,
+   mis. `https://drive.google.com/drive/folders/1AbCdEfGhIjKlMnOp` → ID-nya
+   `1AbCdEfGhIjKlMnOp`)
+4. Buka `Code.gs` di editor Apps Script, cari objek `INFOGRAFIS_FOLDER_IDS`,
+   ganti nilai `"GANTI_..."` mapel yang sesuai dengan ID yang baru disalin
+5. Simpan (💾), lalu **deploy ulang** sebagai "New version" (lihat bagian
+   "Setiap kali kode Code.gs diubah" di atas)
+6. Jalankan fungsi **otorisasiAksesDriveInfografis** SEKALI dari dropdown
+   fungsi editor (sama seperti `otorisasiAksesDrive` untuk foto siswa) —
+   fungsi ini otomatis mencoba SEMUA folder yang sudah terisi ID-nya (folder
+   yang masih `"GANTI_..."` dilewati, dicatat di Logs, bukan error) — klik
+   **Allow/Izinkan** saat diminta
+7. Uji coba: buka `pages/infografis/admin.html`, login sebagai guru, unggah
+   1 gambar contoh untuk mapel yang baru dikonfigurasi — cek file barunya
+   muncul di folder Drive yang benar & tampil di `pages/infografis/galeri.html`
+
+Sama seperti foto siswa, gambar Galeri Visual juga rawan kena masalah hotlink
+Drive yang diblokir untuk pengunjung anonim — solusinya sama: `Code.gs` punya
+endpoint proxy `?infografisFoto=<id>` (dipakai otomatis oleh
+`pages/infografis/assets/infografis-galeri.js` dan `infografis-admin.js`).
+**Beda penting dari `?foto=`**: endpoint ini SENGAJA TIDAK digerbang
+`wajibGuru_()`, karena isinya materi belajar untuk dibaca siswa juga (bukan
+data pribadi) — levelnya disamakan dengan Materi Ajar yang juga tidak
+diverifikasi di server, cuma digerbang login-apa-saja di sisi klien.
 
 ## Troubleshooting: foto TERSIMPAN di Drive tapi TIDAK TAMPIL di web/cetak
 

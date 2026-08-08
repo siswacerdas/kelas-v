@@ -8,6 +8,11 @@
  *                { type: "siswa" }            -> upsert 1 baris profil siswa (+ opsional foto ke Drive).
  *                { type: "mpls_kognitif" }    -> upsert 1 baris nilai asesmen kognitif per siswa.
  *                { type: "jurnal" }           -> upsert 1 baris nilai asesmen menulis (jurnal aktivitas) per siswa.
+ *                { type: "infografis" }       -> TAMBAH 1 baris baru media Galeri Visual (gambar ke Drive,
+ *                atau tautan video) — lihat doPostInfografis_(). Beda dari "siswa" yang upsert (1 baris per
+ *                nama), di sini SELALU menambah baris baru karena 1 mapel bisa punya banyak media.
+ *                { type: "infografis_hapus" } -> hapus 1 baris Galeri Visual berdasarkan ID (lihat catatan
+ *                di doPostInfografisHapus_() soal kenapa file Drive-nya SENGAJA tidak ikut dihapus).
  * - doGet(e)   : ?nama=...        -> 1 baris data MPLS non-kognitif siswa tsb (untuk input.html).
  *                ?all=1           -> SEMUA baris data MPLS non-kognitif (untuk rekap.html/laporan.html).
  *                ?siswa=1         -> SEMUA baris data profil siswa (untuk pages/kelas/).
@@ -19,8 +24,16 @@
  *                ?allKognitif=1   -> SEMUA baris data kognitif (untuk rekap-kognitif.html/laporan-kognitif.html).
  *                ?namaJurnal=..   -> 1 baris data jurnal siswa tsb (untuk input-jurnal.html).
  *                ?allJurnal=1     -> SEMUA baris data jurnal (untuk rekap-jurnal.html/laporan-jurnal.html).
- * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal(): jalankan SEKALI
- *                secara manual dari editor Apps Script (pilih fungsi lalu Run) untuk membuat sheet + header.
+ *                ?infografis=1    -> SEMUA baris Galeri Visual (untuk pages/infografis.html & galeri.html).
+ *                TIDAK digerbang wajibGuru_ (beda dari ?siswa=1) — kontennya materi belajar untuk
+ *                dibaca siswa juga, sensitivitasnya setara Materi Ajar (pages/materi.html), yang juga
+ *                cuma digerbang login-apa-saja di klien, bukan verifikasi server. Lihat juga catatan
+ *                yang sama di serveInfografisBinary_().
+ *                ?infografisFoto=<id atau URL Drive> -> PROXY byte gambar Galeri Visual, sama seperti
+ *                ?foto= tapi TANPA gerbang wajibGuru_ (lihat serveInfografisBinary_()).
+ * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal() / setupInfografisSheet():
+ *                jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi lalu Run) untuk
+ *                membuat sheet + header.
  *
  * PENTING setelah mengubah file ini: deploy ulang sebagai "New version" dari
  * deployment yang SAMA (Deploy > Manage deployments > pensil > New version),
@@ -36,6 +49,26 @@ const SHEET_NAME_JURNAL = "Data Jurnal Aktivitas";
 const SISWA_SHEET_NAME = "Data Siswa";
 // ID folder Drive tempat foto siswa disimpan (dari link yang sudah dishare "siapa saja bisa mengedit")
 const FOTO_FOLDER_ID = "1b-ENsEQJeUFoVKKA6htZbVAxf7zr1IzG";
+
+const INFOGRAFIS_SHEET_NAME = "Data Infografis";
+// ID folder Drive KHUSUS untuk gambar/poster/infografis — SATU FOLDER PER MATA PELAJARAN
+// (bukan 1 folder untuk semuanya), supaya guru bisa menelusuri file langsung dari Drive per
+// mapel kalau perlu. Nama key di sini HARUS PERSIS SAMA dengan field "mapel" pada
+// pages/infografis/assets/infografis-data.js (window.INFOGRAFIS_MAPEL).
+// Cara siapkan folder yang belum ada ID-nya (masih "GANTI_..."): buat folder baru di Google
+// Drive, klik kanan > Share > Bagikan ke "siapa saja yang punya link" dengan akses "Editor",
+// lalu salin ID-nya dari URL folder (bagian setelah "/folders/"). Lihat juga
+// apps-script/README.md bagian "Folder Drive untuk Galeri Visual".
+const INFOGRAFIS_FOLDER_IDS = {
+  "Bahasa Indonesia": "1C01-Asd9Lp9ExtY7uN7PIm-CRcrgPg79",
+  "Matematika": "1Gqt5NR85ABiPgMkdL8tCMYXN08NKjsUI",
+  "IPAS": "19r-2ApSUxO-2A5H1KGNNKVdeYZHsVBY4",
+  "Pendidikan Agama Islam": "GANTI_DENGAN_ID_FOLDER_DRIVE_PAI",
+  "Pendidikan Pancasila": "1itEtnUcHnSAD2QOtUjvrTssKeP6Uuws4",
+  "Seni Budaya": "1aAl3z9yt3PumyHRhSD87u9K4pOfskSaF",
+  "PJOK": "GANTI_DENGAN_ID_FOLDER_DRIVE_PJOK",
+  "Bahasa Inggris": "GANTI_DENGAN_ID_FOLDER_DRIVE_BAHASA_INGGRIS",
+};
 
 // ── KUNCI AKSES (v0.7.0) ─────────────────────────────────────────────────
 // Sebelum ini, SEMUA endpoint di bawah bisa diakses siapa pun yang tahu URL Web
@@ -141,6 +174,20 @@ const SISWA_HEADERS = [
   "Tempat Lahir",
   "Tanggal Lahir",
   "URL Foto",
+];
+
+// "ID" dipakai sebagai kunci hapus dari galeri.html/admin.html — TIDAK pakai "Judul" seperti
+// SISWA_HEADERS pakai "Nama Lengkap", karena judul infografis boleh saja duplikat/mirip
+// antar-unggahan, sedangkan tiap baris di sini harus bisa dirujuk secara pasti.
+const INFOGRAFIS_HEADERS = [
+  "Timestamp",
+  "ID",
+  "Mapel",
+  "Judul",
+  "Keterangan",
+  "Jenis Media",   // "gambar" (file diunggah ke Drive) atau "video" (tautan luar, mis. YouTube)
+  "URL Media",
+  "Diunggah Oleh",
 ];
 
 const HEADERS = [
@@ -349,6 +396,25 @@ function setupSiswaSheet() {
   Logger.log("Sheet siap: " + sheet.getName());
 }
 
+function getInfografisSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(INFOGRAFIS_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(INFOGRAFIS_SHEET_NAME);
+    sheet.getRange(1, 1, 1, INFOGRAFIS_HEADERS.length).setValues([INFOGRAFIS_HEADERS]);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+/** Jalankan SEKALI dari editor Apps Script untuk inisialisasi sheet "Data Infografis" + header. */
+function setupInfografisSheet() {
+  const sheet = getInfografisSheet_();
+  sheet.getRange(1, 1, 1, INFOGRAFIS_HEADERS.length).setValues([INFOGRAFIS_HEADERS]);
+  sheet.setFrozenRows(1);
+  Logger.log("Sheet siap: " + sheet.getName());
+}
+
 /** Baca baris header (baris 1) apa adanya dari sheet — SUMBER KEBENARAN untuk urutan kolom,
  * bukan konstanta HEADERS/SISWA_HEADERS/HEADERS_KOGNITIF. Ini supaya baca/tulis tetap benar
  * walau urutan kolom di spreadsheet fisik berbeda dari urutan di kode (mis. karena sheet
@@ -410,9 +476,17 @@ function buildRowByHeaders_(sheet, recordObj) {
 
 /** Simpan gambar base64 ke folder Drive yang sudah ditentukan, kembalikan URL-nya.
  * Melempar error apa adanya kalau gagal — biar pemanggil (doPostSiswa_) yang memutuskan
- * bagaimana menanganinya (supaya kegagalan foto tidak menggagalkan seluruh data siswa). */
-function simpanFotoKeDrive_(base64Data, mimeType, namaFile) {
-  const folder = DriveApp.getFolderById(FOTO_FOLDER_ID);
+ * bagaimana menanganinya (supaya kegagalan foto tidak menggagalkan seluruh data siswa).
+ *
+ * folderId OPSIONAL, default FOTO_FOLDER_ID (perilaku lama, dipakai doPostSiswa_ untuk foto
+ * siswa). doPostInfografis_ SELALU mengirim folderId eksplisit (folder per-mapel di
+ * INFOGRAFIS_FOLDER_IDS) — PENTING: sebelum parameter ini ada, panggilan dari
+ * doPostInfografis_ salah mengunggah ke FOTO_FOLDER_ID (folder foto siswa) karena
+ * argumen ke-4 ini belum ada sama sekali. Jangan hilangkan default-nya kalau menambah
+ * pemanggil baru — supaya lupa mengirim folderId tetap gagal aman ke folder foto siswa
+ * yang sudah pasti valid, bukan folder kosong/undefined. */
+function simpanFotoKeDrive_(base64Data, mimeType, namaFile, folderId) {
+  const folder = DriveApp.getFolderById(folderId || FOTO_FOLDER_ID);
   const bytes = Utilities.base64Decode(base64Data);
   const blob = Utilities.newBlob(bytes, mimeType || "image/jpeg", namaFile || "foto-siswa.jpg");
   const file = folder.createFile(blob);
@@ -495,6 +569,46 @@ function otorisasiAksesDrive() {
   Logger.log("Berhasil! Nama folder foto siswa: " + folder.getName());
 }
 
+/**
+ * Proxy byte gambar Galeri Visual — sama persis alasannya dengan serveFotoBinary_() (hindari
+ * hotlink Drive anonim yang tidak konsisten diblokir Google), TAPI SENGAJA TANPA wajibGuru_():
+ * gambar di sini adalah materi belajar untuk dibaca siswa juga (bukan foto pribadi), jadi levelnya
+ * sama dengan Materi Ajar yang juga tidak digerbang verifikasi server. Lihat catatan panjang soal
+ * ini di komentar header file (bagian doGet, ?infografis=1).
+ */
+function serveInfografisBinary_(fileIdOrUrl) {
+  try {
+    const id = ekstrakIdFotoDrive_(fileIdOrUrl);
+    if (!id) throw new Error("ID media tidak valid: " + fileIdOrUrl);
+    const file = DriveApp.getFileById(id);
+    return file.getBlob();
+  } catch (err) {
+    return ContentService.createTextOutput("Media tidak ditemukan/gagal dibaca: " + String(err))
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+}
+
+/** Sama seperti otorisasiAksesDrive() tapi untuk folder-folder Galeri Visual (satu per mapel)
+ * — jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi ini, klik Run, klik
+ * Allow/Izinkan) kalau muncul error "Access denied: DriveApp" saat mengunggah gambar dari
+ * pages/infografis/admin.html. Folder yang ID-nya belum diisi (masih "GANTI_...") dilewati
+ * saja (bukan error) — lengkapi INFOGRAFIS_FOLDER_IDS dulu lalu jalankan ulang fungsi ini. */
+function otorisasiAksesDriveInfografis() {
+  Object.keys(INFOGRAFIS_FOLDER_IDS).forEach((mapel) => {
+    const folderId = INFOGRAFIS_FOLDER_IDS[mapel];
+    if (!folderId || folderId.indexOf("GANTI_") === 0) {
+      Logger.log("Dilewati (belum dikonfigurasi): " + mapel);
+      return;
+    }
+    try {
+      const folder = DriveApp.getFolderById(folderId);
+      Logger.log("Berhasil! " + mapel + " -> " + folder.getName());
+    } catch (err) {
+      Logger.log("GAGAL untuk " + mapel + " (ID: " + folderId + "): " + err);
+    }
+  });
+}
+
 function sheetToObjects_(sheet) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];
@@ -526,7 +640,21 @@ function doGet(e) {
     return serveFotoBinary_(params.foto);
   }
 
+  // Proxy gambar Galeri Visual — SENGAJA TANPA wajibGuru_ (lihat serveInfografisBinary_()).
+  if (params.infografisFoto) {
+    return serveInfografisBinary_(params.infografisFoto);
+  }
+
   try {
+    if (params.infografis) {
+      // SENGAJA TANPA wajibGuru_ — lihat catatan di komentar header file & serveInfografisBinary_().
+      // Filter ?mapel= opsional di sisi server (kalau dikirim); klien (galeri.html) juga boleh
+      // memfilter ulang di sisi client, dua-duanya aman karena datanya memang bukan data sensitif.
+      const rows = sheetToObjects_(getInfografisSheet_());
+      const data = params.mapel ? rows.filter((r) => r["Mapel"] === params.mapel) : rows;
+      return jsonOut_({ data: data });
+    }
+
     if (params.siswa) {
       wajibGuru_(params.idToken);
       return jsonOut_({ data: sheetToObjects_(getSiswaSheet_()) });
@@ -587,6 +715,17 @@ function doPost(e) {
       // LAPIS GURU — profil siswa (nama, TTL, foto) hanya boleh ditulis akun guru.
       wajibGuru_(body.idToken);
       return doPostSiswa_(body);
+    }
+
+    if (body.type === "infografis") {
+      // LAPIS GURU — hanya guru yang boleh menambah materi ke Galeri Visual.
+      wajibGuru_(body.idToken);
+      return doPostInfografis_(body);
+    }
+
+    if (body.type === "infografis_hapus") {
+      wajibGuru_(body.idToken);
+      return doPostInfografisHapus_(body);
     }
 
     if (body.type === "mpls_kognitif") {
@@ -705,4 +844,79 @@ function doPostSiswa_(body) {
     sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
   }
   return jsonOut_({ status: "ok", urlFoto: urlFoto, fotoWarning: fotoWarning });
+}
+
+/** Tambah 1 baris BARU ke "Data Infografis" (SELALU baris baru, bukan upsert — beda dari
+ * doPostSiswa_ — karena 1 mapel wajar punya banyak media, tidak ada satu "kunci" alami per
+ * mapel seperti "Nama Lengkap" di data siswa).
+ * jenisMedia "gambar": body.fotoBase64/fotoMime wajib ada, diunggah ke folder Drive milik
+ * mapel tsb (lihat INFOGRAFIS_FOLDER_IDS[mapel]).
+ * jenisMedia "video": body["URL Media"] wajib ada (tautan luar, mis. YouTube/Drive), TIDAK ada
+ * upload — lihat catatan di pages/infografis/admin.html soal kenapa video tidak diunggah lewat
+ * form ini (ukuran file video tidak praktis dikirim sebagai base64 lewat Apps Script). */
+function doPostInfografis_(body) {
+  const mapel = String(body["Mapel"] || "").trim();
+  const judul = String(body["Judul"] || "").trim();
+  const jenisMedia = String(body["Jenis Media"] || "").trim();
+  if (!mapel) return jsonOut_({ status: "error", message: "Mapel wajib diisi" });
+  if (!judul) return jsonOut_({ status: "error", message: "Judul wajib diisi" });
+  if (jenisMedia !== "gambar" && jenisMedia !== "video") {
+    return jsonOut_({ status: "error", message: 'Jenis Media harus "gambar" atau "video"' });
+  }
+
+  let urlMedia = String(body["URL Media"] || "").trim();
+  if (jenisMedia === "gambar") {
+    if (!body.fotoBase64) return jsonOut_({ status: "error", message: "File gambar wajib diunggah" });
+    const folderId = INFOGRAFIS_FOLDER_IDS[mapel];
+    if (!folderId || folderId.indexOf("GANTI_") === 0) {
+      return jsonOut_({
+        status: "error",
+        message: 'Folder Drive untuk mapel "' + mapel + '" belum dikonfigurasi. Minta admin ' +
+          "mengisi ID folder Drive-nya di INFOGRAFIS_FOLDER_IDS pada Code.gs terlebih dulu " +
+          "(lihat apps-script/README.md).",
+      });
+    }
+    try {
+      const namaFile = (mapel + "_" + judul).replace(/[^a-zA-Z0-9]+/g, "_") + "_" + new Date().getTime();
+      urlMedia = simpanFotoKeDrive_(body.fotoBase64, body.fotoMime, namaFile, folderId);
+    } catch (err) {
+      return jsonOut_({ status: "error", message: "Gagal mengunggah gambar ke Drive: " + String(err) });
+    }
+  } else if (!urlMedia) {
+    return jsonOut_({ status: "error", message: "URL Media (tautan video) wajib diisi" });
+  }
+
+  const sheet = getInfografisSheet_();
+  // ID unik sederhana (waktu + acak) — cukup untuk kunci hapus di dalam 1 sheet ini, tidak perlu
+  // library UUID tambahan.
+  const id = "ig" + new Date().getTime() + Math.floor(Math.random() * 1000);
+  const record = {
+    "Timestamp": new Date(),
+    "ID": id,
+    "Mapel": mapel,
+    "Judul": judul,
+    "Keterangan": body["Keterangan"] || "",
+    "Jenis Media": jenisMedia,
+    "URL Media": urlMedia,
+    "Diunggah Oleh": body["Diunggah Oleh"] || "",
+  };
+  sheet.appendRow(buildRowByHeaders_(sheet, record));
+  return jsonOut_({ status: "ok", id: id, urlMedia: urlMedia });
+}
+
+/** Hapus 1 baris "Data Infografis" berdasarkan ID.
+ * SENGAJA TIDAK ikut menghapus file di Drive (DriveApp.getFileById(...).setTrashed(true)
+ * bisa saja ditambah di sini) — alasannya supaya "Hapus" dari galeri.html/admin.html adalah
+ * aksi yang AMAN untuk dicoba (kalau ternyata salah pilih, file aslinya masih ada di folder
+ * Drive dan bisa dipulihkan manual), bukan aksi destruktif yang langsung menghapus file
+ * permanen. Guru yang mau benar-benar membersihkan folder Drive bisa lakukan itu langsung
+ * dari Drive, terpisah dari situs ini. */
+function doPostInfografisHapus_(body) {
+  const id = String(body["ID"] || "").trim();
+  if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });
+  const sheet = getInfografisSheet_();
+  const row = findRowByColumn_(sheet, "ID", id);
+  if (row === -1) return jsonOut_({ status: "error", message: "Data tidak ditemukan (mungkin sudah dihapus)" });
+  sheet.deleteRow(row);
+  return jsonOut_({ status: "ok" });
 }
