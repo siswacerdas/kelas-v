@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pembagian Bersusun dalam Soal Cerita · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .cerita-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .cerita-box b { color: var(--m-color); }
+  .sisa-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin: 0.9rem 0 1.2rem; }
+  @media (min-width: 560px) { .sisa-grid { grid-template-columns: 1fr 1fr; } }
+  .sisa-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.8rem 0.95rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.55; background: #eef6f6; }
+  .sisa-box .nama { font-weight: 700; color: #1f6f78; display: block; margin-bottom: 0.25rem; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pembagian Bersusun Pembagi Multi-Digit · Materi 4 dari 4 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Pembagian Bersusun dalam Soal Cerita</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah menguasai pembagian bersusun dari yang mudah (pembagi satu digit) sampai yang menantang (pembagi dua digit sembarang). Sekarang saatnya memakainya di soal cerita nyata — dan kali ini kamu akan bertemu situasi yang sebelumnya belum pernah muncul: <strong>hasil bagi yang tidak rapi</strong>, entah karena bersisa atau karena angkanya besar.</p>
+
+      <div class="cerita-box">
+        <b>Contoh 1 — Hasil Rapi:</b> Sebuah penerbit mencetak 875 buku pelajaran untuk dibagikan rata ke 25 kelas. Berapa buku yang diterima tiap kelas?
+      </div>
+
+      <p>875 ÷ 25 = <strong>35</strong> buku per kelas (25×35=875, pas tanpa sisa). Ini kasus yang "rapi" seperti materi-materi sebelumnya.</p>
+
+      <div class="cerita-box">
+        <b>Contoh 2 — Ada Sisa, Perlu Diputuskan:</b> Sebuah sekolah membeli 500 pensil untuk dibagikan rata ke 18 siswa. Berapa pensil yang diterima tiap siswa, dan apa yang terjadi dengan sisanya?
+      </div>
+
+      <p>500 ÷ 18 = 27 sisa 14 (18×27=486, 500−486=14). Setiap siswa menerima <strong>27 pensil</strong>, dan tersisa <strong>14 pensil</strong> yang tidak bisa dibagi rata lagi (karena kalau dibagi lagi ke 18 siswa, tidak cukup untuk semua). Sisa ini biasanya disimpan sebagai cadangan sekolah, bukan dipaksakan dibagi tidak rata.</p>
+
+      <div class="cerita-box">
+        <b>Contoh 3 — Sisa yang Harus "Dibulatkan ke Atas":</b> Sebuah study tour membawa 250 siswa. Setiap bus muat 18 siswa. Berapa bus yang dibutuhkan?
+      </div>
+
+      <p>250 ÷ 18 = 13 sisa 16 (18×13=234, 250−234=16). Kalau cuma 13 bus, ada 16 siswa yang tidak kebagian tempat! Karena itu, jawabannya BUKAN 13, tapi <strong>14 bus</strong> — kita harus membulatkan ke atas supaya semua siswa terangkut, meskipun bus ke-14 itu tidak terisi penuh (cuma diisi 16 dari 18 kursi).</p>
+
+      <div class="sisa-grid">
+        <div class="sisa-box"><span class="nama">📦 Sisa disimpan/dibiarkan</span>Kalau soalnya soal "membagi barang habis" (seperti pensil), sisa yang tidak cukup dibagi rata biasanya disimpan/dilaporkan apa adanya.</div>
+        <div class="sisa-box"><span class="nama">⬆️ Sisa dibulatkan ke atas</span>Kalau soalnya soal "menampung/mengangkut semua" (seperti bus, kotak, ruangan), sisa yang tersisa tetap butuh SATU unit tambahan, jadi hasil bagi dibulatkan ke atas.</div>
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Kuncinya: setelah dapat angka hasil bagi dan sisanya, jangan langsung berhenti — <span class="analogi">baca ulang pertanyaannya dan bayangkan situasinya secara nyata</span>. Kalau soal Contoh 3 dijawab "13 bus" begitu saja tanpa dipikir, bayangkan 16 siswa berdiri di lapangan tanpa bus — jelas tidak masuk akal, kan? Membayangkan situasi nyata membantumu memutuskan apakah sisa perlu "dibulatkan ke atas" atau cukup "disimpan apa adanya".</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Angka hasil bagi dan sisa dari perhitungan matematis SELALU sama (misalnya 250÷18=13 sisa 16, itu fakta matematika yang tidak berubah) — yang berubah adalah bagaimana kamu MENAFSIRKAN sisa itu sesuai konteks cerita. Ini bukan soal "matematikanya beda", tapi soal "cara membaca hasilnya" yang beda.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah pabrik roti mengemas 936 roti ke dalam kardus berisi 24 roti per kardus. Berapa kardus yang terisi penuh, dan apakah ada sisa roti?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 936 ÷ 24 = 39, pas tanpa sisa (24×39=936). Jadi ada <strong>39 kardus</strong> terisi penuh, tidak ada sisa roti.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Panitia lomba punya dana Rp675.000 untuk dibagi rata sebagai hadiah ke 15 pemenang. Berapa uang yang diterima tiap pemenang?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 675.000 ÷ 15 = 45.000 (15×45.000=675.000, pas tanpa sisa). Tiap pemenang menerima <strong>Rp45.000</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Sebuah gudang harus memindahkan 310 kotak barang. Setiap troli hanya bisa membawa 24 kotak sekali jalan. Berapa kali troli harus bolak-balik supaya SEMUA kotak terangkut?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 310 ÷ 24 = 12 sisa 22 (24×12=288, 310−288=22). Kalau cuma 12 kali jalan, 22 kotak masih tersisa dan belum terangkut. Karena semua kotak harus terangkut, jawabannya perlu dibulatkan ke atas menjadi <strong>13 kali jalan</strong> — perjalanan terakhir hanya membawa 22 kotak (tidak penuh), tapi tetap diperlukan supaya semua kotak selesai dipindahkan.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Selesaikan dua soal cerita berikut, tunjukkan proses pembagian bersusun lengkap DAN jelaskan bagaimana kamu menafsirkan sisanya: (1) "Perpustakaan sekolah punya 850 buku baru untuk dibagi rata ke 34 rak. Berapa buku per rak?" (2) "Sebuah acara mengundang 275 tamu. Setiap meja menampung 16 orang. Berapa meja yang harus disiapkan supaya semua tamu kebagian tempat duduk?"
+      </div>
+
+      <p>Selamat, kamu sudah menguasai seluruh rangkaian pembagian bersusun pembagi multi-digit! Kemampuan ini — termasuk kekuatan menyusun daftar kelipatan dan faktor lewat pembagian — akan langsung terpakai lagi di materi berikutnya: KPK dan FPB melalui soal cerita kontekstual.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

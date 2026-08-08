@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Penyegaran Pembagian Pembagi Satu Digit · Materi Ajar Kelas 5</title>
+<title>Pembagian dengan Pembagi Dua Digit Sembarang · Materi Ajar Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
@@ -15,6 +15,9 @@
   .bagi-divisor { padding-top: 2.05em; font-weight: 700; }
   .bagi-quotient { font-weight: 700; letter-spacing: 3px; padding-bottom: 3px; color: var(--m-color); }
   .bagi-bracket { border-left: 2.5px solid var(--ink); border-top: 2.5px solid var(--ink); padding: 3px 10px 3px 8px; letter-spacing: 3px; }
+  .coba-box { border: 1px solid #f0ded0; border-radius: var(--r-lg); padding: 0.7rem 0.95rem; margin: 0.7rem 0; background: #fdf6f1; font-size: calc(var(--content-fs) - 3px); }
+  .coba-box .gagal { color: #c76b3f; text-decoration: line-through; }
+  .coba-box .benar { color: #1f6f78; font-weight: 700; }
   .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
   .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.55rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
   .langkah li::before {
@@ -53,8 +56,8 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🔢</span>
-      <div class="ma-cover-eyebrow">Bilangan · Pembagian Bersusun Pembagi Multi-Digit · Materi 1 dari 4</div>
-      <div class="ma-cover-title">Penyegaran Pembagian Pembagi Satu Digit</div>
+      <div class="ma-cover-eyebrow">Bilangan · Pembagian Bersusun Pembagi Multi-Digit · Materi 3 dari 4</div>
+      <div class="ma-cover-title">Pembagian dengan Pembagi Dua Digit Sembarang</div>
     </div>
   </div>
 
@@ -67,57 +70,64 @@
     </div>
 
     <div class="ma-content">
-      <p>Bayangkan kamu punya <strong>936 permen</strong> yang harus dibagi rata ke <strong>4 kelompok</strong> anak. Berapa permen yang didapat tiap kelompok? Ini soal pembagian — dan sebelum kita melangkah ke pembagi yang lebih besar (dua digit) di materi-materi berikutnya, mari kita pastikan dulu kamu benar-benar lancar dengan pembagi satu digit.</p>
+      <p>Sekarang saatnya menghadapi pembagi yang "tidak rapi" — bukan kelipatan 10, seperti <strong>17</strong>. Di sinilah proses <strong>estimasi-coba-koreksi</strong> benar-benar teruji, karena tidak ada pola perkalian sederhana yang bisa langsung ditebak seperti materi sebelumnya.</p>
 
-      <p>Perhatikan cara menuliskan pembagian bersusun:</p>
+      <p>Coba selesaikan <strong>782 ÷ 17</strong>:</p>
 
       <div class="bagi-wrap">
-        <div class="bagi-divisor">4</div>
+        <div class="bagi-divisor">17</div>
         <div>
-          <div class="bagi-quotient">234</div>
-          <div class="bagi-bracket">936</div>
+          <div class="bagi-quotient">46</div>
+          <div class="bagi-bracket">782</div>
         </div>
       </div>
 
-      <p>Ikuti langkahnya, satu angka demi satu angka dari kiri:</p>
       <ol class="langkah">
-        <li><strong>9 ÷ 4</strong> = 2 sisa 1 (karena 4×2=8, dan 9−8=1). Tulis 2 di atas. Sisa 1 "turun" digabung dengan digit berikutnya (3), jadi 13.</li>
-        <li><strong>13 ÷ 4</strong> = 3 sisa 1 (karena 4×3=12, dan 13−12=1). Tulis 3 di atas. Sisa 1 digabung dengan digit berikutnya (6), jadi 16.</li>
-        <li><strong>16 ÷ 4</strong> = 4 sisa 0 (karena 4×4=16 pas). Tulis 4 di atas.</li>
+        <li>Lihat dua digit pertama: <strong>78</strong>. Ini yang mau kita bagi dengan 17 dulu.</li>
+        <li>
+          Estimasi: coba tebak 5 dulu (karena 17 dekat dengan 20, dan 78÷20 kira-kira 4, jadi coba sedikit lebih besar).
+          <div class="coba-box">
+            Coba 5: 17×5 = 85. Tapi 85 lebih besar dari 78 — <span class="gagal">terlalu besar, tidak bisa dipakai!</span><br/>
+            Koreksi, coba 4: 17×4 = 68. 68 lebih kecil dari 78, dan selisihnya (78−68=10) lebih kecil dari 17 — <span class="benar">pas, ini yang dipakai.</span>
+          </div>
+        </li>
+        <li>Tulis 4 di atas. Sisa 10, turunkan digit terakhir (2), gabung jadi <strong>102</strong>.</li>
+        <li><strong>102 ÷ 17</strong>: coba 6 — 17×6=102, pas tanpa sisa! Tulis 6 di atas.</li>
       </ol>
-      <p>Hasilnya: <strong>234</strong>, tanpa sisa. Tiap kelompok mendapat 234 permen.</p>
+      <p>Hasil: <strong>46</strong>, tanpa sisa.</p>
 
-      <p>Perhatikan istilah penting di sini: <strong>estimasi-coba-koreksi</strong>. Saat kamu bertanya "9 dibagi 4 itu berapa ya, kira-kira 2?" lalu mengecek (4×2=8, cukup dekat dengan 9) — itu proses yang SAH dan diharapkan, bukan tanda kamu belum bisa. Bahkan kalau tebakan pertamamu meleset (misalnya kamu coba 3 dulu, ternyata 4×3=12 sudah lebih besar dari 9), mengoreksi ke angka yang lebih kecil itu bagian normal dari proses berpikir, bukan kesalahan yang memalukan.</p>
+      <p>Perhatikan langkah 2 di atas — tebakan pertama (5) ternyata KELIRU, terlalu besar. Itu BUKAN kegagalan. Itu justru proses "coba-koreksi" yang memang diharapkan terjadi. Yang penting: begitu kamu sadar tebakanmu terlalu besar (hasil perkaliannya melebihi angka yang dibagi), segera turunkan tebakan dan coba lagi.</p>
 
       <div class="bingung-box">
         <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
-        <p>Bayangkan kamu membagi <span class="analogi">936 permen ke dalam 4 toples</span>, tapi kamu melakukannya bertahap dari ratusan dulu: mula-mula kamu punya 9 ratusan (900), dibagi ke 4 toples — tiap toples dapat 2 ratusan (800 total), sisa 1 ratusan (100) yang belum terbagi. Sisa 100 itu kamu "pecah" jadi puluhan, digabung dengan 3 puluhan yang memang ada, jadi 13 puluhan. 13 dibagi 4 toples, tiap toples dapat 3 puluhan (120 total), sisa 1 puluhan (10). Sisa 10 itu dipecah jadi satuan, digabung 6 satuan yang ada, jadi 16 satuan — dibagi 4 toples, tiap toples dapat 4 satuan, pas habis. Total tiap toples: 200+30+4 = 234.</p>
+        <p>Bayangkan kamu sedang <span class="analogi">menebak berat badan seseorang</span> dengan melihat sekilas — kamu tidak akan langsung yakin 100% benar, tapi kamu punya perkiraan awal (misalnya "sekitar 50 kg"), lalu kalau ada info baru yang membuat perkiraanmu terasa kurang tepat, kamu sesuaikan ("oh, mungkin lebih dekat 45 kg"). Menebak hasil bagi itu mirip — kamu punya perkiraan awal berdasarkan angka yang mirip (17 mirip 20), lalu kamu SESUAIKAN begitu tahu tebakan itu kelewat besar/kecil.</p>
+        <p>Trik praktis untuk pembagi seperti 17, 23, 34: bulatkan dulu ke kelipatan 10 terdekat untuk menebak kasar (17≈20, 23≈20, 34≈30), baru sesuaikan turun/naik sedikit setelah dicek.</p>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
-        Kalau hasil pengurangan di salah satu langkah (sisa) sama atau lebih besar dari pembaginya, berarti tebakanmu terlalu kecil — coba angka yang lebih besar. Ini bagian dari "koreksi", bukan tanda gagal.
+        Jangan menghapus coretan tebakan yang "gagal" — coretan itu justru bukti kamu sedang berpikir dengan benar. Guru ingin melihat proses estimasimu, bukan cuma jawaban akhir yang sudah rapi.
       </div>
 
       <div class="soal-box">
         <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">1</span>Hitunglah 728 ÷ 4 dengan cara bersusun, tunjukkan tiap langkahnya!</div>
-          <div class="soal-a"><b>Pembahasan:</b> 7÷4=1 sisa 3 (4×1=4, 7−4=3), turun jadi 32. 32÷4=8 sisa 0 (4×8=32 pas). Turun 8: 8÷4=2 sisa 0. Hasil: <strong>182</strong>.</div>
+          <div class="soal-q"><span class="no">1</span>Hitunglah 690 ÷ 23 dengan cara bersusun, tunjukkan proses coba-koreksinya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Lihat 69. Estimasi: 23≈20, coba 3 (23×3=69) — pas! Tulis 3 di atas, sisa 0. Turunkan 0: karena sisa 0, digit turun apa adanya jadi 0. 0÷23=0 sisa 0. Hasil: <strong>30</strong>.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">2</span>Rani mengerjakan 645 ÷ 3. Di langkah pertama dia menebak 6÷3=2, ternyata 3×2=6 pas tanpa sisa. Apakah itu berarti Rani "gagal" karena tidak perlu mengoreksi tebakannya?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Tidak. Tebakan yang langsung tepat di percobaan pertama itu bagus dan tetap merupakan hasil dari proses estimasi yang benar — bukan berarti dia "melewati" langkah penting. Estimasi-coba-koreksi tetap terjadi, hanya saja koreksinya tidak diperlukan karena tebakan awal sudah pas.</div>
+          <div class="soal-q"><span class="no">2</span>Kenapa tebakan pertama yang keliru (seperti mencoba 5 pada soal 78÷17 di atas) tetap dianggap bagian yang benar dari proses mengerjakan soal, bukan kesalahan yang mengurangi nilai?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena estimasi-coba-koreksi adalah cara kerja yang wajar dan diharapkan untuk pembagi yang tidak rapi — bahkan orang dewasa yang sudah mahir pun sering perlu mencoba lebih dari sekali. Yang dinilai adalah APAKAH siswa menyadari tebakannya keliru dan mengoreksinya dengan benar, bukan apakah tebakan pertama selalu tepat.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">3</span>Doni mengerjakan 812 ÷ 4. Di langkah pertama, dia menghitung 8÷4=2 sisa 0. Karena sisanya 0, apa yang harus dilakukan dengan digit berikutnya (1)?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Karena sisa dari langkah pertama adalah 0, digit berikutnya (1) langsung "turun" apa adanya menjadi 1 (bukan digabung dengan sisa, karena sisanya memang 0). Lanjutkan: 1÷4=0 sisa 1 (karena 4 tidak cukup untuk 1), turun digabung digit terakhir (2), jadi 12. 12÷4=3 sisa 0. Hasil akhir: <strong>203</strong>.</div>
+          <div class="soal-q"><span class="no">3</span>Dimas selalu membulatkan pembagi yang "tidak rapi" (seperti 17, 23) ke kelipatan 10 terdekat (20) dan menganggapnya SAMA seperti pembagi 20 asli, tanpa pernah mengoreksi kembali ke pembagi aslinya. Apa masalah dari kebiasaan Dimas ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini masalah serius — membulatkan pembagi ke kelipatan 10 boleh dipakai HANYA untuk menebak kasar di awal, tapi perhitungan akhirnya tetap harus memakai pembagi ASLI (17, bukan 20). Kalau Dimas menghitung seolah-olah pembaginya benar-benar 20, hasil baginya akan salah. Kebiasaan ini adalah tanda menghindari kesulitan pembagi sembarang, bukan benar-benar menguasainya.</div>
         </div>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
-        Kerjakan tiga soal pembagian bersusun berikut, tunjukkan proses estimasi-coba-koreksinya (coretan boleh terlihat, tidak perlu dihapus): 549 ÷ 3, 856 ÷ 8, 963 ÷ 9.
+        Kerjakan tiga soal berikut, tunjukkan proses coba-koreksinya (termasuk kalau tebakan pertamamu meleset): 646 ÷ 17, 828 ÷ 23, 986 ÷ 34.
       </div>
     </div>
 
