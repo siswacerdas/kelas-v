@@ -122,12 +122,14 @@ kelas-v/
     │       └── kelas.js
     ├── infografis/        ← Galeri Visual: gambar/poster/infografis/video, guru & siswa
     │   ├── galeri.html    ← Daftar media per mata pelajaran (?mapel=slug)
-    │   ├── admin.html     ← Tambah/hapus media, khusus guru (Firebase-gated)
+    │   ├── kelola-tp.html ← Unggah/ganti infografis per materi (1 materi = 1 infografis),
+    │   │                     khusus guru (Firebase-gated) — pilih TP dari dropdown otomatis
+    │   │                     dari materi-index.js, tiap materi jadi 1 kartu
     │   └── assets/
     │       ├── infografis-data.js   ← Daftar mata pelajaran (sumber tunggal, sama slug/warna dgn materi)
     │       ├── infografis.css
     │       ├── infografis-galeri.js
-    │       └── infografis-admin.js
+    │       └── infografis-kelola-tp.js
     └── mpls/
         ├── index.html     ← Landing MPLS (daftar sub-halaman)
         ├── input.html     ← Form input penilaian (mobile-first)

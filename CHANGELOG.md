@@ -20,50 +20,52 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   diperlukan sebelum ditambahkan (butuh koleksi & rules baru)
 
 ### Ditambahkan
-- **Kelola Infografis per TP** (`pages/infografis/kelola-tp.html`) — halaman
-  baru khusus guru untuk kasus **1 materi = 1 infografis** (beda dari
-  Galeri Visual umum yang boleh banyak media per mapel): pilih Tujuan
-  Pembelajaran dari dropdown (dibangun otomatis dari `materi-index.js`,
-  sumber tunggal yang sama dipakai Materi Ajar — tidak perlu daftar manual
-  terpisah), lalu tiap materi di TP itu tampil sebagai 1 kartu dengan
-  tombol unggah/ganti. Mengunggah gambar baru untuk materi yang sudah
-  punya infografis MENIMPA (bukan menambah) — file lama di Drive otomatis
-  dipindah ke Trash. Ditautkan lewat "Materi Slug" (field `file` di
-  `materi-index.js`, sudah unik per materi, dipakai ulang tanpa skema ID
-  baru) — kolom baru "Materi Slug" ditambahkan ke sheet "Data Infografis"
-  (lihat catatan migrasi di `apps-script/README.md` kalau sheet-nya sudah
-  ada isinya).
-- **Galeri Visual** (`pages/infografis.html`, `pages/infografis/galeri.html`,
-  `pages/infografis/admin.html`) — halaman baru berisi gambar, poster,
-  infografis, dan tautan video singkat sebagai bahan ajar bentuk lain untuk
-  memfasilitasi siswa dengan gaya belajar visual, ditempatkan di menu utama
-  di antara Materi Ajar dan Bank Soal.
-  - Landing page berisi menu per mata pelajaran (memakai ulang warna & ikon
-    mapel yang sudah ada di `materi.css`/`materi-index.js` supaya konsisten
-    dengan Materi Ajar), tiap kartu menampilkan jumlah media yang tersedia.
-  - Halaman galeri per mapel (`galeri.html?mapel=slug`) menampilkan media
-    dalam grid dengan lightbox untuk gambar, dan tautan buka-tab-baru untuk
-    video (video TIDAK diunggah lewat form, hanya tautan luar seperti
-    YouTube/Drive — lihat alasannya di `apps-script/README.md`).
-  - Unggah & hapus media (`admin.html`) khusus guru (Firebase-gated, sama
-    pola dengan `pages/kelas/index.html`): gambar diresize di klien lalu
-    diunggah ke folder Google Drive milik mata pelajarannya masing-masing —
-    SATU FOLDER PER MAPEL, TERPISAH dari foto siswa
+- **Galeri Visual** — gambar/poster/infografis sebagai bahan ajar bentuk lain
+  untuk memfasilitasi siswa dengan gaya belajar visual, menu baru di
+  beranda di antara Materi Ajar dan Bank Soal (`pages/infografis.html`).
+  - **Landing page per mapel** (`pages/infografis.html`) — menu 8 mata
+    pelajaran (memakai ulang warna & ikon dari `materi.css`/`materi-index.js`
+    supaya konsisten dengan Materi Ajar), tiap kartu menampilkan jumlah
+    media yang tersedia.
+  - **Galeri per mapel** (`pages/infografis/galeri.html?mapel=slug`) —
+    grid gambar dengan lightbox, guru & siswa (login apa saja).
+  - **Kelola per Tujuan Pembelajaran** (`pages/infografis/kelola-tp.html`,
+    khusus guru) — SATU-SATUNYA halaman unggah di fitur ini (halaman
+    `admin.html`/form generik yang sempat dibuat sebagai draf awal sudah
+    DIHAPUS dan digantikan sepenuhnya oleh halaman ini, supaya tidak ada
+    dua pintu unggah yang membingungkan). Pilih Tujuan Pembelajaran dari
+    dropdown (dibangun otomatis dari `materi-index.js`, sumber tunggal yang
+    sama dipakai Materi Ajar — tidak perlu daftar manual terpisah), lalu
+    tiap materi di TP itu tampil sebagai 1 kartu dengan tombol
+    unggah/ganti/hapus. Aturan **1 materi = 1 infografis**: mengunggah
+    gambar baru untuk materi yang sudah punya infografis MENIMPA (bukan
+    menambah baris baru) — file lama di Drive otomatis dipindah ke Trash.
+    Ditautkan lewat "Materi Slug" (field `file` di `materi-index.js`, sudah
+    unik per materi, dipakai ulang tanpa skema ID baru).
+  - Backend: sheet baru "Data Infografis" (kolom "Materi Slug" opsional —
+    lihat catatan migrasi di `apps-script/README.md` kalau sheet-nya sudah
+    ada isinya sebelum kolom ini ditambahkan) + endpoint `doPost` (`type:
+    "infografis"` — upsert kalau "Materi Slug" dikirim, selalu tambah baris
+    baru kalau tidak; `"infografis_hapus"`) dan `doGet` (`?infografis=1`,
+    `?infografisFoto=`) di `apps-script/Code.gs`. Endpoint baca SENGAJA
+    TIDAK digerbang `wajibGuru_()` seperti endpoint foto siswa — kontennya
+    materi belajar untuk dibaca siswa juga, levelnya disamakan dengan
+    Materi Ajar. Folder Drive TERPISAH per mata pelajaran
     (`INFOGRAFIS_FOLDER_IDS`, 5 dari 8 mapel sudah dikonfigurasi — lihat
     `apps-script/README.md` bagian "Folder Drive untuk Galeri Visual").
-    Hapus dari galeri SENGAJA tidak ikut menghapus file di Drive (bisa
-    dipulihkan manual kalau salah hapus).
-  - **Bugfix di update ini juga**: `simpanFotoKeDrive_()` sebelumnya HANYA
-    bisa menulis ke `FOTO_FOLDER_ID` (folder foto siswa) — tanpa perbaikan
-    ini, upload gambar Galeri Visual akan diam-diam tersimpan ke folder foto
-    siswa, bukan folder mapel yang benar. Sekarang menerima `folderId`
-    opsional (default tetap `FOTO_FOLDER_ID` supaya `doPostSiswa_` tidak
-    berubah perilakunya).
-  - Backend: sheet baru "Data Infografis" + endpoint `doPost` (`type:
-    "infografis"`, `"infografis_hapus"`) dan `doGet` (`?infografis=1`,
-    ?infografisFoto=`) di `apps-script/Code.gs`. Endpoint baca SENGAJA TIDAK
-    digerbang `wajibGuru_()` seperti endpoint foto siswa — kontennya materi
-    belajar untuk dibaca siswa juga, levelnya disamakan dengan Materi Ajar.
+  - **2 bugfix di `simpanFotoKeDrive_()` selama pengembangan fitur ini:**
+    (1) sebelumnya HANYA bisa menulis ke `FOTO_FOLDER_ID` (folder foto
+    siswa) — tanpa perbaikan ini, upload gambar Galeri Visual akan
+    diam-diam tersimpan ke folder foto siswa, bukan folder mapel yang
+    benar; sekarang menerima `folderId` opsional (default tetap
+    `FOTO_FOLDER_ID` supaya `doPostSiswa_` tidak berubah perilakunya).
+    (2) `file.setSharing(...)` yang gagal (umum terjadi di akun Google
+    Workspace sekolah yang kebijakan adminnya membatasi berbagi "siapa
+    saja yang punya link") sebelumnya membuat SELURUH upload dilaporkan
+    "gagal" walau file-nya sudah berhasil tersimpan di Drive — sekarang
+    dibungkus try/catch terpisah dan tidak lagi fatal, karena proxy
+    `?foto=`/`?infografisFoto=` toh membaca file lewat akses pemilik
+    skrip, bukan lewat link publik.
 
 ---
 
