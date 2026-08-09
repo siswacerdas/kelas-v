@@ -50,6 +50,11 @@ function materiSlugFromFile_(file) {
   return String(file || "").replace(/\.html$/i, "");
 }
 
+// Set berisi label TP (atau "Lainnya") yang sedang DITUTUP (collapsed) — pola sama persis
+// dengan `collapsedMapel` di pages/materi.html, cuma level-nya di TP, bukan mapel.
+const collapsedTp = new Set();
+let cachedRows = null; // hasil fetch terakhir, dipakai ulang saat toggle buka/tutup (tanpa fetch ulang)
+
 /* ── Kelompokkan materi (bukan infografis) per TP untuk mapel ini, terurut sesuai posisi
  * asli di materi-index.js (yang memang sudah berurutan per TP → per materi). Dipakai untuk
  * menentukan JUDUL GRUP dan URUTAN BACA, baru dicocokkan ke infografis yang benar-benar ada
@@ -103,6 +108,7 @@ function buildGrid(rowList) {
 }
 
 function renderList(rows) {
+  cachedRows = rows;
   const wrap = document.getElementById("ig-list");
   if (!rows.length) {
     wrap.innerHTML = '<div class="ma-empty">Belum ada gambar, poster, infografis, atau video untuk mata pelajaran ini.</div>';
@@ -116,6 +122,24 @@ function renderList(rows) {
   const usedSlugs = new Set();
   wrap.innerHTML = "";
   let anyGroupRendered = false;
+  const renderedLabels = [];
+
+  function renderGroup(label, groupRows) {
+    anyGroupRendered = true;
+    renderedLabels.push(label);
+    const isCollapsed = collapsedTp.has(label);
+    const heading = document.createElement("div");
+    heading.className = "ig-subgroup-title" + (isCollapsed ? " ig-collapsed-title" : "");
+    heading.innerHTML = esc(label) + ' <span class="ig-subgroup-count">(' + groupRows.length + ')</span><span class="ig-chevron">▾</span>';
+    heading.addEventListener("click", () => {
+      if (collapsedTp.has(label)) collapsedTp.delete(label); else collapsedTp.add(label);
+      renderList(cachedRows);
+    });
+    wrap.appendChild(heading);
+    const grid = buildGrid(groupRows);
+    if (isCollapsed) grid.classList.add("ig-collapsed");
+    wrap.appendChild(grid);
+  }
 
   tpGroups.forEach((group) => {
     const groupRows = [];
@@ -125,12 +149,7 @@ function renderList(rows) {
       if (row) { groupRows.push(row); usedSlugs.add(itemSlug); }
     });
     if (!groupRows.length) return; // TP ini belum punya infografis sama sekali — jangan tampilkan judulnya
-    anyGroupRendered = true;
-    const heading = document.createElement("div");
-    heading.className = "ig-subgroup-title";
-    heading.innerHTML = esc(group.tema) + ' <span class="ig-subgroup-count">(' + groupRows.length + ')</span>';
-    wrap.appendChild(heading);
-    wrap.appendChild(buildGrid(groupRows));
+    renderGroup(group.tema, groupRows);
   });
 
   // Sisa: infografis TANPA "Materi Slug" (upload umum/generik, tidak terikat 1 materi) ATAU
@@ -142,17 +161,28 @@ function renderList(rows) {
     .slice()
     .reverse();
 
-  if (leftover.length) {
-    anyGroupRendered = true;
-    const heading = document.createElement("div");
-    heading.className = "ig-subgroup-title";
-    heading.textContent = "Lainnya";
-    wrap.appendChild(heading);
-    wrap.appendChild(buildGrid(leftover));
-  }
+  if (leftover.length) renderGroup("Lainnya", leftover);
 
   if (!anyGroupRendered) {
     wrap.innerHTML = '<div class="ma-empty">Belum ada gambar, poster, infografis, atau video untuk mata pelajaran ini.</div>';
+    return;
+  }
+
+  // Tombol "Buka Semua / Tutup Semua" — cuma berguna kalau ada lebih dari 1 grup TP yang
+  // tampil, jadi disembunyikan kalau cuma 1 (tidak ada gunanya toggle 1 grup lewat sini).
+  if (renderedLabels.length > 1) {
+    const toggleBar = document.createElement("div");
+    toggleBar.className = "ig-toggle-all";
+    toggleBar.innerHTML = '<button type="button" data-act="buka">Buka Semua</button><button type="button" data-act="tutup">Tutup Semua</button>';
+    toggleBar.querySelector('[data-act="buka"]').addEventListener("click", () => {
+      renderedLabels.forEach((label) => collapsedTp.delete(label));
+      renderList(cachedRows);
+    });
+    toggleBar.querySelector('[data-act="tutup"]').addEventListener("click", () => {
+      renderedLabels.forEach((label) => collapsedTp.add(label));
+      renderList(cachedRows);
+    });
+    wrap.insertBefore(toggleBar, wrap.firstChild);
   }
 }
 
