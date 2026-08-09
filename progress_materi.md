@@ -784,6 +784,28 @@ sudah diubah ke `"selesai"`.
 TP1 1/1, TP2 4/4, TP3 4/4, TP4 4/4 — seluruh Bilangan bagian bilangan
 cacah [TP1-TP5] tinggal TP5/uang, lalu lanjut ke pecahan [TP6-TP7]).
 
+## 8e. Bilangan TP5 — SELESAI 1/1 (2026-08-08)
+
+Unit kelima Matematika, sesuai dokumen sumber bersifat murni
+integratif-aplikatif dari TP1–TP4 (tidak ada kompetensi prosedural
+baru), jadi tetap 1 halaman langsung Pertemuan Inti tanpa tangga.
+Memakai ulang tiga keterampilan sekaligus dalam konteks uang: nilai
+tempat/penjumlahan (transaksi), pengurangan bersusun peminjaman
+menembus nol dari TP2 (kembalian — sengaja pakai ulang kasus 50.000−28.750
+persis dari TP2 materi 3 supaya siswa mengenali pola yang sama),
+dan pembagian bersusun/penalaran rasio kasar dari TP3 (perbandingan
+harga per satuan isi). Contoh soal 3 sengaja menampilkan kembalian
+yang SALAH dari kasir untuk melatih kebiasaan verifikasi, bukan
+percaya begitu saja.
+
+Standar 7b diterapkan. Status entri di `materi-index.js` sudah diubah
+ke `"selesai"`.
+
+**Progres Matematika sejauh ini: 14/64 pertemuan selesai.** Seluruh
+Bilangan bagian bilangan cacah (TP1–TP5) tuntas. Berikutnya: Pecahan
+(TP6, 7 pertemuan — bagian terbesar elemen Bilangan, dan TP7, 3
+pertemuan).
+
 ---
 
 ## 9. Status & log progres
@@ -878,7 +900,7 @@ cacah [TP1-TP5] tinggal TP5/uang, lalu lanjut ke pecahan [TP6-TP7]).
 | Bilangan | BIL-TP4 | Soal Cerita KPK atau FPB Tunggal | ✅ Selesai |
 | Bilangan | BIL-TP4 | Mengidentifikasi KPK atau FPB dari Soal Cerita | ✅ Selesai |
 | Bilangan | BIL-TP4 ⭐ | Soal Cerita Campuran KPK dan FPB | ✅ Selesai |
-| Bilangan | BIL-TP5 | Masalah Sehari-hari tentang Uang | 🕓 Segera hadir (placeholder aktif) |
+| Bilangan | BIL-TP5 | Masalah Sehari-hari tentang Uang | ✅ Selesai |
 | Bilangan | BIL-TP6 | Memahami Pecahan sebagai Bagian dari Keseluruhan | 🕓 Segera hadir (placeholder aktif) |
 | Bilangan | BIL-TP6 | Merepresentasikan Pecahan dan Pecahan Senilai | 🕓 Segera hadir (placeholder aktif) |
 | Bilangan | BIL-TP6 | Membandingkan Pecahan Berpenyebut Sama | 🕓 Segera hadir (placeholder aktif) |
