@@ -543,6 +543,177 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 
 ---
 
+### 26. Galeri Visual & Kelola per TP (`pages/infografis/`, belum dirilis)
+- [ ] Kartu "Galeri Visual" di beranda mengarah ke `pages/infografis.html`,
+      posisinya di antara Materi Ajar dan Bank Soal
+- [ ] `pages/infografis.html`: menu 8 mata pelajaran tampil dengan warna &
+      ikon yang SAMA dengan Materi Ajar; jumlah media per mapel tampil
+      (atau "Belum ada media" kalau kosong) — kegagalan memuat jumlah TIDAK
+      menghalangi navigasi ke tiap mapel
+- [ ] `pages/infografis/galeri.html?mapel=<slug>`: grid gambar tampil;
+      klik gambar membuka **lightbox** dengan gambar yang sama (BUKAN layar
+      gelap kosong — ini pernah jadi bug, lihat §27); klik video membuka
+      tab baru ke tautannya; mapel tidak dikenal menampilkan pesan jelas +
+      link kembali, bukan halaman kosong
+- [ ] `pages/infografis/kelola-tp.html` (khusus guru — kontainer di
+      beranda hanya muncul untuk role `guru`):
+  - [ ] Dropdown TP terisi otomatis dari `materi-index.js` (BUKAN daftar
+        manual) — hanya materi berstatus `"selesai"` yang muncul
+  - [ ] Pilih 1 TP → tiap materi tampil sebagai 1 kartu
+  - [ ] Unggah gambar untuk materi yang BELUM punya infografis → kartu
+        langsung menampilkan thumbnail + tombol berubah jadi "Ganti
+        Infografis" + tombol "Hapus" muncul
+  - [ ] **REFRESH HALAMAN (F5)** setelah upload — thumbnail & tombol Hapus
+        HARUS TETAP ada (bukan kembali ke placeholder "belum ada infografis")
+        — ini pernah jadi bug, WAJIB dicek ulang tiap kali sheet "Data
+        Infografis" mengalami perubahan struktur (lihat §27)
+  - [ ] Unggah gambar BARU untuk materi yang SUDAH punya infografis → baris
+        di sheet "Data Infografis" **tertimpa** (cek jumlah baris di sheet
+        TIDAK bertambah), dan file lama di folder Drive mapel tsb pindah ke
+        **Trash** (bukan terhapus permanen, bukan juga masih ada 2 file aktif)
+  - [ ] Klik "Hapus" pada kartu yang sudah ada infografisnya → baris hilang
+        dari sheet, kartu kembali ke placeholder
+- [ ] Sheet "Data Infografis" di spreadsheet: baris header punya SEMUA
+      kolom di `INFOGRAFIS_HEADERS` di `Code.gs` (termasuk "Materi Slug") —
+      kalau sheet ini pernah dipakai SEBELUM kode terbaru, kolom yang
+      kurang harus otomatis bertambah sendiri di ujung kanan setelah 1x
+      permintaan apa pun ke server (self-healing, lihat §27) — TIDAK BOLEH
+      ada kolom yang hilang/kosong strukturnya
+- [ ] Folder Drive per mapel (`INFOGRAFIS_FOLDER_IDS` di `Code.gs`) — upload
+      ke mapel yang ID foldernya masih `"GANTI_..."` menampilkan pesan error
+      yang jelas menyebut nama mapelnya, BUKAN error generik
+- [ ] **Uji dengan Apps Script SUNGGUHAN yang sudah dideploy** (bukan cuma
+      dites di editor) — buka `APPS_SCRIPT_URL?infografisFoto=<ID_DRIVE_ASLI>`
+      langsung di tab **incognito** (bukan tab biasa yang sedang login
+      Google sebagai pemilik file — lihat §27 kenapa ini penting) → harus
+      tampil gambarnya, bukan pesan error
+
+---
+
+### 27. Kronologi Bug: "Infografis Tidak Dikenali Setelah Refresh" (Galeri Visual, belum dirilis)
+> Dicatat lengkap atas permintaan pengguna, supaya kesalahan yang sama tidak
+> terulang — sama seperti §25. Ini kasus NYATA yang dialami (bukan
+> hipotetis), dan melibatkan BEBERAPA bug independen yang sempat tertumpuk
+> jadi satu laporan gejala ("gambar hilang setelah refresh"), ditambah satu
+> jalur diagnosis yang sempat salah arah. Dipisah di sini SATU per SATU
+> supaya jelas mana penyebab mana.
+
+**Bug #1 — `setSharing()` gagal membuat SELURUH upload dilaporkan gagal,
+padahal file sudah tersimpan di Drive**
+1. Guru melaporkan: upload gambar menampilkan pesan
+   "Gagal mengunggah gambar ke Drive: Exception: Akses ditolak: DriveApp",
+   TAPI file-nya ternyata SUDAH ADA di folder Drive tujuan.
+2. Akar masalah: `simpanFotoKeDrive_()` melakukan 2 langkah berurutan
+   dalam SATU blok try/catch di pemanggilnya — (a) `folder.createFile()`
+   lalu (b) `file.setSharing(ANYONE_WITH_LINK, VIEW)`. Langkah (a) berhasil
+   (makanya file benar-benar ada di Drive), tapi langkah (b) dilempar
+   sebagai exception (kemungkinan besar kebijakan admin Google Workspace
+   sekolah yang membatasi berbagi "siapa saja yang punya link") — exception
+   itu merambat ke pemanggil dan SELURUH proses dianggap gagal, walau file
+   aslinya sudah tersimpan sempurna.
+3. Diperbaiki: `setSharing()` dibungkus try/catch TERPISAH di dalam
+   `simpanFotoKeDrive_()` sendiri, kegagalannya diabaikan (cukup dicatat
+   `Logger.log`, tidak dilempar lagi) — AMAN karena proxy `?foto=`/
+   `?infografisFoto=` toh membaca file lewat akses milik skrip sendiri
+   (`DriveApp.getFileById`), TIDAK butuh sharing publik sama sekali; sharing
+   publik cuma cadangan untuk kandidat hotlink langsung (lihat Bug #3).
+
+**Bug #2 — kolom "Materi Slug" diam-diam terbuang saat sheet sudah lebih
+dulu dipakai (AKAR MASALAH UTAMA gejala "tidak dikenali setelah refresh")**
+1. Fitur "1 materi = 1 infografis" di `kelola-tp.html` butuh kolom BARU
+   "Materi Slug" di sheet "Data Infografis" untuk menandai infografis itu
+   milik materi yang mana.
+2. Sheet ini SUDAH DIPAKAI (ada baris data) SEBELUM kolom ini ditambahkan
+   ke `INFOGRAFIS_HEADERS` di kode.
+3. `buildRowByHeaders_()` (dipakai semua fungsi simpan di `Code.gs`) selalu
+   mencocokkan nilai berdasarkan **nama kolom yang benar-benar ada di baris
+   header SHEET**, BUKAN urutan array `INFOGRAFIS_HEADERS` di kode (desain
+   ini SENGAJA sejak v0.4.1, lihat catatan di bagian Catatan Penting — supaya
+   boleh menambah kolom kapan saja tanpa migrasi manual, TAPI konsekuensinya:
+   kolom yang belum ada di header sheet akan diam-diam DIABAIKAN saat
+   ditulis, bukan error).
+4. Akibatnya: setiap upload lewat `kelola-tp.html` BERHASIL menyimpan Mapel/
+   Judul/Keterangan/dst. (semua kolom itu SUDAH ada di header lama), TAPI
+   nilai "Materi Slug" tidak pernah benar-benar tersimpan di mana pun.
+5. `kelola-tp.html` langsung setelah upload masih tampak "berhasil" karena
+   client menyimpan hasilnya sendiri di memori (`state.infografisBySlug`)
+   tanpa perlu baca ulang dari server. Begitu di-REFRESH, client mengambil
+   data dari server lagi (`?infografis=1`), mencocokkan `row["Materi Slug"]`
+   — yang ternyata kosong — dengan slug materi yang diharapkan, TIDAK
+   ketemu, dan materi itu kembali dianggap "belum punya infografis".
+6. Diperbaiki: `getInfografisSheet_()` sekarang **self-healing** — setiap
+   kali dipanggil, membandingkan `INFOGRAFIS_HEADERS` di kode dengan header
+   yang benar-benar ada di sheet, dan MENAMBAHKAN kolom yang kurang di
+   UJUNG KANAN (bukan menyisipkan di tengah — itu akan menggeser semua data
+   yang sudah ada). Tidak perlu campur tangan manual lagi untuk kolom baru
+   apa pun ke depannya.
+7. `setupInfografisSheet()` yang SEBELUMNYA menimpa baris header secara
+   mentah (`setValues` di posisi kolom tetap) juga diperbaiki — itu
+   berbahaya kalau dijalankan pada sheet yang sudah ada isinya dengan
+   urutan kolom berbeda; sekarang cukup memanggil `getInfografisSheet_()`.
+
+**Bug #3 — lightbox `galeri.html` kadang tampil layar gelap kosong**
+1. Thumbnail grid di `galeri.html` sejak awal punya 2 kandidat URL cadangan
+   (proxy Apps Script + 2 format hotlink Drive langsung) dengan `onerror`
+   berantai — kalau kandidat pertama gagal, otomatis coba kandidat berikut.
+2. Lightbox (dibuka saat gambar di grid diklik) TIDAK diberi rantai
+   fallback yang sama — cuma mencoba 1 kandidat (proxy), tanpa `onerror`
+   sama sekali. Kalau kandidat itu gagal untuk file tertentu, lightbox
+   tampil kosong (cuma latar gelap + keterangan) walau thumbnail-nya di
+   grid berhasil tampil (karena sempat "ketolong" kandidat cadangan).
+3. `kelola-tp.html` ternyata punya bug SERUPA (thumbnail kartu materi juga
+   cuma 1 kandidat, tanpa fallback) — karena logikanya waktu itu ditulis
+   terpisah/diduplikasi, bukan dipakai bersama dari 1 sumber.
+4. Diperbaiki: logika kandidat+fallback dipindah ke SATU file bersama baru,
+   `pages/infografis/assets/infografis-shared.js`, dipakai `galeri.html`
+   (termasuk lightbox-nya) DAN `kelola-tp.html` — mencegah duplikasi yang
+   jadi sumber bug ini muncul dua kali secara terpisah.
+
+**Jalur diagnosis yang sempat salah arah (bukan bug kode, tapi pelajaran
+penting soal cara menguji)**
+1. Guru diminta menguji proxy langsung: `APPS_SCRIPT_URL?infografisFoto=<id>`.
+2. ID yang dipakai untuk uji coba ternyata diambil dari kolom **"ID"** di
+   sheet (mis. `ig1786237265777356` — pengenal baris internal, dipakai
+   tombol Hapus), BUKAN dari kolom **"URL Media"** (isinya ID Drive
+   sesungguhnya, mis. `1ktRAVdLya7UJIDVRbS3AEMgMhVGQlPvm`).
+3. `DriveApp.getFileById()` dipanggil dengan ID yang tidak pernah ada di
+   Drive, melempar pesan generik yang membingungkan: *"Unexpected error
+   while getting the method or property getFileById on object DriveApp"* —
+   pesan ini TIDAK menyebut "file not found" secara eksplisit, sehingga
+   sempat disangka bug struktural (dugaan awal: folder ada di Shared Drive,
+   yang punya keterbatasan dikenal di `DriveApp` dasar).
+4. Setelah dicek ke sheet aslinya (lihat kolom "URL Media" vs kolom "ID"),
+   ternyata itu murni salah ID uji, bukan bug DriveApp/Shared Drive sama
+   sekali — folder ternyata memang di My Drive biasa.
+5. **Pelajaran**: kalau menguji proxy `?infografisFoto=`/`?foto=` secara
+   manual, ID yang dipakai HARUS diambil dari kolom **"URL Media"/"URL
+   Foto"** (ekstrak bagian setelah `id=` di URL-nya), BUKAN dari kolom
+   **"ID"** (itu pengenal baris, formatnya kebetulan mirip tapi artinya
+   beda total). Kalau ada pesan error "Unexpected error while getting the
+   method or property X on object Y" dari `DriveApp`, curigai DULU salah
+   ID sebelum menyimpulkan ada bug di layanan Drive-nya.
+
+**Checklist regresi untuk ketiga bug + 1 pelajaran diagnosis ini:**
+- [ ] Ulangi semua item checklist §26 di atas
+- [ ] `simpanFotoKeDrive_()` di `Code.gs`: `setSharing()` ada di dalam
+      try/catch TERPISAH dari `createFile()`, kegagalannya TIDAK melempar
+      ulang ke pemanggil
+- [ ] `getInfografisSheet_()` di `Code.gs` mengandung logika self-healing
+      (bandingkan `INFOGRAFIS_HEADERS` vs `readHeaderRow_(sheet)`, tambah
+      yang kurang di ujung kanan) — coba HAPUS 1 kolom uji coba dari sheet
+      sungguhan (mis. duplikat sheet-nya dulu), panggil endpoint apa saja,
+      pastikan kolom itu otomatis kembali muncul
+- [ ] `pages/infografis/assets/infografis-shared.js` ada dan dipakai
+      (`<script src="assets/infografis-shared.js">`, dimuat SEBELUM
+      `infografis-galeri.js`/`infografis-kelola-tp.js`) di KEDUA
+      `galeri.html` dan `kelola-tp.html` — bukan lagi logika terpisah
+      berduplikasi di masing-masing file
+- [ ] Saat menguji proxy manual, PASTIKAN ID yang dipakai diambil dari
+      kolom "URL Media"/"URL Foto" (bukan kolom "ID") — dokumentasikan ini
+      di instruksi ke guru setiap kali meminta pengujian manual proxy
+
+---
+
 ## 🔁 Skenario Ujicoba Lengkap
 
 Jalankan skenario ini setelah perubahan besar:
@@ -779,6 +950,20 @@ Jalankan skenario ini setelah perubahan besar:
 
 ---
 
+### Skenario P — Kelola per TP di Galeri Visual (v0.10.0)
+1. Login sebagai guru → beranda → kontainer Kelas → "🖼️ Kelola Galeri Visual"
+2. Pilih TP "Menyimak · Informasi Penting dari Teks Aural" dari dropdown
+3. Klik "Unggah Infografis" pada kartu Materi 1 → pilih 1 gambar dari galeri HP
+4. → **Harapan:** thumbnail langsung tampil di kartu, tombol berubah jadi "Ganti Infografis", tombol "Hapus" muncul
+5. **Refresh halaman (F5)**, pilih TP yang sama lagi
+6. → **Harapan:** kartu Materi 1 TETAP menampilkan thumbnail & tombol Hapus (BUKAN kembali ke placeholder — lihat §27 Bug #2 kalau ini gagal)
+7. Buka `pages/infografis/galeri.html?mapel=bahasa-indonesia`, klik gambar Materi 1
+8. → **Harapan:** lightbox terbuka menampilkan gambarnya (BUKAN layar gelap kosong — lihat §27 Bug #3 kalau ini gagal)
+9. Kembali ke `kelola-tp.html`, klik "Ganti Infografis" pada Materi 1 lagi, unggah gambar berbeda
+10. → **Harapan:** cek sheet "Data Infografis" — jumlah baris untuk Materi 1 TETAP 1 (tertimpa, bukan bertambah); cek folder Drive — file lama pindah ke Trash
+
+---
+
 ## 🐛 Cara Melaporkan Bug
 
 Jika menemukan masalah, catat informasi berikut:
@@ -827,6 +1012,7 @@ Catat setiap sesi ujicoba di sini:
 | 2026-07-21 | 0.9.1 | Claude (Playwright, audit penyempurnaan atas fitur sendiri) | ⚠️ Lulus dengan catatan | Penyempurnaan (bukan fitur baru): mapel wajib di Bank Soal, validasi pilihan duplikat, datalist mapel lintas-tab, peringatan format link, pengacakan pilihan jawaban tiap kuis, penanda "Belum dijawab" di Bank Soal. 12 skenario Playwright baru (semua lulus, termasuk memastikan input yang gagal validasi TIDAK ikut tersimpan — bukan cuma pesan errornya yang dicek). 38 skenario lama dijalankan ulang — semua tetap lulus (total 50). **BELUM diuji**: dengan Firestore project sungguhan (masih stub in-memory di semua sesi sampai sekarang) — checklist manual §16-22 makin menumpuk dan sebaiknya segera dijalankan sekali secara menyeluruh sebelum dipakai guru/siswa beneran, daripada terus menunda di tiap sesi. |
 | 2026-07-21 | 0.9.2 | Claude (Playwright, bugfix dilaporkan pengguna) | ⚠️ Lulus dengan catatan | **Bugfix kritis dilaporkan pengguna**: data hasil MPLS tidak bisa dilihat setelah v0.7.0, padahal sudah deploy ulang. Akar masalah: 7 file (`rekap*.html`, `laporan*.html`, `kelas.js`) belum diperbarui membaca `status:"error"` dari server sejak gerbang akses v0.7.0 ditambahkan — error apa pun ditampilkan sebagai pesan generik "kemungkinan belum deploy" yang salah sasaran, atau (di `kelas.js`) ditelan diam-diam jadi "Belum ada siswa". Diperbaiki di ke-7 file: cek `status==="error"` lebih dulu, tampilkan `message` asli. 15 skenario Playwright baru (memaksa server mock membalas error, pastikan pesan asli tampil DAN pesan lama tidak tampil, plus 1 skenario regresi memastikan kasus deploy-lama-sungguhan tetap dapat pesan yang sesuai) — semua lulus. 82 skenario dari sesi-sesi sebelumnya dijalankan ulang — tidak ada regresi (total 97). Ditambahkan §23 (prinsip wajib cek status error di setiap pemanggil endpoint) dan §24 (panduan diagnostik langkah-demi-langkah) supaya kelas bug ini tidak terulang. **Catatan penting**: fix ini membuat pesan error terlihat JELAS, TAPI tidak serta-merta memperbaiki akar masalah akses yang pengguna alami (kalau memang ada masalah otorisasi/rules) — pengguna perlu redeploy sisi klien (bukan Apps Script) lalu baca pesan error yang baru muncul dan cocokkan dengan §24. |
 | 2026-07-24 | 0.9.3 | Claude (Playwright, root-cause dari laporan pengguna v0.9.2) | ⚠️ Lulus dengan catatan | **Lanjutan bugfix v0.9.2** — pesan error asli yang baru terlihat ("Sesi login guru tidak ditemukan") menunjukkan akar masalah sebenarnya: race condition antara 2 listener Firebase Auth independen (`onAuthStateChanged` vs `onIdTokenChanged`) di `guru-guard.js` sejak v0.7.0, di mana `onIdTokenChanged` bisa menimpa `window.guruIdToken` jadi `null` tanpa error apa pun. Diperbaiki: `onIdTokenChanged` dihapus, diganti `window.getFreshGuruIdToken()` yang selalu baca `auth.currentUser` langsung; 7 file pemanggil endpoint guru diubah memakainya. 5 skenario Playwright baru (token terdaftar & benar, token BARU terambil setelah simulasi refresh SDK, cek statis `onIdTokenChanged` sudah tidak dipakai) — semua lulus. 88 skenario sebelumnya dijalankan ulang — tidak ada regresi. **Keterbatasan jujur**: race condition asli ini terjadi di timing async Firebase SDK SUNGGUHAN yang tidak direplikasi stub Playwright (stub memanggil listener secara sinkron) — pengujian di atas memvalidasi desain barunya lebih kokoh (satu sumber kebenaran), TAPI kepastian penuh bug ini teratasi baru didapat dari konfirmasi pengguna setelah dipakai nyata. Ditambahkan §25: kronologi lengkap + prinsip "jangan cache kredensial lewat 2 listener independen" + checklist regresi khusus (termasuk uji refresh token & reload berulang). |
+| 2026-08-09 | 0.10.0 (belum dirilis) | Claude (bugfix dilaporkan pengguna, diuji langsung oleh pengguna dengan Apps Script sungguhan) | ✅ Dikonfirmasi pengguna | **Galeri Visual & Kelola per TP** (`pages/infografis/`) baru, ditemukan+diperbaiki 3 bug berbeda dari 1 laporan gejala ("gambar hilang setelah refresh") — kronologi lengkap di §27: (1) `setSharing()` gagal membuat upload dilaporkan gagal padahal file sudah tersimpan (kebijakan Workspace sekolah membatasi share publik) — diperbaiki, sharing publik dibuat non-fatal; (2) **akar masalah utama**: kolom "Materi Slug" diam-diam terbuang saat disimpan karena sheet "Data Infografis" sudah dipakai sebelum kolom itu ada di kode (`buildRowByHeaders_` mencocokkan berdasar nama kolom SHEET, bukan kode) — diperbaiki, `getInfografisSheet_()` kini self-healing; (3) lightbox `galeri.html` & thumbnail `kelola-tp.html` sama-sama cuma punya 1 kandidat URL tanpa fallback (beda dari grid yang sejak awal punya 2 cadangan) — diperbaiki, logika disatukan ke `infografis-shared.js`. Sempat ada 1 jalur diagnosis salah arah (ID sheet internal keliru dipakai sebagai ID Drive saat uji manual, sempat disangka bug Shared Drive) — dicatat sebagai pelajaran di §27, bukan bug kode. Dikonfirmasi **berhasil oleh pengguna langsung** setelah ketiga perbaikan + pembersihan 2 baris data lama yang terlanjur rusak strukturnya. |
 
 **Keterangan:**
 - ✅ Lulus semua checklist
@@ -853,3 +1039,14 @@ Catat setiap sesi ujicoba di sini:
   `wajibGuru_(...)` di awal cabangnya — endpoint baru yang lupa digerbang akan kembali
   membuka celah yang sama seperti sebelum v0.7.0. `ACCESS_CODE_MPLS` di `Code.gs` harus
   selalu disamakan manual dengan `ACCESS_CODE` di `pages/mpls/assets/config.js`.
+- **Sejak v0.10.0 (belum dirilis)**: konsekuensi dari prinsip "pencocokan kolom
+  berdasarkan nama header di SHEET" (catatan v0.4.1 di atas) sekarang ditangani secara
+  OTOMATIS, bukan cuma diandalkan sebagai aturan manual. `getSiswaSheet_()`/
+  `getInfografisSheet_()` (dan pola yang sama sebaiknya diikuti kalau menambah sheet
+  BARU lagi ke depannya) memeriksa header sheet yang benar-benar ada, dan menambahkan
+  kolom yang kurang di UJUNG KANAN secara otomatis. Kalau menambah kolom baru ke
+  `SISWA_HEADERS`/`INFOGRAFIS_HEADERS`/header array manapun di `Code.gs`, TIDAK perlu
+  lagi migrasi manual di Google Sheets — cukup pastikan fungsi `getXxxSheet_()` yang
+  bersangkutan memanggil pola self-healing ini (lihat §27 untuk kronologi lengkap kenapa
+  ini penting: sebelum ada ini, kolom baru yang lupa disinkronkan manual membuat nilainya
+  DIAM-DIAM TERBUANG saat disimpan, tanpa error apa pun).
