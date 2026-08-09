@@ -756,6 +756,34 @@ sudah diubah ke `"selesai"`.
 **Progres Matematika sejauh ini: 9/64 pertemuan selesai** (Bilangan
 TP1 1/1, TP2 4/4, TP3 4/4).
 
+## 8d. Bilangan TP4 — SELESAI 4/4 (2026-08-08)
+
+Unit keempat Matematika: KPK dan FPB lewat soal cerita kontekstual
+sejak awal (sesuai penekanan keras Dokumen 1 — KPK-FPB lahir dari
+konteks nyata, bukan angka polos). Progresi: menyusun daftar
+kelipatan/faktor sistematis (jembatan tambahan di luar Dokumen 2,
+ditandai eksplisit di dokumen sumber sebagai gap yang perlu diisi) →
+soal cerita KPK/FPB terpisah jelas (bus berangkat bersamaan / bagi
+rata pensil-buku) → identifikasi mandiri tanpa label dengan angka lebih
+besar → soal cerita campuran (jadwal lomba + pembagian perlengkapan).
+
+Materi 3 secara eksplisit membongkar miskonsepsi "tebak dari kata kunci"
+('bersamaan'=KPK, 'dibagi'=FPB) yang diperingatkan dokumen sumber —
+memakai soal drama-konser yang sengaja TIDAK memakai kata "bersamaan"
+sama sekali, tapi tetap soal KPK, plus soal & pembahasan yang secara
+eksplisit menyoal kenapa jalan pintas kata kunci itu keliru (kasus
+Doni). Materi 4 (⭐ inti) memuat satu narasi panjang berisi KEDUA
+konsep sekaligus dalam konteks berbeda (jadwal lomba sekolah untuk KPK,
+pembagian perlengkapan untuk FPB) — melatih memecah soal jadi
+bagian-bagian kecil.
+
+Standar 7b diterapkan penuh. Status keempat entri di `materi-index.js`
+sudah diubah ke `"selesai"`.
+
+**Progres Matematika sejauh ini: 13/64 pertemuan selesai** (Bilangan
+TP1 1/1, TP2 4/4, TP3 4/4, TP4 4/4 — seluruh Bilangan bagian bilangan
+cacah [TP1-TP5] tinggal TP5/uang, lalu lanjut ke pecahan [TP6-TP7]).
+
 ---
 
 ## 9. Status & log progres
@@ -846,10 +874,10 @@ TP1 1/1, TP2 4/4, TP3 4/4).
 | Bilangan | BIL-TP3 | Pembagian dengan Pembagi Kelipatan Sepuluh | ✅ Selesai |
 | Bilangan | BIL-TP3 | Pembagian dengan Pembagi Dua Digit Sembarang | ✅ Selesai |
 | Bilangan | BIL-TP3 ⭐ | Pembagian Bersusun dalam Soal Cerita | ✅ Selesai |
-| Bilangan | BIL-TP4 | Menyusun Daftar Kelipatan dan Faktor | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP4 | Soal Cerita KPK atau FPB Tunggal | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP4 | Mengidentifikasi KPK atau FPB dari Soal Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP4 ⭐ | Soal Cerita Campuran KPK dan FPB | 🕓 Segera hadir (placeholder aktif) |
+| Bilangan | BIL-TP4 | Menyusun Daftar Kelipatan dan Faktor | ✅ Selesai |
+| Bilangan | BIL-TP4 | Soal Cerita KPK atau FPB Tunggal | ✅ Selesai |
+| Bilangan | BIL-TP4 | Mengidentifikasi KPK atau FPB dari Soal Cerita | ✅ Selesai |
+| Bilangan | BIL-TP4 ⭐ | Soal Cerita Campuran KPK dan FPB | ✅ Selesai |
 | Bilangan | BIL-TP5 | Masalah Sehari-hari tentang Uang | 🕓 Segera hadir (placeholder aktif) |
 | Bilangan | BIL-TP6 | Memahami Pecahan sebagai Bagian dari Keseluruhan | 🕓 Segera hadir (placeholder aktif) |
 | Bilangan | BIL-TP6 | Merepresentasikan Pecahan dan Pecahan Senilai | 🕓 Segera hadir (placeholder aktif) |
