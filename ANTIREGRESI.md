@@ -555,6 +555,14 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       gelap kosong — ini pernah jadi bug, lihat §27); klik video membuka
       tab baru ke tautannya; mapel tidak dikenal menampilkan pesan jelas +
       link kembali, bukan halaman kosong
+- [ ] `galeri.html`: infografis dikelompokkan per TP (judul grup memakai
+      warna mapel, urutan ikut `materi-index.js` — BUKAN urutan upload),
+      TP tanpa infografis tidak ditampilkan judulnya; infografis tanpa
+      "Materi Slug"/materi yang sudah dihapus dari indeks tetap tampil di
+      grup "Lainnya" (tidak boleh "hilang")
+- [ ] `galeri.html`: klik judul grup TP membuka/menutup (collapse) grid di
+      bawahnya, chevron ikut berputar; tombol "Buka Semua"/"Tutup Semua"
+      muncul HANYA kalau ada >1 grup TP yang tampil, dan berfungsi
 - [ ] `pages/infografis/kelola-tp.html` (khusus guru — kontainer di
       beranda hanya muncul untuk role `guru`):
   - [ ] Dropdown TP terisi otomatis dari `materi-index.js` (BUKAN daftar
