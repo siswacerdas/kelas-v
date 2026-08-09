@@ -1,1 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyusun Daftar Kelipatan dan Faktor · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .daftar-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); }
+  .daftar-box .judul { font-weight: 700; color: var(--m-color); margin-bottom: 0.4rem; font-size: calc(var(--content-fs) - 1px); }
+  .daftar-box .angka { font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); letter-spacing: 1px; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.4rem; }
+  .chip { background: #eaf2f2; border: 1px solid #cfe2e2; border-radius: 8px; padding: 3px 10px; font-size: calc(var(--content-fs) - 3px); font-weight: 600; }
+  .chip.sama { background: var(--m-color); color: #fff; border-color: var(--m-color); }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · KPK dan FPB melalui Soal Cerita Kontekstual · Materi 1 dari 4</div>
+      <div class="ma-cover-title">Menyusun Daftar Kelipatan dan Faktor</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sebelum masuk ke KPK dan FPB (dua istilah yang mungkin terdengar rumit), kita perlu kuasai dulu dua keterampilan dasar: menyusun <strong>kelipatan</strong> dan menyusun <strong>faktor</strong> secara rapi dan sistematis — bukan menebak-nebak acak.</p>
+
+      <p><strong>Kelipatan</strong> suatu bilangan adalah hasil perkalian bilangan itu dengan 1, 2, 3, 4, dan seterusnya — berurutan, tidak boleh lompat.</p>
+
+      <div class="daftar-box">
+        <div class="judul">Kelipatan 4:</div>
+        <div class="angka">4, 8, 12, 16, 20, 24, 28, 32...</div>
+        <div class="judul" style="margin-top:0.6rem;">Kelipatan 6:</div>
+        <div class="angka">6, 12, 18, 24, 30, 36...</div>
+      </div>
+
+      <p><strong>Faktor</strong> suatu bilangan adalah semua bilangan yang bisa membaginya habis (tanpa sisa) — dicari dengan mengecek satu-satu dari 1 sampai bilangan itu sendiri.</p>
+
+      <div class="daftar-box">
+        <div class="judul">Faktor dari 12:</div>
+        <div class="chip-row">
+          <span class="chip">1</span><span class="chip">2</span><span class="chip">3</span><span class="chip">4</span><span class="chip">6</span><span class="chip">12</span>
+        </div>
+        <div class="judul" style="margin-top:0.6rem;">Faktor dari 18:</div>
+        <div class="chip-row">
+          <span class="chip">1</span><span class="chip">2</span><span class="chip">3</span><span class="chip">6</span><span class="chip">9</span><span class="chip">18</span>
+        </div>
+      </div>
+
+      <p>Cara sistematis mencari faktor: cek 1 (selalu faktor), lalu 2, 3, 4, dan seterusnya — untuk tiap angka, tanya "apakah bilangan ini habis dibagi angka tersebut?" Kalau ya, catat sebagai faktor. Lakukan sampai kamu mencapai bilangan itu sendiri (yang juga selalu jadi faktor terbesarnya).</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Kelipatan itu seperti melompat dengan langkah tetap</span> — kalau kamu melompat dengan langkah 4 (lompatan sebesar 4 kotak), kamu akan mendarat di kotak 4, 8, 12, 16, dan seterusnya, tidak pernah di kotak 5 atau 7. Kelipatan adalah daftar semua kotak tempat kamu bisa mendarat.</p>
+        <p><span class="analogi">Faktor itu seperti mencari semua cara membagi kelompok sama rata</span> — kalau kamu punya 12 kelereng, faktor 12 (1,2,3,4,6,12) adalah semua kemungkinan jumlah kelompok yang bisa dibentuk supaya tiap kelompok dapat jumlah kelereng yang sama tanpa sisa (1 kelompok isi 12, 2 kelompok isi 6, 3 kelompok isi 4, dst).</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kelipatan suatu bilangan jumlahnya TAK TERBATAS (terus bisa dilanjutkan), sementara faktor suatu bilangan jumlahnya TERBATAS (berhenti di bilangan itu sendiri). Ini perbedaan penting yang sering tertukar.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Tuliskan lima kelipatan pertama dari 5!</div>
+          <div class="soal-a"><b>Pembahasan:</b> 5, 10, 15, 20, 25 — didapat dari 5×1, 5×2, 5×3, 5×4, 5×5.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Tuliskan semua faktor dari 20!</div>
+          <div class="soal-a"><b>Pembahasan:</b> 1, 2, 4, 5, 10, 20. Cara ceknya: 20÷1=20 (habis), 20÷2=10 (habis), 20÷3 (tidak habis, dilewati), 20÷4=5 (habis), 20÷5=4 (habis), 20÷6,7,8,9 (tidak habis), 20÷10=2 (habis), 20÷20=1 (habis).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rian bilang "kelipatan 6 pasti lebih banyak daripada faktor 6, karena 6 lebih kecil dari kelipatannya." Apakah alasan Rian tepat?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesimpulannya kebetulan benar (kelipatan 6 memang tak terbatas jumlahnya, sementara faktor 6 cuma ada 4: 1,2,3,6), tapi ALASANNYA keliru. Bukan soal "lebih kecil dari kelipatannya" — alasan yang tepat adalah karena kelipatan bisa terus dilanjutkan tanpa batas (6,12,18,24,...tak berhenti), sementara faktor selalu berhenti begitu mencapai bilangan itu sendiri.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Tuliskan enam kelipatan pertama dari 8, dan semua faktor dari 24. Susun keduanya secara berurutan dan sistematis (jangan lompat-lompat).
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
