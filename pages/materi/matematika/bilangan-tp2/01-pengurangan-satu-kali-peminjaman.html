@@ -1,1 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pengurangan dengan Satu Kali Peminjaman · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .susun { font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) + 4px); text-align: right; max-width: 200px; margin: 1rem auto 1.4rem; line-height: 1.9; }
+  .susun .baris { display: flex; justify-content: flex-end; gap: 6px; }
+  .susun .digit { width: 1.6rem; text-align: center; }
+  .susun .pinjam { font-size: 12px; color: #b8791f; position: relative; top: -0.6em; }
+  .susun .coret { text-decoration: line-through; color: var(--ink-3); }
+  .susun hr { border: none; border-top: 2px solid var(--ink); margin: 4px 0; }
+  .susun .op { width: 1.2rem; }
+  .bahan-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); }
+  .bahan-box b { color: var(--m-color); }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pengurangan Bersusun Peminjaman Berganda · Materi 1 dari 4</div>
+      <div class="ma-cover-title">Pengurangan dengan Satu Kali Peminjaman</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Bayangkan kamu punya <strong>452 kelereng</strong>, disimpan rapi: 4 kantong isi 100 kelereng, 5 kantong isi 10 kelereng, dan 2 kelereng lepas. Temanmu minta <strong>137 kelereng</strong>. Masalahnya: kamu cuma punya 2 kelereng lepas, tapi dia minta 7. Kurang 5! Apa yang harus kamu lakukan?</p>
+
+      <p>Kamu tidak akan bilang "tidak bisa" — kamu akan <strong>membuka salah satu kantong isi 10</strong>, menuangnya jadi 10 kelereng lepas. Sekarang kamu punya 12 kelereng lepas (2 + 10), cukup untuk dikasih 7. Inilah yang disebut <strong>meminjam</strong> dalam pengurangan bersusun — bukan sihir, cuma cara wajar menghadapi "tidak cukup" dengan menukar dari kantong yang nilainya lebih besar.</p>
+
+      <p>Sekarang lihat cara menuliskannya dalam bentuk bersusun:</p>
+
+      <div class="susun">
+        <div class="baris"><div class="digit"></div><div class="digit pinjam">4</div><div class="digit pinjam">¹5</div><div class="digit"></div></div>
+        <div class="baris"><div class="digit"></div><div class="digit coret">4</div><div class="digit coret">5</div><div class="digit">2</div></div>
+        <div class="baris"><div class="digit op">−</div><div class="digit">1</div><div class="digit">3</div><div class="digit">7</div></div>
+        <hr/>
+        <div class="baris"><div class="digit"></div><div class="digit">3</div><div class="digit">1</div><div class="digit">5</div></div>
+      </div>
+
+      <p>Langkah-langkahnya: (1) Di posisi <strong>satuan</strong>: 2 dikurangi 7 tidak cukup, jadi kita pinjam 1 dari posisi <strong>puluhan</strong> — puluhan yang tadinya 5 jadi 4, dan satuan yang tadinya 2 jadi 12 (2 + 10 hasil pinjaman). 12 − 7 = 5. (2) Posisi <strong>puluhan</strong>: 4 − 3 = 1 (tidak perlu pinjam lagi, karena 4 sudah cukup untuk dikurangi 3). (3) Posisi <strong>ratusan</strong>: 4 − 1 = 3. Hasilnya: <strong>315</strong>.</p>
+
+      <div class="bahan-box"><b>Kalau masih ragu:</b> coba dulu pakai kelereng/batang nilai tempat sungguhan atau gambar kotak-kotak. Rasakan sendiri proses "membuka kantong 10" itu sebelum lanjut ke angka saja — jangan buru-buru ke notasi kalau belum yakin dengan alasannya.</div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Bayangkan <span class="analogi">dompetmu berisi selembar uang Rp10.000 dan Rp2.000 receh</span>, dan kamu harus membayar Rp7.000 pas — tapi recehmu cuma Rp2.000, kurang. Kamu tidak akan menyerah; kamu akan menukar lembar Rp10.000 itu ke kasir jadi 10 lembar Rp1.000, sehingga uang recehmu sekarang jadi Rp12.000 (Rp2.000 + hasil tukar Rp10.000). Baru dari situ kamu bayar Rp7.000, sisa Rp5.000.</p>
+        <p>"Meminjam" dalam pengurangan bersusun itu persis proses menukar uang tadi — pindahkan nilai dari posisi yang lebih besar (puluhan) ke posisi yang kurang (satuan), sebesar 10 kali lipat, karena memang begitu aturan nilai tempat bekerja.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Setiap kali kamu pinjam 1 dari posisi sebelah kiri, posisi itu berkurang 1 — jangan lupa menuliskannya (coret angka lama, tulis angka baru yang sudah dikurangi 1) supaya tidak salah hitung di langkah berikutnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Pada soal 452 − 137 di atas, kenapa posisi satuan (2) perlu meminjam, sementara posisi puluhan (5, lalu jadi 4) tidak perlu meminjam lagi?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Satuan perlu meminjam karena 2 lebih kecil dari 7 (angka yang mau dikurangkan), jadi tidak cukup dikurangi langsung. Setelah menerima pinjaman, puluhan berkurang jadi 4, dan karena 4 masih lebih besar atau sama dengan 3 (angka pengurangnya di posisi puluhan), tidak perlu pinjam lagi di posisi itu.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Hitunglah 634 − 258 dengan cara bersusun, tunjukkan langkah peminjamannya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Satuan: 4−8 tidak cukup, pinjam 1 dari puluhan (3 jadi 2), satuan jadi 14−8=6. Puluhan: 2−5 tidak cukup juga, pinjam 1 dari ratusan (6 jadi 5), puluhan jadi 12−5=7. Ratusan: 5−2=3. Hasil: <strong>376</strong>. (Catatan: soal ini sebenarnya butuh dua peminjaman berurutan — bagus untuk pemanasan sebelum materi berikutnya!)</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Budi mengerjakan 823 − 401 dan langsung menjawab 422 tanpa proses peminjaman sama sekali. Apakah itu mungkin benar? Jelaskan.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Mungkin saja benar TANPA peminjaman, karena setiap digit atas (8, 2, 3) sudah lebih besar atau sama dengan digit bawahnya (4, 0, 1) — satuan 3−1=2, puluhan 2−0=2, ratusan 8−4=4, hasil 422. Peminjaman hanya diperlukan KETIKA digit atas lebih kecil dari digit bawah di posisi yang sama — bukan aturan yang harus selalu dipakai di setiap soal pengurangan.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Kerjakan tiga soal pengurangan bersusun berikut, tunjukkan proses peminjamannya (jangan langsung tulis jawaban akhir saja): 561 − 248, 730 − 165, 894 − 379.
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

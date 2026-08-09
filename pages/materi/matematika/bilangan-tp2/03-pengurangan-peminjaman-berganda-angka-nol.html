@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pengurangan Peminjaman Berganda dan Angka Nol di Tengah · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .susun { font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) + 3px); text-align: right; max-width: 280px; margin: 1rem auto 1.4rem; line-height: 1.9; }
+  .susun .baris { display: flex; justify-content: flex-end; gap: 5px; }
+  .susun .digit { width: 1.5rem; text-align: center; }
+  .susun .pinjam { font-size: 11px; color: #b8791f; position: relative; top: -0.6em; }
+  .susun .coret { text-decoration: line-through; color: var(--ink-3); }
+  .susun hr { border: none; border-top: 2px solid var(--ink); margin: 4px 0; }
+  .susun .op { width: 1.2rem; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pengurangan Bersusun Peminjaman Berganda · Materi 3 dari 4</div>
+      <div class="ma-cover-title">Pengurangan Peminjaman Berganda dan Angka Nol di Tengah</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Ini kasus paling menjebak dalam pengurangan bersusun — dan justru karena itu penting dikuasai betul. Bagaimana kalau posisi yang mau kamu pinjami ternyata <strong>angka nol</strong>? Nol berarti "tidak ada apa-apa di sana" — jelas tidak bisa dipinjam.</p>
+
+      <p>Coba selesaikan <strong>50.004 − 28.756</strong>:</p>
+
+      <div class="susun">
+        <div class="baris"><div class="digit pinjam">4</div><div class="digit pinjam">¹9</div><div class="digit pinjam">¹9</div><div class="digit pinjam">¹9</div><div class="digit"></div></div>
+        <div class="baris"><div class="digit coret">5</div><div class="digit coret">0</div><div class="digit coret">0</div><div class="digit coret">0</div><div class="digit">4</div></div>
+        <div class="baris"><div class="digit op">−2</div><div class="digit">8</div><div class="digit">7</div><div class="digit">5</div><div class="digit">6</div></div>
+        <hr/>
+        <div class="baris"><div class="digit">2</div><div class="digit">1</div><div class="digit">2</div><div class="digit">4</div><div class="digit">8</div></div>
+      </div>
+
+      <p>Perhatikan apa yang terjadi: satuan (4) mau pinjam dari puluhan, tapi puluhan-nya <strong>0</strong> — tidak ada yang bisa dipinjam! Ratusan juga 0. Ribuan juga 0. Baru di posisi <strong>puluh-ribuan (5)</strong> ada nilai yang bisa dipinjam. Jadi peminjamannya "menembus" tiga kotak kosong sekaligus:</p>
+
+      <p>Puluh-ribuan (5) meminjamkan 1, jadi tinggal <strong>4</strong>. Nilai yang dipinjam itu (setara 10 ribuan) diberikan ke ribuan, jadi ribuan yang tadinya 0 sekarang jadi <strong>10</strong>. Tapi ribuan sendiri butuh memberi ke ratusan, jadi dia berikan 1 (setara 10 ratusan) ke ratusan, ribuan tinggal <strong>9</strong>. Ratusan yang tadinya 0 sekarang <strong>10</strong>, tapi ratusan juga harus memberi ke puluhan, jadi ratusan tinggal <strong>9</strong>, puluhan yang tadinya 0 sekarang <strong>10</strong>. Puluhan memberi 1 ke satuan, puluhan tinggal <strong>9</strong>, satuan yang tadinya 4 sekarang <strong>14</strong>.</p>
+
+      <p>Baru sekarang semua posisi punya cukup nilai untuk dikurangi: satuan 14−6=8, puluhan 9−5=4, ratusan 9−7=2, ribuan 9−8=1, puluh-ribuan 4−2=2. Hasil: <strong>21.248</strong>.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Bayangkan dompetmu cuma berisi <span class="analogi">satu lembar Rp50.000, tidak ada uang lain sama sekali</span> — tidak ada lembar Rp10.000, Rp1.000, apalagi receh. Kalau kamu butuh membayar dengan uang kecil, kamu HARUS menukar dari yang paling besar dulu (Rp50.000 → 5 lembar Rp10.000), lalu salah satu lembar Rp10.000 itu ditukar lagi jadi 10 lembar Rp1.000, dan seterusnya turun terus sampai dapat uang sekecil yang kamu butuhkan. Kamu tidak bisa "melompati" langkah ini — setiap kotak kosong (nol) di antaranya harus "diisi dulu" lewat proses tukar-menukar berantai dari yang paling besar.</p>
+        <p>Trik praktis: kalau kamu pinjam menembus beberapa nol berurutan, SEMUA nol yang dilewati (kecuali yang paling kiri, yang benar-benar memberi) akan berubah jadi <strong>9</strong>, dan posisi paling kanan (yang benar-benar butuh) menerima <strong>+10</strong>. Coba cek lagi contoh di atas — persis begitu, kan?</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Ini kasus yang paling sering bikin siswa "diam-diam mencongak" jawaban tanpa proses lengkap, karena terasa ribet. Tapi cara mencongak berisiko keliru justru di kasus seperti ini — kerjakan pelan-pelan langkah demi langkah, jangan buru-buru.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Pada soal 50.004 − 28.756 di atas, kenapa ribuan dan ratusan yang tadinya 0 masing-masing berubah jadi 9 (bukan 10) di hasil akhir prosesnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena posisi ribuan dan ratusan itu masing-masing SEMPAT menjadi 10 (setelah menerima pinjaman), TAPI kemudian harus memberi 1 lagi ke posisi sebelah kanannya (ribuan memberi ke ratusan, ratusan memberi ke puluhan) — jadi 10 dikurangi 1 = 9. Hanya posisi paling kanan yang benar-benar "butuh" (puluhan dalam contoh terakhir, karena langsung memberi ke satuan) yang tetap bernilai 10 penuh, bukan 9.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Hitunglah 30.002 − 15.647 dengan menunjukkan proses peminjaman menembus angka nol!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Satuan 2−7 tidak cukup, harus pinjam menembus puluhan(0) dan ratusan(0) sampai ke ribuan(0) — ternyata ribuan JUGA 0! Harus sampai ke puluh-ribuan (3). Puluh-ribuan jadi 2, ribuan jadi 9 (10−1, karena memberi ke ratusan), ratusan jadi 9 (10−1, memberi ke puluhan), puluhan jadi 9 (10−1, memberi ke satuan), satuan jadi 12. Hitung: satuan 12−7=5, puluhan 9−4=5, ratusan 9−6=3, ribuan 9−5=4, puluh-ribuan 2−1=1. Hasil: <strong>14.355</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Doni buru-buru mengerjakan 50.004 − 28.756 lewat mencongak dan langsung menjawab 22.348 (salah — jawaban benarnya 21.248). Menurutmu, kenapa soal berkotak-kotak nol seperti ini berisiko lebih tinggi keliru kalau dikerjakan tanpa proses tertulis lengkap?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena ada banyak langkah "menembus nol" yang berantai — kalau satu langkah saja terlewat atau salah (misalnya lupa mengurangi 1 lagi dari posisi yang sudah dipinjami sebelumnya), seluruh hasil ikut salah. Soal dengan banyak angka nol berurutan menuntut ketelitian ekstra, dan proses tertulis lengkap membantu melacak setiap perubahan nilai supaya tidak ada langkah yang terlewat begitu saja.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Kerjakan tiga soal berikut dengan menunjukkan proses lengkap peminjaman menembus nol: 40.008 − 19.523, 60.001 − 34.789, 20.050 − 8.467.
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

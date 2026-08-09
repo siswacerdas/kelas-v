@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pengurangan dengan Dua Peminjaman Berurutan · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .susun { font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) + 4px); text-align: right; max-width: 240px; margin: 1rem auto 1.4rem; line-height: 1.9; }
+  .susun .baris { display: flex; justify-content: flex-end; gap: 6px; }
+  .susun .digit { width: 1.6rem; text-align: center; }
+  .susun .pinjam { font-size: 12px; color: #b8791f; position: relative; top: -0.6em; }
+  .susun .coret { text-decoration: line-through; color: var(--ink-3); }
+  .susun hr { border: none; border-top: 2px solid var(--ink); margin: 4px 0; }
+  .susun .op { width: 1.2rem; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pengurangan Bersusun Peminjaman Berganda · Materi 2 dari 4</div>
+      <div class="ma-cover-title">Pengurangan dengan Dua Peminjaman Berurutan</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Materi lalu, kamu sudah bisa meminjam SATU kali. Sekarang bagaimana kalau setelah dipinjam, ternyata posisi yang baru saja "memberi pinjaman" itu SENDIRI juga jadi kurang, dan harus minjam lagi dari posisi sebelahnya? Itulah yang disebut peminjaman berurutan — efek berantai, seperti domino.</p>
+
+      <p>Coba selesaikan <strong>5.432 − 1.376</strong>:</p>
+
+      <div class="susun">
+        <div class="baris"><div class="digit pinjam">4</div><div class="digit pinjam">¹3</div><div class="digit pinjam">¹2</div><div class="digit"></div></div>
+        <div class="baris"><div class="digit coret">5</div><div class="digit coret">4</div><div class="digit coret">3</div><div class="digit">2</div></div>
+        <div class="baris"><div class="digit op">−1</div><div class="digit">3</div><div class="digit">7</div><div class="digit">6</div></div>
+        <hr/>
+        <div class="baris"><div class="digit">4</div><div class="digit">0</div><div class="digit">5</div><div class="digit">6</div></div>
+      </div>
+
+      <p>Ikuti langkahnya: (1) <strong>Satuan</strong>: 2 − 6 tidak cukup, pinjam 1 dari puluhan (3 jadi 2). Satuan jadi 12 − 6 = 6. (2) <strong>Puluhan</strong>: sekarang puluhan cuma 2 (sudah dipakai buat minjamin satuan tadi) − 7 juga tidak cukup! Pinjam LAGI, kali ini dari ratusan (4 jadi 3). Puluhan jadi 12 − 7 = 5. (3) <strong>Ratusan</strong>: 3 − 3 = 0. (4) <strong>Ribuan</strong>: 5 − 1 = 4. Hasil: <strong>4.056</strong>.</p>
+
+      <p>Perhatikan pola berantainya: puluhan sempat "kaya" (dipinjami jadi lebih besar), tapi begitu dia sendiri harus memberi ke satuan, dia jadi "miskin" lagi dan harus minta pinjaman juga dari ratusan. Ini normal dan sering terjadi — bukan tanda kamu salah hitung.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Lanjutkan cerita dompet dari materi sebelumnya: kamu menukar selembar Rp10.000 jadi 10 lembar Rp1.000 untuk bayar sesuatu. Tapi ternyata, <span class="analogi">setelah dipakai sebagian, uang Rp1.000-mu masih kurang untuk keperluan lain</span> — jadi kamu terpaksa menukar LAGI, kali ini selembar Rp100.000 ditukar jadi 10 lembar Rp10.000, supaya kamu punya cukup lembar Rp10.000 (salah satunya nanti ditukar lagi ke Rp1.000 kalau perlu). Prosesnya berantai, tukar-menukar dari yang besar terus ke yang lebih kecil, sampai semua kebutuhan terpenuhi.</p>
+        <p>Kuncinya: kerjakan SATU posisi dulu dari kanan (satuan), baru pindah ke posisi berikutnya. Jangan loncat-loncat, supaya tidak lupa posisi mana yang sudah "dipinjami" dan berkurang nilainya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Setelah suatu posisi memberi pinjaman, dia berkurang 1 — dan kalau ternyata posisi itu SENDIRI habis jadi tidak cukup untuk pengurangannya sendiri, dia berhak minjam juga dari posisi sebelah kiri berikutnya. Ini bisa terjadi berkali-kali dalam satu soal.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Pada soal 5.432 − 1.376 di atas, kenapa posisi puluhan perlu meminjam DUA kali dampaknya — sekali memberi ke satuan, sekali menerima dari ratusan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Posisi puluhan awalnya bernilai 3, lalu memberi 1 ke satuan (jadi tinggal 2) karena satuan (2) tidak cukup dikurangi 6. Setelah berkurang jadi 2, ternyata puluhan sendiri (2) juga tidak cukup untuk dikurangi 7 di posisinya, jadi puluhan harus MENERIMA pinjaman dari ratusan supaya jadi 12 dan bisa dikurangi 7. Jadi puluhan mengalami dua peran berbeda: memberi dulu, lalu menerima.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Hitunglah 7.251 − 2.487 dengan cara bersusun, tunjukkan setiap langkah peminjaman!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Satuan: 1−7 tidak cukup, pinjam dari puluhan (5 jadi 4), satuan jadi 11−7=4. Puluhan: 4−8 tidak cukup, pinjam dari ratusan (2 jadi 1), puluhan jadi 14−8=6. Ratusan: 1−4 tidak cukup, pinjam dari ribuan (7 jadi 6), ratusan jadi 11−4=7. Ribuan: 6−2=4. Hasil: <strong>4.764</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Sari mengerjakan soal peminjaman berurutan, tapi lupa mengurangi 1 dari posisi yang baru saja memberi pinjaman (dia biarkan angkanya tetap seperti semula). Apa yang akan terjadi pada jawaban akhirnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jawaban akhir Sari akan lebih besar dari yang seharusnya (salah), karena posisi yang memberi pinjaman HARUS dikurangi 1 sebagai "biaya" dari pinjaman itu. Kalau tidak dikurangi, artinya nilai itu dihitung dua kali — sekali dipakai untuk membantu posisi sebelah kanan, sekali lagi dihitung penuh di posisinya sendiri. Ini kesalahan yang sering terjadi kalau proses dikerjakan terlalu cepat tanpa mencoret angka lama.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Kerjakan tiga soal berikut dengan menunjukkan proses peminjaman berurutan: 6.142 − 2.586, 4.031 − 1.845, 8.320 − 3.567.
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
