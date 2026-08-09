@@ -1,9 +1,11 @@
 /**
  * infografis-galeri.js — logika pages/infografis/galeri.html
- * Bergantung pada: window.INFOGRAFIS_MAPEL (infografis-data.js), MPLS_CONFIG (config.js),
- * extractDriveFileId() dari assets/js/foto-fallback.js, dan buildInfografisImgCandidates()/
- * igImgHtml()/igImgFallbackNext()/attachInfografisImgFallback() dari infografis-shared.js
- * (dimuat SEBELUM file ini di galeri.html).
+ * Bergantung pada: window.INFOGRAFIS_MAPEL (infografis-data.js), window.MATERI_INDEX
+ * (../materi/assets/materi-index.js — dipakai untuk mengelompokkan & mengurutkan tampilan
+ * per TP/materi, SUMBER TUNGGAL yang sama dipakai kelola-tp.html & Materi Ajar), MPLS_CONFIG
+ * (config.js), extractDriveFileId() dari assets/js/foto-fallback.js, dan
+ * buildInfografisImgCandidates()/igImgHtml()/igImgFallbackNext()/attachInfografisImgFallback()
+ * dari infografis-shared.js (dimuat SEBELUM file ini di galeri.html).
  */
 
 const params = new URLSearchParams(window.location.search);
@@ -44,18 +46,39 @@ document.getElementById("ig-lightbox-close").addEventListener("click", closeLigh
 lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
 
+function materiSlugFromFile_(file) {
+  return String(file || "").replace(/\.html$/i, "");
+}
+
+/* ── Kelompokkan materi (bukan infografis) per TP untuk mapel ini, terurut sesuai posisi
+ * asli di materi-index.js (yang memang sudah berurutan per TP → per materi). Dipakai untuk
+ * menentukan JUDUL GRUP dan URUTAN BACA, baru dicocokkan ke infografis yang benar-benar ada
+ * lewat "Materi Slug" — bukan sebaliknya (supaya urutannya ikut urutan materi resmi, bukan
+ * urutan upload). */
+function buildTpGroupsForMapel(mapelSlug) {
+  const groups = {};
+  const order = [];
+  (window.MATERI_INDEX || []).forEach((m) => {
+    if (m.mapelSlug !== mapelSlug || m.status !== "selesai") return;
+    const tpKey = (m.tp || "") + "|" + (m.tema || "");
+    if (!groups[tpKey]) {
+      groups[tpKey] = { tema: m.tema || m.judul, items: [] };
+      order.push(tpKey);
+    }
+    groups[tpKey].items.push(m);
+  });
+  order.forEach((k) => groups[k].items.sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
+  return order.map((k) => groups[k]);
+}
+
 function renderItem(row) {
   const isVideo = row["Jenis Media"] === "video";
   const judul = esc(row["Judul"]);
-  const keterangan = esc(row["Keterangan"]);
   if (isVideo) {
     return `
       <a class="ig-item" href="${esc(row["URL Media"])}" target="_blank" rel="noopener">
         <div class="ig-thumb-video">▶️</div>
-        <div class="ig-item-body">
-          <div class="ig-item-title">${judul}</div>
-          <span class="ig-item-badge">Video</span>
-        </div>
+        <div class="ig-item-body"><div class="ig-item-title">${judul}</div></div>
       </a>`;
   }
   const btn = document.createElement("button");
@@ -63,12 +86,20 @@ function renderItem(row) {
   btn.className = "ig-item";
   btn.innerHTML = `
     ${igImgHtml(row["URL Media"], judul, 'loading="lazy"')}
-    <div class="ig-item-body">
-      <div class="ig-item-title">${judul}</div>
-      <span class="ig-item-badge">Gambar</span>
-    </div>`;
+    <div class="ig-item-body"><div class="ig-item-title">${judul}</div></div>`;
   btn.addEventListener("click", () => openLightbox(row["URL Media"], row["Judul"], row["Keterangan"]));
   return btn;
+}
+
+function buildGrid(rowList) {
+  const grid = document.createElement("div");
+  grid.className = "ig-grid";
+  rowList.forEach((row) => {
+    const el = renderItem(row);
+    if (el instanceof HTMLElement) grid.appendChild(el);
+    else grid.insertAdjacentHTML("beforeend", el);
+  });
+  return grid;
 }
 
 function renderList(rows) {
@@ -77,15 +108,52 @@ function renderList(rows) {
     wrap.innerHTML = '<div class="ma-empty">Belum ada gambar, poster, infografis, atau video untuk mata pelajaran ini.</div>';
     return;
   }
+
+  const bySlug = {};
+  rows.forEach((row) => { if (row["Materi Slug"]) bySlug[row["Materi Slug"]] = row; });
+
+  const tpGroups = buildTpGroupsForMapel(mapelInfo.mapelSlug);
+  const usedSlugs = new Set();
   wrap.innerHTML = "";
-  const grid = document.createElement("div");
-  grid.className = "ig-grid";
-  rows.forEach((row) => {
-    const el = renderItem(row);
-    if (el instanceof HTMLElement) grid.appendChild(el);
-    else grid.insertAdjacentHTML("beforeend", el);
+  let anyGroupRendered = false;
+
+  tpGroups.forEach((group) => {
+    const groupRows = [];
+    group.items.forEach((m) => {
+      const itemSlug = materiSlugFromFile_(m.file);
+      const row = bySlug[itemSlug];
+      if (row) { groupRows.push(row); usedSlugs.add(itemSlug); }
+    });
+    if (!groupRows.length) return; // TP ini belum punya infografis sama sekali — jangan tampilkan judulnya
+    anyGroupRendered = true;
+    const heading = document.createElement("div");
+    heading.className = "ig-subgroup-title";
+    heading.innerHTML = esc(group.tema) + ' <span class="ig-subgroup-count">(' + groupRows.length + ')</span>';
+    wrap.appendChild(heading);
+    wrap.appendChild(buildGrid(groupRows));
   });
-  wrap.appendChild(grid);
+
+  // Sisa: infografis TANPA "Materi Slug" (upload umum/generik, tidak terikat 1 materi) ATAU
+  // slug-nya tidak cocok materi manapun (mis. materi sudah dihapus dari materi-index.js) —
+  // tetap ditampilkan (supaya tidak "hilang" dari galeri), dikelompokkan sebagai "Lainnya",
+  // terbaru duluan (perilaku lama sebelum pengelompokan per TP ada).
+  const leftover = rows
+    .filter((row) => !row["Materi Slug"] || !usedSlugs.has(row["Materi Slug"]))
+    .slice()
+    .reverse();
+
+  if (leftover.length) {
+    anyGroupRendered = true;
+    const heading = document.createElement("div");
+    heading.className = "ig-subgroup-title";
+    heading.textContent = "Lainnya";
+    wrap.appendChild(heading);
+    wrap.appendChild(buildGrid(leftover));
+  }
+
+  if (!anyGroupRendered) {
+    wrap.innerHTML = '<div class="ma-empty">Belum ada gambar, poster, infografis, atau video untuk mata pelajaran ini.</div>';
+  }
 }
 
 async function loadItems() {
@@ -103,8 +171,7 @@ async function loadItems() {
     const res = await fetch(url);
     const json = await res.json();
     if (json.status === "error") throw new Error(json.message || "Gagal memuat");
-    const rows = (json.data || []).slice().reverse(); // terbaru duluan
-    renderList(rows);
+    renderList(json.data || []);
   } catch (err) {
     document.getElementById("ig-list").innerHTML =
       '<div class="ma-empty">Gagal memuat galeri: ' + esc(err.message) + '</div>';
