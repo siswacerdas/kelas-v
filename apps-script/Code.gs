@@ -409,14 +409,39 @@ function getInfografisSheet_() {
     sheet = ss.insertSheet(INFOGRAFIS_SHEET_NAME);
     sheet.getRange(1, 1, 1, INFOGRAFIS_HEADERS.length).setValues([INFOGRAFIS_HEADERS]);
     sheet.setFrozenRows(1);
+    return sheet;
+  }
+  // SELF-HEALING — PENTING: sheet ini dipakai sejak sebelum kolom "Materi Slug" ada di
+  // INFOGRAFIS_HEADERS. buildRowByHeaders_()/findRowByColumn_() SELALU mencocokkan berdasarkan
+  // NAMA kolom yang BENAR-BENAR ADA di baris header sheet (lewat readHeaderRow_()), BUKAN
+  // urutan di array INFOGRAFIS_HEADERS di kode. Akibatnya, kalau kode menambah kolom baru
+  // (seperti "Materi Slug") tapi baris header di sheet yang SUDAH ADA tidak ikut diperbarui,
+  // nilai kolom itu DIAM-DIAM TERBUANG setiap kali disimpan (bukan error, cuma hilang) — ini
+  // BUKAN teori, ini akar masalah nyata yang dilaporkan (materi tidak "diingat" sudah punya
+  // infografis setelah refresh, walau upload dilaporkan sukses). Supaya masalah SEJENIS tidak
+  // terulang tiap kali ada kolom baru ke depannya, cek & tambahkan otomatis kolom yang belum
+  // ada di UJUNG KANAN header yang sudah ada (BUKAN disisipkan di tengah — menyisipkan akan
+  // menggeser posisi kolom yang sudah ada, butuh menulis ulang SEMUA data; menambah di ujung
+  // aman karena kolom lama tidak bergeser sama sekali, dan pencocokan selalu berdasar nama,
+  // jadi urutan kolom tidak penting).
+  const currentHeaders = readHeaderRow_(sheet);
+  const missing = INFOGRAFIS_HEADERS.filter((h) => currentHeaders.indexOf(h) === -1);
+  if (missing.length > 0) {
+    sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
+    Logger.log('Kolom baru ditambahkan otomatis ke "Data Infografis": ' + missing.join(", "));
   }
   return sheet;
 }
 
 /** Jalankan SEKALI dari editor Apps Script untuk inisialisasi sheet "Data Infografis" + header. */
+/** Jalankan SEKALI dari editor Apps Script untuk inisialisasi (atau perbaiki header) sheet
+ * "Data Infografis". CATATAN: sejak getInfografisSheet_() jadi self-healing, memanggil fungsi
+ * ini SEBENARNYA tidak wajib lagi — dipertahankan sebagai cara manual untuk memicu perbaikan
+ * header + memicu dialog izin Drive kalau belum pernah, sama seperti setupSiswaSheet(). TIDAK
+ * LAGI menimpa baris header secara mentah (bahaya kalau sheet sudah ada data dengan urutan
+ * kolom berbeda) — perbaikan header sepenuhnya diserahkan ke getInfografisSheet_(). */
 function setupInfografisSheet() {
   const sheet = getInfografisSheet_();
-  sheet.getRange(1, 1, 1, INFOGRAFIS_HEADERS.length).setValues([INFOGRAFIS_HEADERS]);
   sheet.setFrozenRows(1);
   Logger.log("Sheet siap: " + sheet.getName());
 }

@@ -35,18 +35,14 @@ Menghubungkan halaman `pages/mpls/input.html` ke Google Spreadsheet
    [Folder Drive untuk Galeri Visual](#folder-drive-untuk-galeri-visual)
    di bawah.
 
-   > ⚠️ **Kalau sheet "Data Infografis" SUDAH ADA ISINYA** (sudah pernah
-   > dipakai upload sebelum kolom "Materi Slug" ditambahkan): **JANGAN**
-   > jalankan ulang `setupInfografisSheet` begitu
-   > saja — fungsi ini menimpa baris header (baris 1) ke posisi kolom yang
-   > BARU, tapi data yang SUDAH ADA di baris 2 dst. tetap di posisi kolom
-   > LAMA, jadi kolomnya jadi geser/tidak sinkron. Kalau ini terjadi:
-   > buka sheet-nya manual di Google Sheets, sisipkan 1 kolom kosong baru
-   > di ANTARA kolom "Mapel" dan "Judul", beri judul header "Materi Slug",
-   > biarkan isinya kosong untuk baris-baris lama (itu wajar — cuma
-   > infografis yang diunggah lewat `kelola-tp.html` yang mengisi kolom
-   > ini). Kalau sheet-nya masih kosong (belum ada data sama sekali),
-   > langsung jalankan `setupInfografisSheet` seperti biasa, aman.
+   > ℹ️ Kalau sheet "Data Infografis" sudah lebih dulu dipakai SEBELUM
+   > kolom "Materi Slug" ada di kode: **tidak perlu tindakan manual apa
+   > pun** — `getInfografisSheet_()` sekarang *self-healing*, otomatis
+   > menambahkan kolom header yang belum ada (di ujung kanan, tidak
+   > menggeser kolom yang sudah ada) setiap kali sheet ini diakses. Cukup
+   > deploy ulang seperti biasa. (Versi sebelumnya sempat menyarankan
+   > menyisipkan kolom manual di Google Sheets — sudah tidak perlu lagi
+   > sejak perbaikan ini; lihat CHANGELOG.)
 
 ### 3. Deploy sebagai Web App
 1. Klik **Deploy → New deployment** (Deploy → Deployment baru)
@@ -251,6 +247,19 @@ endpoint proxy `?infografisFoto=<id>` (dipakai otomatis oleh
 `wajibGuru_()`, karena isinya materi belajar untuk dibaca siswa juga (bukan
 data pribadi) — levelnya disamakan dengan Materi Ajar yang juga tidak
 diverifikasi di server, cuma digerbang login-apa-saja di sisi klien.
+
+> **Cara mendiagnosis kalau thumbnail/lightbox Galeri Visual tidak
+> tampil:** buka langsung `APPS_SCRIPT_URL?infografisFoto=ID_FILE` (ID file
+> ada di URL Drive filenya) di tab **incognito/penyamaran** (PENTING: bukan
+> tab biasa — kalau Bapak sedang login Google sebagai pemilik file itu di
+> tab biasa, gambar bisa saja tetap tampil lewat kandidat cadangan
+> `lh3.googleusercontent.com`/`drive.google.com/thumbnail` walau proxy-nya
+> sendiri sebenarnya rusak — itu menyamarkan masalahnya, seolah "sudah
+> beres" padahal siswa yang tidak login sebagai Bapak tetap akan gagal
+> lihat gambarnya). Kalau di incognito muncul gambarnya, proxy sehat. Kalau
+> muncul tulisan "Media tidak ditemukan/gagal dibaca: ...", itu tandanya
+> ada masalah di sisi `serveInfografisBinary_()` — salin pesan error
+> lengkapnya, itu kunci untuk mendiagnosis lebih lanjut.
 
 ## Troubleshooting: foto TERSIMPAN di Drive tapi TIDAK TAMPIL di web/cetak
 
