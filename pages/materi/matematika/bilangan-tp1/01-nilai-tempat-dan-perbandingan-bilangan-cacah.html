@@ -1,1 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nilai Tempat dan Perbandingan Bilangan Cacah · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .tempat-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin: 1rem 0 0.3rem; font-size: calc(var(--content-fs) - 4px); text-align: center; }
+  .tempat-grid .label { font-weight: 700; color: var(--ink-2); background: var(--paper-2); border-radius: 6px; padding: 4px 2px; }
+  .tempat-grid .digit { font-weight: 700; font-size: calc(var(--content-fs) + 2px); background: #eaf2f2; border: 1px solid #cfe2e2; border-radius: 6px; padding: 6px 2px; color: var(--m-color); }
+  .tempat-grid .digit.nol { color: var(--ink-3); background: #f4f2ee; border-color: var(--border); }
+  .contoh-uang { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); }
+  .contoh-uang b { color: var(--m-color); }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Nilai Tempat dan Perbandingan Bilangan Cacah · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Nilai Tempat dan Perbandingan Bilangan Cacah</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Coba bayangkan kamu membaca berita: "Jumlah penonton konser itu mencapai 76.540 orang" atau "Harga laptop itu Rp8.750.000" — eh, tunggu, yang kedua itu sudah lewat sejuta. Mari kita fokus dulu ke angka-angka sampai <strong>100.000</strong> tahun ini — cukup untuk banyak hal nyata: jumlah penonton konser, harga sepeda motor bekas, atau jumlah penduduk sebuah kecamatan.</p>
+
+      <p>Untuk membaca angka sebesar itu tanpa bingung, kita perlu memahami <strong>nilai tempat</strong> — posisi tiap digit menentukan seberapa besar nilai sebenarnya yang dia wakili, bukan sekadar angka yang berdiri sendiri.</p>
+
+      <p>Perhatikan angka <strong>40.508</strong>:</p>
+
+      <div class="tempat-grid">
+        <div class="label">Puluh Ribuan</div><div class="label">Ribuan</div><div class="label">Ratusan</div><div class="label">Puluhan</div><div class="label">Satuan</div><div class="label"></div>
+      </div>
+      <div class="tempat-grid">
+        <div class="digit">4</div><div class="digit">0</div><div class="digit">5</div><div class="digit">0</div><div class="digit">8</div><div></div>
+      </div>
+      <p style="text-align:center; font-size: calc(var(--content-fs) - 3px); color: var(--ink-3); margin-top: 0.3rem;">Dibaca: <strong>empat puluh ribu lima ratus delapan</strong></p>
+
+      <p>Perhatikan baik-baik: ada angka <strong>0</strong> di posisi ribuan dan puluhan. Angka nol ini <strong>tetap harus ditulis dan dihitung posisinya</strong> — dia bukan "kosong" yang boleh dilewati, melainkan penanda bahwa memang tidak ada nilai ribuan/puluhan di angka ini. Kalau nol ini terlewat saat menulis, angkanya bisa berubah total maknanya (40.508 bisa keliru tertulis 4.58 kalau nolnya dihilangkan begitu saja).</p>
+
+      <div class="contoh-uang">
+        <b>Menghubungkan dengan uang rupiah:</b> Bayangkan pecahan uang: lembar Rp100.000 (ratus ribuan), Rp10.000 (puluh ribuan), Rp1.000 (ribuan), koin Rp100 (ratusan), Rp10 (puluhan), Rp1 (satuan — walau sudah jarang dipakai). Nilai tempat bekerja persis seperti itu: posisi digit menentukan "pecahan uang" mana yang dia wakili.
+      </div>
+
+      <p>Sekarang soal <strong>membandingkan</strong> dua bilangan. Aturannya dua langkah:</p>
+      <p>1. <strong>Hitung dulu jumlah digitnya.</strong> Bilangan dengan digit lebih banyak PASTI lebih besar (asal tidak ada nol di depan yang "menipu"). Contoh: 9.876 (4 digit) vs 10.234 (5 digit) — meski digit pertama 9 lebih besar dari 1, angka 10.234 tetap lebih besar karena py digitnya lebih banyak.</p>
+      <p>2. <strong>Kalau jumlah digitnya sama</strong>, baru bandingkan digit dari posisi paling kiri (nilai tempat tertinggi) satu per satu sampai ketemu perbedaan.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p>Bayangkan tiap digit dalam bilangan seperti <span class="analogi">rumah bertingkat dari lantai tertinggi ke terendah</span> — lantai paling kiri (puluh ribuan/ratus ribuan) adalah "penghuni paling berpengaruh", sementara lantai paling kanan (satuan) pengaruhnya paling kecil. Saat membandingkan dua bilangan, cek dulu berapa lantai total gedungnya (jumlah digit) — gedung yang lantainya lebih banyak otomatis "lebih besar", tidak peduli siapa yang tinggal di lantai atasnya.</p>
+        <p>Kalau jumlah lantainya sama, baru kita intip mulai dari lantai paling atas (kiri): siapa yang "lebih besar" di lantai itu, dialah bilangan yang lebih besar — tidak perlu mengecek lantai-lantai di bawahnya lagi kalau sudah ketemu bedanya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Jangan langsung menyimpulkan bilangan mana yang lebih besar hanya dari digit PERTAMA yang kamu lihat sekilas — cek dulu berapa total digitnya. Ini kesalahan yang paling sering terjadi, bahkan pada siswa yang sudah bisa menghitung dengan lancar.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah kota kecil memiliki 50.060 penduduk. Sebutkan nilai tempat dari tiap digit dalam angka tersebut, termasuk digit nol yang ada!</div>
+          <div class="soal-a"><b>Pembahasan:</b> 5 = puluh ribuan, 0 = ribuan, 0 = ratusan, 6 = puluhan, 0 = satuan. Ada tiga angka nol dalam bilangan ini (di posisi ribuan, ratusan, dan satuan) — ketiganya tetap harus ditulis karena menunjukkan tidak ada nilai di posisi tersebut, bukan berarti bisa dihilangkan.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Rani membandingkan dua angka: 8.950 dan 10.100. Dia bilang "8.950 lebih besar, soalnya 8 lebih besar dari 1." Apakah Rani benar? Jelaskan.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Rani keliru. Sebelum membandingkan digit pertama, kita harus mengecek jumlah digit dulu: 8.950 punya 4 digit, sedangkan 10.100 punya 5 digit. Bilangan dengan digit lebih banyak otomatis lebih besar, jadi 10.100 lebih besar dari 8.950 — meskipun digit pertama 8.950 (yaitu 8) lebih besar dari digit pertama 10.100 (yaitu 1).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Urutkan tiga bilangan berikut dari yang terkecil: 45.200 — 45.020 — 9.999.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Urutan dari terkecil: 9.999, lalu 45.020, lalu 45.200. Caranya: 9.999 punya 4 digit (paling sedikit, jadi paling kecil). Antara 45.200 dan 45.020, jumlah digitnya sama-sama 5, jadi kita bandingkan dari kiri: keduanya sama di digit ribuan-puluh ribuan (4-5), tapi beda di digit ratusan — 45.020 punya 0 di ratusan, 45.200 punya 2 di ratusan, jadi 45.020 lebih kecil dari 45.200.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Tuliskan tiga bilangan cacah sampai 100.000 yang menarik menurutmu (boleh cari dari koran, internet, atau karangan sendiri — misalnya harga barang, jumlah penonton, atau jarak kota). Untuk masing-masing, sebutkan nilai tempat tiap digitnya, lalu urutkan ketiganya dari yang terbesar.
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
