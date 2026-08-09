@@ -43,8 +43,8 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
     Ditautkan lewat "Materi Slug" (field `file` di `materi-index.js`, sudah
     unik per materi, dipakai ulang tanpa skema ID baru).
   - Backend: sheet baru "Data Infografis" (kolom "Materi Slug" opsional —
-    lihat catatan migrasi di `apps-script/README.md` kalau sheet-nya sudah
-    ada isinya sebelum kolom ini ditambahkan) + endpoint `doPost` (`type:
+    header sheet SELF-HEALING, lihat bagian "Diperbaiki" di bawah) +
+    endpoint `doPost` (`type:
     "infografis"` — upsert kalau "Materi Slug" dikirim, selalu tambah baris
     baru kalau tidak; `"infografis_hapus"`) dan `doGet` (`?infografis=1`,
     `?infografisFoto=`) di `apps-script/Code.gs`. Endpoint baca SENGAJA
@@ -66,6 +66,32 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
     dibungkus try/catch terpisah dan tidak lagi fatal, karena proxy
     `?foto=`/`?infografisFoto=` toh membaca file lewat akses pemilik
     skrip, bukan lewat link publik.
+
+### Diperbaiki
+- **`kelola-tp.html` tidak "mengingat" materi yang sudah punya infografis
+  setelah refresh** (tombol Hapus & thumbnail hilang, padahal upload sukses
+  dan baris sudah masuk sheet): akar masalahnya, sheet "Data Infografis"
+  sempat dipakai SEBELUM kolom "Materi Slug" ditambahkan ke kode, dan
+  `buildRowByHeaders_()` mencocokkan berdasarkan nama kolom yang BENAR-BENAR
+  ADA di header sheet (bukan urutan array di kode) — jadi nilai "Materi
+  Slug" DIAM-DIAM TERBUANG tiap disimpan karena kolomnya belum ada di
+  sheet. `getInfografisSheet_()` sekarang **self-healing**: otomatis
+  menambahkan kolom header yang belum ada (di ujung kanan, tidak menggeser
+  kolom yang sudah ada) setiap kali sheet diakses — tidak perlu edit sheet
+  manual lagi, dan ini juga mencegah masalah sejenis untuk kolom-kolom baru
+  di masa depan. `setupInfografisSheet()` juga tidak lagi menimpa baris
+  header secara mentah (bahaya untuk sheet yang sudah ada isinya) —
+  perbaikan header sepenuhnya diserahkan ke `getInfografisSheet_()`.
+- **Lightbox di `galeri.html` kadang tampil layar gelap kosong (cuma
+  keterangan, tanpa gambar)** walau thumbnail-nya di grid sebelumnya
+  berhasil tampil: lightbox sebelumnya cuma mencoba 1 kandidat URL (proxy
+  `?infografisFoto=`) TANPA fallback sama sekali kalau gagal, beda dari
+  thumbnail grid yang sejak awal punya 2 kandidat cadangan dengan
+  `onerror` berantai. Logika kandidat+fallback sekarang dipindah ke file
+  bersama baru `pages/infografis/assets/infografis-shared.js` (dipakai
+  `galeri.html` DAN `kelola-tp.html`, mencegah duplikasi yang sebelumnya
+  membuat `kelola-tp.html` juga punya bug yang sama — cuma 1 kandidat,
+  tanpa fallback).
 
 ---
 
