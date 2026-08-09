@@ -45,13 +45,17 @@ function esc(str) {
   return String(str || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+/* ── Thumbnail gambar lewat rantai fallback bersama (infografis-shared.js) — SEBELUMNYA
+ * fungsi ini cuma pakai 1 kandidat (proxy ?infografisFoto=) tanpa fallback sama sekali, beda
+ * dari grid galeri.html yang sejak awal punya 2 kandidat cadangan. Kalau proxy gagal untuk
+ * file tertentu (lihat catatan panjang di infografis-shared.js), kartu di sini langsung jatuh
+ * ke placeholder walau sebenarnya masih ada kandidat lain yang mungkin berhasil. Sekarang
+ * pakai igImgHtml() yang sama persis dengan galeri.html. */
 function igMateriThumbHtml(urlOrId) {
-  const id = extractDriveFileId(urlOrId);
-  if (!id || typeof MPLS_CONFIG === "undefined" || !MPLS_CONFIG.APPS_SCRIPT_URL) {
+  if (!extractDriveFileId(urlOrId) || typeof MPLS_CONFIG === "undefined" || !MPLS_CONFIG.APPS_SCRIPT_URL) {
     return '<div class="ig-materi-placeholder">🖼️</div>';
   }
-  const src = MPLS_CONFIG.APPS_SCRIPT_URL + "?infografisFoto=" + encodeURIComponent(id);
-  return '<img class="ig-materi-thumb" src="' + src + '" alt="" onerror="this.replaceWith(Object.assign(document.createElement(\'div\'),{className:\'ig-materi-placeholder\',textContent:\'🖼️\'}))" />';
+  return igImgHtml(urlOrId, "", "", "ig-materi-thumb", "ig-materi-placeholder", "🖼️");
 }
 
 /* ── Ambil semua infografis untuk 1 mapel, petakan per Materi Slug ─────────────────── */
