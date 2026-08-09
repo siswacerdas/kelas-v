@@ -1153,7 +1153,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Menyusun Daftar Kelipatan dan Faktor",
     ringkasan: "Menyusun daftar kelipatan dan faktor dari bilangan kecil secara sistematis, sebagai fondasi sebelum KPK-FPB dikenalkan.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp4/01-menyusun-daftar-kelipatan-dan-faktor.html"
   },
   {
@@ -1168,7 +1168,7 @@ window.MATERI_INDEX = [
     urutan: 2,
     judul: "Soal Cerita KPK atau FPB Tunggal",
     ringkasan: "Menyelesaikan soal cerita konteks tunggal sederhana — KPK atau FPB saja, dengan angka kecil.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp4/02-soal-cerita-kpk-atau-fpb-tunggal.html"
   },
   {
@@ -1183,7 +1183,7 @@ window.MATERI_INDEX = [
     urutan: 3,
     judul: "Mengidentifikasi KPK atau FPB dari Soal Cerita",
     ringkasan: "Mengidentifikasi sendiri apakah suatu soal cerita menuntut KPK atau FPB sebelum menghitung, pada soal dengan angka lebih besar.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp4/03-mengidentifikasi-kpk-atau-fpb-dari-soal-cerita.html"
   },
   {
@@ -1198,7 +1198,7 @@ window.MATERI_INDEX = [
     urutan: 4,
     judul: "Soal Cerita Campuran KPK dan FPB",
     ringkasan: "Menyelesaikan soal cerita kontekstual campuran (KPK dan FPB berdampingan) dengan angka lebih besar dan identifikasi konsep mandiri.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp4/04-soal-cerita-campuran-kpk-dan-fpb.html"
   },
   {
@@ -1213,7 +1213,7 @@ window.MATERI_INDEX = [
     urutan: 1,
     judul: "Masalah Sehari-hari tentang Uang",
     ringkasan: "Menyelesaikan masalah transaksi, kembalian, dan perbandingan harga menggunakan operasi hitung bilangan cacah.",
-    status: "segera",
+    status: "selesai",
     file: "matematika/bilangan-tp5/01-masalah-sehari-hari-tentang-uang.html"
   },
   {
