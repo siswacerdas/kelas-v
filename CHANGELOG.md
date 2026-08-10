@@ -51,6 +51,15 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
     membaca Materi Ajar (belum dilacak sama sekali), foto profil siswa
     (proxy `?foto=` saat ini masih hard-gated `wajibGuru_` saja, belum
     disesuaikan untuk orang tua), dan opsi cetak/PDF.
+  - **Revisi tampilan (masih di update yang sama)**: versi pertama
+    menampilkan SEMUA field mentah sheet MPLS/Kognitif/Jurnal apa adanya
+    (20-30 baris angka skala 1-4 tanpa konteks — tidak bermakna buat orang
+    tua). Diganti total memakai mesin skoring & kesimpulan otomatis yang
+    SUDAH ADA (`MplsScoring`/`MplsScoringKognitif`/`MplsScoringJurnal` di
+    `pages/mpls/assets/`, sama persis yang dipakai laporan cetak guru
+    `pages/mpls/laporan*.html`) — sekarang tampil sebagai level BB/MB/BSH/
+    BSB + kalimat kesimpulan + rekomendasi konkret "di rumah" (dan "di
+    sekolah" khusus untuk akun guru), bukan angka mentah.
 - **Galeri Visual** — gambar/poster/infografis sebagai bahan ajar bentuk lain
   untuk memfasilitasi siswa dengan gaya belajar visual, menu baru di
   beranda di antara Materi Ajar dan Bank Soal (`pages/infografis.html`).
