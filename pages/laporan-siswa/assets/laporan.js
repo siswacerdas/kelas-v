@@ -97,23 +97,61 @@ async function loadReport(nama) {
   }
 }
 
-/* ── Render 1 baris field, sembunyikan field kosong & field meta (Timestamp/No/Nama Siswa) ── */
-const FIELD_META_DIABAIKAN = new Set(["Timestamp", "No", "Nama Siswa", "Nama Lengkap"]);
+/* ── Render kesimpulan naratif 1 aspek (MPLS/Kognitif/Jurnal), pakai mesin skoring yang
+ * SUDAH ADA (MplsScoring/MplsScoringKognitif/MplsScoringJurnal — sama persis yang dipakai
+ * laporan cetak guru di pages/mpls/laporan*.html) — BUKAN dump semua field mentah seperti
+ * sebelumnya. Alasan revisi ini: daftar 20-30 baris angka skala 1-4 tanpa konteks sama sekali
+ * tidak bermakna buat orang tua (apa arti "2"?) — mesin skoring ini sudah menerjemahkannya
+ * jadi level (BB/MB/BSH/BSB) + kalimat kesimpulan + rekomendasi konkret per kategori. */
+const LEVEL_CLASS = { BB: "lap-lvl-BB", MB: "lap-lvl-MB", BSH: "lap-lvl-BSH", BSB: "lap-lvl-BSB" };
 
-function renderFieldRows(row) {
-  if (!row) return '<div class="lap-kosong">Belum ada data.</div>';
-  let html = "";
-  Object.keys(row).forEach((label) => {
-    if (FIELD_META_DIABAIKAN.has(label)) return;
-    const value = row[label];
-    if (value === "" || value === null || value === undefined) return;
-    if (label.indexOf("Catatan") === 0) {
-      html += `<div class="lap-catatan"><span class="lap-catatan-label">${esc(label)}</span>${esc(value)}</div>`;
-    } else {
-      html += `<div class="lap-field-row"><span class="lap-field-label">${esc(label)}</span><span class="lap-field-value">${esc(value)}</span></div>`;
-    }
-  });
-  return html || '<div class="lap-kosong">Belum ada data yang diisi.</div>';
+function renderNarasi(engine, row) {
+  if (!row) return '<div class="lap-kosong">Belum ada data untuk aspek ini.</div>';
+  const result = engine.computeStudentResult(row);
+  const ov = result.overall;
+
+  if (!ov.level) {
+    return '<div class="lap-kosong">' + esc(ov.narasi) + "</div>";
+  }
+
+  const kekuatanHtml = ov.kekuatan.length
+    ? `<div class="lap-overall-line">💪 <b>Aspek kuat:</b> ${esc(ov.kekuatan.join(", "))}</div>` : "";
+  const perhatianHtml = ov.perhatian.length
+    ? `<div class="lap-overall-line">🔎 <b>Perlu perhatian:</b> ${esc(ov.perhatian.join(", "))}</div>` : "";
+
+  // Rekomendasi "di rumah" relevan untuk guru MAUPUN orang tua (guru pun perlu tahu apa yang
+  // disarankan ke orang tua supaya bisa saling menguatkan). Rekomendasi "di sekolah" hanya
+  // ditampilkan untuk akun guru — kurang relevan buat orang tua baca rencana kerja guru sendiri.
+  const rekomHtml = `
+    <div class="lap-rekom-grid">
+      ${ctx.role === "guru" ? `
+        <div class="lap-rekom-col">
+          <div class="lap-rekom-title">🏫 Di Sekolah</div>
+          <ul>${(ov.guru.length ? ov.guru : ["Pertahankan pendampingan rutin yang sudah berjalan baik."]).map((g) => `<li>${esc(g)}</li>`).join("")}</ul>
+        </div>` : ""}
+      <div class="lap-rekom-col">
+        <div class="lap-rekom-title">🏠 Di Rumah</div>
+        <ul>${(ov.ortu.length ? ov.ortu : ["Pertahankan dukungan rutin yang sudah berjalan baik di rumah."]).map((o) => `<li>${esc(o)}</li>`).join("")}</ul>
+      </div>
+    </div>`;
+
+  const catCards = result.categories
+    .filter((c) => c.level) // sembunyikan kategori yang sama sekali belum diisi
+    .map((c) => `
+      <div class="lap-cat-card" style="--cat-accent:${esc(c.accent)}">
+        <div class="lap-cat-title">${c.icon} ${esc(c.title)}</div>
+        <div class="lap-cat-level ${LEVEL_CLASS[c.level] || ""}">${esc(c.levelLabel)}</div>
+        <p class="lap-cat-simpulan">${esc(c.simpulan)}</p>
+      </div>`).join("");
+
+  return `
+    <div class="lap-overall ${LEVEL_CLASS[ov.level] || ""}">
+      <div class="lap-overall-badge">${esc(ov.label)}</div>
+      <p class="lap-overall-narasi">${esc(ov.narasi)}</p>
+      ${kekuatanHtml}${perhatianHtml}
+      ${rekomHtml}
+    </div>
+    ${catCards ? `<div class="lap-cat-grid">${catCards}</div>` : ""}`;
 }
 
 function renderSection(key, title, bodyHtml) {
@@ -147,9 +185,9 @@ function renderReport(nama, data) {
         <div class="lap-profil-meta">Profil belum terdaftar di Data Siswa.</div></div>`;
 
   wrap.innerHTML = ganti + profilCard +
-    renderSection("mpls", "🧭 Asesmen MPLS (Emosi, Kemandirian, Minat, Fisik)", renderFieldRows(data.mpls)) +
-    renderSection("kognitif", "📚 Asesmen Kognitif (Literasi & Numerasi)", renderFieldRows(data.mplsKognitif)) +
-    renderSection("jurnal", "📝 Jurnal Aktivitas", renderFieldRows(data.jurnal));
+    renderSection("mpls", "🧭 Kesiapan Belajar (Emosi, Kemandirian, Minat, Fisik)", renderNarasi(MplsScoring, data.mpls)) +
+    renderSection("kognitif", "📚 Kesiapan Akademik (Literasi & Numerasi)", renderNarasi(MplsScoringKognitif, data.mplsKognitif)) +
+    renderSection("jurnal", "📝 Jurnal Aktivitas Menulis", renderNarasi(MplsScoringJurnal, data.jurnal));
 
   wrap.querySelectorAll(".lap-section-title").forEach((el) => {
     el.addEventListener("click", () => {

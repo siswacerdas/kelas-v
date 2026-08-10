@@ -52,18 +52,45 @@
 }
 .lap-section-body.lap-collapsed { display: none; }
 
-.lap-field-row {
-  display: flex; justify-content: space-between; gap: 12px; padding: 7px 0;
-  border-bottom: 1px solid var(--border); font-size: 12.5px;
+/* ── Kesimpulan keseluruhan (overall) — warna latar mengikuti level BB/MB/BSH/BSB, sama
+   istilah & ambang yang dipakai laporan cetak guru (pages/mpls/laporan*.html), supaya kalau
+   guru & orang tua sama-sama baca, istilahnya sudah dikenal/konsisten. ── */
+.lap-overall {
+  background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 0.9rem 1rem; margin-bottom: 0.75rem;
 }
-.lap-field-row:last-child { border-bottom: none; }
-.lap-field-label { color: var(--ink-2); flex: 1; }
-.lap-field-value { font-weight: 600; color: var(--ink); text-align: right; flex-shrink: 0; max-width: 45%; }
+.lap-overall-badge { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.lap-overall-narasi { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; }
+.lap-overall-line { font-size: 12px; color: var(--ink-2); margin-top: 6px; line-height: 1.5; }
 
-.lap-catatan {
-  margin-top: 8px; padding: 10px 12px; background: #fff; border-radius: 8px;
-  border-left: 3px solid var(--accent); font-size: 12.5px; color: var(--ink-2); line-height: 1.5;
+.lap-lvl-BB   { border-color: var(--danger, #c94040); } .lap-lvl-BB   .lap-overall-badge { color: var(--danger, #c94040); }
+.lap-lvl-MB   { border-color: #d99a2b; }       .lap-lvl-MB   .lap-overall-badge { color: #b5790f; }
+.lap-lvl-BSH  { border-color: var(--accent); } .lap-lvl-BSH  .lap-overall-badge { color: var(--accent); }
+.lap-lvl-BSB  { border-color: var(--accent-3, #2a9d6f); } .lap-lvl-BSB .lap-overall-badge { color: var(--accent-3, #2a9d6f); }
+
+.lap-rekom-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+@media (min-width: 420px) { .lap-rekom-grid { grid-template-columns: 1fr 1fr; } }
+.lap-rekom-col {
+  background: var(--paper-2); border-radius: 8px; padding: 8px 10px;
 }
-.lap-catatan .lap-catatan-label { font-weight: 700; color: var(--ink); display: block; margin-bottom: 3px; font-size: 11.5px; }
+.lap-rekom-title { font-weight: 700; font-size: 11.5px; margin-bottom: 4px; }
+.lap-rekom-col ul { margin: 0; padding-left: 16px; }
+.lap-rekom-col li { font-size: 11.5px; color: var(--ink-2); line-height: 1.5; margin-bottom: 3px; }
+
+/* ── Kartu per kategori (Emosi, Kemandirian, dst.) — ringkas, cuma level + 1 kalimat simpulan.
+   Rekomendasi detail sengaja HANYA ditampilkan di level keseluruhan (.lap-rekom-grid) di atas,
+   bukan diulang lagi per kartu — supaya tidak jadi berat/panjang seperti sebelum revisi ini. ── */
+.lap-cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 0.75rem; }
+.lap-cat-card {
+  background: #fff; border: 1px solid var(--border); border-top: 3px solid var(--cat-accent, var(--accent));
+  border-radius: 8px; padding: 0.65rem 0.7rem;
+}
+.lap-cat-title { font-weight: 700; font-size: 11.5px; }
+.lap-cat-level { font-weight: 700; font-size: 10.5px; margin-top: 2px; }
+.lap-cat-level.lap-lvl-BB { color: var(--danger, #c94040); }
+.lap-cat-level.lap-lvl-MB { color: #b5790f; }
+.lap-cat-level.lap-lvl-BSH { color: var(--accent); }
+.lap-cat-level.lap-lvl-BSB { color: var(--accent-3, #2a9d6f); }
+.lap-cat-simpulan { font-size: 11px; color: var(--ink-2); margin-top: 4px; line-height: 1.45; }
 
 .lap-kosong { font-size: 12.5px; color: var(--ink-3); padding: 4px 0; }
