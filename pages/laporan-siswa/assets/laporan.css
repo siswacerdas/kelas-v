@@ -1,1 +1,69 @@
+/* ============================================================
+   laporan.css — gaya khusus Laporan Siswa.
+   Dipakai BERSAMA materi.css (topbar, .ma-empty, dsb) supaya
+   konsisten dengan halaman lain, tidak duplikasi token warna.
+   ============================================================ */
 
+/* ── Pemilih siswa (guru: cari/pilih siapa saja; orang tua: pilih di antara anaknya) ── */
+.lap-search {
+  width: 100%; font-family: inherit; font-size: 14px; color: var(--ink);
+  background: #fff; border: 1px solid var(--border); border-radius: 9px; padding: 11px 14px;
+  margin-bottom: 0.6rem;
+}
+.lap-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+.lap-list-item {
+  display: block; width: 100%; text-align: left; font: inherit; cursor: pointer;
+  background: #fff; border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; font-size: 13.5px; font-weight: 600; color: var(--ink);
+}
+.lap-list-item:hover { border-color: var(--accent); }
+.lap-anak-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+.lap-anak-chip {
+  font: inherit; cursor: pointer; font-size: 13px; font-weight: 600;
+  background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px;
+}
+.lap-anak-chip.lap-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.lap-ganti {
+  display: inline-block; margin-bottom: 1rem; font-size: 12.5px; font-weight: 600;
+  color: var(--accent); cursor: pointer; background: none; border: none; font-family: inherit; padding: 0;
+}
+
+/* ── Kartu profil ── */
+.lap-profil-card {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 1.1rem 1.2rem; margin-bottom: 1.25rem;
+}
+.lap-profil-nama { font-weight: 700; font-size: 16px; }
+.lap-profil-meta { font-size: 12.5px; color: var(--ink-3); margin-top: 3px; }
+
+/* ── Bagian laporan (bisa dibuka/tutup — pola sama dengan .ig-subgroup-title) ── */
+.lap-section { margin-bottom: 0.75rem; }
+.lap-section-title {
+  font-size: 13.5px; font-weight: 700; color: var(--ink); cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 8px; padding: 0.85rem 1rem;
+  background: #fff; border: 1px solid var(--border); border-radius: 10px;
+}
+.lap-section-title .lap-chevron { margin-left: auto; transition: transform 0.15s ease; color: var(--ink-3); font-size: 11px; }
+.lap-section-title.lap-collapsed-title .lap-chevron { transform: rotate(-90deg); }
+.lap-section-body {
+  border: 1px solid var(--border); border-top: none; border-radius: 0 0 10px 10px;
+  padding: 0.9rem 1.1rem; background: var(--paper-2);
+}
+.lap-section-body.lap-collapsed { display: none; }
+
+.lap-field-row {
+  display: flex; justify-content: space-between; gap: 12px; padding: 7px 0;
+  border-bottom: 1px solid var(--border); font-size: 12.5px;
+}
+.lap-field-row:last-child { border-bottom: none; }
+.lap-field-label { color: var(--ink-2); flex: 1; }
+.lap-field-value { font-weight: 600; color: var(--ink); text-align: right; flex-shrink: 0; max-width: 45%; }
+
+.lap-catatan {
+  margin-top: 8px; padding: 10px 12px; background: #fff; border-radius: 8px;
+  border-left: 3px solid var(--accent); font-size: 12.5px; color: var(--ink-2); line-height: 1.5;
+}
+.lap-catatan .lap-catatan-label { font-weight: 700; color: var(--ink); display: block; margin-bottom: 3px; font-size: 11.5px; }
+
+.lap-kosong { font-size: 12.5px; color: var(--ink-3); padding: 4px 0; }
