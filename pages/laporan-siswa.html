@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Laporan Siswa · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="materi/assets/materi.css" />
+<link rel="stylesheet" href="laporan-siswa/assets/laporan.css" />
+<style>
+  .ma-page-container { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .ma-page-container h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.25rem; }
+  .ma-subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.25rem; }
+</style>
+</head>
+<body class="ma-root">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-laporan" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Laporan Siswa <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="ma-page-container">
+    <h1>📊 Laporan Siswa</h1>
+    <p class="ma-subtitle" id="lap-subtitle">Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas.</p>
+
+    <div id="lap-blocked" class="ma-hidden">
+      <div class="ma-empty">
+        Halaman ini khusus untuk akun <strong>guru</strong> dan <strong>orang tua</strong> —
+        tidak tersedia untuk akun siswa.
+        <br /><br />
+        <a href="../index.html">← Kembali ke Beranda</a>
+      </div>
+    </div>
+
+    <div id="lap-picker"></div>
+    <div id="lap-report"></div>
+  </div>
+</div>
+
+<!-- Firebase SDK — inline (bukan auth-guard.js), karena halaman ini butuh baca role+anak dari
+     Firestore, dan auth-guard.js sengaja TIDAK melakukan itu (lihat komentar di file itu:
+     "kalau ada halaman yang butuh nama/role, ambil sendiri di halaman itu"). Pola di bawah ini
+     sama persis dengan yang dipakai index.html. -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBcpuD90Qk7z4Bdxkm5KhXrsKVzZWFc3_k",
+    authDomain:        "kelas-v-2026.firebaseapp.com",
+    projectId:         "kelas-v-2026",
+    storageBucket:     "kelas-v-2026.firebasestorage.app",
+    messagingSenderId: "918314271457",
+    appId:             "1:918314271457:web:04df91f8cd856be49dada0"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  window.getFreshLaporanIdToken = async () => {
+    if (!auth.currentUser) throw new Error("Sesi login tidak ditemukan — silakan login ulang.");
+    return auth.currentUser.getIdToken();
+  };
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "../index.html";
+      return;
+    }
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const data = snap.exists() ? snap.data() : {};
+    const role = data.role || "siswa";
+
+    document.getElementById("checking").remove();
+    document.getElementById("app-laporan").classList.remove("ma-hidden");
+
+    if (role === "siswa") {
+      document.getElementById("lap-blocked").classList.remove("ma-hidden");
+      return;
+    }
+
+    document.dispatchEvent(new CustomEvent("laporan-context-ready", {
+      detail: { role, nama: data.nama || user.email, anak: data.anak || [] },
+    }));
+  });
+</script>
+<script src="mpls/assets/config.js"></script>
+<script src="laporan-siswa/assets/laporan.js"></script>
+</body>
+</html>
