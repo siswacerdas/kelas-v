@@ -31,6 +31,10 @@
  *                yang sama di serveInfografisBinary_().
  *                ?infografisFoto=<id atau URL Drive> -> PROXY byte gambar Galeri Visual, sama seperti
  *                ?foto= tapi TANPA gerbang wajibGuru_ (lihat serveInfografisBinary_()).
+ *                ?laporanSiswa=1&nama=..&idToken=.. -> gabungan Profil+MPLS+Kognitif+Jurnal 1 siswa
+ *                (untuk pages/laporan-siswa.html) — digerbang wajibAksesLaporan_() (BUKAN wajibGuru_),
+ *                supaya guru boleh lihat siapa saja TAPI akun "orangtua" hanya bisa lihat anaknya
+ *                sendiri (field "anak" di Firestore users/{uid}). Lihat RANCANGAN-LAPORAN-SISWA.md.
  * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal() / setupInfografisSheet():
  *                jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi lalu Run) untuk
  *                membuat sheet + header.
@@ -111,10 +115,13 @@ function wajibKodeAkses_(kode) {
 
 /**
  * Verifikasi bahwa idToken yang dikirim klien adalah sesi Firebase Auth yang
- * valid DAN akun tsb berperan "guru" di Firestore (koleksi users/{uid}, field
- * role) — pengecekan yang SAMA seperti yang dilakukan guru-guard.js di klien,
- * tapi dijalankan ulang di server supaya tidak bisa dilewati begitu saja
- * dengan langsung memanggil endpoint tanpa lewat halaman.
+ * valid, DAN kembalikan profil akunnya dari Firestore (koleksi users/{uid}):
+ * { uid, role, anak }. "anak" adalah array nama lengkap siswa (field khusus
+ * akun role "orangtua" — lihat RANCANGAN-LAPORAN-SISWA.md §3), kosong untuk
+ * role lain. TIDAK menolak berdasarkan role apa pun di sini — itu tanggung
+ * jawab pemanggil (wajibGuru_, wajibAksesLaporan_, dst.), fungsi ini cuma
+ * "siapa akun ini & apa datanya", supaya logika REST call ke Google (Identity
+ * Toolkit + Firestore) tidak perlu ditulis ulang di tiap fungsi wajibXxx_.
  *
  * Dua langkah, keduanya lewat REST API Google (Apps Script tidak butuh
  * library/dependency tambahan untuk ini):
@@ -123,12 +130,12 @@ function wajibKodeAkses_(kode) {
  *  2. Firestore REST `GET users/{uid}` — dipanggil dengan idToken sebagai
  *     Bearer token (BUKAN kredensial service account), memanfaatkan rule
  *     Firestore yang sudah ada di README ("pemilik boleh baca dokumennya
- *     sendiri"). Ambil field "role" dari situ.
+ *     sendiri"). Ambil field "role" (dan "anak" kalau ada) dari situ.
  * Melempar Error dengan pesan jelas kalau gagal di langkah manapun; pemanggil
- * (doGet/doPost) yang menentukan bagaimana pesan itu ditampilkan.
+ * yang menentukan bagaimana pesan itu ditampilkan.
  */
-function wajibGuru_(idToken) {
-  if (!idToken) throw new Error("Sesi login guru tidak ditemukan — silakan login ulang.");
+function verifikasiUser_(idToken) {
+  if (!idToken) throw new Error("Sesi login tidak ditemukan — silakan login ulang.");
 
   const lookupRes = UrlFetchApp.fetch(
     "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=" + FIREBASE_WEB_API_KEY,
@@ -160,11 +167,49 @@ function wajibGuru_(idToken) {
   }
   let docJson;
   try { docJson = JSON.parse(docRes.getContentText() || "{}"); } catch (e) { docJson = {}; }
-  const role = docJson.fields && docJson.fields.role && docJson.fields.role.stringValue;
-  if (role !== "guru") {
+  const fields = docJson.fields || {};
+  const role = fields.role && fields.role.stringValue;
+
+  // Field "anak" disimpan Firestore sebagai arrayValue -> { values: [{stringValue: "..."}] }
+  // — parsing manual karena ini REST API mentah, bukan SDK Firestore yang otomatis
+  // menerjemahkan tipe data.
+  const anak = [];
+  if (fields.anak && fields.anak.arrayValue && fields.anak.arrayValue.values) {
+    fields.anak.arrayValue.values.forEach((v) => {
+      if (v && v.stringValue) anak.push(v.stringValue);
+    });
+  }
+
+  return { uid: uid, role: role, anak: anak };
+}
+
+/** Sama seperti sebelumnya secara perilaku (pesan error & nilai kembalian
+ * SENGAJA dijaga persis sama supaya tidak jadi regresi terhadap §25 di
+ * ANTIREGRESI.md) — sekarang tinggal lapisan tipis di atas verifikasiUser_(). */
+function wajibGuru_(idToken) {
+  if (!idToken) throw new Error("Sesi login guru tidak ditemukan — silakan login ulang.");
+  const info = verifikasiUser_(idToken);
+  if (info.role !== "guru") {
     throw new Error("Akun ini bukan akun guru — akses ditolak.");
   }
-  return uid;
+  return info.uid;
+}
+
+/**
+ * Gerbang KHUSUS untuk endpoint Laporan Siswa (lihat RANCANGAN-LAPORAN-SISWA.md).
+ * BEDA PRINSIP dari wajibGuru_(): endpoint guru yang sudah ada sengaja TIDAK
+ * dibatasi cakupannya (guru memang boleh lihat semua siswa). Endpoint laporan
+ * untuk ORANG TUA WAJIB dibatasi HANYA ke anak yang terdaftar di field "anak"
+ * milik akunnya sendiri — kalau tidak, orang tua bisa saja minta data siswa
+ * LAIN dengan mengubah parameter "nama" di URL dan tetap dikabulkan. Ini celah
+ * privasi serius (data anak-anak), jadi SENGAJA dibuat fungsi terpisah,
+ * BUKAN reuse wajibGuru_ yang tidak punya konsep "cakupan".
+ * Guru tetap boleh akses siapa saja (tidak berubah dari perilaku endpoint lain). */
+function wajibAksesLaporan_(idToken, namaSiswa) {
+  const info = verifikasiUser_(idToken);
+  if (info.role === "guru") return;
+  if (info.role === "orangtua" && info.anak.indexOf(namaSiswa) !== -1) return;
+  throw new Error('Akun ini tidak punya akses ke data siswa "' + namaSiswa + '".');
 }
 
 const SISWA_HEADERS = [
@@ -705,6 +750,31 @@ function doGet(e) {
     if (params.siswa) {
       wajibGuru_(params.idToken);
       return jsonOut_({ data: sheetToObjects_(getSiswaSheet_()) });
+    }
+
+    if (params.laporanSiswa) {
+      // Lihat RANCANGAN-LAPORAN-SISWA.md untuk desain lengkap fitur ini (Fase 1).
+      // "nama" di sini = "Nama Lengkap"/"Nama Siswa" siswa yang mau dilihat laporannya —
+      // BUKAN nama akun yang sedang login (bisa guru lihat siapa saja, atau orang tua lihat
+      // anaknya sendiri — makanya pakai wajibAksesLaporan_, BUKAN wajibGuru_, lihat catatan
+      // panjang di fungsi itu).
+      const namaLaporan = params.nama;
+      if (!namaLaporan) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
+      wajibAksesLaporan_(params.idToken, namaLaporan);
+
+      // Catatan kolom kunci TIDAK seragam antar-sheet (bukan hal baru, sudah begini sejak
+      // awal proyek): "Data Siswa" pakai "Nama Lengkap", sheet lain pakai "Nama Siswa".
+      function ambilSatuBaris_(sheet, kolomKunci) {
+        const row = findRowByColumn_(sheet, kolomKunci, namaLaporan);
+        return row === -1 ? null : readRowAsObject_(sheet, row);
+      }
+
+      return jsonOut_({
+        profil: ambilSatuBaris_(getSiswaSheet_(), "Nama Lengkap"),
+        mpls: ambilSatuBaris_(getSheet_(), "Nama Siswa"),
+        mplsKognitif: ambilSatuBaris_(getSheetKognitif_(), "Nama Siswa"),
+        jurnal: ambilSatuBaris_(getSheetJurnal_(), "Nama Siswa"),
+      });
     }
 
     if (params.allKognitif) {
