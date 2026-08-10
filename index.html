@@ -400,6 +400,16 @@
         <div class="card-desc">Kumpulan soal latihan dan ujian per mata pelajaran</div>
         <div class="card-badge">Evaluasi</div>
       </a>
+      <!-- Khusus guru & orang tua — disembunyikan lewat class "hidden", ditampilkan oleh skrip
+           role-check di bawah (bukan untuk akun siswa, lihat RANCANGAN-LAPORAN-SISWA.md).
+           Penegakan SESUNGGUHNYA tetap di server (wajibAksesLaporan_ di Code.gs) — ini cuma
+           supaya siswa tidak melihat kartunya di beranda. -->
+      <a href="pages/laporan-siswa.html" id="card-laporan-siswa" class="card hidden" style="--card-accent: #2a9d6f">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Laporan Siswa</div>
+        <div class="card-desc">Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas</div>
+        <div class="card-badge">Guru & Orang Tua</div>
+      </a>
       <a href="pages/info.html" class="card" style="--card-accent: #c94040">
         <div class="card-icon">📢</div>
         <div class="card-title">Pengumuman</div>
@@ -499,6 +509,12 @@
       if (role === 'guru') {
         document.getElementById('admin-panel').classList.remove('hidden');
         document.getElementById('kelas-panel').classList.remove('hidden');
+      }
+
+      // Kartu "Laporan Siswa" — guru (lihat siapa saja) & orangtua (lihat anaknya sendiri,
+      // dibatasi di server lewat wajibAksesLaporan_), TIDAK untuk siswa.
+      if (role === 'guru' || role === 'orangtua') {
+        document.getElementById('card-laporan-siswa').classList.remove('hidden');
       }
 
       // Muat pengumuman

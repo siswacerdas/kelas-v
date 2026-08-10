@@ -20,6 +20,37 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   diperlukan sebelum ditambahkan (butuh koleksi & rules baru)
 
 ### Ditambahkan
+- **Laporan Siswa** (`pages/laporan-siswa.html`, Fase 1 — lihat
+  `RANCANGAN-LAPORAN-SISWA.md` untuk rancangan lengkap & fase berikutnya)
+  — halaman baru berisi ringkasan Profil, Asesmen MPLS (non-kognitif),
+  Asesmen Kognitif, dan Jurnal Aktivitas per siswa. Bisa diakses **guru**
+  (lihat siapa saja) DAN **orang tua** lewat akun Firebase terpisah (role
+  baru `"orangtua"`, field `anak: array` di Firestore `users/{uid}` —
+  lihat README.md Langkah 7b), tapi **orang tua hanya bisa lihat anaknya
+  sendiri** — TIDAK untuk akun siswa sama sekali.
+  - Kartu menu di beranda (`#card-laporan-siswa`) disembunyikan secara
+    default, ditampilkan lewat skrip role-check kalau `role === 'guru'`
+    atau `role === 'orangtua'`.
+  - **Keamanan**: endpoint guru yang sudah ada (`?siswa=1`, dst.) sengaja
+    tidak dibatasi cakupannya (guru memang boleh lihat semua). Endpoint
+    baru `?laporanSiswa=1` digerbang fungsi BARU `wajibAksesLaporan_()`
+    (BUKAN `wajibGuru_()`) yang membatasi akun `orangtua` HANYA ke nama
+    yang ada di field `anak` miliknya — mencegah orang tua meminta data
+    siswa lain lewat mengubah parameter `nama` di URL.
+  - Refactor pendukung: logika verifikasi token+role di `wajibGuru_()`
+    diekstrak jadi `verifikasiUser_()` (dipakai ulang oleh
+    `wajibAksesLaporan_()`) — perilaku & pesan error `wajibGuru_()` SENGAJA
+    dijaga persis sama (lihat §25/§27 ANTIREGRESI.md soal riwayat bug di
+    fungsi ini) supaya refactor ini tidak jadi regresi.
+  - Halaman dibangun mengikuti pola `index.html` sendiri (baca role dari
+    Firestore inline setelah login), BUKAN bikin file guard baru — karena
+    cuma dipakai 1 halaman untuk 2 role sekaligus (beda dari
+    `guru-guard.js` yang dipakai banyak halaman).
+  - **Belum termasuk di Fase 1** (menyusul Fase 2/3, lihat rancangan):
+    hasil latihan Bank Soal (belum tersimpan sama sekali di sistem), progres
+    membaca Materi Ajar (belum dilacak sama sekali), foto profil siswa
+    (proxy `?foto=` saat ini masih hard-gated `wajibGuru_` saja, belum
+    disesuaikan untuk orang tua), dan opsi cetak/PDF.
 - **Galeri Visual** — gambar/poster/infografis sebagai bahan ajar bentuk lain
   untuk memfasilitasi siswa dengan gaya belajar visual, menu baru di
   beranda di antara Materi Ajar dan Bank Soal (`pages/infografis.html`).

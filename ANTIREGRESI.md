@@ -722,7 +722,39 @@ penting soal cara menguji)**
 
 ---
 
-## 🔁 Skenario Ujicoba Lengkap
+### 28. Laporan Siswa (`pages/laporan-siswa.html`, Fase 1, belum dirilis)
+- [ ] **Akun siswa DITOLAK** — login sebagai siswa, buka
+      `pages/laporan-siswa.html` langsung lewat URL (bukan lewat kartu
+      menu, yang memang disembunyikan) → pesan "khusus guru & orang tua"
+      tampil, TIDAK ada data siswa apa pun yang bocor ke layar
+- [ ] **Kartu menu di beranda** (`#card-laporan-siswa`) TIDAK tampil untuk
+      akun siswa; tampil untuk akun guru DAN akun orangtua
+- [ ] **Akun guru**: buka halaman → muncul kolom cari + daftar SEMUA siswa;
+      ketik sebagian nama → daftar tersaring; klik 1 nama → laporan siswa
+      itu tampil (Profil, MPLS, Kognitif, Jurnal — bagian yang datanya
+      kosong menampilkan "Belum ada data", BUKAN error/halaman kosong)
+- [ ] **Akun orangtua dengan 1 anak**: buka halaman → laporan anak itu
+      LANGSUNG tampil tanpa perlu memilih apa pun
+- [ ] **Akun orangtua dengan 2+ anak** (field `anak` di Firestore berisi
+      >1 nama): buka halaman → tampil pilihan chip nama-nama anak, klik 1
+      → laporan anak itu yang tampil
+- [ ] **PALING PENTING — batas akses orangtua, uji dari server langsung**:
+      ambil `idToken` akun orangtua (mis. dari DevTools saat login), coba
+      panggil manual
+      `APPS_SCRIPT_URL?laporanSiswa=1&nama=<NAMA SISWA LAIN, BUKAN ANAKNYA>&idToken=<token>`
+      → **HARUS DITOLAK** dengan pesan jelas ("tidak punya akses ke data
+      siswa..."), BUKAN mengembalikan data siswa lain itu. Ini pengujian
+      keamanan paling kritis di fitur ini — kalau ini gagal, data pribadi
+      siswa LAIN bisa bocor ke orang tua yang salah.
+- [ ] Panggil `APPS_SCRIPT_URL?laporanSiswa=1&nama=<siapa saja>` TANPA
+      `idToken` sama sekali → harus ditolak, bukan malah dianggap "guru"
+- [ ] (Regresi) Ulangi Skenario A/E (login & endpoint guru lain, mis.
+      `?siswa=1`, `?all=1`) — pastikan refactor `verifikasiUser_()` tidak
+      mengubah perilaku `wajibGuru_()` sama sekali (pesan error, kapan
+      menolak/menerima — harus identik dengan sebelum refactor)
+- [ ] Buka/tutup (collapse) tiap bagian laporan (MPLS/Kognitif/Jurnal) —
+      status buka/tutup tidak reset saat pindah siswa dalam 1 sesi (sesuai
+      desain, bukan bug kalau memang begitu — cukup pastikan tidak error)
 
 Jalankan skenario ini setelah perubahan besar:
 

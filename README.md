@@ -16,6 +16,7 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
 | Materi Ajar | Buku Belajar Mandiri siswa |
 | Galeri Visual | Gambar, poster, infografis & video singkat pendukung belajar per mata pelajaran, khusus untuk gaya belajar visual |
 | Bank Soal | Soal latihan & ujian per mapel |
+| Laporan Siswa | Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas per siswa — guru (siapa saja) & orang tua (anaknya sendiri saja), tidak untuk siswa |
 | Pengumuman | Informasi penting dari guru |
 | Jadwal | Jadwal pelajaran & kalender akademik |
 
@@ -79,6 +80,28 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
 ### Langkah 7 — Tambah Akun Siswa
 Ulangi Langkah 6 untuk setiap siswa, dengan `role: "siswa"`
 
+### Langkah 7b — Tambah Akun Orang Tua (untuk fitur Laporan Siswa)
+Sama seperti Langkah 6/7, tapi field-nya:
+```
+nama  : "Nama Orang Tua"
+role  : "orangtua"
+email : "email@orangtua.com"
+anak  : ["Nama Lengkap Siswa 1", "Nama Lengkap Siswa 2"]
+```
+`anak` adalah **array** (bukan teks tunggal) — isinya harus **PERSIS SAMA**
+ejaannya dengan kolom "Nama Lengkap" di sheet "Data Siswa" (lihat
+`apps-script/README.md`), karena itu yang dipakai sistem untuk mencocokkan
+data laporan yang boleh dilihat akun ini. Boleh diisi lebih dari 1 nama
+kalau orang tua punya lebih dari 1 anak di kelas ini.
+
+Cara menambah field array di Firestore Console: klik **+ Add field**, pilih
+tipe **array**, lalu tambahkan tiap nama sebagai item array bertipe string.
+
+Akun `orangtua` HANYA bisa melihat laporan anak yang namanya ada di field
+ini (dibatasi di server, lihat `apps-script/Code.gs` fungsi
+`wajibAksesLaporan_`) — bukan sekadar disembunyikan di tampilan. Detail
+rancangan lengkap fitur ini ada di `RANCANGAN-LAPORAN-SISWA.md`.
+
 ### Langkah 8 — Aktifkan Modul MPLS (opsional, terpisah dari Firebase)
 Modul MPLS (`pages/mpls/`) memakai Google Sheets sebagai penyimpanan, bukan
 Firestore, supaya wali kelas bisa langsung baca/olah datanya di spreadsheet.
@@ -115,6 +138,9 @@ kelas-v/
     ├── info.html          ← Arsip lengkap pengumuman, guru & siswa
     ├── jadwal.html        ← Kerangka statis, isi jadwal menunggu jadwal resmi
     ├── admin.html         ← Panel kelola konten (Pengumuman/Modul/Materi/Bank Soal), hanya guru
+    ├── laporan-siswa.html ← Ringkasan profil+MPLS+Jurnal per siswa, guru (siapa saja) &
+    │                         orangtua (anaknya sendiri saja) — TIDAK untuk siswa
+    │   └── (assets di pages/laporan-siswa/assets/, lihat di bawah)
     ├── kelas/             ← Data profil & foto siswa (khusus guru, Firebase-gated)
     │   ├── index.html
     │   └── assets/
@@ -130,6 +156,10 @@ kelas-v/
     │       ├── infografis.css
     │       ├── infografis-galeri.js
     │       └── infografis-kelola-tp.js
+    ├── laporan-siswa/
+    │   └── assets/
+    │       ├── laporan.css
+    │       └── laporan.js
     └── mpls/
         ├── index.html     ← Landing MPLS (daftar sub-halaman)
         ├── input.html     ← Form input penilaian (mobile-first)
@@ -151,8 +181,9 @@ kelas-v/
 users/
   {uid}/
     nama    : string
-    role    : "guru" | "siswa"
+    role    : "guru" | "siswa" | "orangtua"
     email   : string
+    anak    : array of string   (HANYA untuk role "orangtua" — lihat Langkah 7b)
 
 pengumuman/
   {id}/
