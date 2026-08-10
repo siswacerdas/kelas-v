@@ -1,1 +1,766 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menyimak: Menemukan Sebab dan Akibat — Bahasa Indonesia Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#1e4d3b;
+  --nav-l:#2d7055;
+  --bg:#f7f1e3;
+  --paper:#fffdf6;
+  --ink:#2b2013;
+  --ink-soft:#6b5c44;
+  --ink-faint:#a3937a;
+  --border:#e6d8b3;
+  --gold:#b8860b;
+  --gold-l:#f6e6bf;
+  --gold-d:#8a6408;
+  --night:#232946;
+  --night-2:#2e3a6b;
+  --night-3:#3d4d8a;
+  --correct:#2d7055;
+  --correct-bg:#e5f2ec;
+  --wrong:#b3432b;
+  --wrong-bg:#fbe9e3;
+  --radius:16px;
+  --shadow: 0 4px 20px rgba(43,32,19,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
 
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+
+.produk-banner{background:linear-gradient(135deg,var(--night),var(--night-2));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+
+.stage{background:radial-gradient(ellipse at top, var(--night-3) 0%, var(--night) 70%);border-radius:14px;padding:22px 20px;color:#f2ecdc;margin-bottom:16px;position:relative;overflow:hidden;}
+.stage::after{content:'✦';position:absolute;top:14px;right:18px;color:rgba(246,230,191,.5);font-size:14px;}
+.stage-label{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-l);opacity:.85;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.stage-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.play-btn{display:flex;align-items:center;gap:10px;background:var(--gold);color:#231a04;border:none;border-radius:30px;padding:11px 20px;font-family:'Plus Jakarta Sans';font-weight:700;font-size:13.5px;cursor:pointer;transition:transform .15s, background .15s;}
+.play-btn:hover{background:#c99416;transform:translateY(-1px);}
+.play-btn.small{padding:8px 14px;font-size:12.5px;}
+.bars{display:flex;align-items:flex-end;gap:3px;height:20px;}
+.bars span{width:3px;background:var(--gold-l);border-radius:2px;height:6px;opacity:.55;}
+.stage.playing .bars span{animation:wave 0.9s ease-in-out infinite;opacity:1;}
+.stage.playing .bars span:nth-child(1){animation-delay:0s;}
+.stage.playing .bars span:nth-child(2){animation-delay:.15s;}
+.stage.playing .bars span:nth-child(3){animation-delay:.3s;}
+.stage.playing .bars span:nth-child(4){animation-delay:.1s;}
+.stage.playing .bars span:nth-child(5){animation-delay:.25s;}
+@keyframes wave{0%,100%{height:6px;}50%{height:20px;}}
+.stage-note{font-size:12.5px;color:rgba(242,236,220,.7);margin-top:10px;line-height:1.6;}
+.reveal-toggle{margin-top:12px;background:transparent;border:1.5px solid rgba(246,230,191,.4);color:var(--gold-l);border-radius:30px;padding:7px 16px;font-size:12.5px;font-weight:600;cursor:pointer;}
+.story-text{background:var(--paper);color:var(--ink);border-radius:12px;padding:18px 20px;margin-top:14px;font-size:14.5px;line-height:1.85;display:none;}
+.story-text.open{display:block;}
+.story-text p{margin-bottom:10px;}
+
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+
+.kalimat-row{border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fff;}
+.kalimat-row .kt{font-size:13.5px;font-weight:600;margin-bottom:8px;}
+.kalimat-row .krow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.word-pick{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);}
+.word-pick.show{display:block;}
+.word-pick .wp-label{font-size:12px;color:var(--ink-soft);margin-bottom:6px;}
+
+.sabox-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
+.sabox label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gold-d);display:block;margin-bottom:6px;}
+.sabox input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:13.5px;background:#fff;}
+@media (max-width:560px){.sabox-grid{grid-template-columns:1fr;}}
+.reveal-key{margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;}
+.key-box{display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;}
+.key-box.show{display:block;}
+
+.order-grid{display:flex;flex-direction:column;gap:8px;}
+.order-card{border:1.5px solid var(--border);background:#fff;border-radius:10px;padding:12px 14px;font-size:13.5px;cursor:pointer;position:relative;padding-left:44px;transition:all .15s;}
+.order-card .badge{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;background:var(--border);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.order-card.picked{border-color:var(--gold);}
+.order-card.picked .badge{background:var(--gold);}
+.order-card.correct{border-color:var(--correct);background:var(--correct-bg);}
+.order-card.correct .badge{background:var(--correct);}
+.order-card.incorrect{border-color:var(--wrong);background:var(--wrong-bg);}
+.order-card.incorrect .badge{background:var(--wrong);}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.feedback{font-size:13px;margin-top:10px;padding:8px 12px;border-radius:8px;display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:var(--correct-bg);color:var(--correct);}
+.feedback.bad{background:var(--wrong-bg);color:var(--wrong);}
+
+.sa-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.sa-col-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;}
+.sa-pill{border:1.5px solid var(--border);background:#fff;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:13px;cursor:pointer;transition:all .15s;}
+.sa-pill.selected{border-color:var(--gold);background:var(--gold-l);}
+.sa-pill.matched{border-color:var(--correct);background:var(--correct-bg);color:var(--correct);pointer-events:none;}
+.sa-pill.wrong-flash{animation:shake .3s;border-color:var(--wrong);}
+@media (max-width:560px){.sa-wrap{grid-template-columns:1fr;}}
+
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+
+.peta-cerita{background:linear-gradient(180deg,#fffefb,#fff8e8);border:1.5px dashed var(--gold);border-radius:14px;padding:20px;margin-top:16px;}
+.peta-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;}
+.peta-field label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--gold-d);display:block;margin-bottom:6px;}
+.peta-field input,.peta-field textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 10px;font-family:inherit;font-size:13.5px;background:#fff;}
+.peta-field textarea{min-height:52px;resize:vertical;}
+@media (max-width:560px){.peta-grid{grid-template-columns:1fr;}}
+.peta-summary{margin-top:16px;background:var(--night);color:#f4efe0;border-radius:12px;padding:16px 18px;font-size:13.5px;display:none;line-height:1.8;}
+.peta-summary.show{display:block;}
+.peta-summary b{color:var(--gold-l);}
+
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Sebab dan Akibat</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> M2 — Menyimak · Hubungan Sebab-Akibat & Urutan (Bahasa Indonesia Kelas 5, elemen Menyimak, nonsastra). TP dan tangga <b>dipakai ulang</b> dari yang sudah ada di <code>pages/materi/bahasa-indonesia/menyimak-tp2/</code> (5 materi konsep: kata penghubung → memisahkan sebab-akibat → rantai kejadian → dua hubungan terpisah → mandiri) — tidak dianalisis ulang dari CP, sesuai prinsip Buku Saku Modul Bagian D.2.</li>
+<li><b>Pembagian kerja materi vs modul:</b> materi (`menyimak-tp2`) mengajarkan KONSEPnya secara eksplisit lewat bacaan + latihan rumah. Modul ini adalah lapisan LATIHAN TERPANDU + asesmen — dengan contoh kalimat/cerita yang sengaja BARU (berbeda dari materi, dan berbeda dari teks yang akan dibacakan guru untuk menilai langsung di kelas), supaya latihan di sini tetap mengukur transfer kemampuan, bukan hafalan contoh.</li>
+<li><b>5 subunit = 5 tangga</b>, urutannya sama persis dengan urutan materi supaya siswa tidak bingung berpindah antar-halaman.</li>
+<li><b>Profil kelas dipakai ulang</b> dari sesi sebelumnya: kemampuan awal homogen, kesenjangan ekonomi tidak signifikan → jalur tunggal tanpa percabangan berat, boleh pakai pengalaman pribadi siswa di pemantik.</li>
+<li><b>Instrumen:</b> non-verbal/minim-tulis sesuai Buku Saku CP Bagian III — isi kotak Sebab/Akibat singkat, urutkan kartu rantai, pasangkan kartu, bukan esai panjang. Uraian tetap ada (wajib min. 1 per latihan) tapi sebagai pelengkap, bukan instrumen utama.</li>
+<li>RPM belum disusun untuk TP ini — modul dibangun langsung dari tangga materi (fallback sesuai Peta Pipeline).</li>
+</ul>
+</details>
+
+<div class="cover">
+  <span class="kicker">✦ Bahasa Indonesia · Kelas 5</span>
+  <h1>Menyimak:<br>Menemukan Sebab dan Akibat</h1>
+  <p class="lede">Bismillah, mari lanjutkan belajarmu! Kamu sudah membaca materi tentang kata penghubung dan sebab-akibat — sekarang saatnya benar-benar berlatih mendengarkan dan menemukannya sendiri.</p>
+  <div class="cover-meta">
+    <span>🎧 5 bagian belajar</span>
+    <span>🔗 6 kalimat & cerita baru</span>
+    <span>🗺️ 1 Buku Mini Sebab-Akibat untuk dibuat</span>
+  </div>
+</div>
+
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Di materi sebelumnya kamu sudah tahu apa itu kata penghubung sebab-akibat, cara memisahkan Sebab dan Akibat, cara mengikuti rantai kejadian, dan cara membedakan dua hubungan yang terpisah. Sekarang, unit ini akan mengajakmu benar-benar <em>mendengarkan</em> dan mempraktikkannya — dengan kalimat dan cerita yang baru, belum pernah kamu dengar sebelumnya.</p>
+  <p>Sebagian besar tugasmu di sini adalah memilih, mengisi kotak singkat, dan mengurutkan kartu — bukan menulis panjang. Supaya yang dinilai benar-benar kemampuanmu <em>menyimak</em> hubungan antarkejadian.</p>
+  <div class="produk-banner">
+    <div class="icon">🗺️</div>
+    <div>
+      <strong>Karya yang akan kamu buat</strong>
+      Sepanjang unit ini kamu akan mengumpulkan potongan-potongan <b>Buku Mini Sebab-Akibat</b> — dimulai sejak Bagian 2, dan dirangkum lengkap di Bagian 5.
+    </div>
+  </div>
+</section>
+
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+
+<!-- SUBUNIT 1 -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div>
+      <div class="block-eyebrow">Bagian 1 dari 5 · Materi Pintu Masuk</div>
+      <h2 style="margin-bottom:0;">Menangkap Kata Penghubungnya</h2>
+    </div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Di bagian ini kamu akan mendengarkan beberapa kalimat pendek. Ini bermanfaat supaya telingamu terlatih menangkap sinyal "ada penjelasan sebab-akibat di sini!" begitu kata penghubungnya muncul.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Tuliskan satu kata penghubung sebab-akibat yang masih kamu ingat dari materi sebelumnya.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🎧 Dengarkan dan Putuskan</div>
+    <div class="act-desc">Tekan tombol putar di setiap kalimat, lalu putuskan: ada kata penghubung sebab-akibat atau tidak?</div>
+    <div id="s1-list"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Ada bagian yang masih membingungkan? Tuliskan.</label><textarea class="ans"></textarea></div>
+</section>
+
+<!-- SUBUNIT 2 -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num">2</span>
+    <div>
+      <div class="block-eyebrow">Bagian 2 dari 5 · Pendalaman</div>
+      <h2 style="margin-bottom:0;">Memisahkan Sebab dan Akibat</h2>
+    </div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang, dengarkan kalimatnya lalu pisahkan menjadi dua bagian: Sebab dan Akibat.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Menurutmu, bagian mana yang biasanya disebut duluan dalam kalimat sebab-akibat — Sebab atau Akibat? Kenapa menurutmu begitu?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🗺️ Isi Kotak Sebab-Akibatnya</div>
+    <div class="act-desc">Dengarkan tiap kalimat, lalu tuliskan Sebab dan Akibatnya secara singkat (cukup beberapa kata, tidak perlu kalimat lengkap).</div>
+    <div id="s2-list"></div>
+  </div>
+
+  <div class="peta-cerita">
+    <div class="lbl" style="font-weight:700;color:var(--gold-d);font-size:13px;">🗺️ Mulai Isi Buku Mini Sebab-Akibat</div>
+    <div class="sub-desc" style="margin:8px 0 0;">Jawaban kotak pertama di atas akan otomatis masuk ke Buku Mini-mu di Bagian 5.</div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz2"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Kalimat mana yang paling mudah kamu pisahkan Sebab-Akibatnya? Kenapa?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apakah ada kalimat yang membingungkan? Ceritakan.</label><textarea class="ans"></textarea></div>
+</section>
+
+<!-- SUBUNIT 3 -->
+<section class="block" id="subunit3">
+  <div class="subunit-head"><span class="badge-num">3</span>
+    <div>
+      <div class="block-eyebrow">Bagian 3 dari 5 · Pendalaman</div>
+      <h2 style="margin-bottom:0;">Merangkai Rantai Kejadian</h2>
+    </div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Kali ini kamu akan mendengar sebuah cerita pendek, lalu menyusun rantai kejadiannya — satu akibat yang menjadi sebab untuk kejadian berikutnya.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Pernahkah satu kejadian kecil membuat kejadian lain terjadi, lalu itu membuat kejadian lain lagi? Ceritakan sedikit.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="stage" id="stage3">
+    <div class="stage-label">🌙 Panggung Dengar — Cerita Farah</div>
+    <div class="stage-row">
+      <button class="play-btn" onclick="speakStory('stage3','story3')"><span id="playIcon3">▶</span> <span id="playLabel3">Dengarkan Cerita</span></button>
+      <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="stage-note">Dengarkan sampai selesai dulu ya, baru buka teksnya.</div>
+    <button class="reveal-toggle" onclick="toggleStory('story3','revealBtn3')" id="revealBtn3">Tampilkan Teks Cerita</button>
+    <div class="story-text" id="story3">
+      <p>Sepulang sekolah, Farah kehujanan karena payungnya tertinggal di rumah. Karena badannya basah kuyup, ia langsung terserang flu. Karena flu, Farah tidak masuk sekolah selama dua hari.</p>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🔢 Susun Rantai Kejadiannya</div>
+    <div class="act-desc">Klik kartu-kartu di bawah ini SESUAI URUTAN kejadiannya (klik yang paling awal dulu). Lalu tekan "Cek Urutan".</div>
+    <div class="order-grid" id="orderGrid3">
+      <div class="order-card" data-order="2" onclick="pickOrder(this)"><span class="badge">?</span>Badan Farah basah kuyup, ia terserang flu</div>
+      <div class="order-card" data-order="1" onclick="pickOrder(this)"><span class="badge">?</span>Payung Farah tertinggal di rumah, ia kehujanan</div>
+      <div class="order-card" data-order="3" onclick="pickOrder(this)"><span class="badge">?</span>Farah tidak masuk sekolah selama dua hari</div>
+    </div>
+    <button class="mini-btn" onclick="checkOrder()">Cek Urutan</button>
+    <button class="mini-btn ghost" onclick="resetOrder()">Ulangi</button>
+    <div class="feedback" id="orderFeedback"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz3"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apakah kamu bisa mengikuti rantai kejadian Farah dengan mudah? Ceritakan.</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Menurutmu, kejadian mana yang berperan ganda (jadi akibat sekaligus sebab)?</label><textarea class="ans"></textarea></div>
+</section>
+
+<!-- SUBUNIT 4 -->
+<section class="block" id="subunit4">
+  <div class="subunit-head"><span class="badge-num">4</span>
+    <div>
+      <div class="block-eyebrow">Bagian 4 dari 5 · Pendalaman</div>
+      <h2 style="margin-bottom:0;">Dua Hubungan yang Terpisah</h2>
+    </div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Tidak semua kejadian dalam satu cerita saling berhubungan. Kali ini kamu akan berlatih membedakan dua hubungan sebab-akibat yang berdiri sendiri-sendiri.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Bagaimana caramu memastikan dua kejadian itu benar-benar tidak saling berhubungan?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="stage" id="stage4">
+    <div class="stage-label">🌙 Panggung Dengar — Cerita Rian</div>
+    <div class="stage-row">
+      <button class="play-btn" onclick="speakStory('stage4','story4')"><span id="playIcon4">▶</span> <span id="playLabel4">Dengarkan Cerita</span></button>
+      <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="stage-note">Fokuskan telingamu, boleh dengarkan dua kali.</div>
+    <button class="reveal-toggle" onclick="toggleStory('story4','revealBtn4')" id="revealBtn4">Tampilkan Teks Cerita</button>
+    <div class="story-text" id="story4">
+      <p>Rian ingin bermain bola sore itu, tapi karena lapangan becek akibat hujan pagi, ia batal bermain. Sementara itu, adiknya sedang sedih karena buku ceritanya hilang di sekolah.</p>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">❓ Satu Rantai atau Dua Hubungan Terpisah?</div>
+    <div class="choice-group" id="s4-yn">
+      <button class="choice-btn" onclick="checkMCQ('s4-yn',this,0,1)">Satu Rantai</button>
+      <button class="choice-btn" onclick="checkMCQ('s4-yn',this,1,1)">Dua Hubungan Terpisah</button>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🔗 Pasangkan Sebab dengan Akibatnya</div>
+    <div class="act-desc">Klik satu kartu SEBAB, lalu klik kartu AKIBAT yang paling cocok.</div>
+    <div class="sa-wrap">
+      <div>
+        <div class="sa-col-label">Sebab</div>
+        <div class="sa-pill" data-pair="1" onclick="pickSebab(this)">Lapangan becek akibat hujan pagi</div>
+        <div class="sa-pill" data-pair="2" onclick="pickSebab(this)">Buku cerita adiknya hilang di sekolah</div>
+      </div>
+      <div>
+        <div class="sa-col-label">Akibat</div>
+        <div class="sa-pill" data-pair="2" onclick="pickAkibat(this)">Adiknya sedih</div>
+        <div class="sa-pill" data-pair="1" onclick="pickAkibat(this)">Rian batal bermain bola</div>
+      </div>
+    </div>
+    <div class="feedback" id="saFeedback"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz4"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa tandanya kalau dua kejadian TIDAK saling berhubungan?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Ceritakan satu contoh dua kejadian di harimu yang tidak saling berhubungan.</label><textarea class="ans"></textarea></div>
+</section>
+
+<!-- SUBUNIT 5 — PERTEMUAN INTI -->
+<section class="block" id="subunit5">
+  <div class="subunit-head"><span class="badge-num badge-inti">5</span>
+    <div>
+      <div class="block-eyebrow">Bagian 5 dari 5 · Pertemuan Inti — Saatnya Mandiri!</div>
+      <h2 style="margin-bottom:0;">Menjelaskan Hubungan Antarkejadian</h2>
+    </div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang gabungkan semua yang sudah kamu pelajari. Dengarkan cerita baru ini sendiri, lalu jelaskan hubungan sebab-akibat atau urutannya dengan kata-katamu sendiri.</p>
+
+  <div class="stage" id="stage5">
+    <div class="stage-label">🌙 Panggung Dengar — Cerita Baru (kerjakan mandiri)</div>
+    <div class="stage-row">
+      <button class="play-btn" onclick="speakStory('stage5','story5')"><span id="playIcon5">▶</span> <span id="playLabel5">Dengarkan Cerita</span></button>
+      <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+    <div class="stage-note">Boleh dengarkan dua kali. Catat singkat sambil mendengarkan kalau perlu, pakai gaya mencatatmu sendiri.</div>
+    <button class="reveal-toggle" onclick="toggleStory('story5','revealBtn5')" id="revealBtn5">Tampilkan Teks Cerita</button>
+    <div class="story-text" id="story5">
+      <p>Sabtu pagi, Kevin lupa mengecas ponselnya semalam. Karena baterainya habis, alarm ponselnya tidak berbunyi. Karena tidak ada alarm yang membangunkannya, ia bangun kesiangan dan terlambat mengikuti latihan sepak bola. Pelatihnya sedikit kecewa, tapi Kevin berjanji akan lebih hati-hati menjaga ponselnya malam-malam berikutnya.</p>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Asesmen Akhir Unit</div>
+    <div class="act-desc">Kerjakan sendiri ya — ini caranya kita tahu seberapa jauh kemampuanmu berkembang.</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <div class="peta-cerita">
+    <div class="lbl" style="font-weight:700;color:var(--gold-d);font-size:13px;">🗺️ Rangkuman Buku Mini Sebab-Akibatku</div>
+    <div class="sub-desc" style="margin:8px 0 0;">Ini kumpulan jawabanmu dari Bagian 2 dan cerita Kevin barusan.</div>
+    <div class="peta-field" style="margin-top:10px;">
+      <label>Rantai kejadian pada cerita Kevin (dari awal sampai akhir)</label>
+      <textarea id="finalChain" placeholder="Tulis rantainya di sini..."></textarea>
+    </div>
+    <button class="mini-btn" style="margin-top:10px;" onclick="showPetaSummary()">Lihat Buku Mini Sebab-Akibatku</button>
+    <div class="peta-summary" id="petaSummary"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Unit</h3>
+  <div class="reflect-q"><label>Melihat kembali perjalananmu di unit ini, bagian mana yang paling kamu kuasai?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Bagaimana Buku Mini Sebab-Akibat membantumu memahami cerita?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Satu hal apa yang ingin kamu latih lagi setelah unit ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, unit ini selesai! Tuliskan satu hal yang kamu syukuri dari belajar hari ini.</label><textarea class="ans"></textarea></div>
+</section>
+
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Sebab</dt><dd>Hal yang membuat sesuatu terjadi.</dd>
+    <dt>Akibat</dt><dd>Hal yang terjadi karena ada sebabnya.</dd>
+    <dt>Kata Penghubung Sebab-Akibat</dt><dd>Kata seperti "karena", "sehingga", "akibatnya", "maka" yang menandai ada hubungan sebab-akibat.</dd>
+    <dt>Rantai Kejadian</dt><dd>Beberapa kejadian yang saling berhubungan — satu akibat menjadi sebab untuk kejadian berikutnya.</dd>
+  </dl>
+</section>
+
+<div class="closing">Selamat, kamu sudah menyelesaikan unit ini! Semoga apa yang kamu pelajari hari ini menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+/* ============ SPEECH SYNTHESIS ============ */
+function speak(text, playFn){ playFn(text); }
+
+function speakStory(stageId, storyId){
+  const stage = document.getElementById(stageId);
+  const num = stageId.replace('stage','');
+  const text = document.getElementById(storyId).innerText;
+  const iconEl = document.getElementById('playIcon'+num);
+  const labelEl = document.getElementById('playLabel'+num);
+  playTTS(text, stage, iconEl, labelEl);
+}
+
+function playTTS(text, stage, iconEl, labelEl){
+  if(!('speechSynthesis' in window)){
+    stage.querySelector('.stage-note') && (stage.querySelector('.stage-note').innerHTML += '<br>⚠️ Perangkat ini tidak mendukung suara otomatis. Minta seseorang membacakan teks ini untukmu.');
+    return;
+  }
+  if(speechSynthesis.speaking){
+    speechSynthesis.cancel();
+    stage.classList.remove('playing');
+    if(iconEl) iconEl.textContent='▶'; if(labelEl) labelEl.textContent='Dengarkan Cerita';
+    return;
+  }
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang='id-ID'; utter.rate=0.88; utter.pitch=1;
+  const voices = speechSynthesis.getVoices();
+  const idVoice = voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('id'));
+  if(idVoice) utter.voice = idVoice;
+  utter.onstart=()=>{stage.classList.add('playing'); if(iconEl) iconEl.textContent='⏸'; if(labelEl) labelEl.textContent='Berhenti';};
+  utter.onend=()=>{stage.classList.remove('playing'); if(iconEl) iconEl.textContent='▶'; if(labelEl) labelEl.textContent='Dengarkan Lagi';};
+  utter.onerror=()=>{stage.classList.remove('playing'); if(iconEl) iconEl.textContent='▶'; if(labelEl) labelEl.textContent='Dengarkan Cerita';};
+  speechSynthesis.speak(utter);
+}
+
+function toggleStory(storyId, btnId){
+  const el = document.getElementById(storyId);
+  const btn = document.getElementById(btnId);
+  el.classList.toggle('open');
+  btn.textContent = el.classList.contains('open') ? 'Sembunyikan Teks Cerita' : 'Tampilkan Teks Cerita';
+  updateProgress();
+}
+
+/* ============ SUBUNIT 1: kalimat list ============ */
+const s1data = [
+  {text:'Adit lupa membawa payung, sehingga ia kehujanan sepulang sekolah.', ada:true, kata:'sehingga', options:['sehingga','payung','sepulang']},
+  {text:'Bunga di taman itu berwarna merah dan kuning.', ada:false},
+  {text:'Karena rajin berlatih, Sinta berhasil memenangkan lomba lari.', ada:true, kata:'karena', options:['berlatih','karena','lomba']},
+  {text:'Ibu membeli buah apel, jeruk, dan pisang di pasar.', ada:false},
+  {text:'Semalaman hujan turun deras, akibatnya jalanan jadi licin dan banyak motor tergelincir.', ada:true, kata:'akibatnya', options:['semalaman','akibatnya','licin']},
+  {text:'Made bangun kesiangan, maka ia langsung berlari ke sekolah tanpa sarapan.', ada:true, kata:'maka', options:['bangun','maka','sarapan']}
+];
+function renderS1(){
+  const el = document.getElementById('s1-list');
+  el.innerHTML = s1data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="krow">
+        <button class="play-btn small" onclick="playTTS(${JSON.stringify(d.text)}, this.closest('.kalimat-row'), null, null)">▶ Dengarkan</button>
+        <div class="choice-group" id="s1-yn-${i}">
+          <button class="choice-btn" onclick="s1pick(${i},true,this)">Ada Kata Penghubung</button>
+          <button class="choice-btn" onclick="s1pick(${i},false,this)">Tidak Ada</button>
+        </div>
+      </div>
+      ${d.ada ? `<div class="word-pick" id="s1-wp-${i}"><div class="wp-label">Kata penghubung mana yang terdengar?</div>
+        <div class="choice-group" id="s1-wpg-${i}">` +
+        d.options.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s1-wpg-${i}',this,${oi},${d.options.indexOf(d.kata)})">${o}</button>`).join('') +
+        `</div></div>` : ''}
+    </div>
+  `).join('');
+}
+function s1pick(i, chosen, btn){
+  const group = document.getElementById('s1-yn-'+i);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  const correct = s1data[i].ada;
+  if(chosen === correct){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); [...group.children].find((b,bi)=> (bi===0)===correct)?.classList.add('correct'); }
+  if(correct){ document.getElementById('s1-wp-'+i).classList.add('show'); }
+  updateProgress();
+}
+renderS1();
+
+/* ============ SUBUNIT 2: sebab-akibat fill ============ */
+const s2data = [
+  {text:'Nina rajin menyiram tanaman setiap pagi, sehingga bunganya tumbuh subur.', sebab:'Nina rajin menyiram tanaman', akibat:'bunganya tumbuh subur'},
+  {text:'Karena listrik padam semalam, kulkas di rumah Doni jadi hangat dan es krimnya meleleh.', sebab:'listrik padam semalam', akibat:'kulkas jadi hangat, es krim meleleh'},
+  {text:'Jembatan itu ditutup akibat banjir besar minggu lalu.', sebab:'banjir besar minggu lalu', akibat:'jembatan ditutup'}
+];
+function renderS2(){
+  const el = document.getElementById('s2-list');
+  el.innerHTML = s2data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="krow"><button class="play-btn small" onclick="playTTS(${JSON.stringify(d.text)}, this.closest('.kalimat-row'), null, null)">▶ Dengarkan Kalimat ${i+1}</button></div>
+      <div class="sabox-grid">
+        <div class="sabox"><label>Sebab</label><input type="text" id="s2-sebab-${i}" placeholder="..."></div>
+        <div class="sabox"><label>Akibat</label><input type="text" id="s2-akibat-${i}" placeholder="..."></div>
+      </div>
+      <button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')">Lihat contoh jawaban</button>
+      <div class="key-box"><b>Sebab:</b> ${d.sebab} · <b>Akibat:</b> ${d.akibat}</div>
+    </div>
+  `).join('');
+}
+renderS2();
+
+/* ============ ORDER ACTIVITY (dipakai ulang di Subunit 3) ============ */
+let orderPicks = [];
+function pickOrder(card){
+  if(card.classList.contains('picked')) return;
+  orderPicks.push(card);
+  card.classList.add('picked');
+  card.querySelector('.badge').textContent = orderPicks.length;
+}
+function resetOrder(){
+  orderPicks = [];
+  document.querySelectorAll('#orderGrid3 .order-card').forEach(c=>{
+    c.classList.remove('picked','correct','incorrect');
+    c.querySelector('.badge').textContent='?';
+  });
+  document.getElementById('orderFeedback').classList.remove('show');
+}
+function checkOrder(){
+  const fb = document.getElementById('orderFeedback');
+  if(orderPicks.length < 3){
+    fb.textContent = 'Klik semua kartu dulu ya, urutkan sesuai jalannya cerita.';
+    fb.className='feedback show bad';
+    return;
+  }
+  let allCorrect = true;
+  orderPicks.forEach((card, idx) => {
+    const correctOrder = parseInt(card.dataset.order);
+    if(correctOrder === idx+1){ card.classList.add('correct'); }
+    else { card.classList.add('incorrect'); allCorrect = false; }
+  });
+  fb.textContent = allCorrect ? '🎉 Tepat sekali! Rantaimu sudah benar.' : 'Belum tepat. Kartu berwarna oranye perlu disusun ulang — tekan "Ulangi".';
+  fb.className = 'feedback show ' + (allCorrect ? 'ok' : 'bad');
+  if(allCorrect) updateProgress();
+}
+
+/* ============ SEBAB-AKIBAT MATCHING (Subunit 4) ============ */
+let selectedSebab = null;
+function pickSebab(el){
+  if(el.classList.contains('matched')) return;
+  document.querySelectorAll('.sa-wrap .sa-pill[data-pair]').forEach(p=>{ if(!p.classList.contains('matched') && p.parentElement === el.parentElement) p.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedSebab = el;
+}
+function pickAkibat(el){
+  if(el.classList.contains('matched') || !selectedSebab) return;
+  const fb = document.getElementById('saFeedback');
+  if(selectedSebab.dataset.pair === el.dataset.pair){
+    selectedSebab.classList.remove('selected'); selectedSebab.classList.add('matched');
+    el.classList.add('matched');
+    fb.textContent = '✅ Pasangan yang tepat!'; fb.className='feedback show ok';
+    selectedSebab = null;
+    const remaining = document.querySelectorAll('.sa-wrap .sa-pill:not(.matched)').length;
+    if(remaining === 0) updateProgress();
+  } else {
+    el.classList.add('wrong-flash');
+    fb.textContent = 'Belum pas, coba pasangan lain.'; fb.className='feedback show bad';
+    setTimeout(()=>el.classList.remove('wrong-flash'),350);
+  }
+}
+
+/* ============ PETA / BUKU MINI SUMMARY ============ */
+function showPetaSummary(){
+  const box = document.getElementById('petaSummary');
+  const chain = document.getElementById('finalChain').value || '(belum diisi)';
+  let s2html = s2data.map((d,i)=>{
+    const sebab = document.getElementById('s2-sebab-'+i).value || '(belum diisi)';
+    const akibat = document.getElementById('s2-akibat-'+i).value || '(belum diisi)';
+    return `<b>Kalimat ${i+1}</b> — Sebab: ${sebab} · Akibat: ${akibat}`;
+  }).join('<br>');
+  box.innerHTML = `<b>Dari Bagian 2:</b><br>${s2html}<br><br><b>Rantai Kejadian Kevin (Bagian 5):</b><br>${chain}`;
+  box.classList.add('show');
+  updateProgress();
+}
+
+/* ============ QUIZ RENDERER ============ */
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')">Lihat contoh jawaban</button><div class="key-box">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+}
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Kata mana ini yang biasanya menandai hubungan sebab-akibat?', options:['tetapi','sehingga','atau'], correct:1},
+  {type:'bs', text:'Kalimat "Ibu memasak nasi dan sayur" mengandung hubungan sebab-akibat.', correct:1},
+  {type:'mcq', text:'Dalam kalimat "Karena macet, Budi terlambat sekolah", bagian "macet" adalah...', options:['Sebab','Akibat','Bukan keduanya'], correct:0},
+  {type:'essay', text:'Sebutkan satu kata penghubung sebab-akibat yang kamu ingat.'},
+  {type:'essay', text:'Ceritakan satu kejadian nyata yang punya hubungan sebab-akibat (boleh dari harimu tadi pagi).'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'bs', text:'Kalimat "Toko itu tutup akibat pemiliknya sakit" mengandung hubungan sebab-akibat.', correct:0},
+  {type:'mcq', text:'Kata penghubung sebab-akibat dalam kalimat "Jalan becek, maka sepeda motor sulit melaju" adalah...', options:['becek','maka','motor'], correct:1},
+  {type:'essay', text:'Tuliskan satu kalimat sederhana yang memakai kata "karena".', tag:'isian'},
+  {type:'essay', text:'Kenapa penting mengenali kata penghubung sebab-akibat saat menyimak? Jelaskan dengan bahasamu sendiri.', tag:'uraian', key:'Contoh: karena kata itu jadi sinyal bahwa ada penjelasan alasan/akibat yang perlu kita perhatikan, supaya kita tidak melewatkan bagian penting dari apa yang didengar.'},
+  {type:'essay', text:'Pernahkah kamu mendengar orang memakai kata "sehingga" atau "akibatnya" hari ini? Ceritakan kalimatnya.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz2', [
+  {type:'mcq', text:'Dalam kalimat "Nina rajin menyiram tanaman, sehingga bunganya subur", bagian "bunganya subur" adalah...', options:['Sebab','Akibat'], correct:1},
+  {type:'essay', text:'Tuliskan Sebab dari kalimat "Jembatan itu ditutup akibat banjir besar."', tag:'isian'},
+  {type:'essay', text:'Bagaimana caramu membedakan mana bagian Sebab dan mana bagian Akibat dalam sebuah kalimat?', tag:'uraian', key:'Contoh: cari kata penghubungnya dulu. Kalau kata penghubung di depan kalimat (mis. "karena..."), bagian sesudahnya biasanya Akibat. Kalau di tengah (mis. "...sehingga..."), bagian sebelum kata itu adalah Sebab.'},
+  {type:'essay', text:'Buat satu kalimat sebab-akibat tentang kejadian di sekolahmu, lalu pisahkan jadi Sebab dan Akibat.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz3', [
+  {type:'mcq', text:'Dalam sebuah rantai kejadian, satu akibat bisa menjadi... untuk kejadian berikutnya.', options:['Sebab','Akibat lagi','Tidak berhubungan'], correct:0},
+  {type:'essay', text:'Pada cerita Farah, apa akibat dari "payung tertinggal di rumah"?', tag:'isian'},
+  {type:'essay', text:'Jelaskan rantai kejadian pada cerita Farah dari awal sampai akhir dengan kata-katamu sendiri.', tag:'uraian', key:'Contoh: Farah kehujanan karena payungnya tertinggal, badannya jadi basah kuyup sehingga ia terserang flu, dan karena flu itu ia tidak masuk sekolah selama dua hari.'},
+  {type:'essay', text:'Ceritakan satu pengalamanmu yang punya rantai kejadian (satu hal menyebabkan hal lain, lalu menyebabkan hal lain lagi).', tag:'penerapan'}
+]);
+
+renderQuiz('quiz4', [
+  {type:'bs', text:'Cerita Rian dan adiknya adalah satu rantai kejadian yang saling berhubungan.', correct:1},
+  {type:'essay', text:'Sebutkan satu cara membedakan dua hubungan sebab-akibat yang terpisah dari satu rantai kejadian.', tag:'isian'},
+  {type:'essay', text:'Mengapa kejadian "lapangan becek" dan "buku hilang" pada cerita Rian dianggap dua hubungan terpisah, bukan satu rantai?', tag:'uraian', key:'Contoh: karena lapangan becek tidak menyebabkan buku adiknya hilang, dan sebaliknya — keduanya kebetulan terjadi di waktu yang berdekatan, tapi tidak saling memicu.'},
+  {type:'essay', text:'Ceritakan dua kejadian sebab-akibat yang terjadi di harimu, yang TIDAK saling berhubungan satu sama lain.', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Apa sebab awal dari semua kejadian pada cerita Kevin?', options:['Kevin lupa mengecas ponsel','Kevin bangun kesiangan','Pelatih kecewa'], correct:0},
+  {type:'mcq', text:'Cerita Kevin ini termasuk...', options:['Satu rantai kejadian','Dua hubungan terpisah'], correct:0},
+  {type:'essay', text:'Sebutkan satu akibat dari "alarm ponsel tidak berbunyi".', tag:'isian'},
+  {type:'essay', text:'Jelaskan seluruh rantai kejadian dalam cerita Kevin dari awal sampai akhir, pakai kata-katamu sendiri.', tag:'uraian (karya)', key:'Contoh: Kevin lupa mengecas ponsel, sehingga baterainya habis dan alarmnya tidak berbunyi. Karena tidak ada alarm, ia bangun kesiangan dan terlambat latihan sepak bola, sehingga pelatihnya kecewa.'},
+  {type:'essay', text:'Menurutmu, apa yang bisa dilakukan Kevin supaya kejadian ini tidak terulang?', tag:'penerapan'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 18;
+  let done = 0;
+  document.querySelectorAll('.story-text.open').forEach(()=>done++);
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  if(document.querySelectorAll('#orderGrid3 .order-card.correct').length===3) done++;
+  done += document.querySelectorAll('.sa-pill.matched').length/2;
+  if(document.getElementById('petaSummary').classList.contains('show')) done++;
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+</script>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
