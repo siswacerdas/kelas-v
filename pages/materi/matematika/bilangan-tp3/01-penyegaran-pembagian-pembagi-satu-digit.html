@@ -11,20 +11,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .bagi-wrap { display: flex; align-items: flex-start; justify-content: center; gap: 6px; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) + 4px); margin: 1rem 0 1.2rem; }
-  .bagi-divisor { padding-top: 2.05em; font-weight: 700; }
-  .bagi-quotient { font-weight: 700; letter-spacing: 3px; padding-bottom: 3px; color: var(--m-color); }
-  .bagi-bracket { border-left: 2.5px solid var(--ink); border-top: 2.5px solid var(--ink); padding: 3px 10px 3px 8px; letter-spacing: 3px; }
+  .pjg-tabel { border-collapse: collapse; margin: 1.2rem auto 0.4rem; font-family: 'Plus Jakarta Sans', monospace; font-weight: 700; font-size: calc(var(--content-fs) + 6px); }
+  .pjg-tabel td { width: 1.35em; height: 1.3em; text-align: center; vertical-align: middle; padding: 0; }
+  .pjg-tabel td.x { border: none; }
+  .pjg-tabel td.pembagi { border: none; text-align: right; padding-right: 0.3em; }
+  .pjg-tabel td.hasil { color: var(--m-color); }
+  .pjg-tabel td.brk-atas { border-top: 3px solid var(--ink); }
+  .pjg-tabel td.brk-kiri { border-left: 3px solid var(--ink); }
+  .pjg-tabel td.garis { border-bottom: 2px solid var(--ink); }
+  .pjg-tabel td.kurang { color: #c76b3f; }
+  .keterangan-tabel { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0 0 1.3rem; }
   .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
-  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.55rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
   .langkah li::before {
     content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
     width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
     font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
   }
   .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
-  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
-  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.5rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.5em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.7; }
   .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
   .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
   .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
@@ -32,7 +38,7 @@
   .soal-item:last-child { border-bottom: none; }
   .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
   .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
-  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.65; }
   .soal-a b { color: #1f6f78; }
 </style>
 </head>
@@ -67,57 +73,95 @@
     </div>
 
     <div class="ma-content">
-      <p>Bayangkan kamu punya <strong>936 permen</strong> yang harus dibagi rata ke <strong>4 kelompok</strong> anak. Berapa permen yang didapat tiap kelompok? Ini soal pembagian — dan sebelum kita melangkah ke pembagi yang lebih besar (dua digit) di materi-materi berikutnya, mari kita pastikan dulu kamu benar-benar lancar dengan pembagi satu digit.</p>
+      <p>Kamu punya 936 permen. Permen itu mau dibagi rata ke 4 kelompok. Berapa permen tiap kelompok?</p>
 
-      <p>Perhatikan cara menuliskan pembagian bersusun:</p>
+      <p>Ini cara mengerjakannya, ditulis lengkap ke bawah — persis seperti yang kamu tulis di buku:</p>
 
-      <div class="bagi-wrap">
-        <div class="bagi-divisor">4</div>
-        <div>
-          <div class="bagi-quotient">234</div>
-          <div class="bagi-bracket">936</div>
-        </div>
-      </div>
+      <table class="pjg-tabel">
+        <tr>
+          <td class="x"></td>
+          <td class="hasil">2</td><td class="hasil">3</td><td class="hasil">4</td>
+        </tr>
+        <tr>
+          <td class="pembagi">4</td>
+          <td class="brk-atas brk-kiri">9</td><td class="brk-atas">3</td><td class="brk-atas">6</td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="kurang garis">8</td><td class="x"></td><td class="x"></td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td>1</td><td>3</td><td class="x"></td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="kurang garis">1</td><td class="kurang garis">2</td><td class="x"></td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="x"></td><td>1</td><td>6</td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="x"></td><td class="kurang garis">1</td><td class="kurang garis">6</td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="x"></td><td class="x"></td><td>0</td>
+        </tr>
+      </table>
+      <p class="keterangan-tabel">Angka jingga = yang dikurangkan tiap langkah. Angka hitam = sisa dan angka turun.</p>
 
-      <p>Ikuti langkahnya, satu angka demi satu angka dari kiri:</p>
+      <p>Sekarang kita baca tabelnya satu per satu, dari atas:</p>
+
       <ol class="langkah">
-        <li><strong>9 ÷ 4</strong> = 2 sisa 1 (karena 4×2=8, dan 9−8=1). Tulis 2 di atas. Sisa 1 "turun" digabung dengan digit berikutnya (3), jadi 13.</li>
-        <li><strong>13 ÷ 4</strong> = 3 sisa 1 (karena 4×3=12, dan 13−12=1). Tulis 3 di atas. Sisa 1 digabung dengan digit berikutnya (6), jadi 16.</li>
-        <li><strong>16 ÷ 4</strong> = 4 sisa 0 (karena 4×4=16 pas). Tulis 4 di atas.</li>
+        <li><strong>9 dibagi 4</strong>. Hasilnya 2. Tulis 2 di atas. 4×2=8. Tulis 8 di bawah 9. 9−8=1. Sisa 1.</li>
+        <li><strong>Turunkan angka 3.</strong> Sisa 1 digabung jadi 13. 13 dibagi 4. Hasilnya 3. Tulis 3 di atas. 4×3=12. Tulis 12 di bawah 13. 13−12=1. Sisa 1.</li>
+        <li><strong>Turunkan angka 6.</strong> Sisa 1 digabung jadi 16. 16 dibagi 4. Hasilnya 4. Tulis 4 di atas. 4×4=16. Tulis 16 di bawah. 16−16=0. Sisa 0. Selesai.</li>
       </ol>
-      <p>Hasilnya: <strong>234</strong>, tanpa sisa. Tiap kelompok mendapat 234 permen.</p>
 
-      <p>Perhatikan istilah penting di sini: <strong>estimasi-coba-koreksi</strong>. Saat kamu bertanya "9 dibagi 4 itu berapa ya, kira-kira 2?" lalu mengecek (4×2=8, cukup dekat dengan 9) — itu proses yang SAH dan diharapkan, bukan tanda kamu belum bisa. Bahkan kalau tebakan pertamamu meleset (misalnya kamu coba 3 dulu, ternyata 4×3=12 sudah lebih besar dari 9), mengoreksi ke angka yang lebih kecil itu bagian normal dari proses berpikir, bukan kesalahan yang memalukan.</p>
+      <p>Hasilnya <strong>234</strong>. Tidak ada sisa. Tiap kelompok dapat 234 permen.</p>
+
+      <p>Satu hal penting: kamu boleh <strong>menebak dulu</strong>. Contoh: "9 dibagi 4, kira-kira berapa?" Coba jawab 2. Lalu cek: 4×2=8. Dekat dengan 9. Berarti tebakanmu benar.</p>
+
+      <p>Kalau tebakanmu salah, tidak apa-apa. Coba angka lain. Ini BUKAN kesalahan. Ini cara kerja yang benar.</p>
 
       <div class="bingung-box">
         <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
-        <p>Bayangkan kamu membagi <span class="analogi">936 permen ke dalam 4 toples</span>, tapi kamu melakukannya bertahap dari ratusan dulu: mula-mula kamu punya 9 ratusan (900), dibagi ke 4 toples — tiap toples dapat 2 ratusan (800 total), sisa 1 ratusan (100) yang belum terbagi. Sisa 100 itu kamu "pecah" jadi puluhan, digabung dengan 3 puluhan yang memang ada, jadi 13 puluhan. 13 dibagi 4 toples, tiap toples dapat 3 puluhan (120 total), sisa 1 puluhan (10). Sisa 10 itu dipecah jadi satuan, digabung 6 satuan yang ada, jadi 16 satuan — dibagi 4 toples, tiap toples dapat 4 satuan, pas habis. Total tiap toples: 200+30+4 = 234.</p>
+        <p><span class="analogi">Bayangkan kamu punya 936 permen di dalam toples.</span></p>
+        <p>Toplesnya berisi: 9 kantong isi 100 permen, 3 kantong isi 10 permen, dan 6 permen lepas.</p>
+        <p>Kamu mau bagi ke 4 anak. Sama banyak.</p>
+        <p>Langkah 1: Bagikan kantong isi 100 dulu. Ada 9 kantong. Tiap anak dapat 2 kantong (2×4=8 kantong terbagi). Sisa 1 kantong isi 100 belum terbagi.</p>
+        <p>Langkah 2: Buka kantong sisa itu. Isinya jadi 10 kantong isi 10 (karena 100 = 10×10). Gabung dengan 3 kantong isi 10 yang tadi. Jadi 13 kantong isi 10. Tiap anak dapat 3 kantong (3×4=12 kantong terbagi). Sisa 1 kantong isi 10 belum terbagi.</p>
+        <p>Langkah 3: Buka kantong sisa itu. Isinya jadi 10 permen lepas. Gabung dengan 6 permen lepas yang tadi. Jadi 16 permen lepas. Tiap anak dapat 4 permen. Pas habis.</p>
+        <p>Tiap anak dapat: 2 kantong isi 100, plus 3 kantong isi 10, plus 4 permen lepas. Total 234 permen.</p>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
-        Kalau hasil pengurangan di salah satu langkah (sisa) sama atau lebih besar dari pembaginya, berarti tebakanmu terlalu kecil — coba angka yang lebih besar. Ini bagian dari "koreksi", bukan tanda gagal.
+        Kalau sisa pembagianmu sama besar atau lebih besar dari angka pembagi, berarti tebakanmu terlalu kecil. Coba angka yang lebih besar.
       </div>
 
       <div class="soal-box">
         <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">1</span>Hitunglah 728 ÷ 4 dengan cara bersusun, tunjukkan tiap langkahnya!</div>
-          <div class="soal-a"><b>Pembahasan:</b> 7÷4=1 sisa 3 (4×1=4, 7−4=3), turun jadi 32. 32÷4=8 sisa 0 (4×8=32 pas). Turun 8: 8÷4=2 sisa 0. Hasil: <strong>182</strong>.</div>
+          <div class="soal-q"><span class="no">1</span>Hitung 728 ÷ 4. Tulis lengkap ke bawah seperti contoh di atas.</div>
+          <div class="soal-a"><b>Pembahasan:</b> 7÷4=1 sisa 3 (4×1=4, 7−4=3). Turun angka 2, jadi 32. 32÷4=8 sisa 0 (4×8=32). Turun angka 8. 8÷4=2 sisa 0. Hasil akhir: <strong>182</strong>.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">2</span>Rani mengerjakan 645 ÷ 3. Di langkah pertama dia menebak 6÷3=2, ternyata 3×2=6 pas tanpa sisa. Apakah itu berarti Rani "gagal" karena tidak perlu mengoreksi tebakannya?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Tidak. Tebakan yang langsung tepat di percobaan pertama itu bagus dan tetap merupakan hasil dari proses estimasi yang benar — bukan berarti dia "melewati" langkah penting. Estimasi-coba-koreksi tetap terjadi, hanya saja koreksinya tidak diperlukan karena tebakan awal sudah pas.</div>
+          <div class="soal-q"><span class="no">2</span>Rani mengerjakan 645 ÷ 3. Langkah pertama, dia langsung menebak 2 untuk 6÷3, dan itu benar (3×2=6, pas). Apakah Rani salah karena tidak mencoba angka lain dulu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Rani tidak salah. Tebakan yang langsung benar itu bagus. Tidak harus selalu salah dulu baru benar. Yang penting, dia tetap menebak dan mengecek jawabannya.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">3</span>Doni mengerjakan 812 ÷ 4. Di langkah pertama, dia menghitung 8÷4=2 sisa 0. Karena sisanya 0, apa yang harus dilakukan dengan digit berikutnya (1)?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Karena sisa dari langkah pertama adalah 0, digit berikutnya (1) langsung "turun" apa adanya menjadi 1 (bukan digabung dengan sisa, karena sisanya memang 0). Lanjutkan: 1÷4=0 sisa 1 (karena 4 tidak cukup untuk 1), turun digabung digit terakhir (2), jadi 12. 12÷4=3 sisa 0. Hasil akhir: <strong>203</strong>.</div>
+          <div class="soal-q"><span class="no">3</span>Doni mengerjakan 812 ÷ 4. Langkah pertama: 8 dibagi 4, hasilnya 2, sisa 0. Angka berikutnya adalah 1. Apa yang dilakukan Doni dengan angka 1 itu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sisa dari langkah pertama adalah 0. Jadi angka 1 turun apa adanya, jadi 1. 1 dibagi 4 hasilnya 0, sisa 1 (karena 4 lebih besar dari 1). Sisa 1 gabung angka terakhir (2), jadi 12. 12 dibagi 4, hasilnya 3, sisa 0. Hasil akhir: <strong>203</strong>.</div>
         </div>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
-        Kerjakan tiga soal pembagian bersusun berikut, tunjukkan proses estimasi-coba-koreksinya (coretan boleh terlihat, tidak perlu dihapus): 549 ÷ 3, 856 ÷ 8, 963 ÷ 9.
+        Kerjakan tiga soal ini. Tulis lengkap ke bawah seperti contoh di atas, jangan langsung tulis jawaban akhir: 549 ÷ 3, 856 ÷ 8, 963 ÷ 9.
       </div>
     </div>
 
