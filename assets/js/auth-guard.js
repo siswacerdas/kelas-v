@@ -5,7 +5,7 @@
  * Beda dengan guru-guard.js (khusus role "guru"), file ini TIDAK
  * mengecek role sama sekali — cukup login dengan akun yang valid,
  * apapun rolenya, halaman akan terbuka. Dipakai di halaman konten
- * bersama seperti Materi Ajar, Modul, Bank Soal, CP/TP/ATP, Jadwal,
+ * bersama seperti Materi Ajar, Modul, Uji Kemampuan, CP/TP/ATP, Jadwal,
  * dan Pengumuman.
  *
  * Sengaja TIDAK membaca dokumen Firestore "users/{uid}" (beda dengan
