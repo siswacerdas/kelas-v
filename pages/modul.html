@@ -6,6 +6,8 @@
 <title>Modul Pembelajaran · Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
@@ -13,6 +15,16 @@
     --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
     --accent: #2e6fbc; --accent-2: #e8a020; --accent-3: #2a9d6f;
     --border: rgba(26,26,46,0.10); --r: 10px;
+    /* Warna per mapel — disalin dari pages/materi/assets/materi.css supaya
+       satu mapel selalu tampil dengan warna yang sama di seluruh situs. */
+    --m-bahasa-indonesia: #8c3d5f;
+    --m-matematika:       #1f6f78;
+    --m-ipas:             #3f7d4a;
+    --m-pai:              #0f6b52;
+    --m-pancasila:        #a13d3d;
+    --m-seni-budaya:      #c9861f;
+    --m-pjok:             #d9541c;
+    --m-bahasa-inggris:   #4a5d8c;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
@@ -38,22 +50,40 @@
   }
   .filter-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
 
-  .list-group-title {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--ink-3); margin: 1.5rem 0 0.6rem;
+  .group-title {
+    display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none;
+    font-size: 13px; font-weight: 700; color: var(--ink-2);
+    margin: 1.5rem 0 0.7rem; padding-bottom: 6px; border-bottom: 1.5px solid var(--paper-3);
   }
+  .group-title .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--m-color, var(--accent)); flex-shrink: 0; }
+  .group-title .count { font-weight: 400; color: var(--ink-3); font-size: 12px; }
+  .group-title .chevron { margin-left: auto; font-size: 11px; color: var(--ink-3); transition: transform .15s; }
+  .group-title.collapsed .chevron { transform: rotate(-90deg); }
+  .group-body { display: block; }
+  .group-body.collapsed { display: none; }
+
+  .subgroup-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--m-color, var(--ink-3)); margin: 0.9rem 0 0.4rem;
+  }
+
   .modul-card {
-    background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--accent-3);
-    border-radius: 0 var(--r) var(--r) 0; padding: 0.9rem 1rem; margin-bottom: 8px;
+    background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--m-color, var(--accent-3));
+    border-radius: 0 var(--r) var(--r) 0; padding: 0.85rem 1rem; margin-bottom: 8px;
     display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    text-decoration: none; color: inherit;
   }
-  .modul-card .m-title { font-weight: 600; font-size: 13.5px; }
-  .modul-card .m-tema { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
-  .modul-card a.btn-buka {
-    flex-shrink: 0; background: var(--accent-3); color: #fff; text-decoration: none;
-    padding: 7px 14px; border-radius: 7px; font-size: 12.5px; font-weight: 600;
+  .modul-card .m-icon { font-size: 20px; flex-shrink: 0; }
+  .modul-card .m-body { flex: 1; min-width: 0; }
+  .modul-card .m-title { font-weight: 600; font-size: 13.5px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .modul-card .m-ringkasan { font-size: 12px; color: var(--ink-3); margin-top: 2px; line-height: 1.5; }
+  .modul-card .m-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px;
+    background: var(--paper-2); color: var(--ink-3);
   }
-  .modul-card a.btn-buka:hover { background: #23815c; }
+  .modul-card .m-badge.interaktif { background: #e5f2ec; color: #1e4d3b; }
+  .modul-card .m-arrow { flex-shrink: 0; color: var(--m-color, var(--accent-3)); font-size: 15px; }
+  .modul-card:hover { border-color: var(--m-color, var(--accent-3)); }
   .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
 </style>
 </head>
@@ -69,13 +99,14 @@
 
   <div class="container">
     <h1>📚 Modul Pembelajaran</h1>
-    <p class="subtitle">Modul scaffolding per tema dan mata pelajaran. Pilih mata pelajaran untuk menyaring daftar.</p>
+    <p class="subtitle">Modul belajar mandiri interaktif per tujuan pembelajaran. Pilih mata pelajaran, lalu ketuk judul untuk mulai belajar.</p>
 
     <div id="filter-row" class="filter-row"></div>
     <div id="list-modul"><div class="empty-state">Memuat modul…</div></div>
   </div>
 </div>
 
+<script src="modul/assets/modul-index.js"></script>
 <script type="module" src="../assets/js/auth-guard.js"></script>
 <script type="module">
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -84,28 +115,83 @@
   const app = getApps()[0];
   const db = getFirestore(app);
 
+  // Peta warna & ikon default per mapel, dipakai sebagai fallback untuk
+  // entri Firestore (link eksternal dari admin) yang tidak menyertakan
+  // mapelColor/mapelIcon sendiri — supaya tetap konsisten dengan modul lokal.
+  const MAPEL_META = {
+    "Bahasa Indonesia": { color: "var(--m-bahasa-indonesia)", icon: "📝" },
+    "Matematika": { color: "var(--m-matematika)", icon: "🔢" },
+    "IPAS": { color: "var(--m-ipas)", icon: "🔬" },
+    "Pendidikan Pancasila": { color: "var(--m-pancasila)", icon: "🏛" },
+    "Seni Budaya": { color: "var(--m-seni-budaya)", icon: "🎨" },
+    "PJOK": { color: "var(--m-pjok)", icon: "⚽" },
+    "Bahasa Inggris": { color: "var(--m-bahasa-inggris)", icon: "🗣" },
+    "Al-Islam": { color: "var(--m-pai)", icon: "📖" }
+  };
+  function metaFor(mapel) { return MAPEL_META[mapel] || { color: "var(--accent-3)", icon: "📚" }; }
+
   let allItems = [];
   let activeMapel = "Semua";
+  const collapsedMapel = new Set();
 
-  function escHtml(str) {
+  function esc(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
   async function loadModul() {
     const wrap = document.getElementById("list-modul");
+
+    // 1) Modul lokal interaktif, dari modul-index.js (sumber statis di repo).
+    // Ini SELALU dirender terlebih dulu dan tidak bergantung pada Firestore —
+    // supaya modul lokal tetap tampil walau langkah 2 di bawah gagal.
+    const local = (window.MODUL_INDEX || []).map((it) => {
+      const meta = metaFor(it.mapel);
+      return {
+        ...it,
+        mapelColor: it.mapelColor || meta.color,
+        mapelIcon: it.mapelIcon || meta.icon,
+        source: "local",
+        href: "modul/" + it.file
+      };
+    });
+
+    // 2) Modul eksternal (link Drive/PDF dsb.) yang diisi guru lewat admin.
+    // Dibungkus try/catch TERPISAH: kalau koleksi "modul" di Firestore belum
+    // ada / aturan keamanan menolak baca / jaringan gagal, modul lokal di
+    // atas tetap harus tampil — bukan malah ikut hilang.
+    let external = [];
     try {
       const snap = await getDocs(collection(db, "modul"));
-      allItems = [];
-      snap.forEach((d) => allItems.push({ id: d.id, ...d.data() }));
-      renderFilters();
-      renderList();
+      snap.forEach((d) => {
+        const data = d.data();
+        const mapel = data.mapel || "(Tanpa Mapel)";
+        const meta = metaFor(mapel);
+        const urlOk = data.url_file && /^https?:\/\//.test(data.url_file);
+        if (!urlOk) return; // lewati entri tanpa link valid
+        external.push({
+          mapel,
+          mapelColor: meta.color,
+          mapelIcon: meta.icon,
+          tema: data.tema || "Lainnya",
+          urutan: data.urutan || 0,
+          judul: data.judul || "-",
+          ringkasan: "",
+          status: "selesai",
+          source: "external",
+          href: data.url_file
+        });
+      });
     } catch (err) {
-      wrap.innerHTML = `<div class="empty-state">Gagal memuat modul: ${escHtml(err.message)}</div>`;
+      console.warn("Gagal memuat modul eksternal dari Firestore (modul lokal tetap ditampilkan):", err);
     }
+
+    allItems = [...local, ...external];
+    renderFilters();
+    renderList();
   }
 
   function renderFilters() {
-    const mapelList = ["Semua", ...new Set(allItems.map((it) => it.mapel || "(Tanpa Mapel)"))];
+    const mapelList = ["Semua", ...new Set(allItems.map((it) => it.mapel))];
     const wrap = document.getElementById("filter-row");
     wrap.innerHTML = "";
     mapelList.forEach((m) => {
@@ -120,36 +206,73 @@
   function renderList() {
     const wrap = document.getElementById("list-modul");
     if (allItems.length === 0) {
-      wrap.innerHTML = '<div class="empty-state">Belum ada modul yang ditambahkan guru.</div>';
+      wrap.innerHTML = '<div class="empty-state">Belum ada modul yang ditambahkan. Modul baru akan muncul di sini.</div>';
       return;
     }
-    const filtered = activeMapel === "Semua" ? allItems : allItems.filter((it) => (it.mapel || "(Tanpa Mapel)") === activeMapel);
+    const filtered = activeMapel === "Semua" ? allItems : allItems.filter((it) => it.mapel === activeMapel);
     if (filtered.length === 0) {
-      wrap.innerHTML = '<div class="empty-state">Tidak ada modul untuk mapel ini.</div>';
+      wrap.innerHTML = '<div class="empty-state">Belum ada modul untuk mapel ini.</div>';
       return;
     }
+
     const grouped = {};
-    filtered.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
-    Object.keys(grouped).forEach((k) => grouped[k].sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
+    filtered.forEach((it) => { (grouped[it.mapel] = grouped[it.mapel] || []).push(it); });
 
     wrap.innerHTML = "";
     Object.keys(grouped).sort().forEach((mapel) => {
+      const items = grouped[mapel];
+      const color = items[0].mapelColor;
+      const icon = items[0].mapelIcon;
+      const groupId = "grp-" + mapel.replace(/[^a-zA-Z0-9]/g, "-");
+      const wasCollapsed = collapsedMapel.has(mapel);
+
       const title = document.createElement("div");
-      title.className = "list-group-title";
-      title.textContent = mapel;
+      title.className = "group-title" + (wasCollapsed ? " collapsed" : "");
+      title.style.setProperty("--m-color", color);
+      title.innerHTML = `<span class="dot"></span> ${esc(mapel)} <span class="count">(${items.length})</span><span class="chevron">▾</span>`;
+      title.onclick = () => {
+        if (collapsedMapel.has(mapel)) collapsedMapel.delete(mapel);
+        else collapsedMapel.add(mapel);
+        renderList();
+      };
       wrap.appendChild(title);
-      grouped[mapel].forEach((it) => {
-        const card = document.createElement("div");
-        card.className = "modul-card";
-        const urlOk = it.url_file && /^https?:\/\//.test(it.url_file);
-        card.innerHTML = `
-          <div>
-            <div class="m-title">${escHtml(it.judul || "-")}</div>
-            <div class="m-tema">${escHtml(it.tema || "")}</div>
-          </div>
-          ${urlOk ? `<a class="btn-buka" href="${escHtml(it.url_file)}" target="_blank" rel="noopener">Buka Modul</a>` : ""}
-        `;
-        wrap.appendChild(card);
+
+      const body = document.createElement("div");
+      body.className = "group-body" + (wasCollapsed ? " collapsed" : "");
+      body.id = groupId;
+      wrap.appendChild(body);
+
+      const byTema = {};
+      items.forEach((it) => { (byTema[it.tema || "Lainnya"] = byTema[it.tema || "Lainnya"] || []).push(it); });
+
+      Object.keys(byTema).forEach((tema) => {
+        byTema[tema].sort((a, b) => (a.urutan || 0) - (b.urutan || 0));
+
+        const subTitle = document.createElement("div");
+        subTitle.className = "subgroup-title";
+        subTitle.style.setProperty("--m-color", color);
+        subTitle.textContent = tema;
+        body.appendChild(subTitle);
+
+        byTema[tema].forEach((it) => {
+          const card = document.createElement("a");
+          card.className = "modul-card";
+          card.style.setProperty("--m-color", color);
+          card.href = it.href;
+          if (it.source === "external") { card.target = "_blank"; card.rel = "noopener"; }
+          card.innerHTML = `
+            <div class="m-icon">${it.icon || icon}</div>
+            <div class="m-body">
+              <div class="m-title">${esc(it.judul)}
+                <span class="m-badge${it.source === "local" ? " interaktif" : ""}">${it.source === "local" ? "🧩 Interaktif" : "🔗 Tautan"}</span>
+                ${it.status === "segera" ? '<span style="font-weight:400;color:var(--ink-3);font-size:11px;">(segera hadir)</span>' : ""}
+              </div>
+              ${it.ringkasan ? `<div class="m-ringkasan">${esc(it.ringkasan)}</div>` : ""}
+            </div>
+            <div class="m-arrow">→</div>
+          `;
+          body.appendChild(card);
+        });
       });
     });
   }
