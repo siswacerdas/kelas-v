@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perkembangan Belajar Mandiri · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../materi/assets/materi.css" />
+<link rel="stylesheet" href="assets/laporan.css" />
+<style>
+  .ma-page-container { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .ma-page-container h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.25rem; }
+  .ma-subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.25rem; }
+</style>
+</head>
+<body class="ma-root">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-laporan" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Perkembangan Belajar Mandiri <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../laporan-siswa.html">← Semua Laporan</a>
+  </div>
+
+  <div class="ma-page-container">
+    <h1>📖 Perkembangan Belajar Mandiri</h1>
+    <p class="ma-subtitle">Ketuntasan Materi Ajar & Modul yang sudah dipelajari siswa.</p>
+
+    <div id="lap-blocked" class="ma-hidden">
+      <div class="ma-empty">
+        Halaman ini khusus untuk akun <strong>guru</strong> dan <strong>orang tua</strong> —
+        tidak tersedia untuk akun siswa.
+        <br /><br />
+        <a href="../../index.html">← Kembali ke Beranda</a>
+      </div>
+    </div>
+
+    <div class="lap-soon-box" id="lap-soon" style="display:none">
+      <div class="lap-soon-icon">🚧</div>
+      <h2>Laporan ini sedang disiapkan</h2>
+      <p>
+        Ke depan, bagian ini akan menampilkan materi ajar yang sudah dibaca siswa dan
+        progres pengerjaan Modul belajar mandiri — begitu fitur pelacakannya siap.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="assets/laporan-guard.js"></script>
+<script>
+  document.addEventListener("laporan-context-ready", () => {
+    document.getElementById("lap-soon").style.display = "block";
+  });
+</script>
+</body>
+</html>
