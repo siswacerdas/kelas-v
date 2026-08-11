@@ -30,7 +30,7 @@
 
   <div class="ma-page-container">
     <h1>📊 Laporan Siswa</h1>
-    <p class="ma-subtitle" id="lap-subtitle">Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas.</p>
+    <p class="ma-subtitle">Pilih jenis laporan yang ingin dilihat.</p>
 
     <div id="lap-blocked" class="ma-hidden">
       <div class="ma-empty">
@@ -41,67 +41,40 @@
       </div>
     </div>
 
-    <div id="lap-picker"></div>
-    <div id="lap-report"></div>
+    <div class="lap-menu-grid" id="lap-menu" style="display:none">
+      <a href="laporan-siswa/mpls.html" class="lap-menu-card" style="--menu-accent:#2e6fbc">
+        <div class="lap-menu-icon">🧭</div>
+        <div>
+          <div class="lap-menu-title">MPLS</div>
+          <div class="lap-menu-desc">Kesiapan belajar, kesiapan akademik, dan jurnal aktivitas dari masa MPLS</div>
+        </div>
+        <div class="lap-menu-arrow">→</div>
+      </a>
+      <a href="laporan-siswa/belajar-mandiri.html" class="lap-menu-card lap-menu-soon" style="--menu-accent:#2a9d6f">
+        <div class="lap-menu-icon">📖</div>
+        <div>
+          <div class="lap-menu-title">Perkembangan Belajar Mandiri</div>
+          <div class="lap-menu-desc">Ketuntasan Materi Ajar & Modul yang sudah dipelajari siswa</div>
+          <span class="lap-menu-badge-soon">Segera Hadir</span>
+        </div>
+      </a>
+      <a href="laporan-siswa/latihan-mandiri.html" class="lap-menu-card lap-menu-soon" style="--menu-accent:#9b59b6">
+        <div class="lap-menu-icon">💪</div>
+        <div>
+          <div class="lap-menu-title">Latihan Mandiri Siswa</div>
+          <div class="lap-menu-desc">Hasil latihan dari Uji Kemampuan per Tujuan Pembelajaran</div>
+          <span class="lap-menu-badge-soon">Segera Hadir</span>
+        </div>
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- Firebase SDK — inline (bukan auth-guard.js), karena halaman ini butuh baca role+anak dari
-     Firestore, dan auth-guard.js sengaja TIDAK melakukan itu (lihat komentar di file itu:
-     "kalau ada halaman yang butuh nama/role, ambil sendiri di halaman itu"). Pola di bawah ini
-     sama persis dengan yang dipakai index.html. -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey:            "AIzaSyBcpuD90Qk7z4Bdxkm5KhXrsKVzZWFc3_k",
-    authDomain:        "kelas-v-2026.firebaseapp.com",
-    projectId:         "kelas-v-2026",
-    storageBucket:     "kelas-v-2026.firebasestorage.app",
-    messagingSenderId: "918314271457",
-    appId:             "1:918314271457:web:04df91f8cd856be49dada0"
-  };
-
-  const app  = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-
-  window.getFreshLaporanIdToken = async () => {
-    if (!auth.currentUser) throw new Error("Sesi login tidak ditemukan — silakan login ulang.");
-    return auth.currentUser.getIdToken();
-  };
-
-  onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-      window.location.href = "../index.html";
-      return;
-    }
-    const snap = await getDoc(doc(db, "users", user.uid));
-    const data = snap.exists() ? snap.data() : {};
-    const role = data.role || "siswa";
-
-    document.getElementById("checking").remove();
-    document.getElementById("app-laporan").classList.remove("ma-hidden");
-
-    if (role === "siswa") {
-      document.getElementById("lap-blocked").classList.remove("ma-hidden");
-      return;
-    }
-
-    document.dispatchEvent(new CustomEvent("laporan-context-ready", {
-      detail: { role, nama: data.nama || user.email, anak: data.anak || [] },
-    }));
+<script type="module" src="laporan-siswa/assets/laporan-guard.js"></script>
+<script>
+  document.addEventListener("laporan-context-ready", () => {
+    document.getElementById("lap-menu").style.display = "flex";
   });
 </script>
-<script src="mpls/assets/config.js"></script>
-<script src="mpls/assets/mpls-data.js"></script>
-<script src="mpls/assets/mpls-kognitif-data.js"></script>
-<script src="mpls/assets/mpls-jurnal-data.js"></script>
-<script src="mpls/assets/mpls-scoring.js"></script>
-<script src="mpls/assets/mpls-scoring-kognitif.js"></script>
-<script src="mpls/assets/mpls-scoring-jurnal.js"></script>
-<script src="laporan-siswa/assets/laporan.js"></script>
 </body>
 </html>
