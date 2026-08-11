@@ -32,7 +32,7 @@
  *                ?infografisFoto=<id atau URL Drive> -> PROXY byte gambar Galeri Visual, sama seperti
  *                ?foto= tapi TANPA gerbang wajibGuru_ (lihat serveInfografisBinary_()).
  *                ?laporanSiswa=1&nama=..&idToken=.. -> gabungan Profil+MPLS+Kognitif+Jurnal 1 siswa
- *                (untuk pages/laporan-siswa.html) — digerbang wajibAksesLaporan_() (BUKAN wajibGuru_),
+ *                (untuk pages/laporan-siswa/mpls.html) — digerbang wajibAksesLaporan_() (BUKAN wajibGuru_),
  *                supaya guru boleh lihat siapa saja TAPI akun "orangtua" hanya bisa lihat anaknya
  *                sendiri (field "anak" di Firestore users/{uid}). Lihat RANCANGAN-LAPORAN-SISWA.md.
  * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal() / setupInfografisSheet():
