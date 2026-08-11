@@ -1,11 +1,14 @@
 /**
- * laporan.js — logika pages/laporan-siswa.html
- * Bergantung pada: MPLS_CONFIG (config.js), window.getFreshLaporanIdToken() (inline script di
- * laporan-siswa.html), dan event "laporan-context-ready" (detail: { role, nama, anak }).
+ * laporan.js — logika pages/laporan-siswa/mpls.html (satu dari 3 "pintu" laporan; lihat
+ * pages/laporan-siswa.html untuk landing-nya, dan RANCANGAN-LAPORAN-SISWA.md untuk peta
+ * lengkap ketiganya: MPLS [halaman ini] / Perkembangan Belajar Mandiri / Latihan Mandiri Siswa).
+ * Bergantung pada: MPLS_CONFIG (config.js), window.getFreshLaporanIdToken() (dari
+ * assets/laporan-guard.js), dan event "laporan-context-ready" (detail: { role, nama, anak }).
  *
- * Rancangan lengkap: lihat RANCANGAN-LAPORAN-SISWA.md — ini implementasi Fase 1 (Profil, MPLS
- * non-kognitif, MPLS Kognitif, Jurnal Aktivitas — SEMUA data yang SUDAH ada di sistem; Hasil
- * Latihan Bank Soal & Progres Materi menyusul di Fase 2/3 terpisah, belum ada di sini).
+ * Ini implementasi Fase 1 (Profil, MPLS non-kognitif, MPLS Kognitif, Jurnal Aktivitas — SEMUA
+ * data yang SUDAH ada di sistem). Hasil Latihan (Uji Kemampuan) & Progres Materi/Modul kini
+ * masing-masing jadi laporan TERPISAH (lihat belajar-mandiri.html & latihan-mandiri.html),
+ * bukan digabung ke laporan ini lagi.
  */
 
 let ctx = null; // { role, nama, anak } dari event laporan-context-ready

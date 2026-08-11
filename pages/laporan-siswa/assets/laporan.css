@@ -4,6 +4,34 @@
    konsisten dengan halaman lain, tidak duplikasi token warna.
    ============================================================ */
 
+/* ── Menu landing (pages/laporan-siswa.html) — 3 pintu: MPLS, Perkembangan Belajar Mandiri,
+   Latihan Mandiri Siswa. Pola sama dengan .ig-mapel-card di infografis.css. ── */
+.lap-menu-grid { display: flex; flex-direction: column; gap: 10px; margin-top: 1.25rem; }
+.lap-menu-card {
+  display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink);
+  background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 1rem 1.1rem; border-left: 4px solid var(--menu-accent, var(--accent));
+}
+.lap-menu-icon { font-size: 1.6rem; flex-shrink: 0; }
+.lap-menu-title { font-weight: 700; font-size: 14.5px; }
+.lap-menu-desc { font-size: 12px; color: var(--ink-3); margin-top: 2px; line-height: 1.4; }
+.lap-menu-arrow { margin-left: auto; color: var(--ink-3); font-size: 15px; flex-shrink: 0; }
+.lap-menu-card.lap-menu-soon { opacity: 0.75; cursor: default; }
+.lap-menu-badge-soon {
+  display: inline-block; margin-top: 4px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-3);
+  background: var(--paper-2); border-radius: 20px; padding: 2px 9px;
+}
+
+/* ── Halaman "segera hadir" (belajar-mandiri.html, latihan-mandiri.html) ── */
+.lap-soon-box {
+  background: #fff; border: 1.5px dashed var(--border); border-radius: var(--r-lg);
+  padding: 2rem 1.5rem; text-align: center; margin-top: 1rem;
+}
+.lap-soon-box .lap-soon-icon { font-size: 2.2rem; margin-bottom: 0.6rem; }
+.lap-soon-box h2 { font-size: 15px; margin-bottom: 0.5rem; }
+.lap-soon-box p { font-size: 12.5px; color: var(--ink-3); line-height: 1.6; max-width: 420px; margin: 0 auto; }
+
 /* ── Pemilih siswa (guru: cari/pilih siapa saja; orang tua: pilih di antara anaknya) ── */
 .lap-search {
   width: 100%; font-family: inherit; font-size: 14px; color: var(--ink);
