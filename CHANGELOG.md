@@ -15,12 +15,54 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   di kedua halaman tsb)
 - Gerbang akses `input.html` masih pakai kode akses sederhana (belum dipindah ke
   Firebase) — sengaja tidak diubah dulu di update ini supaya tidak regresi
-- Riwayat pengerjaan siswa di Bank Soal belum disimpan ke Firestore (kuis murni
-  di sisi klien, skor tidak direkap guru) — perlu didiskusikan dulu apakah memang
-  diperlukan sebelum ditambahkan (butuh koleksi & rules baru)
+- Riwayat pengerjaan siswa di Uji Kemampuan (dulu "Bank Soal") belum
+  disimpan ke Firestore (kuis murni di sisi klien, skor tidak direkap guru)
+  — rencana penyimpanannya sudah dipetakan sebagai bagian dari laporan
+  "Latihan Mandiri Siswa" (lihat `RANCANGAN-LAPORAN-SISWA.md`), belum
+  dikerjakan
 
 ### Ditambahkan
-- **Laporan Siswa** (`pages/laporan-siswa.html`, Fase 1 — lihat
+- **Uji Kemampuan** (ganti nama dari "Bank Soal") — `pages/bank-soal.html`
+  diganti nama jadi `pages/uji-kemampuan.html`, seluruh label UI ikut
+  diperbarui (kartu beranda, tab di `admin.html`). Koleksi Firestore
+  `bank_soal` TIDAK ikut diganti nama (internal saja, tidak perlu migrasi
+  data). Alasan ganti nama: "Bank Soal" terdengar seperti gudang soal untuk
+  guru, padahal ini halaman LATIHAN untuk siswa — "Uji Kemampuan" lebih
+  menggambarkan fungsinya dari sudut pandang siswa.
+- **Laporan Siswa direstrukturisasi jadi 3 pintu terpisah** — sebelumnya 1
+  halaman tunggal (`pages/laporan-siswa.html`) langsung berisi laporan
+  MPLS. Sekarang halaman itu jadi LANDING (menu 3 pintu), laporan MPLS-nya
+  sendiri pindah ke `pages/laporan-siswa/mpls.html`:
+  1. **MPLS** (`mpls.html`) — AKTIF, isinya sama seperti Fase 1 sebelumnya
+     (Profil, Kesiapan Belajar, Kesiapan Akademik, Jurnal Aktivitas)
+  2. **Perkembangan Belajar Mandiri** (`belajar-mandiri.html`) — halaman
+     "Segera Hadir", nanti berisi ketuntasan Materi Ajar yang sudah dibaca
+     siswa + progres Modul belajar mandiri (belum ada pelacakannya sama
+     sekali di sistem — lihat rencana lengkap di `RANCANGAN-LAPORAN-SISWA.md`)
+  3. **Latihan Mandiri Siswa** (`latihan-mandiri.html`) — halaman "Segera
+     Hadir", nanti berisi hasil latihan dari Uji Kemampuan dipilah per
+     Tujuan Pembelajaran (skornya juga belum tersimpan ke server sama
+     sekali — lihat baris "Direncanakan" di atas)
+  - Refactor pendukung: logika gerbang akses (Firebase Auth + baca
+    role/anak dari Firestore, blokir akun siswa) yang sebelumnya inline di
+    1 file, sekarang diekstrak jadi `pages/laporan-siswa/assets/
+    laporan-guard.js` — dipakai bersama oleh landing + ketiga pintu (dulu
+    cuma dipakai 1 halaman jadi inline masih masuk akal, sekarang dipakai
+    4 halaman jadi wajar diekstrak, mengikuti pola `guru-guard.js`).
+  - Endpoint `Code.gs` (`?laporanSiswa=1`, `wajibAksesLaporan_`) TIDAK
+    berubah sama sekali — cuma halaman yang memanggilnya yang berpindah
+    lokasi, jadi tidak ada regresi keamanan dari restrukturisasi ini.
+- **Laporan MPLS ditulis ulang jadi naratif** (bagian dari halaman yang
+  sama, pindah ke `mpls.html`) — versi sebelumnya menampilkan SEMUA field
+  mentah sheet MPLS/Kognitif/Jurnal apa adanya (20-30 baris angka skala 1-4
+  tanpa konteks — tidak bermakna buat orang tua). Diganti total memakai
+  mesin skoring & kesimpulan otomatis yang SUDAH ADA
+  (`MplsScoring`/`MplsScoringKognitif`/`MplsScoringJurnal` di
+  `pages/mpls/assets/`, sama persis yang dipakai laporan cetak guru
+  `pages/mpls/laporan*.html`) — sekarang tampil sebagai level BB/MB/BSH/
+  BSB + kalimat kesimpulan + rekomendasi konkret "di rumah" (dan "di
+  sekolah" khusus untuk akun guru), bukan angka mentah.
+- **Laporan Siswa** (Fase 1 — lihat
   `RANCANGAN-LAPORAN-SISWA.md` untuk rancangan lengkap & fase berikutnya)
   — halaman baru berisi ringkasan Profil, Asesmen MPLS (non-kognitif),
   Asesmen Kognitif, dan Jurnal Aktivitas per siswa. Bisa diakses **guru**
@@ -42,10 +84,11 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
     `wajibAksesLaporan_()`) — perilaku & pesan error `wajibGuru_()` SENGAJA
     dijaga persis sama (lihat §25/§27 ANTIREGRESI.md soal riwayat bug di
     fungsi ini) supaya refactor ini tidak jadi regresi.
-  - Halaman dibangun mengikuti pola `index.html` sendiri (baca role dari
-    Firestore inline setelah login), BUKAN bikin file guard baru — karena
-    cuma dipakai 1 halaman untuk 2 role sekaligus (beda dari
-    `guru-guard.js` yang dipakai banyak halaman).
+  - Halaman awalnya dibangun mengikuti pola `index.html` sendiri (baca role
+    dari Firestore inline setelah login) karena saat itu cuma 1 halaman —
+    **sejak restrukturisasi 3-pintu di atas, logika ini sudah diekstrak
+    jadi `laporan-guard.js`** (lihat entri "Laporan Siswa direstrukturisasi"
+    di atas), catatan ini dipertahankan sebagai riwayat keputusan awal.
   - **Belum termasuk di Fase 1** (menyusul Fase 2/3, lihat rancangan):
     hasil latihan Bank Soal (belum tersimpan sama sekali di sistem), progres
     membaca Materi Ajar (belum dilacak sama sekali), foto profil siswa

@@ -15,7 +15,7 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
 | Modul Pembelajaran | Modul scaffolding per tema & mata pelajaran |
 | Materi Ajar | Buku Belajar Mandiri siswa |
 | Galeri Visual | Gambar, poster, infografis & video singkat pendukung belajar per mata pelajaran, khusus untuk gaya belajar visual |
-| Bank Soal | Soal latihan & ujian per mapel |
+| Uji Kemampuan | Latihan soal mandiri per mata pelajaran |
 | Laporan Siswa | Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas per siswa — guru (siapa saja) & orang tua (anaknya sendiri saja), tidak untuk siswa |
 | Pengumuman | Informasi penting dari guru |
 | Jadwal | Jadwal pelajaran & kalender akademik |
@@ -134,13 +134,13 @@ kelas-v/
     ├── modul.html         ← Daftar modul, bisa diakses guru & siswa yang login
     ├── materi.html        ← Materi Ajar (dibaca langsung), guru & siswa
     ├── infografis.html    ← Landing Galeri Visual, menu per mata pelajaran
-    ├── bank-soal.html     ← Latihan soal interaktif dengan skor, guru & siswa
+    ├── uji-kemampuan.html ← Latihan soal interaktif dengan skor, guru & siswa (dulu "bank-soal.html")
     ├── info.html          ← Arsip lengkap pengumuman, guru & siswa
     ├── jadwal.html        ← Kerangka statis, isi jadwal menunggu jadwal resmi
-    ├── admin.html         ← Panel kelola konten (Pengumuman/Modul/Materi/Bank Soal), hanya guru
-    ├── laporan-siswa.html ← Ringkasan profil+MPLS+Jurnal per siswa, guru (siapa saja) &
-    │                         orangtua (anaknya sendiri saja) — TIDAK untuk siswa
-    │   └── (assets di pages/laporan-siswa/assets/, lihat di bawah)
+    ├── admin.html         ← Panel kelola konten (Pengumuman/Modul/Materi/Uji Kemampuan), hanya guru
+    ├── laporan-siswa.html ← Landing 3 pintu laporan (MPLS/Perkembangan Belajar Mandiri/
+    │                         Latihan Mandiri Siswa), guru (siapa saja) & orangtua (anaknya
+    │                         sendiri saja) — TIDAK untuk siswa
     ├── kelas/             ← Data profil & foto siswa (khusus guru, Firebase-gated)
     │   ├── index.html
     │   └── assets/
@@ -157,9 +157,14 @@ kelas-v/
     │       ├── infografis-galeri.js
     │       └── infografis-kelola-tp.js
     ├── laporan-siswa/
+    │   ├── mpls.html            ← Pintu 1: kesiapan belajar+akademik+jurnal (AKTIF)
+    │   ├── belajar-mandiri.html ← Pintu 2: ketuntasan Materi Ajar & Modul (Segera Hadir)
+    │   ├── latihan-mandiri.html ← Pintu 3: hasil Uji Kemampuan per TP (Segera Hadir)
     │   └── assets/
+    │       ├── laporan-guard.js ← Gerbang akses bersama (role guru/orangtua, blokir siswa)
+    │       │                       untuk landing + ketiga pintu di atas
     │       ├── laporan.css
-    │       └── laporan.js
+    │       └── laporan.js       ← Logika Pintu 1 (MPLS) saja
     └── mpls/
         ├── index.html     ← Landing MPLS (daftar sub-halaman)
         ├── input.html     ← Form input penilaian (mobile-first)

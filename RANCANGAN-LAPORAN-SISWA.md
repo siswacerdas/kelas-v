@@ -1,10 +1,18 @@
 # Rancangan Fitur: Laporan Siswa (Guru & Orang Tua)
 
-> **Status: FASE 1 SUDAH DIIMPLEMENTASIKAN** (kode ditulis, belum dites
-> dengan Firebase/Apps Script sungguhan oleh pemilik proyek). Keputusan di
-> §8 sudah dikonfirmasi: akun terpisah (Opsi A), prioritas Fase 1 dulu,
-> fokus tampilan web (belum ada cetak/PDF). Fase 2 (Hasil Latihan Bank
-> Soal) & Fase 3 (Progres Materi) BELUM dikerjakan — menyusul terpisah.
+> **Status: FASE 1 SUDAH DIIMPLEMENTASIKAN + DIRESTRUKTURISASI jadi 3 PINTU.**
+> Sesuai arahan terbaru, laporan bukan lagi 1 halaman tunggal — sekarang
+> `pages/laporan-siswa.html` jadi LANDING (menu 3 pintu), dan:
+> 1. **MPLS** (`pages/laporan-siswa/mpls.html`) — ✅ AKTIF, ini Fase 1 yang
+>    sudah dikerjakan (§1-5 di bawah), sekarang juga sudah naratif (BB/MB/
+>    BSH/BSB + kesimpulan) bukan dump angka mentah.
+> 2. **Perkembangan Belajar Mandiri** (`belajar-mandiri.html`) — 🚧 halaman
+>    "Segera Hadir", rancangannya di §7 (diperluas, sekarang juga mencakup
+>    progres Modul, bukan cuma Materi Ajar).
+> 3. **Latihan Mandiri Siswa** (`latihan-mandiri.html`) — 🚧 halaman "Segera
+>    Hadir", rancangannya di §6 (diperluas signifikan — lihat catatan besar
+>    di bagian itu soal redesain "Uji Kemampuan"/dulu "Bank Soal").
+>
 
 ---
 
@@ -76,26 +84,30 @@ tidak ada rule Firestore lain yang perlu disentuh untuk fitur ini.
 
 ## 4. Kontrol akses di halaman (frontend)
 
-**Keputusan desain: TIDAK bikin file guard baru terpisah** (mis.
-`orangtua-guard.js`). Alasan: `guru-guard.js` dipakai BANYAK halaman
-(`kelas/`, `mpls/rekap.html`, dst.) makanya wajar jadi modul sendiri.
-Laporan Siswa cuma 1 halaman yang dipakai 2 role sekaligus (guru & orang
-tua) dengan tampilan berbeda — pola yang sudah ada persis untuk ini adalah
-**index.html sendiri**, yang sudah baca `role` dari Firestore secara inline
-lalu menampilkan/menyembunyikan panel berdasarkan nilainya. `laporan-siswa.
-html` akan memakai pola yang sama:
+> **Catatan sejarah keputusan**: rancangan AWAL (saat fitur ini masih 1
+> halaman tunggal) sengaja TIDAK membuat file guard terpisah, karena
+> logikanya cuma dipakai 1 halaman — polanya diambil dari **index.html**
+> sendiri (baca `role` dari Firestore inline, tampilkan/sembunyikan sesuai
+> nilainya). **Sejak restrukturisasi 3-pintu, logika ini SUDAH diekstrak**
+> jadi `pages/laporan-siswa/assets/laporan-guard.js` — karena sekarang
+> dipakai 4 halaman sekaligus (landing + 3 pintu), jadi wajar diekstrak,
+> sama seperti alasan `guru-guard.js` dulu jadi modul sendiri. Bagian di
+> bawah ini menjelaskan ALUR-nya (tetap berlaku), bukan lagi soal "inline
+> vs modul terpisah" (sudah diputuskan: modul terpisah).
 
-1. Gerbang login pakai `auth-guard.js` (login apa saja, sama seperti
+1. Gerbang login pakai pola `auth-guard.js` (login apa saja, sama seperti
    `materi.html`) — BUKAN `guru-guard.js` (itu akan memblokir orang tua).
-2. Setelah `user-verified`, baca dokumen `users/{uid}` sendiri (persis pola
-   di `index.html`) untuk dapat `role` + `anak`.
+2. Setelah login, baca dokumen `users/{uid}` sendiri (lewat
+   `laporan-guard.js`) untuk dapat `role` + `anak`.
 3. **role === "siswa" → tolak akses**, redirect balik ke beranda dengan
    pesan jelas (ini yang memastikan syarat "tidak untuk siswa" terpenuhi
    di sisi klien — penegakan SESUNGGUHNYA tetap di server, lihat §5).
-4. **role === "guru"** → tampilkan dropdown/pencarian SEMUA siswa (dari
-   endpoint yang sudah ada, `?siswa=1`).
-5. **role === "orangtua"** → tampilkan HANYA nama-nama di `anak` (kalau
-   cuma 1 anak, langsung tampilkan laporannya tanpa perlu memilih).
+4. **role === "guru"** → di landing, semua 3 pintu tampil; di Pintu 1
+   (MPLS), tampilkan dropdown/pencarian SEMUA siswa (dari endpoint yang
+   sudah ada, `?siswa=1`).
+5. **role === "orangtua"** → di Pintu 1 (MPLS), tampilkan HANYA nama-nama
+   di `anak` (kalau cuma 1 anak, langsung tampilkan laporannya tanpa perlu
+   memilih).
 
 ---
 
@@ -162,36 +174,117 @@ mengisi dropdown, tidak perlu endpoint baru untuk ini.
 
 ---
 
-## 6. Fase 2 (nanti, setelah Fase 1 disetujui jalan): Hasil Latihan Bank Soal
+## 6. Latihan Mandiri Siswa (Pintu 3, `pages/laporan-siswa/latihan-mandiri.html`) — laporannya, dan redesain besar "Uji Kemampuan" di baliknya
 
-- Sheet baru **"Data Hasil Latihan"**: Timestamp, Nama Siswa, Mapel, Judul
-  Bank Soal, Skor, Jumlah Benar, Jumlah Soal.
-- **Yang perlu dicek dulu sebelum desain endpoint-nya**: apakah
-  `bank-soal.html` saat ini meminta siswa memilih/mengetik namanya sebelum
-  mulai mengerjakan? Kalau belum, perlu ditambah (mirip pola pilih nama di
-  `input.html` MPLS) — supaya hasil bisa dikaitkan ke siswa yang benar.
-- Endpoint baru `doPost type: "hasil_latihan"` — TIDAK perlu digerbang
-  `wajibGuru_`/`wajibAksesLaporan_` (yang mengirim ini adalah SISWA saat
-  submit kuis, bukan guru/orang tua) — cukup validasi field wajar seperti
-  endpoint MPLS siswa yang sudah ada.
-- Tambah `hasilLatihan: [...]` ke respons `?laporanSiswa=1`.
+> **Ini bukan lagi "Fase 2" kecil seperti rancangan awal** — setelah
+> didiskusikan lebih lanjut, ternyata "Uji Kemampuan" (dulu "Bank Soal")
+> perlu dirombak jauh lebih besar dari sekadar "tambah penyimpanan skor".
+> Bagian ini mendokumentasikan kebutuhannya; **mekanisme detailnya
+> SENGAJA belum didesain penuh** (kata pemilik proyek: "mekanismenya akan
+> kita atur nanti") — jadi anggap ini catatan kebutuhan, bukan spesifikasi
+> siap-kode.
 
-## 7. Fase 3 (opsional, paling rumit): Progres Membaca Materi Ajar
+### 6.1 Kondisi sekarang vs yang diinginkan
 
-- Sheet baru **"Data Progres Materi"**: Timestamp, Nama Siswa, Materi Slug
-  (pakai field `file` yang SAMA dengan yang dipakai Galeri Visual —
-  konsisten, bukan skema baru), Status.
-- Perlu skrip pelacak yang dimuat di SEMUA halaman materi (~43 file) — opsi
-  paling praktis: 1 file JS bersama (`materi-progress-tracker.js`) yang
-  otomatis membaca path halamannya sendiri (`window.location.pathname`)
-  jadi tidak perlu edit manual tiap file materi, cukup tambah 1 baris
-  `<script src="...">` di tiap file (atau, kalau mau nol-sentuh sama
-  sekali ke 43 file, dipertimbangkan lain waktu apakah `materi-nav.js` yang
-  SUDAH di-include semua halaman materi bisa dipakai sebagai tempat
-  menambahkan ini, supaya benar-benar tidak perlu sentuh file individual).
-- **Ini bagian paling rumit & paling gampang ditunda** — disarankan
-  didiskusikan lagi terpisah setelah Fase 1 & 2 selesai dan benar-benar
-  dipakai, baru diputuskan apakah datanya senyata itu dibutuhkan.
+| Aspek | Sekarang (`uji-kemampuan.html`) | Yang diinginkan |
+|---|---|---|
+| Pengelompokan | Per **mapel** saja | Per **Tujuan Pembelajaran (TP)** — siswa pilih 1 atau beberapa TP untuk diuji |
+| Jenis soal | Cuma **1**: pilihan ganda tunggal | **6 jenis**: pilihan ganda tunggal, pilihan ganda kompleks (jawaban >1), pilihan ganda kriteria, benar-salah, mengurutkan, isian singkat (SATU kata) |
+| Ukuran pool | Beberapa soal per mapel (sedikit) | **200-300 soal per TP** |
+| Penyimpanan skor | ❌ Tidak ada sama sekali | Perlu tersimpan agar bisa direkap di laporan "Latihan Mandiri Siswa" |
+| Jenis soal yang DIHINDARI | — | Isian kalimat & uraian — sengaja tidak dipakai karena sulit dinilai otomatis |
+
+### 6.2 Implikasi desain yang perlu dipikirkan (belum diputuskan)
+
+- **Skema data per jenis soal berbeda-beda** — pilihan ganda butuh daftar
+  opsi + 1 jawaban benar; pilihan ganda kompleks butuh daftar opsi + BEBERAPA
+  jawaban benar; mengurutkan butuh daftar item + urutan benar; isian singkat
+  butuh 1 kata kunci jawaban (mungkin perlu toleransi huruf besar/kecil,
+  spasi). Kemungkinan besar perlu 1 skema data umum dengan field
+  `jenisSoal` + field tambahan yang berbeda-beda tergantung jenisnya
+  (bukan 1 tabel kaku untuk semua jenis).
+- **Field TP belum ada sama sekali** di skema `bank_soal` Firestore saat
+  ini (cuma ada `mapel`) — perlu ditambah, idealnya memakai kode TP yang
+  sama dengan `materi-index.js` (field `tp`, mis. "M1") supaya konsisten
+  dengan sistem penomoran TP yang sudah ada di Materi Ajar & Galeri Visual.
+- **Mekanisme pemilihan soal saat kuis dimulai** — kalau pool-nya 200-300
+  per TP, TIDAK mungkin semua ditampilkan sekaligus; perlu logika acak
+  ambil sejumlah N soal dari pool (N-nya berapa, apakah bisa diulang
+  dengan soal berbeda tiap kali — ini bagian "mekanisme" yang belum
+  diputuskan pemilik proyek).
+- **Penilaian otomatis per jenis soal** beda logika: pilihan ganda tunggal
+  (cocok 1:1), pilihan ganda kompleks (himpunan jawaban harus PERSIS
+  cocok — atau ada nilai parsial untuk jawaban sebagian benar?), pilihan
+  ganda kriteria (bentuknya seperti apa — perlu klarifikasi format ini
+  saat desain lanjut), benar-salah (cocok boolean), mengurutkan (urutan
+  array harus cocok), isian singkat (cocok teks, kemungkinan perlu
+  normalisasi kapitalisasi/spasi/tanda baca).
+- **Skala pembuatan konten**: 200-300 soal × 6 jenis (tidak harus rata,
+  tapi total besar) × ±9 TP Bahasa Indonesia (dan TP mapel lain menyusul)
+  = ribuan soal. Ini PEKERJAAN KONTEN BESAR, terpisah dari pekerjaan kode
+  — mirip skalanya dengan proyek prompt infografis yang sudah jalan.
+  Kemungkinan perlu pendekatan serupa (Claude bantu susun/generate draf
+  soal per TP, guru mengoreksi) sebagai sesi kerja TERPISAH nanti.
+- **Penyimpanan**: tetap di Firestore (koleksi `bank_soal` yang sudah ada,
+  cukup diperluas skemanya) LEBIH MASUK AKAL daripada pindah ke Google
+  Sheets — pool sebesar ini + kebutuhan filter per TP/jenis soal lebih
+  cocok dengan query Firestore daripada memindai ribuan baris sheet tiap
+  request.
+- Skor hasil pengerjaan: sheet BARU **"Data Hasil Latihan"** di Google
+  Sheets (Timestamp, Nama Siswa, TP, Skor, Jumlah Benar, Jumlah Soal) —
+  ini bagian yang lebih sederhana & tidak berubah dari rancangan awal,
+  dipakai untuk mengisi laporan "Latihan Mandiri Siswa".
+
+### 6.3 Yang TIDAK berubah dari rancangan awal
+- Endpoint baru `doPost type: "hasil_latihan"` — TIDAK digerbang
+  `wajibGuru_`/`wajibAksesLaporan_` (pengirimnya siswa saat submit, bukan
+  guru/orang tua).
+- Field `hasilLatihan: [...]` ditambahkan ke respons `?laporanSiswa=1`
+  KHUSUS untuk endpoint laporan "Latihan Mandiri Siswa" (endpoint terpisah
+  dari `?laporanSiswa=1` yang dipakai Pintu 1/MPLS — perlu endpoint baru
+  sendiri, bukan menumpuk ke endpoint MPLS yang sudah ada).
+
+## 7. Perkembangan Belajar Mandiri (Pintu 2, `pages/laporan-siswa/belajar-mandiri.html`)
+
+Mencakup **DUA** sumber data (diperluas dari rancangan awal yang cuma
+menyebut Materi Ajar):
+
+### 7.1 Ketuntasan Materi Ajar
+- Sama seperti rancangan awal: sheet baru **"Data Progres Materi"**
+  (Timestamp, Nama Siswa, Materi Slug, Status), field `file` di
+  `materi-index.js` dipakai ulang sebagai Materi Slug (konsisten dengan
+  yang sudah dipakai Galeri Visual).
+- Perlu skrip pelacak ringan yang dimuat di semua halaman materi.
+
+### 7.2 Progres Modul — BARU, temuan dari contoh modul yang diberikan
+- Materi Ajar mengajak siswa belajar lewat **kesimpulan** (ringkas,
+  langsung ke inti). Modul mengajak siswa belajar **mandiri** lewat
+  penjelasan + latihan mandiri (BUKAN latihan soal — beda dari "Uji
+  Kemampuan" di §6) — formatnya kaya-interaksi: dengar cerita (Web Speech
+  API), cocokkan kartu, urutkan kejadian, sebab-akibat, refleksi, sampai
+  bagian "kerjakan sendiri" di akhir sebagai uji mandiri.
+- **Temuan penting dari contoh modul yang diberikan**: indikator
+  "X% selesai" yang terlihat di modul itu **murni dihitung & disimpan di
+  variabel JavaScript browser** — hilang total begitu halaman ditutup/
+  refresh. TIDAK ada satu byte pun yang terkirim ke server. Supaya
+  progres ini bisa muncul di laporan, modul-modul berikutnya perlu
+  "jembatan" baru: sebuah fungsi kecil yang mengirim progres (persentase,
+  atau minimal status "selesai/belum") ke Apps Script setiap kali berubah
+  atau saat modul ditutup.
+- Sheet baru (bisa digabung dengan progres materi, atau terpisah — belum
+  diputuskan) **"Data Progres Modul"**: Timestamp, Nama Siswa, Modul Slug,
+  Persentase/Status.
+- **Ini bagian PALING RUMIT** dari fitur Perkembangan Belajar Mandiri —
+  bukan cuma butuh endpoint baru, tapi juga mengubah CARA modul-modul
+  masa depan ditulis (perlu pola/template baku supaya "jembatan" progres
+  ini konsisten di semua modul, bukan ditambal manual tiap modul beda-beda
+  caranya). Modul yang sudah dicontohkan Bapak BELUM punya jembatan ini —
+  kalau modul itu langsung dipakai apa adanya, progresnya tidak akan
+  pernah sampai ke laporan.
+- **Disarankan didiskusikan terpisah** — mencakup: format standar modul ke
+  depan (supaya "jembatan" progres bisa dipasang sekali sebagai template,
+  bukan disesuaikan tiap modul), dan apakah pelacakan granular (per bagian
+  modul) diperlukan atau cukup status selesai/belum secara keseluruhan.
 
 ---
 
@@ -199,26 +292,39 @@ mengisi dropdown, tidak perlu endpoint baru untuk ini.
 
 - [x] Setuju dengan skema `anak: array` di dokumen Firestore `users/{uid}`? — **Ya, dipakai persis seperti rancangan.**
 - [x] Setuju halaman `laporan-siswa.html` pakai pola inline role-check
-      (seperti `index.html`) daripada bikin file guard terpisah? — **Ya.**
+      (seperti `index.html`) daripada bikin file guard terpisah? — **Ya
+      pada awalnya; sejak restrukturisasi 3-pintu, logika ini SUDAH
+      diekstrak jadi `laporan-guard.js` (dipakai 4 halaman sekarang, jadi
+      wajar diekstrak — lihat §3).**
 - [x] Prioritas Fase 1 dulu (data yang SUDAH ada: Profil, MPLS, Jurnal) —
       Hasil Latihan & Progres Materi menyusul di Fase 2/3 terpisah? — **Ya.**
 - [x] Ada preferensi tampilan (mis. perlu opsi cetak/PDF dari awal, atau
       cukup tampilan web dulu)? — **Fokus tampilan web dulu, fitur tambahan menyusul.**
+- [x] Restrukturisasi jadi 3 menu terpisah (MPLS / Perkembangan Belajar
+      Mandiri / Latihan Mandiri Siswa)? — **Ya, landing + 3 pintu sudah
+      dibangun (Pintu 2 & 3 masih "Segera Hadir").**
+- [x] Nama halaman pengganti "Bank Soal"? — **"Uji Kemampuan"** (nama
+      laporannya sendiri, "Latihan Mandiri Siswa", tidak berubah).
 
-## 9. Yang BELUM dikerjakan di Fase 1 (disengaja, sesuai lingkup yang disepakati)
+## 9. Yang BELUM dikerjakan (disengaja, sesuai lingkup yang disepakati sejauh ini)
 
-- **Foto profil siswa** tidak ditampilkan di laporan. Proxy `?foto=` yang
-  sudah ada masih hard-gated `wajibGuru_()` saja (lihat `Code.gs`) — kalau
-  ORANG TUA mencoba memakainya, akan ditolak. Menampilkan foto untuk orang
-  tua butuh perubahan tersendiri ke `serveFotoBinary_()` (bukan sekadar
-  ganti gerbang — proxy itu cuma menerima ID file, tidak tahu itu foto
-  siswa yang mana, jadi butuh cara mencocokkan file ke `namaSiswa` dulu
-  sebelum bisa dibatasi cakupannya seperti `wajibAksesLaporan_()`).
+- **Foto profil siswa** tidak ditampilkan di laporan MPLS. Proxy `?foto=`
+  yang sudah ada masih hard-gated `wajibGuru_()` saja (lihat `Code.gs`) —
+  kalau ORANG TUA mencoba memakainya, akan ditolak. Menampilkan foto untuk
+  orang tua butuh perubahan tersendiri ke `serveFotoBinary_()` (bukan
+  sekadar ganti gerbang — proxy itu cuma menerima ID file, tidak tahu itu
+  foto siswa yang mana, jadi butuh cara mencocokkan file ke `namaSiswa`
+  dulu sebelum bisa dibatasi cakupannya seperti `wajibAksesLaporan_()`).
   Disengaja ditunda supaya tidak menyentuh model keamanan proxy foto siswa
   yang sudah berjalan tanpa perhatian desain khusus.
-- **Opsi cetak/PDF** — belum ada tombol cetak. Browser sudah punya
-  Ctrl+P/Cmd+P bawaan yang bisa dipakai sementara (tampilan belum
-  dioptimalkan khusus untuk itu).
-- Fase 2 (Hasil Latihan Bank Soal) & Fase 3 (Progres Materi) — lihat §6–7,
-  belum dikerjakan sama sekali.
-
+- **Opsi cetak/PDF** — belum ada tombol cetak di Pintu 1 (MPLS). Browser
+  sudah punya Ctrl+P/Cmd+P bawaan yang bisa dipakai sementara (tampilan
+  belum dioptimalkan khusus untuk itu).
+- **Pintu 2 (Perkembangan Belajar Mandiri)** — masih "Segera Hadir".
+  Rancangan kebutuhannya di §7, TERMASUK temuan penting bahwa progres
+  Modul contoh yang diberikan murni tersimpan di browser (belum ada
+  jembatan ke server sama sekali).
+- **Pintu 3 (Latihan Mandiri Siswa)** — masih "Segera Hadir". Rancangan
+  kebutuhannya di §6, mencakup redesain besar "Uji Kemampuan" (6 jenis
+  soal, pool 200-300/TP, seleksi per-TP) — mekanisme detailnya SENGAJA
+  belum didesain penuh, menunggu diskusi lanjutan.

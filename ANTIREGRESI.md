@@ -242,7 +242,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 ### 16. Panel Kelola Konten Guru (`pages/admin.html`, v0.8.0)
 - [ ] Halaman menolak akses jika login sebagai **siswa** (Firebase-gated pakai
       `guru-guard.js`, sama seperti `rekap*.html`/`laporan*.html`/`pages/kelas/`)
-- [ ] 3 tab (Pengumuman, Modul, Bank Soal) bisa diklik bolak-balik, isi form tidak
+- [ ] 3 tab (Pengumuman, Modul, Uji Kemampuan) bisa diklik bolak-balik, isi form tidak
       tercampur antar tab
 - [ ] **Tab Pengumuman**: tambah baru → muncul di list & di beranda (`index.html`)
       dengan tanggal hari ini; klik Edit → form terisi ulang persis, judul jadi
@@ -253,7 +253,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       mapel baru; tambah modul kedua dengan mapel yang SAMA tapi urutan lebih
       kecil → tampil LEBIH ATAS dari yang pertama (urutan menentukan posisi,
       bukan waktu tambah); Edit & Hapus berfungsi sama seperti Pengumuman
-- [ ] **Tab Bank Soal**: isi 2-4 pilihan, centang radio "Benar" di salah satu →
+- [ ] **Tab Uji Kemampuan**: isi 2-4 pilihan, centang radio "Benar" di salah satu →
       field jawaban yang tersimpan **sesuai teks pilihan yang dicentang**, bukan
       urutan/huruf (A/B/C/D); ubah radio ke pilihan lain sebelum simpan → jawaban
       ikut berubah; Edit soal lama → radio "Benar" otomatis tercentang ulang di
@@ -264,7 +264,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Tombol "+ Tambah Pengumuman" / "Upload Modul" / "Tambah Soal" di beranda
       membuka `admin.html` langsung ke tab yang sesuai (bukan lagi `alert("Fitur
       segera hadir")`)
-- [ ] Tampilan tab Bank Soal (paling padat: pertanyaan + 4 pilihan + radio) tetap
+- [ ] Tampilan tab Uji Kemampuan (paling padat: pertanyaan + 4 pilihan + radio) tetap
       rapi di layar HP (≤ 380px), tidak ada radio/label yang terpotong
 
 ---
@@ -303,7 +303,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 
 ---
 
-### 19. Bank Soal — Latihan Interaktif (`pages/bank-soal.html`, v0.9.0 + v0.9.1)
+### 19. Uji Kemampuan — Latihan Interaktif (`pages/uji-kemampuan.html`, dulu bernama "Bank Soal"/`bank-soal.html` sebelum v0.10.x, v0.9.0 + v0.9.1)
 - [ ] Bisa dibuka akun **siswa** (bukan guru-only)
 - [ ] Kotak pilihan mapel menampilkan jumlah soal yang benar per mapel (mis.
       "5 soal") sesuai isi `bank_soal` yang sudah ditambahkan guru
@@ -347,7 +347,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 > kosong — checklist di bawah menguji bahwa kerangkanya jujur dan tidak rusak,
 > BUKAN menguji konten (karena kontennya memang belum ada).
 - [ ] Bisa dibuka akun siswa maupun guru (pakai `auth-guard.js`, sama seperti
-      `modul.html`/`materi.html`/`bank-soal.html`/`info.html`)
+      `modul.html`/`materi.html`/`uji-kemampuan.html`/`info.html`)
 - [ ] Kotak catatan kuning "Halaman ini masih kerangka" tampil jelas, tidak
       disembunyikan atau ketutupan elemen lain
 - [ ] `jadwal.html`: tabel jadwal tidak bikin halaman melebar ke samping di
@@ -360,11 +360,11 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 ---
 
 ### 22. Penyempurnaan Form Konten (`admin.html`, v0.9.1)
-- [ ] Tab Bank Soal: coba simpan soal TANPA mengisi Mata Pelajaran → ditolak
+- [ ] Tab Uji Kemampuan: coba simpan soal TANPA mengisi Mata Pelajaran → ditolak
       dengan pesan jelas, TIDAK ikut tersimpan ke list
-- [ ] Tab Bank Soal: isi 2 pilihan dengan teks yang PERSIS SAMA (mis. keduanya
+- [ ] Tab Uji Kemampuan: isi 2 pilihan dengan teks yang PERSIS SAMA (mis. keduanya
       "20") → ditolak dengan pesan soal pilihan duplikat, TIDAK ikut tersimpan
-- [ ] Ketik di kolom "Mata Pelajaran" (tab Modul/Materi/Bank Soal manapun) →
+- [ ] Ketik di kolom "Mata Pelajaran" (tab Modul/Materi/Uji Kemampuan manapun) →
       muncul saran nama mapel yang sudah pernah dipakai di ketiga tab (datalist
       browser bawaan, bukan dropdown custom)
 - [ ] Isi "Link File"/"Lampiran" dengan teks yang BUKAN URL (mis. cuma
@@ -545,7 +545,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 
 ### 26. Galeri Visual & Kelola per TP (`pages/infografis/`, belum dirilis)
 - [ ] Kartu "Galeri Visual" di beranda mengarah ke `pages/infografis.html`,
-      posisinya di antara Materi Ajar dan Bank Soal
+      posisinya di antara Materi Ajar dan Uji Kemampuan
 - [ ] `pages/infografis.html`: menu 8 mata pelajaran tampil dengan warna &
       ikon yang SAMA dengan Materi Ajar; jumlah media per mapel tampil
       (atau "Belum ada media" kalau kosong) — kegagalan memuat jumlah TIDAK
@@ -722,22 +722,45 @@ penting soal cara menguji)**
 
 ---
 
-### 28. Laporan Siswa (`pages/laporan-siswa.html`, Fase 1, belum dirilis)
-- [ ] **Akun siswa DITOLAK** — login sebagai siswa, buka
-      `pages/laporan-siswa.html` langsung lewat URL (bukan lewat kartu
-      menu, yang memang disembunyikan) → pesan "khusus guru & orang tua"
-      tampil, TIDAK ada data siswa apa pun yang bocor ke layar
-- [ ] **Kartu menu di beranda** (`#card-laporan-siswa`) TIDAK tampil untuk
-      akun siswa; tampil untuk akun guru DAN akun orangtua
-- [ ] **Akun guru**: buka halaman → muncul kolom cari + daftar SEMUA siswa;
-      ketik sebagian nama → daftar tersaring; klik 1 nama → laporan siswa
-      itu tampil (Profil, MPLS, Kognitif, Jurnal — bagian yang datanya
-      kosong menampilkan "Belum ada data", BUKAN error/halaman kosong)
-- [ ] **Akun orangtua dengan 1 anak**: buka halaman → laporan anak itu
-      LANGSUNG tampil tanpa perlu memilih apa pun
-- [ ] **Akun orangtua dengan 2+ anak** (field `anak` di Firestore berisi
-      >1 nama): buka halaman → tampil pilihan chip nama-nama anak, klik 1
-      → laporan anak itu yang tampil
+### 28. Laporan Siswa (3 pintu: `pages/laporan-siswa.html` = landing,
+`pages/laporan-siswa/mpls.html` = Pintu 1 AKTIF, `belajar-mandiri.html` &
+`latihan-mandiri.html` = Pintu 2-3 masih "Segera Hadir", belum dirilis)
+
+> **Perubahan struktur**: sejak restrukturisasi 3-menu, `pages/laporan-siswa.html`
+> BUKAN LAGI halaman laporan itu sendiri — sekarang cuma landing (menu 3
+> pintu). Laporan MPLS yang sebelumnya di sini SEKARANG di
+> `pages/laporan-siswa/mpls.html`. Item checklist di bawah yang dulu
+> menyebut `pages/laporan-siswa.html` sebagai halaman laporan sudah
+> disesuaikan ke `pages/laporan-siswa/mpls.html`.
+
+- [ ] **Akun siswa DITOLAK di SEMUA 4 halaman** (landing + 3 pintu) — coba
+      buka tiap URL langsung (bukan lewat kartu menu, yang memang
+      disembunyikan): `pages/laporan-siswa.html`,
+      `pages/laporan-siswa/mpls.html`, `.../belajar-mandiri.html`,
+      `.../latihan-mandiri.html` → pesan "khusus guru & orang tua" tampil di
+      SEMUANYA, TIDAK ada data siswa apa pun yang bocor ke layar manapun
+- [ ] **Kartu menu di beranda** (`#card-laporan-siswa`, mengarah ke landing
+      `pages/laporan-siswa.html`) TIDAK tampil untuk akun siswa; tampil
+      untuk akun guru DAN akun orangtua
+- [ ] **Landing (`pages/laporan-siswa.html`)**: setelah lolos gerbang akses,
+      3 kartu menu tampil — "MPLS" (bisa diklik, mengarah ke `mpls.html`),
+      "Perkembangan Belajar Mandiri" dan "Latihan Mandiri Siswa" (berlabel
+      "Segera Hadir", mengarah ke halaman placeholder masing-masing, BUKAN
+      ke halaman kosong/rusak)
+- [ ] **Pintu 2 & 3 (placeholder)**: buka `belajar-mandiri.html` dan
+      `latihan-mandiri.html` langsung → gerbang akses tetap jalan (blokir
+      siswa), lalu tampil kotak "Laporan ini sedang disiapkan" dengan
+      penjelasan singkat — BUKAN halaman kosong/error
+- [ ] **Pintu 1 — MPLS (`pages/laporan-siswa/mpls.html`), akun guru**: buka
+      halaman → muncul kolom cari + daftar SEMUA siswa; ketik sebagian nama
+      → daftar tersaring; klik 1 nama → laporan siswa itu tampil (Profil,
+      MPLS, Kognitif, Jurnal — bagian yang datanya kosong menampilkan
+      "Belum ada data", BUKAN error/halaman kosong)
+- [ ] **Pintu 1, akun orangtua dengan 1 anak**: buka halaman → laporan anak
+      itu LANGSUNG tampil tanpa perlu memilih apa pun
+- [ ] **Pintu 1, akun orangtua dengan 2+ anak** (field `anak` di Firestore
+      berisi >1 nama): buka halaman → tampil pilihan chip nama-nama anak,
+      klik 1 → laporan anak itu yang tampil
 - [ ] **PALING PENTING — batas akses orangtua, uji dari server langsung**:
       ambil `idToken` akun orangtua (mis. dari DevTools saat login), coba
       panggil manual
@@ -755,6 +778,17 @@ penting soal cara menguji)**
 - [ ] Buka/tutup (collapse) tiap bagian laporan (MPLS/Kognitif/Jurnal) —
       status buka/tutup tidak reset saat pindah siswa dalam 1 sesi (sesuai
       desain, bukan bug kalau memang begitu — cukup pastikan tidak error)
+- [ ] **Tombol "← Semua Laporan"** di topbar Pintu 1/2/3 mengarah balik ke
+      landing (`../laporan-siswa.html`), BUKAN ke beranda langsung
+- [ ] `pages/laporan-siswa/assets/laporan-guard.js` dimuat dengan
+      `<script type="module" src="...">` (BUKAN inline lagi seperti versi
+      pertama fitur ini) di SEMUA 4 halaman (landing + 3 pintu) — kalau ada
+      halaman yang lupa memuatnya, `#checking` akan macet selamanya (tidak
+      pernah hilang) karena tidak ada yang memicu `onAuthStateChanged`
+
+---
+
+## 🔁 Skenario Ujicoba Lengkap
 
 Jalankan skenario ini setelah perubahan besar:
 
