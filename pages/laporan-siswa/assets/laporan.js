@@ -3,7 +3,8 @@
  * pages/laporan-siswa.html untuk landing-nya, dan RANCANGAN-LAPORAN-SISWA.md untuk peta
  * lengkap ketiganya: MPLS [halaman ini] / Perkembangan Belajar Mandiri / Latihan Mandiri Siswa).
  * Bergantung pada: MPLS_CONFIG (config.js), window.getFreshLaporanIdToken() (dari
- * assets/laporan-guard.js), dan event "laporan-context-ready" (detail: { role, nama, anak }).
+ * assets/laporan-guard.js), window.LaporanPicker (dari assets/laporan-picker.js), dan event
+ * "laporan-context-ready" (detail: { role, nama, anak }).
  *
  * Ini implementasi Fase 1 (Profil, MPLS non-kognitif, MPLS Kognitif, Jurnal Aktivitas — SEMUA
  * data yang SUDAH ada di sistem). Hasil Latihan (Uji Kemampuan) & Progres Materi/Modul kini
@@ -16,70 +17,6 @@ const collapsedSections = new Set(); // label section yang sedang ditutup, sama 
 
 function esc(str) {
   return String(str || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
-
-/* ── Langkah 1: pemilih siswa ───────────────────────────────────────────── */
-async function renderPicker() {
-  const wrap = document.getElementById("lap-picker");
-  document.getElementById("lap-report").innerHTML = "";
-
-  if (ctx.role === "orangtua") {
-    if (!ctx.anak.length) {
-      wrap.innerHTML = '<div class="ma-empty">Akun ini belum terhubung ke data siswa mana pun. Hubungi wali kelas untuk melengkapi data ini.</div>';
-      return;
-    }
-    if (ctx.anak.length === 1) {
-      wrap.innerHTML = "";
-      loadReport(ctx.anak[0]);
-      return;
-    }
-    wrap.innerHTML = '<div class="lap-anak-chips">' +
-      ctx.anak.map((n) => `<button type="button" class="lap-anak-chip" data-nama="${esc(n)}">${esc(n)}</button>`).join("") +
-      "</div>";
-    wrap.querySelectorAll(".lap-anak-chip").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        wrap.querySelectorAll(".lap-anak-chip").forEach((b) => b.classList.remove("lap-active"));
-        btn.classList.add("lap-active");
-        loadReport(btn.dataset.nama);
-      });
-    });
-    return;
-  }
-
-  // role === "guru" — cari/pilih siapa saja dari daftar siswa
-  wrap.innerHTML = '<div class="ma-empty">Memuat daftar siswa…</div>';
-  try {
-    const idToken = await window.getFreshLaporanIdToken();
-    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(idToken));
-    const json = await res.json();
-    if (json.status === "error") throw new Error(json.message || "Gagal memuat daftar siswa");
-    const semuaSiswa = (json.data || []).map((r) => r["Nama Lengkap"]).filter(Boolean).sort();
-    renderGuruPicker(semuaSiswa);
-  } catch (err) {
-    wrap.innerHTML = '<div class="ma-empty">Gagal memuat daftar siswa: ' + esc(err.message) + "</div>";
-  }
-}
-
-function renderGuruPicker(semuaSiswa) {
-  const wrap = document.getElementById("lap-picker");
-  wrap.innerHTML = `
-    <input type="text" class="lap-search" id="lap-cari" placeholder="Cari nama siswa…" />
-    <div class="lap-list" id="lap-list"></div>`;
-  const listEl = document.getElementById("lap-list");
-  function renderRows(filter) {
-    const f = (filter || "").toLowerCase();
-    const filtered = semuaSiswa.filter((n) => n.toLowerCase().includes(f));
-    if (!filtered.length) {
-      listEl.innerHTML = '<div class="lap-kosong">Tidak ada siswa yang cocok.</div>';
-      return;
-    }
-    listEl.innerHTML = filtered.map((n) => `<button type="button" class="lap-list-item" data-nama="${esc(n)}">${esc(n)}</button>`).join("");
-    listEl.querySelectorAll(".lap-list-item").forEach((btn) => {
-      btn.addEventListener("click", () => loadReport(btn.dataset.nama));
-    });
-  }
-  renderRows("");
-  document.getElementById("lap-cari").addEventListener("input", (e) => renderRows(e.target.value));
 }
 
 /* ── Langkah 2: muat & render laporan 1 siswa ───────────────────────────── */
@@ -207,12 +144,12 @@ function renderReport(nama, data) {
     if (ctx.role === "orangtua") {
       document.querySelectorAll(".lap-anak-chip").forEach((b) => b.classList.remove("lap-active"));
     } else {
-      renderPicker();
+      window.LaporanPicker.render(ctx, loadReport);
     }
   });
 }
 
 document.addEventListener("laporan-context-ready", (e) => {
   ctx = e.detail;
-  renderPicker();
+  window.LaporanPicker.render(ctx, loadReport);
 });
