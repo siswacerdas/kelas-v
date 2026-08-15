@@ -30,7 +30,7 @@
 
   <div class="ma-page-container">
     <h1>📖 Perkembangan Belajar Mandiri</h1>
-    <p class="ma-subtitle">Ketuntasan Materi Ajar & Modul yang sudah dipelajari siswa.</p>
+    <p class="ma-subtitle" id="lap-subtitle">Ketuntasan Materi Ajar & Modul yang sudah dipelajari siswa.</p>
 
     <div id="lap-blocked" class="ma-hidden">
       <div class="ma-empty">
@@ -41,22 +41,15 @@
       </div>
     </div>
 
-    <div class="lap-soon-box" id="lap-soon" style="display:none">
-      <div class="lap-soon-icon">🚧</div>
-      <h2>Laporan ini sedang disiapkan</h2>
-      <p>
-        Ke depan, bagian ini akan menampilkan materi ajar yang sudah dibaca siswa dan
-        progres pengerjaan Modul belajar mandiri — begitu fitur pelacakannya siap.
-      </p>
-    </div>
+    <div id="lap-picker"></div>
+    <div id="lap-report"></div>
   </div>
 </div>
 
 <script type="module" src="assets/laporan-guard.js"></script>
-<script>
-  document.addEventListener("laporan-context-ready", () => {
-    document.getElementById("lap-soon").style.display = "block";
-  });
-</script>
+<script src="../mpls/assets/config.js"></script>
+<script src="../materi/assets/materi-index.js"></script>
+<script src="assets/laporan-picker.js"></script>
+<script src="assets/belajar-mandiri.js"></script>
 </body>
 </html>
