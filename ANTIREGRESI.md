@@ -723,8 +723,9 @@ penting soal cara menguji)**
 ---
 
 ### 28. Laporan Siswa (3 pintu: `pages/laporan-siswa.html` = landing,
-`pages/laporan-siswa/mpls.html` = Pintu 1 AKTIF, `belajar-mandiri.html` &
-`latihan-mandiri.html` = Pintu 2-3 masih "Segera Hadir", belum dirilis)
+`pages/laporan-siswa/mpls.html` = Pintu 1 AKTIF, `belajar-mandiri.html` =
+Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
+`latihan-mandiri.html` = Pintu 3 masih "Segera Hadir", belum dirilis)
 
 > **Perubahan struktur**: sejak restrukturisasi 3-menu, `pages/laporan-siswa.html`
 > BUKAN LAGI halaman laporan itu sendiri — sekarang cuma landing (menu 3
@@ -743,14 +744,14 @@ penting soal cara menguji)**
       `pages/laporan-siswa.html`) TIDAK tampil untuk akun siswa; tampil
       untuk akun guru DAN akun orangtua
 - [ ] **Landing (`pages/laporan-siswa.html`)**: setelah lolos gerbang akses,
-      3 kartu menu tampil — "MPLS" (bisa diklik, mengarah ke `mpls.html`),
-      "Perkembangan Belajar Mandiri" dan "Latihan Mandiri Siswa" (berlabel
-      "Segera Hadir", mengarah ke halaman placeholder masing-masing, BUKAN
-      ke halaman kosong/rusak)
-- [ ] **Pintu 2 & 3 (placeholder)**: buka `belajar-mandiri.html` dan
-      `latihan-mandiri.html` langsung → gerbang akses tetap jalan (blokir
-      siswa), lalu tampil kotak "Laporan ini sedang disiapkan" dengan
-      penjelasan singkat — BUKAN halaman kosong/error
+      3 kartu menu tampil — "MPLS" dan "Perkembangan Belajar Mandiri" bisa
+      diklik langsung (TIDAK ada badge "Segera Hadir" lagi di keduanya),
+      "Latihan Mandiri Siswa" masih berlabel "Segera Hadir" mengarah ke
+      halaman placeholder, BUKAN ke halaman kosong/rusak
+- [ ] **Pintu 3 (placeholder)**: buka `latihan-mandiri.html` langsung →
+      gerbang akses tetap jalan (blokir siswa), lalu tampil kotak "Laporan
+      ini sedang disiapkan" dengan penjelasan singkat — BUKAN halaman
+      kosong/error
 - [ ] **Pintu 1 — MPLS (`pages/laporan-siswa/mpls.html`), akun guru**: buka
       halaman → muncul kolom cari + daftar SEMUA siswa; ketik sebagian nama
       → daftar tersaring; klik 1 nama → laporan siswa itu tampil (Profil,
@@ -761,11 +762,26 @@ penting soal cara menguji)**
 - [ ] **Pintu 1, akun orangtua dengan 2+ anak** (field `anak` di Firestore
       berisi >1 nama): buka halaman → tampil pilihan chip nama-nama anak,
       klik 1 → laporan anak itu yang tampil
+- [ ] **Pintu 2 — Perkembangan Belajar Mandiri (`belajar-mandiri.html`)**:
+      buka 1 halaman materi ajar apa saja SAMBIL LOGIN SEBAGAI SISWA
+      (bukan guru — pelacak SENGAJA cuma mencatat role siswa), tunggu
+      beberapa detik, lalu cek sheet "Data Progres Materi" di spreadsheet
+      → harus muncul/terbarui 1 baris untuk siswa+materi itu (Timestamp
+      ter-update, BUKAN baris baru kalau materi yang sama dibuka lagi)
+- [ ] Buka `belajar-mandiri.html` (guru atau orang tua), pilih siswa yang
+      barusan membuka materi tsb → kartu ringkasan (X/Y materi, persentase)
+      dan baris TP yang sesuai HARUS mencerminkan materi yang baru dibuka
+      (progress bar bertambah, bukan tetap di angka lama)
+- [ ] Login sebagai GURU, buka 1 materi ajar → cek sheet "Data Progres
+      Materi" → TIDAK BOLEH ada baris baru untuk akun guru itu (pelacak
+      cuma untuk role siswa)
 - [ ] **PALING PENTING — batas akses orangtua, uji dari server langsung**:
       ambil `idToken` akun orangtua (mis. dari DevTools saat login), coba
       panggil manual
       `APPS_SCRIPT_URL?laporanSiswa=1&nama=<NAMA SISWA LAIN, BUKAN ANAKNYA>&idToken=<token>`
-      → **HARUS DITOLAK** dengan pesan jelas ("tidak punya akses ke data
+      DAN
+      `APPS_SCRIPT_URL?progresMateri=1&nama=<NAMA SISWA LAIN, BUKAN ANAKNYA>&idToken=<token>`
+      → **KEDUANYA HARUS DITOLAK** dengan pesan jelas ("tidak punya akses ke data
       siswa..."), BUKAN mengembalikan data siswa lain itu. Ini pengujian
       keamanan paling kritis di fitur ini — kalau ini gagal, data pribadi
       siswa LAIN bisa bocor ke orang tua yang salah.
@@ -785,6 +801,18 @@ penting soal cara menguji)**
       pertama fitur ini) di SEMUA 4 halaman (landing + 3 pintu) — kalau ada
       halaman yang lupa memuatnya, `#checking` akan macet selamanya (tidak
       pernah hilang) karena tidak ada yang memicu `onAuthStateChanged`
+- [ ] `pages/laporan-siswa/assets/laporan-picker.js` dimuat SEBELUM
+      `laporan.js`/`belajar-mandiri.js` di `mpls.html` DAN
+      `belajar-mandiri.html` — kalau lupa, `window.LaporanPicker` undefined
+      dan halaman error diam-diam (cek Console browser)
+- [ ] `materi-progress-tracker.js` benar-benar ada di SEMUA 81 file materi
+      (bukan cuma sebagian) — jalankan `grep -rL "materi-progress-tracker"
+      pages/materi --include="*.html"` dari terminal, harus KOSONG
+      (`-L` = tampilkan file yang TIDAK mengandung teks itu)
+- [ ] `findRowByTwoColumns_()` di `Code.gs` — coba buka 1 materi 2x sebagai
+      siswa yang sama, cek sheet "Data Progres Materi": harus TETAP 1 baris
+      untuk kombinasi siswa+materi itu (Timestamp yang berubah, bukan
+      baris baru menumpuk)
 
 ---
 
@@ -1035,6 +1063,18 @@ Jalankan skenario ini setelah perubahan besar:
 8. → **Harapan:** lightbox terbuka menampilkan gambarnya (BUKAN layar gelap kosong — lihat §27 Bug #3 kalau ini gagal)
 9. Kembali ke `kelola-tp.html`, klik "Ganti Infografis" pada Materi 1 lagi, unggah gambar berbeda
 10. → **Harapan:** cek sheet "Data Infografis" — jumlah baris untuk Materi 1 TETAP 1 (tertimpa, bukan bertambah); cek folder Drive — file lama pindah ke Trash
+
+### Skenario Q — Progres Materi Ajar di Perkembangan Belajar Mandiri (belum dirilis)
+1. Login sebagai **siswa**, buka salah satu halaman Materi Ajar (mis. Menyimak TP1 Materi 1)
+2. Tunggu beberapa detik (tracker fire-and-forget, tidak ada indikator visual apa pun — itu memang disengaja)
+3. Login ulang sebagai **guru**, buka Google Sheets → tab "Data Progres Materi"
+4. → **Harapan:** ada 1 baris baru dengan Nama Siswa yang sesuai & Materi Slug yang cocok dengan materi yang dibuka tadi
+5. Kembali ke situs → beranda → "Laporan Siswa" → "Perkembangan Belajar Mandiri" → cari siswa yang sama
+6. → **Harapan:** kartu ringkasan menunjukkan 1 materi terhitung "sudah dibaca"; baris TP "Menyimak · ..." menunjukkan progress bar & angka X/Y yang sesuai
+7. Buka LAGI materi yang SAMA sebagai siswa itu (kunjungan ke-2)
+8. → **Harapan:** di sheet "Data Progres Materi", jumlah baris untuk siswa+materi itu TETAP 1 (Timestamp yang berubah, bukan baris baru)
+9. Login sebagai **guru**, buka 1 halaman materi ajar apa saja
+10. → **Harapan:** TIDAK ada baris baru di "Data Progres Materi" untuk akun guru itu (tracker cuma mencatat siswa)
 
 ---
 

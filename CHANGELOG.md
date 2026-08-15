@@ -20,8 +20,40 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   — rencana penyimpanannya sudah dipetakan sebagai bagian dari laporan
   "Latihan Mandiri Siswa" (lihat `RANCANGAN-LAPORAN-SISWA.md`), belum
   dikerjakan
+- Progres Modul (separuh laporan "Perkembangan Belajar Mandiri") — modul
+  contoh yang pernah diberikan belum punya jembatan pengiriman progres ke
+  server sama sekali; ditunda sampai ada modul sungguhan yang mau dipakai
+  (lihat `RANCANGAN-LAPORAN-SISWA.md` §7.2)
 
 ### Ditambahkan
+- **Progres Materi Ajar** (separuh laporan "Perkembangan Belajar Mandiri",
+  Pintu 2 — lihat `RANCANGAN-LAPORAN-SISWA.md` §7.1) — siswa yang membuka
+  1 materi ajar sekarang otomatis tercatat "sudah dibaca":
+  - `pages/materi/assets/materi-progress-tracker.js` — dipasang di
+    **81 halaman materi** (disisipkan otomatis lewat skrip 1x jalan, bukan
+    diedit manual satu-satu), fire-and-forget, hanya mencatat kalau yang
+    membuka adalah role `"siswa"` (guru yang mengecek isi materi tidak
+    ikut tercatat). Punya inisialisasi Firebase sendiri (terpisah dari
+    `auth-guard.js`, mengikuti pola `laporan-guard.js`) dan menuliskan
+    ulang `APPS_SCRIPT_URL` secara lokal supaya 81 halaman materi tidak
+    perlu tambah baris `<script>` lagi untuk `config.js`.
+  - Backend: sheet baru "Data Progres Materi" (self-healing seperti sheet
+    lain), upsert per (Nama Siswa + Materi Slug) lewat helper baru
+    `findRowByTwoColumns_()` — supaya 1 siswa buka 1 materi berkali-kali
+    tetap 1 baris, bukan menumpuk. Endpoint baca `?progresMateri=1`
+    memakai gerbang akses SAMA dengan `?laporanSiswa=1`
+    (`wajibAksesLaporan_()` — guru bebas, orang tua cuma anaknya sendiri).
+  - `pages/laporan-siswa/belajar-mandiri.html` (dulu halaman "Segera
+    Hadir" statis) sekarang aktif untuk bagian Materi Ajar: ringkasan
+    keseluruhan (X/Y materi, persentase) + rincian per mapel → per TP
+    dengan progress bar, dikelompokkan memakai `materi-index.js` (sumber
+    tunggal yang sama dipakai Galeri Visual). Bagian Modul masih "segera
+    menyusul" (kotak penjelasan terpisah di bawah, lihat §7.2 di rancangan).
+  - Refactor pendukung: pemilih siswa (guru cari siapa saja / orang tua
+    pilih anaknya) yang tadinya cuma ada di `mpls.html`, diekstrak jadi
+    komponen bersama `pages/laporan-siswa/assets/laporan-picker.js` —
+    dipakai `mpls.html` DAN `belajar-mandiri.html` sekarang (mencegah
+    duplikasi ~50 baris kode pemilih siswa).
 - **Uji Kemampuan** (ganti nama dari "Bank Soal") — `pages/bank-soal.html`
   diganti nama jadi `pages/uji-kemampuan.html`, seluruh label UI ikut
   diperbarui (kartu beranda, tab di `admin.html`). Koleksi Firestore

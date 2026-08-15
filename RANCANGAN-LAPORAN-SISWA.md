@@ -1,18 +1,19 @@
 # Rancangan Fitur: Laporan Siswa (Guru & Orang Tua)
 
-> **Status: FASE 1 SUDAH DIIMPLEMENTASIKAN + DIRESTRUKTURISASI jadi 3 PINTU.**
+> **Status: FASE 1 (MPLS) + separuh Pintu 2 (Materi Ajar) SUDAH DIIMPLEMENTASIKAN.**
 > Sesuai arahan terbaru, laporan bukan lagi 1 halaman tunggal — sekarang
 > `pages/laporan-siswa.html` jadi LANDING (menu 3 pintu), dan:
 > 1. **MPLS** (`pages/laporan-siswa/mpls.html`) — ✅ AKTIF, ini Fase 1 yang
 >    sudah dikerjakan (§1-5 di bawah), sekarang juga sudah naratif (BB/MB/
 >    BSH/BSB + kesimpulan) bukan dump angka mentah.
-> 2. **Perkembangan Belajar Mandiri** (`belajar-mandiri.html`) — 🚧 halaman
->    "Segera Hadir", rancangannya di §7 (diperluas, sekarang juga mencakup
->    progres Modul, bukan cuma Materi Ajar).
+> 2. **Perkembangan Belajar Mandiri** (`belajar-mandiri.html`) — ✅ AKTIF
+>    untuk separuh **Materi Ajar** (lihat §7.1 — sheet "Data Progres
+>    Materi" + `materi-progress-tracker.js` dipasang di 81 halaman materi).
+>    Separuh **Modul** masih 🚧 belum ada (§7.2 — modul contoh belum punya
+>    jembatan pengiriman progres ke server sama sekali).
 > 3. **Latihan Mandiri Siswa** (`latihan-mandiri.html`) — 🚧 halaman "Segera
 >    Hadir", rancangannya di §6 (diperluas signifikan — lihat catatan besar
 >    di bagian itu soal redesain "Uji Kemampuan"/dulu "Bank Soal").
->
 
 ---
 
@@ -249,14 +250,40 @@ mengisi dropdown, tidak perlu endpoint baru untuk ini.
 Mencakup **DUA** sumber data (diperluas dari rancangan awal yang cuma
 menyebut Materi Ajar):
 
-### 7.1 Ketuntasan Materi Ajar
-- Sama seperti rancangan awal: sheet baru **"Data Progres Materi"**
-  (Timestamp, Nama Siswa, Materi Slug, Status), field `file` di
-  `materi-index.js` dipakai ulang sebagai Materi Slug (konsisten dengan
-  yang sudah dipakai Galeri Visual).
-- Perlu skrip pelacak ringan yang dimuat di semua halaman materi.
+### 7.1 Ketuntasan Materi Ajar — ✅ SUDAH DIIMPLEMENTASIKAN
+- Sheet **"Data Progres Materi"** (Timestamp, Nama Siswa, Materi Slug,
+  Status) — self-healing seperti sheet lain (lihat `getProgresMateriSheet_()`).
+  Field `file` di `materi-index.js` dipakai ulang sebagai Materi Slug
+  (konsisten dengan yang sudah dipakai Galeri Visual).
+- **Upsert per (Nama Siswa + Materi Slug)** — dipilih ini, BUKAN log setiap
+  kunjungan, supaya sheet tidak membengkak (1 siswa boleh buka 1 materi
+  berkali-kali, tetap 1 baris). Butuh helper baru `findRowByTwoColumns_()`
+  di `Code.gs` (pencocokan 2 kolom sekaligus — `findRowByColumn_()` yang
+  sudah ada cuma 1 kolom).
+- **Pelacak**: `pages/materi/assets/materi-progress-tracker.js` — dimuat di
+  SEMUA 81 halaman materi (script tag disisipkan otomatis lewat skrip
+  Python 1x jalan, bukan diedit manual satu-satu), fire-and-forget, HANYA
+  mengirim kalau `role === "siswa"` (guru yang buka materi untuk mengecek
+  isi TIDAK ikut tercatat sebagai "sudah belajar"). Firebase init SENDIRI
+  di file ini (bukan pakai auth-guard.js — lihat komentar panjang di file
+  itu soal alasannya), dan `APPS_SCRIPT_URL` DITULIS ULANG di file ini
+  (bukan `MPLS_CONFIG` dari config.js) supaya 81 halaman materi tidak perlu
+  tambah baris `<script>` lagi cuma untuk itu — konsekuensinya: kalau URL
+  Apps Script PERNAH ganti beneran (bukan sekadar redeploy versi baru),
+  nilai di file ini wajib ikut diperbarui manual.
+- **Endpoint baca**: `?progresMateri=1&nama=..&idToken=..`, gerbang SAMA
+  dengan `?laporanSiswa=1` (`wajibAksesLaporan_()`).
+- **Tampilan**: `pages/laporan-siswa/belajar-mandiri.html` +
+  `assets/belajar-mandiri.js` — kartu ringkasan keseluruhan (X/Y materi,
+  persentase) + rincian per mapel → per TP (progress bar per TP), dikelompokkan
+  memakai `materi-index.js` yang sama (pola sama dengan `infografis-galeri.js`).
+- Pemilih siswa (guru cari siapa saja / orang tua pilih anaknya) DIEKSTRAK
+  jadi komponen bersama `pages/laporan-siswa/assets/laporan-picker.js` —
+  awalnya cuma dipakai `mpls.html`, sekarang dipakai `belajar-mandiri.html`
+  juga (dan `laporan.js`/Pintu 1 direfactor memakainya juga, bukan lagi
+  duplikat logika pemilih siswa sendiri).
 
-### 7.2 Progres Modul — BARU, temuan dari contoh modul yang diberikan
+### 7.2 Progres Modul — 🚧 BELUM dikerjakan, temuan dari contoh modul yang diberikan
 - Materi Ajar mengajak siswa belajar lewat **kesimpulan** (ringkas,
   langsung ke inti). Modul mengajak siswa belajar **mandiri** lewat
   penjelasan + latihan mandiri (BUKAN latihan soal — beda dari "Uji
