@@ -11,23 +11,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .bagi-wrap { display: flex; align-items: flex-start; justify-content: center; gap: 6px; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) + 4px); margin: 1rem 0 1.2rem; }
-  .bagi-divisor { padding-top: 2.05em; font-weight: 700; }
-  .bagi-quotient { font-weight: 700; letter-spacing: 3px; padding-bottom: 3px; color: var(--m-color); }
-  .bagi-bracket { border-left: 2.5px solid var(--ink); border-top: 2.5px solid var(--ink); padding: 3px 10px 3px 8px; letter-spacing: 3px; }
-  .coba-box { border: 1px solid #f0ded0; border-radius: var(--r-lg); padding: 0.7rem 0.95rem; margin: 0.7rem 0; background: #fdf6f1; font-size: calc(var(--content-fs) - 3px); }
+  .pjg-tabel { border-collapse: collapse; margin: 1.2rem auto 0.4rem; font-family: 'Plus Jakarta Sans', monospace; font-weight: 700; font-size: calc(var(--content-fs) + 6px); }
+  .pjg-tabel td { width: 1.35em; height: 1.3em; text-align: center; vertical-align: middle; padding: 0; }
+  .pjg-tabel td.x { border: none; }
+  .pjg-tabel td.pembagi { border: none; text-align: right; padding-right: 0.3em; font-size: 0.75em; }
+  .pjg-tabel td.hasil { color: var(--m-color); }
+  .pjg-tabel td.brk-atas { border-top: 3px solid var(--ink); }
+  .pjg-tabel td.brk-kiri { border-left: 3px solid var(--ink); }
+  .pjg-tabel td.garis { border-bottom: 2px solid var(--ink); }
+  .pjg-tabel td.kurang { color: #c76b3f; }
+  .keterangan-tabel { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0 0 1.3rem; }
+  .coba-box { border: 1px solid #f0ded0; border-radius: var(--r-lg); padding: 0.8rem 1rem; margin: 0.9rem 0; background: #fdf6f1; font-size: calc(var(--content-fs) - 2px); line-height: 1.7; }
   .coba-box .gagal { color: #c76b3f; text-decoration: line-through; }
   .coba-box .benar { color: #1f6f78; font-weight: 700; }
-  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
-  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.55rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
-  .langkah li::before {
-    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
-    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
-    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
-  }
   .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
-  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
-  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.5rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.5em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.7; }
   .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
   .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
   .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
@@ -35,7 +34,7 @@
   .soal-item:last-child { border-bottom: none; }
   .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
   .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
-  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.65; }
   .soal-a b { color: #1f6f78; }
 </style>
 </head>
@@ -70,64 +69,93 @@
     </div>
 
     <div class="ma-content">
-      <p>Sekarang saatnya menghadapi pembagi yang "tidak rapi" — bukan kelipatan 10, seperti <strong>17</strong>. Di sinilah proses <strong>estimasi-coba-koreksi</strong> benar-benar teruji, karena tidak ada pola perkalian sederhana yang bisa langsung ditebak seperti materi sebelumnya.</p>
+      <p>Sekarang kita coba pembagi yang "tidak rapi". Bukan kelipatan 10. Contohnya <strong>17</strong>.</p>
 
-      <p>Coba selesaikan <strong>782 ÷ 17</strong>:</p>
+      <p>Kita mau kerjakan <strong>782 ÷ 17</strong>. Sebelum menulis di buku, coba tebak-tebak dulu di kertas coret-coretan:</p>
 
-      <div class="bagi-wrap">
-        <div class="bagi-divisor">17</div>
-        <div>
-          <div class="bagi-quotient">46</div>
-          <div class="bagi-bracket">782</div>
-        </div>
+      <div class="coba-box">
+        Kita lihat 78 dulu (dua angka pertama dari 782).<br/>
+        Coba tebak 5: 17×5 = 85. Tapi 85 lebih besar dari 78. <span class="gagal">Kelewat besar, tidak bisa dipakai.</span><br/>
+        Coba tebak 4: 17×4 = 68. 68 lebih kecil dari 78. <span class="benar">Pas, ini yang dipakai.</span>
       </div>
 
-      <ol class="langkah">
-        <li>Lihat dua digit pertama: <strong>78</strong>. Ini yang mau kita bagi dengan 17 dulu.</li>
-        <li>
-          Estimasi: coba tebak 5 dulu (karena 17 dekat dengan 20, dan 78÷20 kira-kira 4, jadi coba sedikit lebih besar).
-          <div class="coba-box">
-            Coba 5: 17×5 = 85. Tapi 85 lebih besar dari 78 — <span class="gagal">terlalu besar, tidak bisa dipakai!</span><br/>
-            Koreksi, coba 4: 17×4 = 68. 68 lebih kecil dari 78, dan selisihnya (78−68=10) lebih kecil dari 17 — <span class="benar">pas, ini yang dipakai.</span>
-          </div>
-        </li>
-        <li>Tulis 4 di atas. Sisa 10, turunkan digit terakhir (2), gabung jadi <strong>102</strong>.</li>
-        <li><strong>102 ÷ 17</strong>: coba 6 — 17×6=102, pas tanpa sisa! Tulis 6 di atas.</li>
-      </ol>
-      <p>Hasil: <strong>46</strong>, tanpa sisa.</p>
+      <p>Tebakan pertama (5) itu salah. Itu BUKAN masalah. Itu bagian biasa dari cara kerja pembagian. Sekarang tulis yang benar, lengkap ke bawah:</p>
 
-      <p>Perhatikan langkah 2 di atas — tebakan pertama (5) ternyata KELIRU, terlalu besar. Itu BUKAN kegagalan. Itu justru proses "coba-koreksi" yang memang diharapkan terjadi. Yang penting: begitu kamu sadar tebakanmu terlalu besar (hasil perkaliannya melebihi angka yang dibagi), segera turunkan tebakan dan coba lagi.</p>
+      <table class="pjg-tabel">
+        <tr>
+          <td class="x"></td>
+          <td class="hasil">4</td><td class="hasil">6</td>
+        </tr>
+        <tr>
+          <td class="pembagi">17</td>
+          <td class="brk-atas brk-kiri">7</td><td class="brk-atas">8</td><td class="brk-atas">2</td>
+        </tr>
+        <tr>
+          <td class="x"></td><td class="x"></td>
+          <td class="kurang garis">6</td><td class="kurang garis">8</td>
+        </tr>
+        <tr>
+          <td class="x"></td><td class="x"></td>
+          <td>1</td><td>0</td>
+        </tr>
+        <tr>
+          <td class="x"></td><td class="x"></td><td class="x"></td>
+          <td>2</td>
+        </tr>
+      </table>
+      <p class="keterangan-tabel">Setelah dikurangi, sisa 10 digabung angka 2, jadi 102.</p>
+
+      <table class="pjg-tabel" style="margin-top:0;">
+        <tr>
+          <td class="x"></td><td class="x"></td>
+          <td class="kurang garis">1</td><td class="kurang garis">0</td><td class="kurang garis">2</td>
+        </tr>
+        <tr>
+          <td class="x"></td><td class="x"></td><td class="x"></td><td class="x"></td>
+          <td>0</td>
+        </tr>
+      </table>
+
+      <ol class="langkah">
+        <li><strong>78 dibagi 17.</strong> Hasilnya 4 (sudah kita tebak di atas). Tulis 4 di atas. 17×4=68. 78−68=10. Sisa 10.</li>
+        <li><strong>Turunkan angka 2.</strong> Sisa 10 digabung jadi 102. 102 dibagi 17. Hasilnya 6 (17×6=102, pas). Tulis 6 di atas. 102−102=0.</li>
+      </ol>
+
+      <p>Hasilnya <strong>46</strong>. Tidak ada sisa.</p>
 
       <div class="bingung-box">
         <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
-        <p>Bayangkan kamu sedang <span class="analogi">menebak berat badan seseorang</span> dengan melihat sekilas — kamu tidak akan langsung yakin 100% benar, tapi kamu punya perkiraan awal (misalnya "sekitar 50 kg"), lalu kalau ada info baru yang membuat perkiraanmu terasa kurang tepat, kamu sesuaikan ("oh, mungkin lebih dekat 45 kg"). Menebak hasil bagi itu mirip — kamu punya perkiraan awal berdasarkan angka yang mirip (17 mirip 20), lalu kamu SESUAIKAN begitu tahu tebakan itu kelewat besar/kecil.</p>
-        <p>Trik praktis untuk pembagi seperti 17, 23, 34: bulatkan dulu ke kelipatan 10 terdekat untuk menebak kasar (17≈20, 23≈20, 34≈30), baru sesuaikan turun/naik sedikit setelah dicek.</p>
+        <p><span class="analogi">Bayangkan kamu menebak berat badan seseorang.</span></p>
+        <p>Kamu tidak langsung tahu pasti. Kamu punya perkiraan awal, misalnya "sekitar 50 kg".</p>
+        <p>Kalau ternyata perkiraanmu kurang pas, kamu sesuaikan: "mungkin lebih dekat 45 kg".</p>
+        <p>Menebak hasil bagi itu mirip. Kamu punya tebakan awal. Kalau ternyata kelewat besar atau kecil, kamu sesuaikan.</p>
+        <p>Trik: bulatkan dulu pembagi ke kelipatan 10 terdekat. 17 dekat dengan 20. Pakai itu untuk menebak kasar. Baru sesuaikan.</p>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
-        Jangan menghapus coretan tebakan yang "gagal" — coretan itu justru bukti kamu sedang berpikir dengan benar. Guru ingin melihat proses estimasimu, bukan cuma jawaban akhir yang sudah rapi.
+        Jangan hapus coretan tebakan yang salah. Coretan itu bukti kamu sedang berpikir dengan benar.
       </div>
 
       <div class="soal-box">
         <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">1</span>Hitunglah 690 ÷ 23 dengan cara bersusun, tunjukkan proses coba-koreksinya!</div>
-          <div class="soal-a"><b>Pembahasan:</b> Lihat 69. Estimasi: 23≈20, coba 3 (23×3=69) — pas! Tulis 3 di atas, sisa 0. Turunkan 0: karena sisa 0, digit turun apa adanya jadi 0. 0÷23=0 sisa 0. Hasil: <strong>30</strong>.</div>
+          <div class="soal-q"><span class="no">1</span>Hitung 690 ÷ 23. Tulis lengkap ke bawah.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Lihat 69. Tebak: 23≈20, coba 3. 23×3=69, pas! Tulis 3, sisa 0. Turunkan 0, jadi 0. 0÷23=0 sisa 0. Hasil: <strong>30</strong>.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">2</span>Kenapa tebakan pertama yang keliru (seperti mencoba 5 pada soal 78÷17 di atas) tetap dianggap bagian yang benar dari proses mengerjakan soal, bukan kesalahan yang mengurangi nilai?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Karena estimasi-coba-koreksi adalah cara kerja yang wajar dan diharapkan untuk pembagi yang tidak rapi — bahkan orang dewasa yang sudah mahir pun sering perlu mencoba lebih dari sekali. Yang dinilai adalah APAKAH siswa menyadari tebakannya keliru dan mengoreksinya dengan benar, bukan apakah tebakan pertama selalu tepat.</div>
+          <div class="soal-q"><span class="no">2</span>Kenapa tebakan pertama yang salah (seperti mencoba 5 pada soal 78÷17 di atas) tetap dianggap benar caranya, bukan kesalahan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Menebak-lalu-cek itu memang cara kerja yang benar untuk pembagi yang tidak rapi. Bahkan orang dewasa yang sudah jago pun sering perlu mencoba lebih dari sekali. Yang penting: kamu sadar kalau tebakanmu salah, lalu perbaiki.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">3</span>Dimas selalu membulatkan pembagi yang "tidak rapi" (seperti 17, 23) ke kelipatan 10 terdekat (20) dan menganggapnya SAMA seperti pembagi 20 asli, tanpa pernah mengoreksi kembali ke pembagi aslinya. Apa masalah dari kebiasaan Dimas ini?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Ini masalah serius — membulatkan pembagi ke kelipatan 10 boleh dipakai HANYA untuk menebak kasar di awal, tapi perhitungan akhirnya tetap harus memakai pembagi ASLI (17, bukan 20). Kalau Dimas menghitung seolah-olah pembaginya benar-benar 20, hasil baginya akan salah. Kebiasaan ini adalah tanda menghindari kesulitan pembagi sembarang, bukan benar-benar menguasainya.</div>
+          <div class="soal-q"><span class="no">3</span>Dimas selalu membulatkan pembagi (seperti 17) ke 20, lalu memakai 20 untuk SELURUH perhitungan — bukan cuma untuk menebak. Apa masalahnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini masalah besar. Membulatkan boleh dipakai HANYA untuk menebak kasar di awal. Perhitungan akhir tetap harus pakai pembagi ASLI (17), bukan 20. Kalau Dimas menghitung seolah pembaginya 20, hasilnya akan salah.</div>
         </div>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
-        Kerjakan tiga soal berikut, tunjukkan proses coba-koreksinya (termasuk kalau tebakan pertamamu meleset): 646 ÷ 17, 828 ÷ 23, 986 ÷ 34.
+        Kerjakan tiga soal ini. Tulis coretan tebakanmu, lalu tulis lengkap ke bawah: 646 ÷ 17, 828 ÷ 23, 986 ÷ 34.
       </div>
     </div>
 

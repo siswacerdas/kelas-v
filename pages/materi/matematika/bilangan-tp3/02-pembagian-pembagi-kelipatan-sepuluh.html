@@ -11,22 +11,28 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .bagi-wrap { display: flex; align-items: flex-start; justify-content: center; gap: 6px; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) + 4px); margin: 1rem 0 1.2rem; }
-  .bagi-divisor { padding-top: 2.05em; font-weight: 700; }
-  .bagi-quotient { font-weight: 700; letter-spacing: 3px; padding-bottom: 3px; color: var(--m-color); }
-  .bagi-bracket { border-left: 2.5px solid var(--ink); border-top: 2.5px solid var(--ink); padding: 3px 10px 3px 8px; letter-spacing: 3px; }
+  .pjg-tabel { border-collapse: collapse; margin: 1.2rem auto 0.4rem; font-family: 'Plus Jakarta Sans', monospace; font-weight: 700; font-size: calc(var(--content-fs) + 6px); }
+  .pjg-tabel td { width: 1.35em; height: 1.3em; text-align: center; vertical-align: middle; padding: 0; }
+  .pjg-tabel td.x { border: none; }
+  .pjg-tabel td.pembagi { border: none; text-align: right; padding-right: 0.3em; font-size: 0.85em; }
+  .pjg-tabel td.hasil { color: var(--m-color); }
+  .pjg-tabel td.brk-atas { border-top: 3px solid var(--ink); }
+  .pjg-tabel td.brk-kiri { border-left: 3px solid var(--ink); }
+  .pjg-tabel td.garis { border-bottom: 2px solid var(--ink); }
+  .pjg-tabel td.kurang { color: #c76b3f; }
+  .keterangan-tabel { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0 0 1.3rem; }
   .pola-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); }
   .pola-box b { color: var(--m-color); }
   .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
-  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.55rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
   .langkah li::before {
     content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
     width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
     font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
   }
   .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
-  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
-  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.5rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.5em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.7; }
   .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
   .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
   .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
@@ -34,7 +40,7 @@
   .soal-item:last-child { border-bottom: none; }
   .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
   .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
-  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.65; }
   .soal-a b { color: #1f6f78; }
 </style>
 </head>
@@ -69,59 +75,85 @@
     </div>
 
     <div class="ma-content">
-      <p>Sekarang saatnya melangkah ke pembagi <strong>dua digit</strong> — tapi kita mulai dari yang paling ramah dulu: pembagi yang merupakan <strong>kelipatan 10</strong> (10, 20, 30, 40, dan seterusnya). Kenapa ini lebih mudah? Karena kamu sudah hafal pola perkalian kelipatan 10 sejak lama: 20×1=20, 20×2=40, 20×3=60, 20×4=80 — polanya gampang ditebak, tinggal kalikan angka depannya lalu tambah nol.</p>
+      <p>Sekarang kita coba pembagi dengan <strong>dua angka</strong>. Kita mulai dari yang paling gampang dulu: pembagi kelipatan 10. Contohnya 10, 20, 30, 40.</p>
+
+      <p>Kenapa gampang? Karena kamu sudah hafal tabel perkalian 2, 3, 4, dan seterusnya sejak lama. Kelipatan 20 sama saja dengan tabel perkalian 2, tinggal tambah satu angka nol.</p>
 
       <div class="pola-box">
-        <b>Pola kelipatan 20:</b> 20, 40, 60, 80, 100, 120, 140, 160, 180... — coba perhatikan, itu sama saja dengan tabel perkalian 2 (2, 4, 6, 8, 10, 12, 14, 16, 18...) yang ditambah satu angka nol di belakang.
+        <b>Pola kelipatan 20:</b> 20, 40, 60, 80, 100, 120, 140... — sama seperti tabel 2 (2, 4, 6, 8, 10, 12, 14...) ditambah satu angka nol.
       </div>
 
-      <p>Sekarang coba selesaikan <strong>860 ÷ 20</strong>:</p>
+      <p>Coba kerjakan <strong>860 ÷ 20</strong>:</p>
 
-      <div class="bagi-wrap">
-        <div class="bagi-divisor">20</div>
-        <div>
-          <div class="bagi-quotient">43</div>
-          <div class="bagi-bracket">860</div>
-        </div>
-      </div>
+      <table class="pjg-tabel">
+        <tr>
+          <td class="x"></td>
+          <td class="hasil">4</td><td class="hasil">3</td>
+        </tr>
+        <tr>
+          <td class="pembagi">20</td>
+          <td class="brk-atas brk-kiri">86</td><td class="brk-atas">0</td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="kurang garis">80</td><td class="x"></td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td>6</td><td>0</td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="kurang garis">6</td><td class="kurang garis">0</td>
+        </tr>
+        <tr>
+          <td class="x"></td>
+          <td class="x"></td><td>0</td>
+        </tr>
+      </table>
+      <p class="keterangan-tabel">Angka jingga = yang dikurangkan tiap langkah.</p>
 
       <ol class="langkah">
-        <li>Lihat dua digit pertama: <strong>86</strong>. Bandingkan dengan pembagi (20) — karena 20 dua digit, kita perlu cukup digit dari 860 supaya nilainya sama atau lebih besar dari 20, dan 86 sudah cukup.</li>
-        <li><strong>86 ÷ 20</strong>: pakai pola kelipatan 20 tadi — 20×4=80 (dekat dengan 86), 20×5=100 (kelewat besar). Jadi estimasi 4. Cek: 86−80=6, sisa 6, wajar (lebih kecil dari 20). Tulis 4 di atas.</li>
-        <li>Turunkan digit terakhir (0), gabung dengan sisa 6, jadi <strong>60</strong>.</li>
-        <li><strong>60 ÷ 20</strong> = 3 pas (20×3=60, sisa 0). Tulis 3 di atas.</li>
+        <li><strong>Lihat 86 (dua angka pertama).</strong> Karena pembaginya 20 (dua angka), kita ambil dua angka dulu dari 860.</li>
+        <li><strong>86 dibagi 20.</strong> Pakai pola kelipatan 20: 20×4=80 (dekat 86). Tulis 4 di atas. 86−80=6. Sisa 6.</li>
+        <li><strong>Turunkan angka 0.</strong> Sisa 6 digabung jadi 60. 60 dibagi 20. Hasilnya 3 (20×3=60, pas). Tulis 3 di atas. 60−60=0.</li>
       </ol>
-      <p>Hasil: <strong>43</strong>, tanpa sisa.</p>
+
+      <p>Hasilnya <strong>43</strong>. Tidak ada sisa.</p>
 
       <div class="bingung-box">
         <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
-        <p>Trik praktis: kalau kamu ingin membagi dengan 20, coba dulu <span class="analogi">bagi dengan 2, lalu ingat bahwa hasilnya perlu disesuaikan karena ada tambahan angka nol</span>. Misalnya untuk menebak 86÷20, kamu bisa berpikir "86 dibagi 2 itu 43, tapi karena pembaginya 20 bukan 2 (sepuluh kali lebih besar), hasil baginya jadi sekitar sepersepuluh dari 43, yaitu sekitar 4". Ini cuma trik bantu menebak cepat — tetap harus dicek dengan perkalian ulang (20×4=80) untuk memastikan.</p>
+        <p>Trik cepat: <span class="analogi">bagi dulu dengan 2, baru sesuaikan.</span></p>
+        <p>86 dibagi 2 hasilnya 43.</p>
+        <p>Tapi pembaginya 20, bukan 2. Sepuluh kali lebih besar.</p>
+        <p>Jadi hasil baginya kira-kira sepersepuluh dari 43. Sekitar 4.</p>
+        <p>Ini cuma trik menebak cepat. Tetap harus dicek dengan perkalian ulang (20×4=80).</p>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
-        Sebelum mencoba angka, ucapkan dulu tebakanmu keras-keras (atau tulis di kertas): "kira-kira berapa kali?" — kebiasaan ini membantu kamu benar-benar berpikir dulu, bukan asal coba-coba angka secara acak.
+        Sebelum mencoba angka, ucapkan dulu tebakanmu: "kira-kira berapa kali?" Kebiasaan ini membantumu benar-benar berpikir dulu.
       </div>
 
       <div class="soal-box">
         <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">1</span>Hitunglah 690 ÷ 30 dengan cara bersusun, tunjukkan estimasimu!</div>
-          <div class="soal-a"><b>Pembahasan:</b> Lihat 69 (dua digit pertama). Pola kelipatan 30: 30, 60, 90... 30×2=60 (dekat dengan 69), 30×3=90 (kelewat). Estimasi 2. 69−60=9, sisa 9. Turunkan 0, gabung jadi 90. 90÷30=3 pas. Hasil: <strong>23</strong>.</div>
+          <div class="soal-q"><span class="no">1</span>Hitung 690 ÷ 30. Tulis lengkap ke bawah.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Lihat 69. Pola kelipatan 30: 30×2=60 (dekat 69). Tulis 2. 69−60=9. Turunkan 0, jadi 90. 90÷30=3 pas. Hasil: <strong>23</strong>.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">2</span>Kenapa pembagian dengan pembagi kelipatan 10 (seperti 20, 30, 40) lebih mudah diestimasi dibanding pembagi sembarang seperti 17 atau 23?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Karena pola perkalian kelipatan 10 sudah familiar sejak lama (mirip tabel perkalian biasa ditambah satu nol), sehingga menebak "kira-kira berapa kali" jauh lebih cepat dan mudah dicek. Pembagi sembarang seperti 17 atau 23 tidak punya pola sesederhana itu, sehingga estimasinya perlu usaha lebih.</div>
+          <div class="soal-q"><span class="no">2</span>Kenapa pembagi kelipatan 10 (seperti 20, 30) lebih gampang ditebak dibanding pembagi seperti 17 atau 23?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pola perkalian kelipatan 10 sudah kamu hafal sejak lama, mirip tabel perkalian biasa ditambah satu nol. Jadi menebak "kira-kira berapa kali" jadi cepat. Pembagi seperti 17 atau 23 tidak punya pola sesederhana itu.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">3</span>Fira mengerjakan 480 ÷ 40 dan langsung menebak hasilnya 12 tanpa mengecek dengan perkalian ulang. Apakah kebiasaan ini aman dilakukan terus-menerus?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Tidak selalu aman. Meskipun kelipatan 10 mudah diestimasi, tetap penting mengecek dengan perkalian ulang (40×12=480, benar dalam kasus ini) untuk memastikan tebakan tepat — terutama untuk soal yang angkanya kurang rapi. Kebiasaan mengecek ulang membantu menangkap kesalahan sebelum terlanjur salah di langkah berikutnya.</div>
+          <div class="soal-q"><span class="no">3</span>Fira mengerjakan 480 ÷ 40 dan langsung menebak 12 tanpa mengecek dengan perkalian ulang. Apakah kebiasaan ini aman terus dilakukan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Tidak selalu aman. Kali ini kebetulan benar (40×12=480). Tapi tetap penting mengecek dengan perkalian ulang setiap kali, terutama untuk soal yang angkanya kurang rapi. Kebiasaan mengecek membantu menangkap kesalahan sebelum terlanjur salah.</div>
         </div>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
-        Kerjakan tiga soal berikut dengan menunjukkan proses estimasimu: 560 ÷ 40, 750 ÷ 50, 920 ÷ 40.
+        Kerjakan tiga soal ini, tulis lengkap ke bawah: 560 ÷ 40, 750 ÷ 50, 920 ÷ 40.
       </div>
     </div>
 
