@@ -1,1 +1,721 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menganalisis Tayangan — Bahasa Indonesia Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --screen:#1b2430; --screen-2:#2a3a4d;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reveal-key{margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;}
+.key-box{display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;}
+.key-box.show{display:block;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
 
+/* ============ PAGINATION / STEPPER ============ */
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
+.page{display:none;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+
+/* ============ TAYANGAN CARD (elemen ciri khas modul ini) ============ */
+.tayangan{background:var(--paper);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow);}
+.screen{background:linear-gradient(160deg,var(--screen-2),var(--screen));color:#eef2f6;padding:24px 22px;text-align:center;position:relative;}
+.screen .playicon{font-size:30px;opacity:.85;margin-bottom:8px;}
+.screen .ttitle{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:#f6e6bf;}
+.screen .tdur{font-size:11.5px;color:rgba(238,242,246,.65);margin-top:4px;}
+.transcript{padding:16px 20px;}
+.tr-block{margin-bottom:12px;font-size:13.5px;line-height:1.7;}
+.tr-block:last-child{margin-bottom:0;}
+.tr-block b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gold-d);margin-bottom:3px;}
+.tr-block ol,.tr-block ul{margin-left:18px;}
+.reveal-btn{background:var(--gold-l);border:1px solid #ecd58f;color:var(--gold-d);border-radius:20px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;}
+.reveal-btn:disabled{opacity:.4;cursor:default;}
+.step-reveal{display:none;border-top:1px dashed var(--border);padding-top:10px;margin-top:10px;}
+.step-reveal.show{display:block;}
+.model-box{background:#f4f8f5;border:1.5px solid var(--correct);border-radius:12px;padding:16px 18px;margin-top:14px;display:none;}
+.model-box.show{display:block;}
+.model-box b{color:var(--correct);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.model-box .mrow{margin-bottom:10px;font-size:13.5px;}
+.model-box .mrow:last-child{margin-bottom:0;}
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Menganalisis Tayangan</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
+
+<div id="stepper" class="stepper"></div>
+
+<div class="wrap">
+
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> MB2 — Membaca dan Memirsa · Menganalisis Tayangan (Video/Infografis), Bahasa Indonesia Kelas 5. TP dan 4 tangga dipakai ulang dari <code>pages/materi/bahasa-indonesia/membaca-memirsa-tp2/</code> — tidak dianalisis ulang dari CP.</li>
+<li><b>Kenapa tayangan berbentuk "transkrip", bukan video sungguhan:</b> mengikuti pendekatan materi persis — karena modul ini tidak memuat video asli, tiap "tayangan" digambarkan sebagai kartu berisi Adegan/Narasi/Teks Layar, supaya siswa tetap bisa berlatih menganalisis lewat kata-kata. Instruksi "Yuk Coba Sendiri" tetap mengarahkan siswa menonton video SUNGGUHAN di rumah sebagai pelengkap.</li>
+<li><b>Beda dari Menyimak/Berbicara:</b> TP ini reseptif-analitis (memirsa lalu menganalisis), bukan performatif — jadi BISA diberi kunci jawaban/kuis seperti Menyimak, bukan hanya observasi langsung seperti Berbicara.</li>
+<li><b>Penilaian akhir TP</b> sesungguhnya memakai tayangan otentik yang ditunjukkan guru langsung di kelas (sesuai materi 04) — Bagian 4 modul ini adalah latihan terakhir dengan tayangan contoh sebelum penilaian sungguhan itu, dilengkapi kunci jawaban untuk siswa mengecek sendiri.</li>
+<li>Semua tayangan contoh di modul ini baru, berbeda dari yang ada di materi.</li>
+<li>Profil kelas dipakai ulang: kemampuan awal homogen, kesenjangan ekonomi tidak signifikan.</li>
+</ul>
+</details>
+
+<div class="cover">
+  <span class="kicker">✦ Bahasa Indonesia · Kelas 5</span>
+  <h1>Menganalisis Tayangan</h1>
+  <p class="lede">Bismillah, mari kita mulai! Setiap kali kamu menonton video atau iklan, sebenarnya ada dua lapis makna: yang benar-benar dikatakan, dan yang tersembunyi di baliknya. Yuk belajar menemukan keduanya.</p>
+  <div class="cover-meta">
+    <span>🎬 4 bagian belajar</span>
+    <span>📺 8 tayangan contoh baru</span>
+    <span>📋 1 latihan analisis lengkap</span>
+  </div>
+</div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Selama ini kamu berlatih memahami sesuatu yang dibaca atau didengar. Sekarang kita masuk ke keterampilan berbeda: <em>memirsa</em> — memahami tayangan seperti video, infografis, atau iklan.</p>
+  <p>Yang unik dari tayangan: informasinya bisa datang dari tiga saluran sekaligus — narasi (yang diucapkan), teks di layar (yang ditulis), dan adegan (yang terlihat). Kadang ketiganya bahkan menyampaikan pesan yang tidak diucapkan langsung.</p>
+  <div class="produk-banner">
+    <div class="icon">🔎</div>
+    <div>
+      <strong>Yang akan kamu latih</strong>
+      Menangkap informasi yang benar-benar dinyatakan (eksplisit), menemukan pesan yang tersembunyi (tersirat), membandingkan nilai dari dua tayangan berbeda, lalu menggabungkan semuanya jadi satu analisis lengkap di Bagian 4.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SUBUNIT 1 -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Bagian 1 dari 4 · Materi Pintu Masuk</div><h2 style="margin-bottom:0;">Menangkap Informasi dari Tayangan</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Kita mulai dari yang paling sederhana: menemukan fakta-fakta yang memang benar-benar dinyatakan (informasi eksplisit) — lewat narasi maupun teks di layar.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau kamu menonton video sambil main HP, menurutmu apakah kamu bisa menangkap semua informasinya? Kenapa?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📺 Tayangan 1 — Semua Informasi di Satu Tempat</div>
+    <div class="tayangan">
+      <div class="screen"><div class="playicon">▶</div><div class="ttitle">INFOGRAFIS — "Cara Menyeberang Jalan yang Aman"</div><div class="tdur">durasi 15 detik</div></div>
+      <div class="transcript">
+        <div class="tr-block"><b>Teks di Layar</b><ol><li>Lihat kanan dan kiri</li><li>Pastikan tidak ada kendaraan</li><li>Menyeberang cepat, jangan berlari</li></ol></div>
+      </div>
+    </div>
+    <div class="field-row" style="margin-bottom:10px;"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:6px;">Mana yang TERMASUK informasi eksplisit dari tayangan ini?</label></div>
+    <div id="t1-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📺 Tayangan 2 — Informasi Tersebar di Dua Saluran</div>
+    <div class="tayangan">
+      <div class="screen"><div class="playicon">▶</div><div class="ttitle">VIDEO PENGUMUMAN — "Class Meeting Akhir Semester"</div><div class="tdur">durasi 25 detik</div></div>
+      <div class="transcript">
+        <div class="tr-block"><b>Narasi (guru bicara)</b>"Minggu depan sekolah kita mengadakan class meeting untuk merayakan akhir semester, diikuti seluruh siswa kelas 4 sampai 6."</div>
+        <div class="tr-block"><b>Teks di Layar</b>Senin, 15 Desember 2026<br>Mulai pukul 07.30 — Lapangan Sekolah</div>
+      </div>
+    </div>
+    <div class="act-desc">Untuk tiap info berikut, tentukan asalnya dari saluran mana.</div>
+    <div id="t2-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📺 Tayangan 3 — Informasi Muncul Bertahap</div>
+    <div class="act-desc">Teks di layar tayangan ini muncul satu per satu, seperti video sungguhan. Tekan "Lanjutkan Tayangan" untuk melihat bagian berikutnya — jangan lewati satu pun!</div>
+    <div class="tayangan">
+      <div class="screen"><div class="playicon">▶</div><div class="ttitle">VIDEO EDUKASI — "Tanda Bahaya di Sekitar Kita"</div><div class="tdur">durasi 35 detik</div></div>
+      <div class="transcript" id="t3-transcript">
+        <div class="tr-block"><b>Detik 0-10, Narasi</b>"Ada beberapa tanda di sekitar kita yang perlu kita kenali supaya tetap aman."</div>
+      </div>
+    </div>
+    <button class="reveal-btn" id="t3-btn" onclick="revealT3Step()">▶ Lanjutkan Tayangan</button>
+    <div id="t3-quiz" style="margin-top:14px;"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Ada bagian yang masih membingungkan? Tuliskan.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SUBUNIT 2 -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num">2</span>
+    <div><div class="block-eyebrow">Bagian 2 dari 4 · Pendalaman</div><h2 style="margin-bottom:0;">Menemukan Pesan Tersembunyi</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang kita cari pesan yang tidak diucapkan langsung, tapi bisa ditangkap dari apa yang ditonjolkan, kontras, musik/suasana, dan urutan adegan.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Pernahkah kamu menonton video tanpa kata-kata sama sekali, tapi kamu tetap paham "pesannya"? Ceritakan.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div id="s2-list"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz2"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Petunjuk mana yang paling membantumu: ditonjolkan, kontras, musik/suasana, atau urutan adegan?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<!-- SUBUNIT 3 -->
+<section class="block" id="subunit3">
+  <div class="subunit-head"><span class="badge-num">3</span>
+    <div><div class="block-eyebrow">Bagian 3 dari 4 · Pendalaman</div><h2 style="margin-bottom:0;">Membandingkan Dua Tayangan</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Dua tayangan dengan topik yang kelihatan berbeda, ternyata bisa menyampaikan nilai yang sama. Kuncinya: bandingkan bagaimana tokoh menghadapi situasi, bukan topiknya.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Sebutkan dua tayangan/film yang topiknya beda tapi menurutmu punya pesan yang mirip.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div id="s3-list"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz3"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Kenapa kita perlu membandingkan cara tokoh menghadapi situasi, bukan topik permukaannya?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(5)">Lanjut →</button></div>
+</div><!-- /page 4 -->
+
+<div class="page" data-page="5">
+<!-- SUBUNIT 4 — PERTEMUAN INTI -->
+<section class="block" id="subunit4">
+  <div class="subunit-head"><span class="badge-num badge-inti">4</span>
+    <div><div class="block-eyebrow">Bagian 4 dari 4 · Pertemuan Inti — Saatnya Mandiri!</div><h2 style="margin-bottom:0;">Menganalisis Informasi dan Nilai dalam Tayangan</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang gabungkan semua kemampuanmu jadi satu analisis lengkap: informasi eksplisit → yang ditonjolkan → pesan tersirat → kesimpulan gabungan.</p>
+
+  <div class="activity">
+    <div class="act-title">📖 Contoh Analisis Lengkap (Model)</div>
+    <div class="tayangan">
+      <div class="screen"><div class="playicon">▶</div><div class="ttitle">VIDEO SEKOLAH — "Menyiram Tanaman Bersama"</div><div class="tdur">durasi 40 detik</div></div>
+      <div class="transcript">
+        <div class="tr-block"><b>Adegan</b>Beberapa anak piket menyiram tanaman di kebun sekolah sendiri-sendiri, terlihat buru-buru, ada tanaman yang terlewat. Salah satu anak mengajak membagi jadwal per petak. Mereka lalu bekerja per kelompok kecil saling mengecek, tanaman jadi tersiram merata dan rapi.</div>
+        <div class="tr-block"><b>Narasi (di akhir)</b>"Kegiatan menyiram tanaman dilakukan setiap pagi oleh piket kelas sesuai jadwal mingguan yang ditempel di kebun sekolah."</div>
+        <div class="tr-block"><b>Teks di Layar</b>Piket Kebun: Setiap Pagi<br>6 siswa per minggu</div>
+      </div>
+    </div>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Lihat Analisis Lengkapnya</button>
+    <div class="model-box" id="modelBox1">
+      <div class="mrow"><b>Langkah 1 — Informasi Eksplisit</b>Piket menyiram tanaman dilakukan setiap pagi; 6 siswa per minggu; jadwal ditempel di kebun sekolah.</div>
+      <div class="mrow"><b>Langkah 2 — Yang Ditonjolkan</b>Perubahan dari bekerja sendiri-sendiri dan terburu-buru → bekerja per kelompok kecil dan saling mengecek.</div>
+      <div class="mrow"><b>Langkah 3 — Pesan Tersirat</b>Pekerjaan yang mudah terlewat kalau dikerjakan sendiri-sendiri, jadi lebih rapi dan merata kalau dikerjakan dengan pembagian yang jelas dan saling mengecek.</div>
+      <div class="mrow"><b>Langkah 4 — Kesimpulan Gabungan</b>Video ini menjelaskan aturan piket kebun secara eksplisit (kapan, berapa orang), sekaligus menunjukkan bahwa pembagian tugas yang jelas dan kerja sama membuat pekerjaan piket jadi lebih rapi dan tidak ada yang terlewat.</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Latihan Mandiri — Analisis Sendiri</div>
+    <div class="act-desc">Sekarang giliranmu. Analisis tayangan berikut sendiri, ikuti struktur yang sama.</div>
+    <div class="tayangan">
+      <div class="screen"><div class="playicon">▶</div><div class="ttitle">VIDEO SEKOLAH — "Antre di Kantin"</div><div class="tdur">durasi 30 detik</div></div>
+      <div class="transcript">
+        <div class="tr-block"><b>Adegan</b>Siswa berebutan maju duluan di kantin, saling dorong kecil, satu anak hampir menjatuhkan nampannya. Seorang siswa mengalah, membiarkan yang lain lewat dulu sambil tersenyum. Akhirnya yang lain ikut antre berbaris rapi.</div>
+        <div class="tr-block"><b>Narasi</b>"Waktu istirahat di kantin hanya 15 menit, jadi seluruh siswa diharap antre dengan tertib."</div>
+        <div class="tr-block"><b>Teks di Layar</b>Jam Istirahat: 09.30–09.45<br>Antre Tertib, Semua Kebagian</div>
+      </div>
+    </div>
+    <div class="field-row"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:6px;text-transform:uppercase;">Langkah 1 — Informasi Eksplisit</label><textarea class="ans" id="mandiri1"></textarea></div>
+    <div class="field-row"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:6px;text-transform:uppercase;">Langkah 2 — Yang Ditonjolkan</label><textarea class="ans" id="mandiri2"></textarea></div>
+    <div class="field-row"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:6px;text-transform:uppercase;">Langkah 3 — Pesan Tersirat</label><textarea class="ans" id="mandiri3"></textarea></div>
+    <div class="field-row"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:6px;text-transform:uppercase;">Langkah 4 — Kesimpulan Gabungan</label><textarea class="ans" id="mandiri4"></textarea></div>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Bandingkan dengan Contoh Analisis</button>
+    <div class="model-box" id="modelBox2">
+      <div class="mrow"><b>Langkah 1 — Informasi Eksplisit</b>Waktu istirahat 15 menit (09.30–09.45); siswa diharap antre dengan tertib.</div>
+      <div class="mrow"><b>Langkah 2 — Yang Ditonjolkan</b>Perubahan dari berebutan/saling dorong menjadi antre rapi, tepat setelah satu anak mengalah.</div>
+      <div class="mrow"><b>Langkah 3 — Pesan Tersirat</b>Mengalah sedikit demi ketertiban bersama membuat semua orang tetap kebagian dengan aman, tanpa ada yang terjatuh atau dirugikan.</div>
+      <div class="mrow"><b>Langkah 4 — Kesimpulan Gabungan</b>Video ini menjelaskan aturan waktu istirahat secara eksplisit, sekaligus menunjukkan bahwa sikap mengalah dan tertib saat antre membuat semua orang tetap kebagian tanpa ada yang terluka.</div>
+    </div>
+    <div class="field-hint" style="margin-top:10px;">Jawabanmu tidak harus persis sama — yang penting strukturnya mengikuti keempat langkah dan alasannya masuk akal.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Sebelum Penilaian Sungguhan</div>
+    <div class="act-desc">Ini bukan kuis bernilai — sekadar mengingatkanmu. Gurumu akan menunjukkan satu tayangan asli di kelas, dan kamu akan menganalisisnya sendiri seperti latihan tadi.</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Unit</h3>
+  <div class="reflect-q"><label>Melihat kembali perjalananmu di unit ini, bagian mana yang paling kamu kuasai?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Langkah mana (Eksplisit/Ditonjolkan/Tersirat/Kesimpulan) yang masih paling sulit?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, unit ini selesai! Tuliskan satu hal yang kamu syukuri dari belajar hari ini.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(4)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(6)">Lanjut →</button></div>
+</div><!-- /page 5 -->
+
+<div class="page" data-page="6">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Memirsa</dt><dd>Memahami informasi dari tayangan (video, infografis, animasi, iklan) — beda dari membaca teks tertulis.</dd>
+    <dt>Informasi Eksplisit</dt><dd>Fakta yang benar-benar dinyatakan secara jelas, lewat narasi maupun teks di layar.</dd>
+    <dt>Pesan Tersirat</dt><dd>Pesan/nilai yang tidak diucapkan langsung, tapi bisa dipahami dari yang ditonjolkan, kontras, musik/suasana, atau urutan adegan.</dd>
+  </dl>
+</section>
+<div class="closing">Selamat, kamu sudah menyelesaikan unit ini! Sekarang setiap kali kamu menonton video atau iklan, kamu tahu cara membacanya lebih dalam — bukan cuma menerima begitu saja. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(5)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 6 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+/* ============================================================
+   STORAGE KEY — GANTI PER MODUL supaya progres tiap modul terpisah
+   ============================================================ */
+const STORAGE_KEY = 'modulProgress:bi-membaca-memirsa-tp2';
+const TOTAL_PAGES = 7;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+/* ============ STEPPER & HALAMAN ============ */
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Bag.3','Bag.4','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+/* ============ SIMPAN JAWABAN TEKS (textarea/isian) ============ */
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+/* ============ MEMUTAR ULANG AKSI ============ */
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  } else if(a.type === 't3reveal'){
+    revealT3Step(true);
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+/* ============ QUIZ RENDERER ============ */
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')">Lihat contoh jawaban</button><div class="key-box">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SUBUNIT 1 — Tayangan 1: pilih info eksplisit ============ */
+const t1data = [
+  {text:'Ada 3 langkah menyeberang jalan yang aman', correct:true},
+  {text:'Langkah pertama: melihat kanan dan kiri', correct:true},
+  {text:'Sebaiknya menyeberang sambil bermain HP', correct:false},
+  {text:'Langkah terakhir: menyeberang cepat tapi tidak berlari', correct:true}
+];
+function renderT1(){
+  const el = document.getElementById('t1-list');
+  el.innerHTML = t1data.map((d,i)=>`
+    <div class="q-item">
+      <div class="q-text">"${d.text}"</div>
+      <div class="choice-group" id="t1-q${i}">
+        <button class="choice-btn" onclick="checkMCQ('t1-q${i}',this,0,${d.correct?0:1})">Termasuk Informasi Eksplisit</button>
+        <button class="choice-btn" onclick="checkMCQ('t1-q${i}',this,1,${d.correct?0:1})">Bukan/Tidak Disebutkan</button>
+      </div>
+    </div>
+  `).join('');
+}
+renderT1();
+
+/* ============ SUBUNIT 1 — Tayangan 2: klasifikasi saluran ============ */
+const t2data = [
+  {text:'Acara: class meeting untuk merayakan akhir semester', correct:0},
+  {text:'Peserta: siswa kelas 4 sampai 6', correct:0},
+  {text:'Hari/tanggal: Senin, 15 Desember 2026', correct:1},
+  {text:'Waktu dan tempat: pukul 07.30 di Lapangan Sekolah', correct:1}
+];
+function renderT2(){
+  const el = document.getElementById('t2-list');
+  el.innerHTML = t2data.map((d,i)=>`
+    <div class="q-item">
+      <div class="q-text">"${d.text}"</div>
+      <div class="choice-group" id="t2-q${i}">
+        <button class="choice-btn" onclick="checkMCQ('t2-q${i}',this,0,${d.correct})">Dari Narasi</button>
+        <button class="choice-btn" onclick="checkMCQ('t2-q${i}',this,1,${d.correct})">Dari Teks Layar</button>
+      </div>
+    </div>
+  `).join('');
+}
+renderT2();
+
+/* ============ SUBUNIT 1 — Tayangan 3: reveal bertahap ============ */
+const t3steps = [
+  {html:'<div class="tr-block"><b>Detik 10, Teks di Layar</b>TANDA 1: Langit gelap tiba-tiba = akan hujan deras</div>'},
+  {html:'<div class="tr-block"><b>Detik 20, Teks di Layar</b>TANDA 2: Air sungai naik cepat = waspada banjir</div>'},
+  {html:'<div class="tr-block"><b>Detik 30, Narasi</b>"Kalau melihat tanda-tanda ini, segera beri tahu orang dewasa di dekatmu."</div>'}
+];
+let t3index = 0;
+function revealT3Step(silent){
+  if(t3index >= t3steps.length){ return; }
+  document.getElementById('t3-transcript').insertAdjacentHTML('beforeend', t3steps[t3index].html);
+  t3index++;
+  if(t3index >= t3steps.length){
+    document.getElementById('t3-btn').disabled = true;
+    document.getElementById('t3-btn').textContent = 'Tayangan Selesai';
+    renderT3Quiz();
+  }
+  if(!silent && !isReplaying) logAction({type:'t3reveal'});
+}
+function renderT3Quiz(){
+  renderQuiz('t3-quiz', [
+    {type:'mcq', text:'Ada berapa tanda bahaya yang disebutkan dalam tayangan ini?', options:['Satu','Dua','Tiga'], correct:1},
+    {type:'mcq', text:'Apa yang sebaiknya dilakukan kalau melihat tanda-tanda itu?', options:['Diam saja','Segera beri tahu orang dewasa','Mendekat untuk melihat lebih jelas'], correct:1}
+  ]);
+}
+
+/* ============ SUBUNIT 2 — pesan tersembunyi ============ */
+const s2data = [
+  {judul:'VIDEO PENDEK — "Payung Berbagi" (tanpa narasi)',
+   adegan:'Seorang anak kehujanan tanpa payung, berjalan sendirian basah kuyup. Teman sekelasnya berlari menyusul membawakan payung, lalu mereka berjalan pulang bersama. Musik yang tadinya sepi berubah menjadi hangat.',
+   options:['Berbagi/peduli membuat orang lain tidak merasa sendirian','Payung sebaiknya selalu dibawa ke sekolah','Hujan adalah hal yang menyenangkan'], correct:0},
+  {judul:'IKLAN LAYANAN MASYARAKAT — "Hemat Listrik"',
+   adegan:'Adegan 1: kamar kosong dengan lampu, AC, dan TV semua menyala tanpa ada orang. Adegan 2 (langsung berikutnya): cerobong pembangkit listrik mengeluarkan asap tebal. Teks di layar: "Energi tidak tak terbatas."',
+   options:['Alat elektronik sebaiknya dinyalakan terus supaya awet','Membiarkan alat listrik menyala tanpa dipakai berdampak pada penggunaan energi berlebih','Pembangkit listrik selalu mengeluarkan asap'], correct:1},
+  {judul:'ANIMASI PENDEK — "Kotak Krayon" (tanpa dialog)',
+   adegan:'Seorang anak mencoba mewarnai gambar hanya dengan satu warna, hasilnya kurang menarik, ia terlihat kecewa. Temannya datang menawarkan kotak krayon lengkap. Mereka mewarnai bersama, hasilnya jadi berwarna-warni, keduanya tertawa senang.',
+   options:['Berbagi alat/sumber daya membuat hasil kerja lebih baik untuk semua','Mewarnai sebaiknya dilakukan sendirian','Satu warna saja sudah cukup untuk menggambar'], correct:0}
+];
+function renderS2(){
+  const el = document.getElementById('s2-list');
+  el.innerHTML = s2data.map((d,i)=>`
+    <div class="activity">
+      <div class="act-title">📺 Tayangan ${i+1}</div>
+      <div class="tayangan">
+        <div class="screen"><div class="playicon">▶</div><div class="ttitle">${d.judul}</div></div>
+        <div class="transcript"><div class="tr-block"><b>Adegan</b>${d.adegan}</div></div>
+      </div>
+      <div class="field-row"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:6px;">Apa pesan tersirat tayangan ini?</label>
+        <div class="choice-group" id="s2-q${i}">
+          ${d.options.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s2-q${i}',this,${oi},${d.correct})">${o}</button>`).join('')}
+        </div>
+      </div>
+      <div class="reflect-q" style="margin-top:10px;"><label>Bagian mana (ditonjolkan/kontras/musik/urutan) yang membuatmu berpikir begitu?</label><textarea class="ans"></textarea></div>
+    </div>
+  `).join('');
+}
+renderS2();
+
+/* ============ SUBUNIT 3 — membandingkan tayangan ============ */
+const s3pairs = [
+  {
+    a:{judul:'"Kue Ulang Tahun"', adegan:'Seorang anak mendapat kue ulang tahun, lalu memilih membagikannya ke semua teman sekelas daripada memakannya sendiri.'},
+    b:{judul:'"Bangku Kosong"', adegan:'Seorang anak melihat siswa baru duduk sendirian di kantin, lalu mendekat dan mengajaknya duduk bersama.'},
+    options:['Kejujuran','Kepedulian/berbagi dengan orang lain','Ketepatan waktu'], correct:1
+  },
+  {
+    a:{judul:'"Latihan Renang"', adegan:'Seorang anak takut air, berkali-kali mencoba dan tenggelam-tenggelam kecil, akhirnya berhasil berenang.'},
+    b:{judul:'"Ujian Matematika"', adegan:'Seorang anak gugup menghadapi ujian yang sulit, sempat ingin menyerah, akhirnya menyelesaikannya dengan usaha keras.'},
+    options:['Ketekunan/pantang menyerah menghadapi kesulitan','Kepandaian sejak lahir','Pentingnya berenang setiap hari'], correct:0
+  }
+];
+function renderS3(){
+  const el = document.getElementById('s3-list');
+  el.innerHTML = s3pairs.map((p,i)=>`
+    <div class="activity">
+      <div class="act-title">📺 Pasangan Tayangan ${i+1}</div>
+      <div class="tayangan">
+        <div class="screen"><div class="playicon">▶</div><div class="ttitle">A — ${p.a.judul}</div></div>
+        <div class="transcript"><div class="tr-block"><b>Adegan</b>${p.a.adegan}</div></div>
+      </div>
+      <div class="tayangan">
+        <div class="screen"><div class="playicon">▶</div><div class="ttitle">B — ${p.b.judul}</div></div>
+        <div class="transcript"><div class="tr-block"><b>Adegan</b>${p.b.adegan}</div></div>
+      </div>
+      <div class="field-row"><label style="display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:6px;">Nilai apa yang SAMA-SAMA muncul di kedua tayangan ini?</label>
+        <div class="choice-group" id="s3-q${i}">
+          ${p.options.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s3-q${i}',this,${oi},${p.correct})">${o}</button>`).join('')}
+        </div>
+      </div>
+      <div class="reflect-q" style="margin-top:10px;"><label>Walau topiknya beda, kenapa menurutmu nilainya sama?</label><textarea class="ans"></textarea></div>
+    </div>
+  `).join('');
+}
+renderS3();
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Apa beda "membaca" dan "memirsa"?', options:['Tidak ada beda','Memirsa berarti memahami tayangan (video/gambar bergerak), membaca untuk teks tertulis','Memirsa hanya berlaku untuk televisi'], correct:1},
+  {type:'bs', text:'Informasi dalam tayangan hanya bisa muncul lewat satu saluran saja.', correct:1},
+  {type:'mcq', text:'Informasi yang benar-benar diucapkan/ditampilkan secara jelas disebut informasi...', options:['Tersirat','Eksplisit','Rahasia'], correct:1},
+  {type:'essay', text:'Sebutkan satu jenis tayangan (video, infografis, iklan, dll).'},
+  {type:'essay', text:'Pernahkah kamu menonton video atau iklan yang menurutmu punya "pesan" di baliknya? Ceritakan.'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'mcq', text:'Kalau informasi "apa acaranya" ada di narasi dan "kapan-dimana" ada di teks layar, apa yang harus dilakukan?', options:['Cukup ambil salah satu saja','Menggabungkan keduanya jadi satu informasi lengkap','Mengabaikan teks layarnya'], correct:1},
+  {type:'essay', text:'Kenapa penting mengikuti tayangan dari awal sampai akhir, bukan cuma sepintas di awal?', tag:'uraian', key:'Contoh: karena informasi bisa muncul kapan saja sepanjang tayangan — kalau berhenti di tengah, ada kemungkinan informasi penting terlewat, seperti pada Tayangan 3 yang teksnya muncul bertahap.'},
+  {type:'essay', text:'Sebutkan satu saluran informasi dalam tayangan (narasi/teks layar/adegan).', tag:'isian'},
+  {type:'essay', text:'Coba tonton satu video pendek di rumah, catat minimal 3 informasi eksplisit yang kamu temukan.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz2', [
+  {type:'essay', text:'Sebutkan satu cara pesan tersirat bisa muncul dalam tayangan (ditonjolkan/kontras/musik/urutan).', tag:'isian'},
+  {type:'essay', text:'Kenapa Tayangan "Kotak Krayon" tidak memerlukan kata-kata sama sekali untuk menyampaikan pesannya?', tag:'uraian', key:'Contoh: karena perubahan ekspresi (kecewa menjadi tertawa senang) dan hasil karya (kurang menarik menjadi berwarna-warni) sudah cukup jelas menunjukkan bahwa berbagi krayon membuat hasil kerja lebih baik, tanpa perlu diucapkan.'},
+  {type:'mcq', text:'Kontras/perbandingan dalam tayangan biasanya dipakai untuk...', options:['Membuat penonton bingung','Menunjukkan perbedaan supaya pesannya lebih terasa','Memperpanjang durasi video'], correct:1},
+  {type:'essay', text:'Coba tonton satu iklan di rumah, tuliskan menurutmu apa pesan tersiratnya.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz3', [
+  {type:'mcq', text:'Saat membandingkan dua tayangan, yang perlu dibandingkan adalah...', options:['Topik permukaannya','Cara tokoh menghadapi situasinya','Durasi tayangannya'], correct:1},
+  {type:'essay', text:'Kenapa "Latihan Renang" dan "Ujian Matematika" bisa punya nilai yang sama walau topiknya sangat berbeda?', tag:'uraian', key:'Contoh: karena di kedua tayangan, tokohnya sama-sama menghadapi kesulitan, sempat merasa ingin menyerah, tapi tetap berusaha sampai akhirnya berhasil — pola menghadapi kesulitan inilah yang sama, bukan topiknya.'},
+  {type:'essay', text:'Sebutkan satu langkah dalam membandingkan dua tayangan.', tag:'isian'},
+  {type:'essay', text:'Pikirkan dua tayangan yang topiknya beda tapi nilainya sama. Ceritakan perbandinganmu.', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Urutan langkah menganalisis tayangan yang benar adalah...', options:['Kesimpulan → Eksplisit → Tersirat → Ditonjolkan','Eksplisit → Ditonjolkan → Tersirat → Kesimpulan','Tersirat → Kesimpulan → Eksplisit → Ditonjolkan'], correct:1},
+  {type:'mcq', text:'Saat penilaian nanti, tayangan yang dianalisis berasal dari...', options:['Tayangan yang ditunjukkan gurumu langsung di kelas','Tayangan yang kamu buat sendiri','Tayangan dari modul ini persis'], correct:0},
+  {type:'essay', text:'Apa yang membuatmu merasa siap atau belum siap untuk penilaian nanti?', tag:'uraian'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 22;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  if(t3index >= t3steps.length) done++;
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+updateProgress();
+</script>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
