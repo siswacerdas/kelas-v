@@ -13,6 +13,9 @@
  *                nama), di sini SELALU menambah baris baru karena 1 mapel bisa punya banyak media.
  *                { type: "infografis_hapus" } -> hapus 1 baris Galeri Visual berdasarkan ID (lihat catatan
  *                di doPostInfografisHapus_() soal kenapa file Drive-nya SENGAJA tidak ikut dihapus).
+ *                { type: "progres_materi" }   -> upsert 1 baris "sudah dibaca" (Nama Siswa + Materi Slug)
+ *                di sheet "Data Progres Materi" — dikirim materi-progress-tracker.js, fire-and-forget,
+ *                TANPA gerbang (siswa mengirim sendiri saat baca materi, bukan lewat guru/orang tua).
  * - doGet(e)   : ?nama=...        -> 1 baris data MPLS non-kognitif siswa tsb (untuk input.html).
  *                ?all=1           -> SEMUA baris data MPLS non-kognitif (untuk rekap.html/laporan.html).
  *                ?siswa=1         -> SEMUA baris data profil siswa (untuk pages/kelas/).
@@ -35,6 +38,9 @@
  *                (untuk pages/laporan-siswa/mpls.html) — digerbang wajibAksesLaporan_() (BUKAN wajibGuru_),
  *                supaya guru boleh lihat siapa saja TAPI akun "orangtua" hanya bisa lihat anaknya
  *                sendiri (field "anak" di Firestore users/{uid}). Lihat RANCANGAN-LAPORAN-SISWA.md.
+ *                ?progresMateri=1&nama=..&idToken=.. -> SEMUA baris "Data Progres Materi" milik 1 siswa
+ *                (untuk pages/laporan-siswa/belajar-mandiri.html) — gerbang SAMA dengan ?laporanSiswa=1
+ *                (wajibAksesLaporan_(), bukan endpoint terpisah dari sisi keamanan, cuma sheet beda).
  * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal() / setupInfografisSheet():
  *                jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi lalu Run) untuk
  *                membuat sheet + header.
@@ -239,6 +245,19 @@ const INFOGRAFIS_HEADERS = [
   "Jenis Media",   // "gambar" (file diunggah ke Drive) atau "video" (tautan luar, mis. YouTube)
   "URL Media",
   "Diunggah Oleh",
+];
+
+const PROGRES_MATERI_SHEET_NAME = "Data Progres Materi";
+// "Materi Slug" = field "file" di materi-index.js TANPA akhiran ".html" — sama persis pola
+// yang dipakai INFOGRAFIS_HEADERS di atas, konsisten satu sumber kebenaran untuk identitas
+// materi di seluruh sistem (bukan skema ID baru).
+const PROGRES_MATERI_HEADERS = [
+  "Timestamp",     // kapan TERAKHIR dibuka (upsert, lihat doPostProgresMateri_ — bukan log
+                    // setiap kunjungan, supaya 1 siswa+1 materi = 1 baris saja)
+  "Nama Siswa",
+  "Materi Slug",
+  "Status",         // saat ini SELALU "Dibaca" — field disediakan untuk kemungkinan status
+                    // lebih rinci di masa depan (mis. "Sedang Dibaca"), belum dipakai sekarang
 ];
 
 const HEADERS = [
@@ -478,7 +497,6 @@ function getInfografisSheet_() {
   return sheet;
 }
 
-/** Jalankan SEKALI dari editor Apps Script untuk inisialisasi sheet "Data Infografis" + header. */
 /** Jalankan SEKALI dari editor Apps Script untuk inisialisasi (atau perbaiki header) sheet
  * "Data Infografis". CATATAN: sejak getInfografisSheet_() jadi self-healing, memanggil fungsi
  * ini SEBENARNYA tidak wajib lagi — dipertahankan sebagai cara manual untuk memicu perbaikan
@@ -489,6 +507,29 @@ function setupInfografisSheet() {
   const sheet = getInfografisSheet_();
   sheet.setFrozenRows(1);
   Logger.log("Sheet siap: " + sheet.getName());
+}
+
+/** Sama pola self-healing dengan getInfografisSheet_() (lihat komentar panjang di sana untuk
+ * alasannya) — dibuat sebagai sheet baru untuk fitur "Perkembangan Belajar Mandiri"
+ * (RANCANGAN-LAPORAN-SISWA.md §7.1). Belum diekstrak jadi 1 helper generik dipakai bersama
+ * getSiswaSheet_()/getInfografisSheet_() — bisa jadi perbaikan lanjutan kalau nanti nambah
+ * sheet self-healing lagi ke-4 kalinya (baru 3 sekarang, belum terlalu mendesak diekstrak). */
+function getProgresMateriSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(PROGRES_MATERI_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(PROGRES_MATERI_SHEET_NAME);
+    sheet.getRange(1, 1, 1, PROGRES_MATERI_HEADERS.length).setValues([PROGRES_MATERI_HEADERS]);
+    sheet.setFrozenRows(1);
+    return sheet;
+  }
+  const currentHeaders = readHeaderRow_(sheet);
+  const missing = PROGRES_MATERI_HEADERS.filter((h) => currentHeaders.indexOf(h) === -1);
+  if (missing.length > 0) {
+    sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
+    Logger.log('Kolom baru ditambahkan otomatis ke "Data Progres Materi": ' + missing.join(", "));
+  }
+  return sheet;
 }
 
 /** Baca baris header (baris 1) apa adanya dari sheet — SUMBER KEBENARAN untuk urutan kolom,
@@ -524,6 +565,28 @@ function findRowByColumn_(sheet, colName, value) {
   const values = sheet.getRange(2, colIdx, lastRow - 1, 1).getValues();
   for (let i = 0; i < values.length; i++) {
     if (String(values[i][0]).trim() === String(value).trim()) return i + 2;
+  }
+  return -1;
+}
+
+/** Sama seperti findRowByColumn_() tapi mencocokkan DUA kolom sekaligus (harus cocok
+ * keduanya) — dibutuhkan untuk "Data Progres Materi" karena "Materi Slug" sendirian TIDAK
+ * unik di situ (banyak siswa boleh membaca materi yang sama); kuncinya adalah kombinasi
+ * "Nama Siswa" + "Materi Slug". */
+function findRowByTwoColumns_(sheet, col1Name, val1, col2Name, val2) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return -1;
+  const headerRow = readHeaderRow_(sheet);
+  const col1Idx = headerRow.indexOf(col1Name) + 1;
+  const col2Idx = headerRow.indexOf(col2Name) + 1;
+  if (col1Idx < 1 || col2Idx < 1) return -1;
+  const col1Values = sheet.getRange(2, col1Idx, lastRow - 1, 1).getValues();
+  const col2Values = sheet.getRange(2, col2Idx, lastRow - 1, 1).getValues();
+  for (let i = 0; i < col1Values.length; i++) {
+    if (String(col1Values[i][0]).trim() === String(val1).trim() &&
+        String(col2Values[i][0]).trim() === String(val2).trim()) {
+      return i + 2;
+    }
   }
   return -1;
 }
@@ -777,6 +840,17 @@ function doGet(e) {
       });
     }
 
+    if (params.progresMateri) {
+      // Untuk laporan "Perkembangan Belajar Mandiri" (Pintu 2) — daftar Materi Slug yang
+      // SUDAH dibuka siswa ybs. Sama model akses dengan ?laporanSiswa=1 di atas (guru bebas,
+      // orang tua cuma anaknya sendiri) — lihat wajibAksesLaporan_().
+      const namaProgres = params.nama;
+      if (!namaProgres) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
+      wajibAksesLaporan_(params.idToken, namaProgres);
+      const rows = sheetToObjects_(getProgresMateriSheet_()).filter((r) => r["Nama Siswa"] === namaProgres);
+      return jsonOut_({ data: rows });
+    }
+
     if (params.allKognitif) {
       wajibGuru_(params.idToken);
       return jsonOut_({ data: sheetToObjects_(getSheetKognitif_()) });
@@ -843,6 +917,15 @@ function doPost(e) {
     if (body.type === "infografis_hapus") {
       wajibGuru_(body.idToken);
       return doPostInfografisHapus_(body);
+    }
+
+    if (body.type === "progres_materi") {
+      // SENGAJA TANPA gerbang wajibGuru_/wajibAksesLaporan_ — pengirimnya SISWA sendiri saat
+      // membaca materi (lewat materi-progress-tracker.js), bukan guru/orang tua. Sama level
+      // keamanannya dengan endpoint MPLS siswa yang sudah ada (mis. doPost type "mpls" biasa) —
+      // cukup validasi field wajar, tidak perlu identitas login penuh (materi pages memakai
+      // auth-guard.js, bukan role check, jadi tidak ada idToken bermakna untuk digerbang di sini).
+      return doPostProgresMateri_(body);
     }
 
     if (body.type === "mpls_kognitif") {
@@ -1078,3 +1161,33 @@ function doPostInfografisHapus_(body) {
   sheet.deleteRow(row);
   return jsonOut_({ status: "ok" });
 }
+
+/** Upsert (bukan selalu tambah baris) berdasarkan kombinasi "Nama Siswa" + "Materi Slug" —
+ * 1 siswa + 1 materi = MAKSIMAL 1 baris, ditimpa (Timestamp diperbarui) tiap kali materi itu
+ * dibuka lagi, BUKAN menumpuk baris baru setiap kunjungan (kalau tidak, sheet ini akan
+ * membengkak sangat cepat — 1 siswa bisa buka 1 materi berkali-kali). Dipanggil dari
+ * materi-progress-tracker.js, fire-and-forget — SELALU balas "ok" bahkan kalau field kurang
+ * lengkap (siswa yang membuka materi tidak boleh melihat efek apa pun dari endpoint ini,
+ * sukses atau gagal; kegagalan cukup diam-diam diabaikan, bukan mengganggu baca materi). */
+function doPostProgresMateri_(body) {
+  const nama = String(body["Nama Siswa"] || "").trim();
+  const slug = String(body["Materi Slug"] || "").trim();
+  if (!nama || !slug) return jsonOut_({ status: "ok" }); // diam-diam abaikan, lihat komentar di atas
+
+  const sheet = getProgresMateriSheet_();
+  const existingRow = findRowByTwoColumns_(sheet, "Nama Siswa", nama, "Materi Slug", slug);
+  const record = {
+    "Timestamp": new Date(),
+    "Nama Siswa": nama,
+    "Materi Slug": slug,
+    "Status": "Dibaca",
+  };
+  const rowValues = buildRowByHeaders_(sheet, record);
+  if (existingRow !== -1) {
+    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
+  } else {
+    sheet.appendRow(rowValues);
+  }
+  return jsonOut_({ status: "ok" });
+}
+
