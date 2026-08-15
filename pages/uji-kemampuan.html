@@ -30,6 +30,7 @@
   .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
   #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
   .hidden { display: none !important; }
+  .back-link { font-size: 12.5px; color: var(--accent); cursor: pointer; display: inline-block; margin-bottom: 1rem; }
 
   /* ── PILIH MAPEL ── */
   .mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -41,17 +42,45 @@
   .mapel-btn .mb-count { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
   .mapel-btn:hover { border-color: var(--purple); }
 
-  /* ── KUIS ── */
-  #back-to-mapel { font-size: 12.5px; color: var(--accent); cursor: pointer; display: inline-block; margin-bottom: 1rem; }
+  /* ── PILIH TP ── */
+  .tp-card {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 0.9rem 1rem; margin-bottom: 10px; cursor: pointer;
+  }
+  .tp-card:hover { border-color: var(--purple); }
+  .tp-card .tp-judul { font-weight: 700; font-size: 14px; }
+  .tp-card .tp-elemen { font-size: 11.5px; color: var(--purple); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
+  .tp-card .tp-count { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+  .tp-card .tp-count.kurang { color: var(--err); }
+  .tp-card.disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── KUIS: SOAL ── */
   .soal-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 1rem; margin-bottom: 12px; }
   .soal-card .s-nomor { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .soal-card .s-jenis { font-size: 10.5px; font-weight: 600; color: var(--ink-3); background: var(--paper-2); border-radius: 999px; padding: 2px 8px; display: inline-block; margin-bottom: 6px; }
   .soal-card .s-pertanyaan { font-size: 14.5px; font-weight: 600; margin-bottom: 0.8rem; line-height: 1.5; }
+
   .pilihan-opsi { display: block; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 8px; margin-bottom: 7px; cursor: pointer; font-size: 13.5px; }
   .pilihan-opsi:hover { border-color: var(--purple); }
   .pilihan-opsi input { margin-right: 8px; }
   .pilihan-opsi.correct { border-color: var(--ok); background: rgba(42,157,111,0.08); }
   .pilihan-opsi.wrong { border-color: var(--err); background: rgba(201,64,64,0.08); }
   .soal-card.dinilai .pilihan-opsi { pointer-events: none; }
+  .soal-card.dinilai select, .soal-card.dinilai .urut-item button { pointer-events: none; opacity: 0.75; }
+
+  .kat-row, .jodoh-row { display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 8px 12px; border: 1px solid var(--paper-3); border-radius: 8px; margin-bottom: 7px; font-size: 13.5px; }
+  .kat-row select, .jodoh-row select { font-family: inherit; font-size: 13px; padding: 5px 8px; border-radius: 6px; border: 1px solid var(--paper-3); }
+  .kat-row.correct, .jodoh-row.correct { border-color: var(--ok); background: rgba(42,157,111,0.08); }
+  .kat-row.wrong, .jodoh-row.wrong { border-color: var(--err); background: rgba(201,64,64,0.08); }
+
+  .urut-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--paper-3);
+    border-radius: 8px; margin-bottom: 7px; font-size: 13.5px; background: #fff; }
+  .urut-item.correct { border-color: var(--ok); background: rgba(42,157,111,0.08); }
+  .urut-item.wrong { border-color: var(--err); background: rgba(201,64,64,0.08); }
+  .urut-item .urut-teks { flex: 1; }
+  .urut-item .urut-btns { display: flex; gap: 4px; }
+  .urut-item .urut-btns button { background: var(--paper-2); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 11px; padding: 4px 7px; }
 
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; }
   .btn-submit { background: var(--purple); color: #fff; width: 100%; }
@@ -61,8 +90,10 @@
   #hasil-skor { background: #fff; border: 2px solid var(--purple); border-radius: var(--r); padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; }
   #hasil-skor .skor-angka { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--purple); }
   #hasil-skor .skor-label { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  #hasil-skor .skor-tersimpan { font-size: 11.5px; color: var(--ok); margin-top: 6px; }
 
   .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+  .loading-inline { padding: 1rem; text-align: center; color: var(--ink-3); font-size: 12.5px; }
 </style>
 </head>
 <body>
@@ -80,13 +111,21 @@
     <!-- ══ TAHAP 1: PILIH MAPEL ══ -->
     <div id="view-pilih-mapel">
       <h1>💪 Uji Kemampuan</h1>
-      <p class="subtitle">Pilih mata pelajaran untuk mulai berlatih soal.</p>
+      <p class="subtitle">Pilih mata pelajaran, lalu pilih Tujuan Pembelajaran (TP) yang ingin kamu uji.</p>
       <div id="mapel-grid" class="mapel-grid"><div class="empty-state">Memuat…</div></div>
     </div>
 
-    <!-- ══ TAHAP 2: KUIS ══ -->
+    <!-- ══ TAHAP 2: PILIH TP ══ -->
+    <div id="view-pilih-tp" class="hidden">
+      <span class="back-link" onclick="kembaliKePilihMapel()">← Pilih mapel lain</span>
+      <h1 id="tp-mapel-judul">Mapel</h1>
+      <p class="subtitle">Pilih TP yang ingin kamu uji. Soal diambil acak dari pool setiap TP.</p>
+      <div id="tp-grid"><div class="empty-state">Memuat…</div></div>
+    </div>
+
+    <!-- ══ TAHAP 3: KUIS ══ -->
     <div id="view-kuis" class="hidden">
-      <span id="back-to-mapel" onclick="kembaliKePilihMapel()">← Pilih mapel lain</span>
+      <span class="back-link" onclick="kembaliKePilihTp()">← Pilih TP lain</span>
       <h1 id="kuis-judul">Latihan</h1>
       <p class="subtitle" id="kuis-subtitle"></p>
 
@@ -98,119 +137,318 @@
   </div>
 </div>
 
+<script src="materi/assets/tp-kko-index.js"></script>
 <script type="module" src="../assets/js/auth-guard.js"></script>
 <script type="module">
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, getDoc, getDocs, getCountFromServer, addDoc, query, where, orderBy, limit, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
   const app = getApps()[0];
   const db = getFirestore(app);
 
-  let allItems = [];
-  let currentSoal = [];
+  const N_SOAL_PER_SESI = 15; // jumlah soal yang diambil acak dari pool tiap sesi tes
+
+  let currentUser = null;
+  let namaSiswa = "";
+  let currentMapel = "";
+  let currentTp = null;   // entri dari TP_KKO_INDEX
+  let currentSoal = [];   // soal aktif dalam sesi kuis berjalan
 
   function escHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
-
-  async function loadSoal() {
-    const wrap = document.getElementById("mapel-grid");
-    try {
-      const snap = await getDocs(collection(db, "bank_soal"));
-      allItems = [];
-      snap.forEach((d) => allItems.push({ id: d.id, ...d.data() }));
-      renderMapelGrid();
-    } catch (err) {
-      wrap.innerHTML = `<div class="empty-state">Gagal memuat soal: ${escHtml(err.message)}</div>`;
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
+    return a;
   }
 
+  // ═══════════════════════ TAHAP 1: PILIH MAPEL ═══════════════════════
   function renderMapelGrid() {
     const wrap = document.getElementById("mapel-grid");
-    if (allItems.length === 0) {
-      wrap.innerHTML = '<div class="empty-state">Belum ada soal yang ditambahkan guru.</div>';
-      return;
-    }
-    const grouped = {};
-    allItems.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
+    const mapelList = window.URUTAN_MAPEL || [];
     wrap.innerHTML = "";
-    Object.keys(grouped).sort().forEach((mapel) => {
+    mapelList.forEach((mapel) => {
+      const jumlahTp = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel).length;
       const btn = document.createElement("button");
       btn.className = "mapel-btn";
-      btn.innerHTML = `<div class="mb-title">${escHtml(mapel)}</div><div class="mb-count">${grouped[mapel].length} soal</div>`;
-      btn.onclick = () => mulaiKuis(mapel, grouped[mapel]);
+      btn.innerHTML = `<div class="mb-title">${escHtml(mapel)}</div><div class="mb-count">${jumlahTp} TP</div>`;
+      btn.onclick = () => pilihMapel(mapel);
       wrap.appendChild(btn);
     });
   }
 
-  window.mulaiKuis = function (mapel, soalList) {
-    currentSoal = soalList;
+  window.pilihMapel = async function (mapel) {
+    currentMapel = mapel;
     document.getElementById("view-pilih-mapel").classList.add("hidden");
-    document.getElementById("view-kuis").classList.remove("hidden");
-    document.getElementById("kuis-judul").textContent = "Latihan " + mapel;
-    document.getElementById("kuis-subtitle").textContent = soalList.length + " soal — pilih jawaban lalu klik \"Periksa Jawaban\".";
-    document.getElementById("hasil-skor").classList.add("hidden");
-    document.getElementById("btn-submit-kuis").disabled = false;
-    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
-
-    const wrap = document.getElementById("daftar-soal");
-    wrap.innerHTML = "";
-    soalList.forEach((soal, i) => {
-      const card = document.createElement("div");
-      card.className = "soal-card";
-      card.dataset.soalId = soal.id;
-      const pilihanHtml = (soal.pilihan || []).map((p, j) => `
-        <label class="pilihan-opsi" data-pilihan="${escHtml(p)}">
-          <input type="radio" name="soal-${soal.id}" value="${escHtml(p)}" /> ${escHtml(p)}
-        </label>`).join("");
-      card.innerHTML = `
-        <div class="s-nomor">Soal ${i + 1} dari ${soalList.length}</div>
-        <div class="s-pertanyaan">${escHtml(soal.pertanyaan || "")}</div>
-        ${pilihanHtml}
-      `;
-      wrap.appendChild(card);
-    });
+    document.getElementById("view-pilih-tp").classList.remove("hidden");
+    document.getElementById("tp-mapel-judul").textContent = mapel;
+    await renderTpGrid(mapel);
   };
 
   window.kembaliKePilihMapel = function () {
-    document.getElementById("view-kuis").classList.add("hidden");
+    document.getElementById("view-pilih-tp").classList.add("hidden");
     document.getElementById("view-pilih-mapel").classList.remove("hidden");
   };
 
-  window.nilaiKuis = function () {
+  // ═══════════════════════ TAHAP 2: PILIH TP ═══════════════════════
+  async function renderTpGrid(mapel) {
+    const wrap = document.getElementById("tp-grid");
+    wrap.innerHTML = '<div class="loading-inline">Memuat jumlah soal tiap TP…</div>';
+    const tpList = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel);
+    if (tpList.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Belum ada TP terdaftar untuk mapel ini.</div>';
+      return;
+    }
+    // Hitung jumlah soal per TP pakai aggregation query (ringan — tidak mengunduh isi dokumen)
+    const counts = await Promise.all(tpList.map(async (tp) => {
+      try {
+        const snap = await getCountFromServer(query(collection(db, "bank_soal"), where("tp", "==", tp.tp)));
+        return snap.data().count;
+      } catch (e) { return 0; }
+    }));
+
+    wrap.innerHTML = "";
+    tpList.forEach((tp, i) => {
+      const jumlah = counts[i];
+      const bisaDiuji = jumlah >= 5; // ambang minimal supaya sesi tidak kosong; idealnya jumlah >= N_SOAL_PER_SESI
+      const card = document.createElement("div");
+      card.className = "tp-card" + (bisaDiuji ? "" : " disabled");
+      card.innerHTML = `
+        <div class="tp-elemen">${escHtml(tp.elemen)}</div>
+        <div class="tp-judul">${escHtml(tp.judul)}</div>
+        <div class="tp-count ${jumlah < 200 ? "kurang" : ""}">${jumlah} soal tersedia${jumlah < 200 ? " (pool belum lengkap)" : ""}</div>`;
+      if (bisaDiuji) card.onclick = () => mulaiKuis(tp, jumlah);
+      wrap.appendChild(card);
+    });
+  }
+
+  window.kembaliKePilihTp = function () {
+    document.getElementById("view-kuis").classList.add("hidden");
+    document.getElementById("view-pilih-tp").classList.remove("hidden");
+  };
+
+  // ═══════════════════════ TAHAP 3: AMBIL SOAL ACAK & RENDER KUIS ═══════════════════════
+  async function ambilSoalAcak(tpKode, jumlahTersedia) {
+    const n = Math.min(N_SOAL_PER_SESI, jumlahTersedia);
+    const colRef = collection(db, "bank_soal");
+    const threshold = Math.random();
+    const hasil = [];
+    const snap1 = await getDocs(query(colRef, where("tp", "==", tpKode), where("randKey", ">=", threshold), orderBy("randKey"), limit(n)));
+    snap1.forEach((d) => hasil.push({ id: d.id, ...d.data() }));
+    if (hasil.length < n) {
+      const sisa = n - hasil.length;
+      const snap2 = await getDocs(query(colRef, where("tp", "==", tpKode), where("randKey", "<", threshold), orderBy("randKey"), limit(sisa)));
+      snap2.forEach((d) => hasil.push({ id: d.id, ...d.data() }));
+    }
+    return shuffle(hasil);
+  }
+
+  window.mulaiKuis = async function (tpEntry, jumlahTersedia) {
+    currentTp = tpEntry;
+    document.getElementById("view-pilih-tp").classList.add("hidden");
+    document.getElementById("view-kuis").classList.remove("hidden");
+    document.getElementById("kuis-judul").textContent = tpEntry.judul;
+    document.getElementById("kuis-subtitle").textContent = "Memuat soal…";
+    document.getElementById("hasil-skor").classList.add("hidden");
+    document.getElementById("daftar-soal").innerHTML = "";
+    document.getElementById("btn-submit-kuis").disabled = true;
+    document.getElementById("btn-submit-kuis").textContent = "Memuat…";
+
+    currentSoal = await ambilSoalAcak(tpEntry.tp, jumlahTersedia);
+    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal — jawab semua lalu klik \"Periksa Jawaban\".";
+    document.getElementById("btn-submit-kuis").disabled = false;
+    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
+    renderDaftarSoal();
+  };
+
+  function renderDaftarSoal() {
+    const wrap = document.getElementById("daftar-soal");
+    wrap.innerHTML = "";
+    currentSoal.forEach((soal, i) => wrap.appendChild(buatKartuSoal(soal, i)));
+  }
+
+  const JENIS_LABEL = {
+    pg_tunggal: "Pilihan Ganda", pg_kompleks: "Pilihan Ganda Kompleks", pg_kategori: "Kategorikan",
+    mengurutkan: "Urutkan", menjodohkan: "Jodohkan",
+  };
+
+  function buatKartuSoal(soal, i) {
+    const card = document.createElement("div");
+    card.className = "soal-card";
+    card.dataset.soalId = soal.id;
+    const jenis = soal.jenisSoal || "pg_tunggal";
+
+    const header = `
+      <div class="s-nomor">Soal ${i + 1} dari ${currentSoal.length}</div>
+      <div class="s-jenis">${escHtml(JENIS_LABEL[jenis] || "Pilihan Ganda")}</div>
+      <div class="s-pertanyaan">${escHtml(soal.pertanyaan || "")}</div>`;
+
+    let body = "";
+    if (jenis === "pg_kompleks") {
+      body = (soal.pilihan || []).map((p) => `
+        <label class="pilihan-opsi" data-pilihan="${escHtml(p)}">
+          <input type="checkbox" name="soal-${soal.id}" value="${escHtml(p)}" /> ${escHtml(p)}
+        </label>`).join("");
+    } else if (jenis === "pg_kategori") {
+      const opsi = (soal.kategori || []).map((k) => `<option value="${escHtml(k)}">${escHtml(k)}</option>`).join("");
+      body = (soal.item || []).map((it, j) => `
+        <div class="kat-row" data-item-idx="${j}" data-kategori-benar="${escHtml(it.kategoriBenar)}">
+          <span>${escHtml(it.teks)}</span>
+          <select data-item-idx="${j}"><option value="">— pilih —</option>${opsi}</select>
+        </div>`).join("");
+    } else if (jenis === "mengurutkan") {
+      const shuffled = shuffle((soal.item || []).map((teks, idx) => ({ teks, idx })));
+      body = `<div class="urut-wrap">` + shuffled.map((it) => `
+        <div class="urut-item" data-teks="${escHtml(it.teks)}">
+          <div class="urut-btns"><button type="button" onclick="geserUrut(this,-1)">▲</button><button type="button" onclick="geserUrut(this,1)">▼</button></div>
+          <span class="urut-teks">${escHtml(it.teks)}</span>
+        </div>`).join("") + `</div>`;
+    } else if (jenis === "menjodohkan") {
+      const kananShuffled = shuffle((soal.pasangan || []).map((p) => p.kanan));
+      const opsi = kananShuffled.map((k) => `<option value="${escHtml(k)}">${escHtml(k)}</option>`).join("");
+      body = (soal.pasangan || []).map((p, j) => `
+        <div class="jodoh-row" data-item-idx="${j}" data-kanan-benar="${escHtml(p.kanan)}">
+          <span>${escHtml(p.kiri)}</span>
+          <select data-item-idx="${j}"><option value="">— pilih —</option>${opsi}</select>
+        </div>`).join("");
+    } else {
+      // pg_tunggal (default)
+      body = (soal.pilihan || []).map((p) => `
+        <label class="pilihan-opsi" data-pilihan="${escHtml(p)}">
+          <input type="radio" name="soal-${soal.id}" value="${escHtml(p)}" /> ${escHtml(p)}
+        </label>`).join("");
+    }
+
+    card.innerHTML = header + body;
+    return card;
+  }
+
+  window.geserUrut = function (btn, dir) {
+    const item = btn.closest(".urut-item");
+    const parent = item.parentElement;
+    if (dir < 0 && item.previousElementSibling) parent.insertBefore(item, item.previousElementSibling);
+    else if (dir > 0 && item.nextElementSibling) parent.insertBefore(item.nextElementSibling, item);
+  };
+
+  // ═══════════════════════ PENILAIAN ═══════════════════════
+  window.nilaiKuis = async function () {
     let benar = 0;
+    const detail = [];
     const cards = document.querySelectorAll("#daftar-soal .soal-card");
+
     cards.forEach((card) => {
       const soalId = card.dataset.soalId;
       const soal = currentSoal.find((s) => s.id === soalId);
-      const checked = card.querySelector(`input[name="soal-${soalId}"]:checked`);
-      const jawabanDipilih = checked ? checked.value : null;
-      const isBenar = jawabanDipilih === soal.jawaban;
+      const jenis = soal.jenisSoal || "pg_tunggal";
+      let isBenar = false;
+
+      if (jenis === "pg_tunggal") {
+        const checked = card.querySelector(`input[name="soal-${soalId}"]:checked`);
+        const dipilih = checked ? checked.value : null;
+        isBenar = dipilih === soal.jawaban;
+        card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
+          const val = opt.dataset.pilihan;
+          if (val === soal.jawaban) opt.classList.add("correct");
+          else if (val === dipilih && !isBenar) opt.classList.add("wrong");
+        });
+      } else if (jenis === "pg_kompleks") {
+        const dipilih = [...card.querySelectorAll(`input[name="soal-${soalId}"]:checked`)].map((el) => el.value);
+        const benarSet = soal.jawabanBenar || [];
+        isBenar = dipilih.length === benarSet.length && dipilih.every((v) => benarSet.includes(v));
+        card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
+          const val = opt.dataset.pilihan;
+          const shouldBeChecked = benarSet.includes(val);
+          const wasChecked = dipilih.includes(val);
+          if (shouldBeChecked) opt.classList.add("correct");
+          else if (wasChecked) opt.classList.add("wrong");
+        });
+      } else if (jenis === "pg_kategori") {
+        const rows = [...card.querySelectorAll(".kat-row")];
+        isBenar = rows.length > 0;
+        rows.forEach((row) => {
+          const idx = row.dataset.itemIdx;
+          const sel = card.querySelector(`select[data-item-idx="${idx}"]`);
+          const dipilih = sel ? sel.value : "";
+          const benarItem = row.dataset.kategoriBenar;
+          const ok = dipilih === benarItem;
+          if (!ok) isBenar = false;
+          row.classList.add(ok ? "correct" : "wrong");
+        });
+      } else if (jenis === "mengurutkan") {
+        const urutDom = [...card.querySelectorAll(".urut-item")].map((el) => el.dataset.teks);
+        const urutBenar = soal.item || [];
+        isBenar = urutDom.length === urutBenar.length && urutDom.every((v, idx) => v === urutBenar[idx]);
+        card.querySelectorAll(".urut-item").forEach((el, idx) => {
+          el.classList.add(el.dataset.teks === urutBenar[idx] ? "correct" : "wrong");
+        });
+      } else if (jenis === "menjodohkan") {
+        const rows = [...card.querySelectorAll(".jodoh-row")];
+        isBenar = rows.length > 0;
+        rows.forEach((row) => {
+          const idx = row.dataset.itemIdx;
+          const sel = card.querySelector(`select[data-item-idx="${idx}"]`);
+          const dipilih = sel ? sel.value : "";
+          const benarItem = row.dataset.kananBenar;
+          const ok = dipilih === benarItem;
+          if (!ok) isBenar = false;
+          row.classList.add(ok ? "correct" : "wrong");
+        });
+      }
+
       if (isBenar) benar++;
+      detail.push({ soalId, jenisSoal: jenis, benar: isBenar });
       card.classList.add("dinilai");
-      card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
-        const val = opt.dataset.pilihan;
-        if (val === soal.jawaban) opt.classList.add("correct");
-        else if (val === jawabanDipilih && !isBenar) opt.classList.add("wrong");
-      });
     });
 
     const total = cards.length;
+    const skorPersen = total > 0 ? Math.round((benar / total) * 100) : 0;
     const skorEl = document.getElementById("hasil-skor");
     skorEl.classList.remove("hidden");
     skorEl.innerHTML = `
       <div class="skor-angka">${benar} / ${total}</div>
-      <div class="skor-label">jawaban benar</div>
-    `;
+      <div class="skor-label">jawaban benar (${skorPersen}%)</div>
+      <div class="skor-tersimpan" id="skor-tersimpan-label">Menyimpan hasil…</div>`;
     document.getElementById("btn-submit-kuis").disabled = true;
     document.getElementById("btn-submit-kuis").textContent = "Sudah Dinilai";
     skorEl.scrollIntoView({ behavior: "smooth" });
+
+    try {
+      await addDoc(collection(db, "hasil_latihan"), {
+        uid: currentUser.uid,
+        namaSiswa: namaSiswa,
+        mapel: currentMapel,
+        tp: currentTp.tp,
+        tpJudul: currentTp.judul,
+        jumlahBenar: benar,
+        jumlahSoal: total,
+        skor: skorPersen,
+        detailJawaban: detail,
+        timestamp: serverTimestamp(),
+      });
+      document.getElementById("skor-tersimpan-label").textContent = "✓ Hasil tersimpan — bisa dilihat lagi lewat Riwayat Latihan.";
+    } catch (err) {
+      document.getElementById("skor-tersimpan-label").textContent = "⚠️ Hasil belum tersimpan (" + err.message + "). Skormu tetap terlihat di atas.";
+      document.getElementById("skor-tersimpan-label").style.color = "var(--err)";
+    }
   };
 
-  document.addEventListener("user-verified", () => {
+  // ═══════════════════════ INISIALISASI ═══════════════════════
+  document.addEventListener("user-verified", async (e) => {
+    currentUser = e.detail.user;
     document.getElementById("checking").remove();
     document.getElementById("app-soal").classList.remove("hidden");
-    loadSoal();
+    try {
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      namaSiswa = snap.exists() ? (snap.data().nama || currentUser.email) : currentUser.email;
+    } catch (e2) {
+      namaSiswa = currentUser.email;
+    }
+    renderMapelGrid();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
 </script>

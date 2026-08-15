@@ -95,6 +95,35 @@
   .list-item .li-desc { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; line-height: 1.5; }
   .list-item .li-actions { display: flex; gap: 6px; flex-shrink: 0; align-items: flex-start; }
   .empty-state { padding: 1.5rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+
+  /* ── UJI KEMAMPUAN: form dinamis per jenis soal ─────────── */
+  select.form-select, .form-row select {
+    width: 100%; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 7px;
+    font-size: 14px; color: var(--ink); background: #fff; outline: none; font-family: inherit;
+  }
+  .form-row select:focus { border-color: var(--accent); }
+  .tp-info-box {
+    font-size: 12px; color: var(--ink-2); background: var(--paper-2); border-radius: 7px;
+    padding: 8px 12px; margin: -0.35rem 0 0.85rem; line-height: 1.5;
+  }
+  .tp-info-box b { color: var(--ink); }
+  .hint.err { color: var(--danger); }
+  .jenis-subform { margin-bottom: 0.85rem; }
+  .jenis-subform > label { font-size: 12px; font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
+  .dyn-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .dyn-row input[type=text] { flex: 1; }
+  .dyn-row select { flex: 1; }
+  .dyn-row label.chk { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--ink-3); white-space: nowrap; margin: 0; font-weight: 400; }
+  .dyn-row .row-remove { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 15px; padding: 2px 6px; flex-shrink: 0; }
+  .dyn-row .row-order { display: flex; flex-direction: column; gap: 1px; flex-shrink: 0; }
+  .dyn-row .row-order button { background: none; border: 1px solid var(--paper-3); border-radius: 4px; cursor: pointer; font-size: 9px; line-height: 1; padding: 2px 4px; }
+  .chip-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 4px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; background: var(--paper-2); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px 4px 12px; font-size: 12px; }
+  .chip button { background: none; border: none; color: var(--ink-3); cursor: pointer; font-size: 13px; padding: 0; }
+  .kko-badge { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--paper-2); color: var(--ink-2); margin-left: 6px; }
+  #soal-pool-summary { margin: 0.5rem 0 0.25rem; }
+  .pool-warning { background: rgba(232,160,32,0.12); border: 1px solid rgba(232,160,32,0.4); border-radius: var(--r); padding: 0.7rem 1rem; font-size: 12.5px; color: #8a5a00; margin-bottom: 0.75rem; }
+  .pool-ok { background: rgba(42,157,111,0.1); border: 1px solid rgba(42,157,111,0.35); border-radius: var(--r); padding: 0.7rem 1rem; font-size: 12.5px; color: #1d6b4d; margin-bottom: 0.75rem; }
 </style>
 </head>
 <body>
@@ -223,17 +252,67 @@
       <div id="list-materi"><div class="empty-state">Memuat…</div></div>
     </div>
 
-    <!-- ══════════════ TAB: BANK SOAL ══════════════ -->
+    <!-- ══════════════ TAB: UJI KEMAMPUAN (BANK SOAL) ══════════════ -->
     <div id="tab-soal" class="tab-panel">
       <div class="panel-card">
         <h2 id="soal-form-title">Tambah Soal Baru</h2>
         <form id="form-soal" onsubmit="return false;">
           <input type="hidden" id="soal-edit-id" value="" />
-          <div class="form-row">
-            <label for="soal-pertanyaan">Pertanyaan</label>
-            <textarea id="soal-pertanyaan" placeholder="Tulis pertanyaan di sini…"></textarea>
+
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="soal-mapel">Mata Pelajaran</label>
+              <select id="soal-mapel" onchange="onMapelChange()"></select>
+            </div>
+            <div class="form-row">
+              <label for="soal-tp">Tujuan Pembelajaran (TP)</label>
+              <select id="soal-tp" onchange="onTpChange()"></select>
+            </div>
           </div>
+          <div class="tp-info-box" id="soal-tp-info"></div>
+
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="soal-jenis">Jenis Soal</label>
+              <select id="soal-jenis" onchange="onJenisChange()">
+                <option value="pg_tunggal">Pilihan Ganda (1 jawaban benar)</option>
+                <option value="pg_kompleks">Pilihan Ganda Kompleks (&gt;1 jawaban benar)</option>
+                <option value="pg_kategori">Pilihan Ganda Kategori</option>
+                <option value="mengurutkan">Mengurutkan</option>
+                <option value="menjodohkan">Menjodohkan</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="soal-kko">Level Kognitif Soal (KKO)</label>
+              <select id="soal-kko" onchange="validateKko()">
+                <option value="C1">C1 · Mengingat</option>
+                <option value="C2">C2 · Memahami</option>
+                <option value="C3" selected>C3 · Menerapkan</option>
+                <option value="C4">C4 · Menganalisis</option>
+                <option value="C5">C5 · Mengevaluasi</option>
+                <option value="C6">C6 · Mencipta</option>
+              </select>
+              <div class="hint err" id="soal-kko-warning"></div>
+            </div>
+          </div>
+
           <div class="form-row">
+            <label for="soal-kompleksitas">Kompleksitas Soal</label>
+            <select id="soal-kompleksitas">
+              <option value="dasar">Dasar</option>
+              <option value="menengah" selected>Menengah</option>
+              <option value="menantang">Menantang</option>
+            </select>
+            <div class="hint">Kompleksitas ≠ level kognitif — soal boleh lebih rumit tanpa menaikkan KKO-nya.</div>
+          </div>
+
+          <div class="form-row">
+            <label for="soal-pertanyaan">Pertanyaan / Instruksi</label>
+            <textarea id="soal-pertanyaan" placeholder="Gunakan bahasa sederhana yang mudah dipahami siswa SD…"></textarea>
+          </div>
+
+          <!-- ── Sub-form: PG Tunggal ── -->
+          <div id="subform-pg_tunggal" class="jenis-subform">
             <label>Pilihan Jawaban (centang salah satu sebagai jawaban benar)</label>
             <div class="pilihan-row">
               <input type="text" id="soal-pilihan-0" placeholder="Pilihan A" />
@@ -252,16 +331,43 @@
               <label><input type="radio" name="soal-jawaban-benar" value="3" /> Benar</label>
             </div>
           </div>
-          <div class="form-grid-2">
-            <div class="form-row">
-              <label for="soal-mapel">Mata Pelajaran</label>
-              <input type="text" id="soal-mapel" placeholder="mis. IPA" />
-            </div>
-            <div class="form-row">
-              <label for="soal-tingkat">Tingkat/Kelas</label>
-              <input type="text" id="soal-tingkat" placeholder="mis. 5" value="5" />
-            </div>
+
+          <!-- ── Sub-form: PG Kompleks ── -->
+          <div id="subform-pg_kompleks" class="jenis-subform hidden">
+            <label>Pilihan Jawaban (centang SEMUA yang benar, minimal 2)</label>
+            <div id="pk-list"></div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addPkRow()">+ Tambah Pilihan</button>
           </div>
+
+          <!-- ── Sub-form: PG Kategori ── -->
+          <div id="subform-pg_kategori" class="jenis-subform hidden">
+            <label>Daftar Kategori (minimal 2)</label>
+            <div class="pilihan-row">
+              <input type="text" id="kat-input" placeholder="mis. Benda Hidup" />
+              <button type="button" class="btn btn-secondary btn-sm" onclick="addKategoriChip()">+ Tambah</button>
+            </div>
+            <div id="kat-chip-list" class="chip-list"></div>
+            <label style="margin-top:0.6rem">Item yang Dikategorikan (minimal 2)</label>
+            <div id="kat-item-list"></div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addKatItemRow()">+ Tambah Item</button>
+          </div>
+
+          <!-- ── Sub-form: Mengurutkan ── -->
+          <div id="subform-mengurutkan" class="jenis-subform hidden">
+            <label>Item — urutan dari atas ke bawah = urutan yang BENAR (minimal 3)</label>
+            <div class="hint">Item akan diacak otomatis saat ditampilkan ke siswa; urutan di sini hanya menentukan kunci jawabannya.</div>
+            <div id="urut-list"></div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addUrutRow()">+ Tambah Item</button>
+          </div>
+
+          <!-- ── Sub-form: Menjodohkan ── -->
+          <div id="subform-menjodohkan" class="jenis-subform hidden">
+            <label>Pasangan Kiri ↔ Kanan (minimal 3)</label>
+            <div class="hint">Kolom kanan akan diacak otomatis saat ditampilkan ke siswa.</div>
+            <div id="jodoh-list"></div>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addJodohRow()">+ Tambah Pasangan</button>
+          </div>
+
           <div class="form-actions">
             <button class="btn btn-primary" id="soal-submit-btn" onclick="simpanSoal()">Simpan Soal</button>
             <button class="btn btn-secondary hidden" id="soal-cancel-btn" onclick="batalEditSoal()">Batal Edit</button>
@@ -269,12 +375,14 @@
           <div id="soal-status" class="status-msg"></div>
         </form>
       </div>
+      <div id="soal-pool-summary"></div>
       <div id="list-soal"><div class="empty-state">Memuat…</div></div>
     </div>
 
   </div>
 </div>
 
+<script src="materi/assets/tp-kko-index.js"></script>
 <script type="module" src="../assets/js/guru-guard.js"></script>
 <script type="module">
   import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, orderBy, serverTimestamp }
@@ -581,32 +689,200 @@
     }
   }
 
-  // ═══════════════════════ BANK SOAL ═══════════════════════
+  // ═══════════════════════ UJI KEMAMPUAN (BANK SOAL) ═══════════════════════
+  const JENIS_LABEL = {
+    pg_tunggal: "PG Tunggal", pg_kompleks: "PG Kompleks", pg_kategori: "PG Kategori",
+    mengurutkan: "Mengurutkan", menjodohkan: "Menjodohkan",
+  };
+  const POOL_TARGET = 200;
+  const JENIS_LIST = ["pg_tunggal", "pg_kompleks", "pg_kategori", "mengurutkan", "menjodohkan"];
+
+  function populateMapelSelect() {
+    const sel = document.getElementById("soal-mapel");
+    sel.innerHTML = (window.URUTAN_MAPEL || []).map((m) => `<option value="${escHtml(m)}">${escHtml(m)}</option>`).join("");
+  }
+
+  window.onMapelChange = function () {
+    const mapel = document.getElementById("soal-mapel").value;
+    const tpSel = document.getElementById("soal-tp");
+    const list = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel);
+    tpSel.innerHTML = list.map((e) => `<option value="${escHtml(e.tp)}">${escHtml(e.judul)} (${e.tp})</option>`).join("");
+    onTpChange();
+  };
+
+  window.onTpChange = function () {
+    const tpKode = document.getElementById("soal-tp").value;
+    const info = document.getElementById("soal-tp-info");
+    const entry = window.getTpKko(tpKode);
+    if (!entry) { info.innerHTML = ""; return; }
+    info.innerHTML = `<b>Rumusan TP:</b> ${escHtml(entry.rumusan)}<br><b>Batas KKO:</b> maksimal ${entry.kkoMax} (verba acuan: ${escHtml(entry.verbaAcuan)})` +
+      (entry.catatan ? `<br><b>Catatan:</b> ${escHtml(entry.catatan)}` : "");
+    validateKko();
+  };
+
+  window.validateKko = function () {
+    const tpKode = document.getElementById("soal-tp").value;
+    const entry = window.getTpKko(tpKode);
+    const kko = document.getElementById("soal-kko").value;
+    const warn = document.getElementById("soal-kko-warning");
+    if (entry && !window.kkoDalamBatas(kko, entry.kkoMax)) {
+      warn.textContent = `⚠️ Level ${kko} melebihi batas TP ini (maks ${entry.kkoMax}) — turunkan levelnya, soal tidak akan bisa disimpan.`;
+      return false;
+    }
+    warn.textContent = "";
+    return true;
+  };
+
+  window.onJenisChange = function () {
+    const jenis = document.getElementById("soal-jenis").value;
+    JENIS_LIST.forEach((j) => document.getElementById("subform-" + j).classList.toggle("hidden", j !== jenis));
+    if (jenis === "pg_kompleks" && document.getElementById("pk-list").children.length === 0) { addPkRow(); addPkRow(); }
+    if (jenis === "pg_kategori" && document.getElementById("kat-item-list").children.length === 0) { addKatItemRow(); addKatItemRow(); }
+    if (jenis === "mengurutkan" && document.getElementById("urut-list").children.length === 0) { addUrutRow(); addUrutRow(); addUrutRow(); }
+    if (jenis === "menjodohkan" && document.getElementById("jodoh-list").children.length === 0) { addJodohRow(); addJodohRow(); addJodohRow(); }
+  };
+
+  window.removeRow = function (btn) { btn.closest(".dyn-row").remove(); };
+  window.moveRow = function (btn, dir) {
+    const row = btn.closest(".dyn-row");
+    const parent = row.parentElement;
+    if (dir < 0 && row.previousElementSibling) parent.insertBefore(row, row.previousElementSibling);
+    else if (dir > 0 && row.nextElementSibling) parent.insertBefore(row.nextElementSibling, row);
+  };
+
+  // ── PG Kompleks ──
+  window.addPkRow = function (teks, benar) {
+    const wrap = document.getElementById("pk-list");
+    if (wrap.children.length >= 6) return;
+    const row = document.createElement("div");
+    row.className = "dyn-row";
+    row.innerHTML = `
+      <input type="text" class="pk-teks" placeholder="Teks pilihan" value="${escHtml(teks || "")}" />
+      <label class="chk"><input type="checkbox" class="pk-benar" ${benar ? "checked" : ""} /> Benar</label>
+      <button type="button" class="row-remove" onclick="removeRow(this)">✕</button>`;
+    wrap.appendChild(row);
+  };
+
+  // ── PG Kategori ──
+  function getKategoriList() { return [...document.querySelectorAll("#kat-chip-list .chip")].map((c) => c.dataset.val); }
+  function refreshKatItemSelects() {
+    const kategori = getKategoriList();
+    document.querySelectorAll("#kat-item-list select.kat-item-kategori").forEach((sel) => {
+      const cur = sel.value;
+      sel.innerHTML = kategori.map((k) => `<option value="${escHtml(k)}">${escHtml(k)}</option>`).join("");
+      if (kategori.includes(cur)) sel.value = cur;
+    });
+  }
+  window.addKategoriChip = function (teksParam) {
+    const input = document.getElementById("kat-input");
+    const teks = (teksParam !== undefined ? teksParam : input.value).trim();
+    if (!teks) return;
+    const chipList = document.getElementById("kat-chip-list");
+    if ([...chipList.children].some((c) => c.dataset.val === teks)) { input.value = ""; return; }
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.dataset.val = teks;
+    chip.innerHTML = `${escHtml(teks)} <button type="button" onclick="removeKategoriChip(this)">✕</button>`;
+    chipList.appendChild(chip);
+    if (teksParam === undefined) input.value = "";
+    refreshKatItemSelects();
+  };
+  window.removeKategoriChip = function (btn) { btn.closest(".chip").remove(); refreshKatItemSelects(); };
+  window.addKatItemRow = function (teks, kategoriBenar) {
+    const wrap = document.getElementById("kat-item-list");
+    const row = document.createElement("div");
+    row.className = "dyn-row";
+    const kategori = getKategoriList();
+    row.innerHTML = `
+      <input type="text" class="kat-item-teks" placeholder="Teks item" value="${escHtml(teks || "")}" />
+      <select class="kat-item-kategori">${kategori.map((k) => `<option value="${escHtml(k)}">${escHtml(k)}</option>`).join("")}</select>
+      <button type="button" class="row-remove" onclick="removeRow(this)">✕</button>`;
+    wrap.appendChild(row);
+    if (kategoriBenar) row.querySelector(".kat-item-kategori").value = kategoriBenar;
+  };
+
+  // ── Mengurutkan ──
+  window.addUrutRow = function (teks) {
+    const wrap = document.getElementById("urut-list");
+    const row = document.createElement("div");
+    row.className = "dyn-row";
+    row.innerHTML = `
+      <div class="row-order"><button type="button" onclick="moveRow(this,-1)">▲</button><button type="button" onclick="moveRow(this,1)">▼</button></div>
+      <input type="text" class="urut-teks" placeholder="Item" value="${escHtml(teks || "")}" />
+      <button type="button" class="row-remove" onclick="removeRow(this)">✕</button>`;
+    wrap.appendChild(row);
+  };
+
+  // ── Menjodohkan ──
+  window.addJodohRow = function (kiri, kanan) {
+    const wrap = document.getElementById("jodoh-list");
+    const row = document.createElement("div");
+    row.className = "dyn-row";
+    row.innerHTML = `
+      <input type="text" class="jodoh-kiri" placeholder="Kiri" value="${escHtml(kiri || "")}" />
+      <span style="color:var(--ink-3)">↔</span>
+      <input type="text" class="jodoh-kanan" placeholder="Kanan" value="${escHtml(kanan || "")}" />
+      <button type="button" class="row-remove" onclick="removeRow(this)">✕</button>`;
+    wrap.appendChild(row);
+  };
+
   window.simpanSoal = async function () {
     const pertanyaan = document.getElementById("soal-pertanyaan").value.trim();
-    const pilihan = [0, 1, 2, 3]
-      .map((i) => document.getElementById("soal-pilihan-" + i).value.trim())
-      .filter((v) => v !== "");
-    const benarIdx = Number(document.querySelector('input[name="soal-jawaban-benar"]:checked').value);
-    const jawaban = document.getElementById("soal-pilihan-" + benarIdx).value.trim();
-    const mapel = document.getElementById("soal-mapel").value.trim();
-    const tingkat = document.getElementById("soal-tingkat").value.trim();
+    const mapel = document.getElementById("soal-mapel").value;
+    const tp = document.getElementById("soal-tp").value;
+    const jenisSoal = document.getElementById("soal-jenis").value;
+    const kko = document.getElementById("soal-kko").value;
+    const kompleksitas = document.getElementById("soal-kompleksitas").value;
     const editId = document.getElementById("soal-edit-id").value;
 
-    if (!pertanyaan || pilihan.length < 2) {
-      setStatus("soal-status", "Pertanyaan dan minimal 2 pilihan wajib diisi.", true);
-      return;
+    if (!pertanyaan) { setStatus("soal-status", "Pertanyaan/instruksi wajib diisi.", true); return; }
+    if (!tp) { setStatus("soal-status", "Pilih TP dulu.", true); return; }
+    if (!validateKko()) { setStatus("soal-status", "Level KKO melebihi batas TP ini — turunkan levelnya.", true); return; }
+
+    const payload = { pertanyaan, mapel, tp, jenisSoal, kko, kompleksitas };
+
+    if (jenisSoal === "pg_tunggal") {
+      const pilihan = [0, 1, 2, 3].map((i) => document.getElementById("soal-pilihan-" + i).value.trim()).filter((v) => v !== "");
+      const benarIdx = Number(document.querySelector('input[name="soal-jawaban-benar"]:checked').value);
+      const jawaban = document.getElementById("soal-pilihan-" + benarIdx).value.trim();
+      if (pilihan.length < 2) { setStatus("soal-status", "Minimal 2 pilihan wajib diisi.", true); return; }
+      if (!jawaban) { setStatus("soal-status", "Pilihan yang ditandai \"Benar\" masih kosong — isi teksnya dulu.", true); return; }
+      Object.assign(payload, { pilihan, jawaban });
+    } else if (jenisSoal === "pg_kompleks") {
+      const rows = [...document.querySelectorAll("#pk-list .dyn-row")];
+      const pilihan = rows.map((r) => r.querySelector(".pk-teks").value.trim()).filter((v) => v !== "");
+      const jawabanBenar = rows.filter((r) => r.querySelector(".pk-benar").checked)
+        .map((r) => r.querySelector(".pk-teks").value.trim()).filter((v) => v !== "");
+      if (pilihan.length < 2) { setStatus("soal-status", "Minimal 2 pilihan wajib diisi.", true); return; }
+      if (jawabanBenar.length < 2) { setStatus("soal-status", "PG Kompleks butuh minimal 2 jawaban benar dicentang.", true); return; }
+      Object.assign(payload, { pilihan, jawabanBenar });
+    } else if (jenisSoal === "pg_kategori") {
+      const kategori = getKategoriList();
+      const rows = [...document.querySelectorAll("#kat-item-list .dyn-row")];
+      const item = rows.map((r) => ({ teks: r.querySelector(".kat-item-teks").value.trim(), kategoriBenar: r.querySelector(".kat-item-kategori").value }))
+        .filter((it) => it.teks !== "");
+      if (kategori.length < 2) { setStatus("soal-status", "Minimal 2 kategori wajib ditambahkan.", true); return; }
+      if (item.length < 2) { setStatus("soal-status", "Minimal 2 item wajib diisi.", true); return; }
+      Object.assign(payload, { kategori, item });
+    } else if (jenisSoal === "mengurutkan") {
+      const rows = [...document.querySelectorAll("#urut-list .dyn-row")];
+      const item = rows.map((r) => r.querySelector(".urut-teks").value.trim()).filter((v) => v !== "");
+      if (item.length < 3) { setStatus("soal-status", "Mengurutkan butuh minimal 3 item.", true); return; }
+      Object.assign(payload, { item });
+    } else if (jenisSoal === "menjodohkan") {
+      const rows = [...document.querySelectorAll("#jodoh-list .dyn-row")];
+      const pasangan = rows.map((r) => ({ kiri: r.querySelector(".jodoh-kiri").value.trim(), kanan: r.querySelector(".jodoh-kanan").value.trim() }))
+        .filter((p) => p.kiri !== "" && p.kanan !== "");
+      if (pasangan.length < 3) { setStatus("soal-status", "Menjodohkan butuh minimal 3 pasangan.", true); return; }
+      Object.assign(payload, { pasangan });
     }
-    if (!jawaban) {
-      setStatus("soal-status", "Pilihan yang ditandai \"Benar\" masih kosong — isi teksnya dulu.", true);
-      return;
-    }
+
     try {
-      const payload = { pertanyaan, pilihan, jawaban, mapel, tingkat };
       if (editId) {
         await updateDoc(doc(db, "bank_soal", editId), payload);
         setStatus("soal-status", "Soal diperbarui.", false);
       } else {
+        payload.randKey = Math.random();
         await addDoc(collection(db, "bank_soal"), payload);
         setStatus("soal-status", "Soal ditambahkan.", false);
       }
@@ -620,13 +896,39 @@
   window.editSoal = function (id, data) {
     document.getElementById("soal-edit-id").value = id;
     document.getElementById("soal-pertanyaan").value = data.pertanyaan || "";
-    const pilihan = data.pilihan || [];
-    [0, 1, 2, 3].forEach((i) => { document.getElementById("soal-pilihan-" + i).value = pilihan[i] || ""; });
-    const benarIdx = pilihan.indexOf(data.jawaban);
-    const radio = document.querySelector(`input[name="soal-jawaban-benar"][value="${benarIdx >= 0 ? benarIdx : 0}"]`);
-    if (radio) radio.checked = true;
-    document.getElementById("soal-mapel").value = data.mapel || "";
-    document.getElementById("soal-tingkat").value = data.tingkat || "";
+    document.getElementById("soal-mapel").value = data.mapel || (window.URUTAN_MAPEL || [])[0];
+    onMapelChange();
+    document.getElementById("soal-tp").value = data.tp || "";
+    onTpChange();
+    document.getElementById("soal-kko").value = data.kko || "C3";
+    document.getElementById("soal-kompleksitas").value = data.kompleksitas || "menengah";
+    const jenisSoal = data.jenisSoal || "pg_tunggal";
+    document.getElementById("soal-jenis").value = jenisSoal;
+
+    document.getElementById("pk-list").innerHTML = "";
+    document.getElementById("kat-chip-list").innerHTML = "";
+    document.getElementById("kat-item-list").innerHTML = "";
+    document.getElementById("urut-list").innerHTML = "";
+    document.getElementById("jodoh-list").innerHTML = "";
+
+    if (jenisSoal === "pg_tunggal") {
+      const pilihan = data.pilihan || [];
+      [0, 1, 2, 3].forEach((i) => { document.getElementById("soal-pilihan-" + i).value = pilihan[i] || ""; });
+      const benarIdx = pilihan.indexOf(data.jawaban);
+      const radio = document.querySelector(`input[name="soal-jawaban-benar"][value="${benarIdx >= 0 ? benarIdx : 0}"]`);
+      if (radio) radio.checked = true;
+    } else if (jenisSoal === "pg_kompleks") {
+      (data.pilihan || []).forEach((p) => addPkRow(p, (data.jawabanBenar || []).includes(p)));
+    } else if (jenisSoal === "pg_kategori") {
+      (data.kategori || []).forEach((k) => addKategoriChip(k));
+      (data.item || []).forEach((it) => addKatItemRow(it.teks, it.kategoriBenar));
+    } else if (jenisSoal === "mengurutkan") {
+      (data.item || []).forEach((it) => addUrutRow(it));
+    } else if (jenisSoal === "menjodohkan") {
+      (data.pasangan || []).forEach((p) => addJodohRow(p.kiri, p.kanan));
+    }
+    onJenisChange();
+
     document.getElementById("soal-form-title").textContent = "Edit Soal";
     document.getElementById("soal-submit-btn").textContent = "Update Soal";
     document.getElementById("soal-cancel-btn").classList.remove("hidden");
@@ -636,10 +938,20 @@
   window.batalEditSoal = function () {
     document.getElementById("soal-edit-id").value = "";
     document.getElementById("soal-pertanyaan").value = "";
+    document.getElementById("soal-mapel").selectedIndex = 0;
+    onMapelChange();
+    document.getElementById("soal-kko").value = "C3";
+    document.getElementById("soal-kko-warning").textContent = "";
+    document.getElementById("soal-kompleksitas").value = "menengah";
+    document.getElementById("soal-jenis").value = "pg_tunggal";
     [0, 1, 2, 3].forEach((i) => { document.getElementById("soal-pilihan-" + i).value = ""; });
     document.querySelector('input[name="soal-jawaban-benar"][value="0"]').checked = true;
-    document.getElementById("soal-mapel").value = "";
-    document.getElementById("soal-tingkat").value = "5";
+    document.getElementById("pk-list").innerHTML = "";
+    document.getElementById("kat-chip-list").innerHTML = "";
+    document.getElementById("kat-item-list").innerHTML = "";
+    document.getElementById("urut-list").innerHTML = "";
+    document.getElementById("jodoh-list").innerHTML = "";
+    onJenisChange();
     document.getElementById("soal-form-title").textContent = "Tambah Soal Baru";
     document.getElementById("soal-submit-btn").textContent = "Simpan Soal";
     document.getElementById("soal-cancel-btn").classList.add("hidden");
@@ -657,39 +969,69 @@
 
   async function loadSoal() {
     const wrap = document.getElementById("list-soal");
+    const summaryWrap = document.getElementById("soal-pool-summary");
     try {
       const snap = await getDocs(collection(db, "bank_soal"));
-      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada soal.</div>'; return; }
+      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada soal.</div>'; summaryWrap.innerHTML = ""; return; }
       const items = [];
       snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
+
+      // Ringkasan progres pool per TP (dari TP_KKO_INDEX supaya TP yang masih 0 soal pun kelihatan)
+      const countByTp = {};
+      items.forEach((it) => { if (it.tp) countByTp[it.tp] = (countByTp[it.tp] || 0) + 1; });
+      const belumCukup = (window.TP_KKO_INDEX || []).filter((e) => (countByTp[e.tp] || 0) < POOL_TARGET);
+      summaryWrap.innerHTML = belumCukup.length > 0
+        ? `<div class="pool-warning">⚠️ ${belumCukup.length} dari ${window.TP_KKO_INDEX.length} TP masih di bawah target ${POOL_TARGET} soal.</div>`
+        : `<div class="pool-ok">✅ Semua TP sudah mencapai target ${POOL_TARGET} soal.</div>`;
+
       const grouped = {};
-      items.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
+      items.forEach((it) => {
+        const mapel = it.mapel || "(Tanpa Mapel — format soal lama)";
+        const tp = it.tp || "(Tanpa TP — format soal lama)";
+        grouped[mapel] = grouped[mapel] || {};
+        grouped[mapel][tp] = grouped[mapel][tp] || [];
+        grouped[mapel][tp].push(it);
+      });
 
       wrap.innerHTML = "";
       Object.keys(grouped).sort().forEach((mapel) => {
-        const title = document.createElement("div");
-        title.className = "list-group-title";
-        title.textContent = `${mapel} (${grouped[mapel].length} soal)`;
-        wrap.appendChild(title);
-        grouped[mapel].forEach((it) => {
-          const item = document.createElement("div");
-          item.className = "list-item";
-          item.innerHTML = `
-            <div class="li-body">
-              <div class="li-title">${escHtml(it.pertanyaan || "")}</div>
-              <div class="li-desc">Jawaban benar: <b>${escHtml(it.jawaban || "-")}</b> · Tingkat ${escHtml(it.tingkat || "-")}</div>
-            </div>
-            <div class="li-actions">
-              <button class="btn btn-secondary btn-sm" onclick='editSoal(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
-              <button class="btn btn-danger btn-sm" onclick="hapusSoal('${it.id}')">Hapus</button>
-            </div>`;
-          wrap.appendChild(item);
+        Object.keys(grouped[mapel]).sort().forEach((tp) => {
+          const list = grouped[mapel][tp];
+          const tpEntry = window.getTpKko(tp);
+          const judulTp = tpEntry ? tpEntry.judul : tp;
+          const target = tpEntry ? ` · ${list.length}/${POOL_TARGET}` : "";
+          const title = document.createElement("div");
+          title.className = "list-group-title";
+          title.textContent = `${mapel} · ${judulTp}${target}`;
+          wrap.appendChild(title);
+          list.forEach((it) => {
+            const item = document.createElement("div");
+            item.className = "list-item";
+            const jenisLbl = JENIS_LABEL[it.jenisSoal] || "PG (format lama)";
+            item.innerHTML = `
+              <div class="li-body">
+                <div class="li-title">${escHtml(it.pertanyaan || "")}</div>
+                <div class="li-desc">${jenisLbl}<span class="kko-badge">${escHtml(it.kko || "-")}</span><span class="kko-badge">${escHtml(it.kompleksitas || "-")}</span></div>
+              </div>
+              <div class="li-actions">
+                <button class="btn btn-secondary btn-sm" onclick='editSoal(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="hapusSoal('${it.id}')">Hapus</button>
+              </div>`;
+            wrap.appendChild(item);
+          });
         });
       });
     } catch (err) {
       wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
     }
   }
+
+  // Inisialisasi form Uji Kemampuan begitu script ini jalan (dropdown mapel/TP,
+  // subform default) — tidak perlu menunggu event guru-verified karena hanya
+  // mengisi elemen form, belum memuat data dari Firestore.
+  populateMapelSelect();
+  onMapelChange();
+  onJenisChange();
 
   // ═══════════════════════ TABS & UTIL ═══════════════════════
   window.switchTab = function (name) {

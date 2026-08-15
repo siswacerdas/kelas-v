@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Riwayat Latihan · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --purple: #9b59b6; --ok: #2a9d6f; --err: #c94040;
+    --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--purple);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--purple); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.25rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  .info-locked {
+    background: var(--paper-2); border-radius: var(--r); padding: 0.7rem 1rem;
+    font-size: 12px; color: var(--ink-2); margin-bottom: 1.25rem; line-height: 1.5;
+  }
+
+  .filter-row { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .filter-row select, .filter-row input {
+    padding: 8px 12px; border: 1px solid var(--paper-3); border-radius: 7px; font-size: 13px;
+    font-family: inherit; background: #fff; color: var(--ink);
+  }
+
+  .ringkasan-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .ringkasan-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem; text-align: center; }
+  .ringkasan-card .rk-angka { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--purple); }
+  .ringkasan-card .rk-label { font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+  .riwayat-item {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
+    padding: 0.9rem 1rem; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  }
+  .riwayat-item .ri-body { flex: 1; min-width: 0; }
+  .riwayat-item .ri-tp { font-weight: 700; font-size: 13.5px; }
+  .riwayat-item .ri-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+  .riwayat-item .ri-skor { font-family: 'Playfair Display', serif; font-size: 1.3rem; flex-shrink: 0; text-align: right; }
+  .riwayat-item .ri-skor.tinggi { color: var(--ok); }
+  .riwayat-item .ri-skor.sedang { color: var(--accent); }
+  .riwayat-item .ri-skor.rendah { color: var(--err); }
+  .riwayat-item .ri-skor small { display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; color: var(--ink-3); font-weight: 500; }
+
+  .list-group-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--ink-3); margin: 1.25rem 0 0.5rem;
+  }
+  .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+  .loading-inline { padding: 1.5rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-riwayat" class="hidden">
+  <div id="topbar">
+    <div class="brand">Riwayat Latihan <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>📈 Riwayat Latihan</h1>
+    <p class="subtitle" id="riwayat-subtitle">Memuat…</p>
+
+    <div class="info-locked">
+      🔒 Setiap hasil Uji Kemampuan tersimpan otomatis di sini dan <b>tidak bisa dihapus atau diubah</b> oleh siswa maupun orang tua — hanya guru yang berwenang mengelolanya.
+    </div>
+
+    <div class="filter-row hidden" id="filter-anak-wrap">
+      <select id="filter-anak" onchange="terapkanFilter()"></select>
+    </div>
+
+    <div id="ringkasan-wrap"></div>
+    <div id="daftar-riwayat"><div class="loading-inline">Memuat riwayat…</div></div>
+  </div>
+</div>
+
+<script src="materi/assets/tp-kko-index.js"></script>
+<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module">
+  import { getFirestore, collection, doc, getDoc, getDocs, query, where }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  const app = getApps()[0];
+  const db = getFirestore(app);
+
+  let semuaHasil = [];
+  let role = "siswa";
+
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  function fmtTanggal(ts) {
+    if (!ts || !ts.toDate) return "-";
+    return ts.toDate().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  }
+  function kelasSkor(skor) {
+    if (skor >= 80) return "tinggi";
+    if (skor >= 60) return "sedang";
+    return "rendah";
+  }
+
+  function renderRingkasan(list) {
+    const wrap = document.getElementById("ringkasan-wrap");
+    if (list.length === 0) { wrap.innerHTML = ""; return; }
+    const rataRata = Math.round(list.reduce((s, it) => s + (it.skor || 0), 0) / list.length);
+    const tpUnik = new Set(list.map((it) => it.tp)).size;
+    wrap.innerHTML = `
+      <div class="ringkasan-grid">
+        <div class="ringkasan-card"><div class="rk-angka">${list.length}</div><div class="rk-label">Sesi Latihan</div></div>
+        <div class="ringkasan-card"><div class="rk-angka">${tpUnik}</div><div class="rk-label">TP Sudah Dicoba</div></div>
+        <div class="ringkasan-card"><div class="rk-angka">${rataRata}%</div><div class="rk-label">Rata-rata Skor</div></div>
+      </div>`;
+  }
+
+  function renderDaftar(list) {
+    const wrap = document.getElementById("daftar-riwayat");
+    if (list.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Belum ada riwayat latihan.</div>';
+      return;
+    }
+    const sorted = list.slice().sort((a, b) => {
+      const ta = a.timestamp && a.timestamp.toMillis ? a.timestamp.toMillis() : 0;
+      const tb = b.timestamp && b.timestamp.toMillis ? b.timestamp.toMillis() : 0;
+      return tb - ta;
+    });
+    wrap.innerHTML = "";
+    if (role !== "siswa") {
+      // Guru/orang tua dengan >1 anak: kelompokkan per nama siswa
+      const grouped = {};
+      sorted.forEach((it) => { (grouped[it.namaSiswa || "(Tanpa nama)"] = grouped[it.namaSiswa || "(Tanpa nama)"] || []).push(it); });
+      Object.keys(grouped).sort().forEach((nama) => {
+        const title = document.createElement("div");
+        title.className = "list-group-title";
+        title.textContent = nama;
+        wrap.appendChild(title);
+        grouped[nama].forEach((it) => wrap.appendChild(buatBarisRiwayat(it)));
+      });
+    } else {
+      sorted.forEach((it) => wrap.appendChild(buatBarisRiwayat(it)));
+    }
+  }
+
+  function buatBarisRiwayat(it) {
+    const el = document.createElement("div");
+    el.className = "riwayat-item";
+    el.innerHTML = `
+      <div class="ri-body">
+        <div class="ri-tp">${escHtml(it.tpJudul || it.tp || "-")}</div>
+        <div class="ri-meta">${escHtml(it.mapel || "")} · ${fmtTanggal(it.timestamp)}</div>
+      </div>
+      <div class="ri-skor ${kelasSkor(it.skor || 0)}">${it.skor ?? 0}%<small>${it.jumlahBenar ?? 0}/${it.jumlahSoal ?? 0} benar</small></div>`;
+    return el;
+  }
+
+  window.terapkanFilter = function () {
+    const sel = document.getElementById("filter-anak");
+    const nilai = sel.value;
+    const list = nilai === "__semua__" ? semuaHasil : semuaHasil.filter((it) => it.namaSiswa === nilai);
+    renderRingkasan(list);
+    renderDaftar(list);
+  };
+
+  async function muatUntukSiswa(uid) {
+    const snap = await getDocs(query(collection(db, "hasil_latihan"), where("uid", "==", uid)));
+    const list = [];
+    snap.forEach((d) => list.push({ id: d.id, ...d.data() }));
+    return list;
+  }
+
+  async function muatUntukOrangtua(anakList) {
+    if (!anakList || anakList.length === 0) return [];
+    // Firestore 'in' maksimal 30 nilai — cukup untuk jumlah anak wajar per akun orang tua
+    const snap = await getDocs(query(collection(db, "hasil_latihan"), where("namaSiswa", "in", anakList.slice(0, 30))));
+    const list = [];
+    snap.forEach((d) => list.push({ id: d.id, ...d.data() }));
+    return list;
+  }
+
+  async function muatUntukGuru() {
+    const snap = await getDocs(collection(db, "hasil_latihan"));
+    const list = [];
+    snap.forEach((d) => list.push({ id: d.id, ...d.data() }));
+    return list;
+  }
+
+  document.addEventListener("user-verified", async (e) => {
+    const user = e.detail.user;
+    document.getElementById("checking").remove();
+    document.getElementById("app-riwayat").classList.remove("hidden");
+
+    const userSnap = await getDoc(doc(db, "users", user.uid));
+    const userData = userSnap.exists() ? userSnap.data() : {};
+    role = userData.role || "siswa";
+
+    try {
+      if (role === "siswa") {
+        document.getElementById("riwayat-subtitle").textContent = "Riwayat hasil Uji Kemampuan kamu.";
+        semuaHasil = await muatUntukSiswa(user.uid);
+      } else if (role === "orangtua") {
+        const anak = userData.anak || [];
+        document.getElementById("riwayat-subtitle").textContent = "Riwayat hasil Uji Kemampuan anak Anda.";
+        semuaHasil = await muatUntukOrangtua(anak);
+        if (anak.length > 1) {
+          document.getElementById("filter-anak-wrap").classList.remove("hidden");
+          const sel = document.getElementById("filter-anak");
+          sel.innerHTML = `<option value="__semua__">Semua Anak</option>` + anak.map((n) => `<option value="${escHtml(n)}">${escHtml(n)}</option>`).join("");
+        }
+      } else {
+        document.getElementById("riwayat-subtitle").textContent = "Riwayat hasil Uji Kemampuan seluruh siswa.";
+        semuaHasil = await muatUntukGuru();
+      }
+      renderRingkasan(semuaHasil);
+      renderDaftar(semuaHasil);
+    } catch (err) {
+      document.getElementById("daftar-riwayat").innerHTML = `<div class="empty-state">Gagal memuat riwayat: ${escHtml(err.message)}</div>`;
+    }
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+</script>
+</body>
+</html>
