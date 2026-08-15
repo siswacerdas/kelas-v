@@ -175,6 +175,25 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
 .closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
 .hidden{display:none !important;}
 #checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+
+/* ============ PAGINATION / STEPPER (baru) ============ */
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
+.page{display:none;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+
+/* ============ AUDIO PLAYER UPGRADE (baru) ============ */
+.restart-btn{display:flex;align-items:center;gap:6px;background:transparent;border:1.5px solid rgba(246,230,191,.4);color:var(--gold-l);border-radius:30px;padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;}
+.restart-btn:hover{border-color:var(--gold-l);}
+.progress-track{height:5px;background:rgba(255,255,255,.18);border-radius:4px;margin-top:12px;overflow:hidden;}
+.progress-thumb{height:100%;width:0%;background:var(--gold);transition:width .12s linear;}
 </style>
 </head>
 <body>
@@ -192,6 +211,8 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
   </div>
 </nav>
+
+<div id="stepper" class="stepper"></div>
 
 <div class="wrap">
 
@@ -218,6 +239,12 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
   </div>
 </div>
 
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
 <section class="block" id="pengantar">
   <div class="block-eyebrow">Pengantar</div>
   <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
@@ -232,13 +259,20 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
   </div>
 </section>
 
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
 <section class="block" id="asesmen-awal">
   <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
   <h2>Sebelum Kita Mulai...</h2>
   <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
   <div id="quizAwal"></div>
 </section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
 
+<div class="page" data-page="2">
 <!-- SUBUNIT 1 -->
 <section class="block" id="subunit1">
   <div class="subunit-head"><span class="badge-num">1</span>
@@ -269,7 +303,10 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
   <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
   <div class="reflect-q"><label>Ada bagian yang masih membingungkan? Tuliskan.</label><textarea class="ans"></textarea></div>
 </section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
 
+<div class="page" data-page="3">
 <!-- SUBUNIT 2 -->
 <section class="block" id="subunit2">
   <div class="subunit-head"><span class="badge-num">2</span>
@@ -305,7 +342,10 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
   <div class="reflect-q"><label>Kalimat mana yang paling mudah kamu pisahkan Sebab-Akibatnya? Kenapa?</label><textarea class="ans"></textarea></div>
   <div class="reflect-q"><label>Apakah ada kalimat yang membingungkan? Ceritakan.</label><textarea class="ans"></textarea></div>
 </section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
 
+<div class="page" data-page="4">
 <!-- SUBUNIT 3 -->
 <section class="block" id="subunit3">
   <div class="subunit-head"><span class="badge-num">3</span>
@@ -327,9 +367,11 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
     <div class="stage-label">🌙 Panggung Dengar — Cerita Farah</div>
     <div class="stage-row">
       <button class="play-btn" onclick="speakStory('stage3','story3')"><span id="playIcon3">▶</span> <span id="playLabel3">Dengarkan Cerita</span></button>
+      <button class="restart-btn" onclick="restartStage('stage3','story3')" title="Ulangi dari awal">⟲ Ulangi</button>
       <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
     </div>
-    <div class="stage-note">Dengarkan sampai selesai dulu ya, baru buka teksnya.</div>
+    <div class="progress-track"><div class="progress-thumb" id="track3"></div></div>
+    <div class="stage-note">Dengarkan sampai selesai dulu ya, baru buka teksnya. Tekan tombol lagi untuk menjeda/melanjutkan — geser bilah waktu belum tersedia, pakai Jeda/Ulangi.</div>
     <button class="reveal-toggle" onclick="toggleStory('story3','revealBtn3')" id="revealBtn3">Tampilkan Teks Cerita</button>
     <div class="story-text" id="story3">
       <p>Sepulang sekolah, Farah kehujanan karena payungnya tertinggal di rumah. Karena badannya basah kuyup, ia langsung terserang flu. Karena flu, Farah tidak masuk sekolah selama dua hari.</p>
@@ -356,7 +398,10 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
   <div class="reflect-q"><label>Apakah kamu bisa mengikuti rantai kejadian Farah dengan mudah? Ceritakan.</label><textarea class="ans"></textarea></div>
   <div class="reflect-q"><label>Menurutmu, kejadian mana yang berperan ganda (jadi akibat sekaligus sebab)?</label><textarea class="ans"></textarea></div>
 </section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(5)">Lanjut →</button></div>
+</div><!-- /page 4 -->
 
+<div class="page" data-page="5">
 <!-- SUBUNIT 4 -->
 <section class="block" id="subunit4">
   <div class="subunit-head"><span class="badge-num">4</span>
@@ -378,9 +423,11 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
     <div class="stage-label">🌙 Panggung Dengar — Cerita Rian</div>
     <div class="stage-row">
       <button class="play-btn" onclick="speakStory('stage4','story4')"><span id="playIcon4">▶</span> <span id="playLabel4">Dengarkan Cerita</span></button>
+      <button class="restart-btn" onclick="restartStage('stage4','story4')" title="Ulangi dari awal">⟲ Ulangi</button>
       <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
     </div>
-    <div class="stage-note">Fokuskan telingamu, boleh dengarkan dua kali.</div>
+    <div class="progress-track"><div class="progress-thumb" id="track4"></div></div>
+    <div class="stage-note">Fokuskan telingamu, boleh dengarkan dua kali. Tekan tombol lagi untuk menjeda/melanjutkan.</div>
     <button class="reveal-toggle" onclick="toggleStory('story4','revealBtn4')" id="revealBtn4">Tampilkan Teks Cerita</button>
     <div class="story-text" id="story4">
       <p>Rian ingin bermain bola sore itu, tapi karena lapangan becek akibat hujan pagi, ia batal bermain. Sementara itu, adiknya sedang sedih karena buku ceritanya hilang di sekolah.</p>
@@ -399,12 +446,12 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
     <div class="act-title">🔗 Pasangkan Sebab dengan Akibatnya</div>
     <div class="act-desc">Klik satu kartu SEBAB, lalu klik kartu AKIBAT yang paling cocok.</div>
     <div class="sa-wrap">
-      <div>
+      <div id="saSebab4">
         <div class="sa-col-label">Sebab</div>
         <div class="sa-pill" data-pair="1" onclick="pickSebab(this)">Lapangan becek akibat hujan pagi</div>
         <div class="sa-pill" data-pair="2" onclick="pickSebab(this)">Buku cerita adiknya hilang di sekolah</div>
       </div>
-      <div>
+      <div id="saAkibat4">
         <div class="sa-col-label">Akibat</div>
         <div class="sa-pill" data-pair="2" onclick="pickAkibat(this)">Adiknya sedih</div>
         <div class="sa-pill" data-pair="1" onclick="pickAkibat(this)">Rian batal bermain bola</div>
@@ -420,7 +467,10 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
   <div class="reflect-q"><label>Apa tandanya kalau dua kejadian TIDAK saling berhubungan?</label><textarea class="ans"></textarea></div>
   <div class="reflect-q"><label>Ceritakan satu contoh dua kejadian di harimu yang tidak saling berhubungan.</label><textarea class="ans"></textarea></div>
 </section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(4)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(6)">Lanjut →</button></div>
+</div><!-- /page 5 -->
 
+<div class="page" data-page="6">
 <!-- SUBUNIT 5 — PERTEMUAN INTI -->
 <section class="block" id="subunit5">
   <div class="subunit-head"><span class="badge-num badge-inti">5</span>
@@ -435,8 +485,10 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
     <div class="stage-label">🌙 Panggung Dengar — Cerita Baru (kerjakan mandiri)</div>
     <div class="stage-row">
       <button class="play-btn" onclick="speakStory('stage5','story5')"><span id="playIcon5">▶</span> <span id="playLabel5">Dengarkan Cerita</span></button>
+      <button class="restart-btn" onclick="restartStage('stage5','story5')" title="Ulangi dari awal">⟲ Ulangi</button>
       <div class="bars"><span></span><span></span><span></span><span></span><span></span></div>
     </div>
+    <div class="progress-track"><div class="progress-thumb" id="track5"></div></div>
     <div class="stage-note">Boleh dengarkan dua kali. Catat singkat sambil mendengarkan kalau perlu, pakai gaya mencatatmu sendiri.</div>
     <button class="reveal-toggle" onclick="toggleStory('story5','revealBtn5')" id="revealBtn5">Tampilkan Teks Cerita</button>
     <div class="story-text" id="story5">
@@ -467,7 +519,10 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
   <div class="reflect-q"><label>Satu hal apa yang ingin kamu latih lagi setelah unit ini?</label><textarea class="ans"></textarea></div>
   <div class="reflect-q"><label>Alhamdulillah, unit ini selesai! Tuliskan satu hal yang kamu syukuri dari belajar hari ini.</label><textarea class="ans"></textarea></div>
 </section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(5)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(7)">Lanjut →</button></div>
+</div><!-- /page 6 -->
 
+<div class="page" data-page="7">
 <section class="block" id="glosarium">
   <div class="block-eyebrow">Lampiran</div>
   <h2>Glosarium</h2>
@@ -480,42 +535,211 @@ textarea.ans:focus{outline:none;border-color:var(--gold);}
 </section>
 
 <div class="closing">Selamat, kamu sudah menyelesaikan unit ini! Semoga apa yang kamu pelajari hari ini menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(6)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 7 -->
 
 </div><!-- /wrap -->
 </div><!-- /app-detail -->
 
 <script>
-/* ============ SPEECH SYNTHESIS ============ */
-function speak(text, playFn){ playFn(text); }
+/* ============================================================
+   STORAGE KEY — GANTI PER MODUL supaya progres tiap modul terpisah
+   ============================================================ */
+const STORAGE_KEY = 'modulProgress:bi-menyimak-tp2';
+const TOTAL_PAGES = 8;
+let currentPage = 0;
+let isReplaying = false;
 
-function speakStory(stageId, storyId){
-  const stage = document.getElementById(stageId);
-  const num = stageId.replace('stage','');
-  const text = document.getElementById(storyId).innerText;
-  const iconEl = document.getElementById('playIcon'+num);
-  const labelEl = document.getElementById('playLabel'+num);
-  playTTS(text, stage, iconEl, labelEl);
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
 }
 
-function playTTS(text, stage, iconEl, labelEl){
+/* ============ STEPPER & HALAMAN ============ */
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Bag.3','Bag.4','Bag.5','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+/* ============ SIMPAN JAWABAN TEKS (textarea/isian) ============ */
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, .peta-field input, .peta-field textarea, .sabox input');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+/* ============ MEMUTAR ULANG AKSI (pulihkan pilihan kuis/urutan/pasangan) ============ */
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  } else if(a.type === 's1pick'){
+    const group = document.getElementById('s1-yn-'+a.idx);
+    const btn = group && group.children[a.chosen ? 0 : 1];
+    if(btn) btn.click();
+  } else if(a.type === 'order'){
+    const grid = document.getElementById(a.grid);
+    const card = grid && grid.children[a.idx];
+    if(card) card.click();
+  } else if(a.type === 'order-reset'){
+    if(a.grid === 'orderGrid3') resetOrder();
+  } else if(a.type === 'sa'){
+    const col = document.getElementById(a.col);
+    const pill = col && [...col.querySelectorAll('.sa-pill')][a.idx];
+    if(pill) pill.click();
+  } else if(a.type === 'reveal'){
+    const el = document.getElementById(a.storyId);
+    const btn = document.getElementById(a.btnId);
+    if(el && btn && !el.classList.contains('open')) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+/* ============ SPEECH SYNTHESIS — PEMUTAR CERITA UTAMA (Panggung Dengar) ============ */
+const stageState = {};
+function getStageEls(stageId){
+  const num = stageId.replace('stage','');
+  return {
+    stage: document.getElementById(stageId),
+    icon: document.getElementById('playIcon'+num),
+    label: document.getElementById('playLabel'+num),
+    track: document.getElementById('track'+num)
+  };
+}
+function speakStory(stageId, storyId){
+  const text = document.getElementById(storyId).innerText;
+  playPauseStage(stageId, storyId, text);
+}
+function playPauseStage(stageId, storyId, text){
+  const {stage, icon, label} = getStageEls(stageId);
   if(!('speechSynthesis' in window)){
-    stage.querySelector('.stage-note') && (stage.querySelector('.stage-note').innerHTML += '<br>⚠️ Perangkat ini tidak mendukung suara otomatis. Minta seseorang membacakan teks ini untukmu.');
+    const note = stage.querySelector('.stage-note');
+    if(note && !note.dataset.warned){ note.innerHTML += '<br>⚠️ Perangkat ini tidak mendukung suara otomatis. Minta seseorang membacakan teks ini untukmu.'; note.dataset.warned='1'; }
     return;
   }
-  if(speechSynthesis.speaking){
-    speechSynthesis.cancel();
-    stage.classList.remove('playing');
-    if(iconEl) iconEl.textContent='▶'; if(labelEl) labelEl.textContent='Dengarkan Cerita';
+  const st = stageState[stageId] || (stageState[stageId] = {});
+  if(st.utterance && speechSynthesis.speaking){
+    if(st.paused){
+      speechSynthesis.resume(); st.paused = false;
+      stage.classList.add('playing'); icon.textContent='⏸'; label.textContent='Jeda';
+    } else {
+      speechSynthesis.pause(); st.paused = true;
+      stage.classList.remove('playing'); icon.textContent='▶'; label.textContent='Lanjutkan';
+    }
     return;
   }
+  startStageUtterance(stageId, text);
+}
+function restartStage(stageId, storyId){
+  const text = document.getElementById(storyId).innerText;
+  speechSynthesis.cancel();
+  startStageUtterance(stageId, text);
+}
+function startStageUtterance(stageId, text){
+  const {stage, icon, label, track} = getStageEls(stageId);
+  speechSynthesis.cancel(); // selalu mulai bersih supaya tidak "macet" gara-gara sisa antrean sebelumnya
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang='id-ID'; utter.rate=0.88; utter.pitch=1;
   const voices = speechSynthesis.getVoices();
   const idVoice = voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('id'));
   if(idVoice) utter.voice = idVoice;
-  utter.onstart=()=>{stage.classList.add('playing'); if(iconEl) iconEl.textContent='⏸'; if(labelEl) labelEl.textContent='Berhenti';};
-  utter.onend=()=>{stage.classList.remove('playing'); if(iconEl) iconEl.textContent='▶'; if(labelEl) labelEl.textContent='Dengarkan Lagi';};
-  utter.onerror=()=>{stage.classList.remove('playing'); if(iconEl) iconEl.textContent='▶'; if(labelEl) labelEl.textContent='Dengarkan Cerita';};
+
+  const st = stageState[stageId] || (stageState[stageId] = {});
+  st.utterance = utter; st.paused = false;
+
+  utter.onboundary = (e) => {
+    if(track && text.length && typeof e.charIndex === 'number'){
+      track.style.width = Math.min(100, Math.round((e.charIndex / text.length) * 100)) + '%';
+    }
+  };
+  utter.onstart = () => {
+    stage.classList.add('playing'); icon.textContent='⏸'; label.textContent='Jeda';
+    if(track) track.style.width='0%';
+    // Perbaikan bug umum Chrome: speechSynthesis kadang berhenti sendiri di
+    // tengah kalimat panjang (>15 detik) — jaga tetap aktif dengan pause/resume berkala.
+    clearInterval(st.keepAlive);
+    st.keepAlive = setInterval(()=>{ if(speechSynthesis.speaking && !speechSynthesis.paused){ speechSynthesis.pause(); speechSynthesis.resume(); } }, 9000);
+  };
+  utter.onend = () => {
+    clearInterval(st.keepAlive);
+    stage.classList.remove('playing'); icon.textContent='▶'; label.textContent='Dengarkan Lagi';
+    if(track) track.style.width='100%';
+    st.utterance = null;
+  };
+  utter.onerror = () => {
+    clearInterval(st.keepAlive);
+    stage.classList.remove('playing'); icon.textContent='▶'; label.textContent='Dengarkan Cerita';
+    st.utterance = null;
+  };
+  speechSynthesis.speak(utter);
+}
+
+/* ============ SPEECH SYNTHESIS — KALIMAT PENDEK (tombol putar kecil) ============ */
+function playTTS(text, containerEl, iconEl, labelEl){
+  if(!('speechSynthesis' in window)){
+    if(containerEl && !containerEl.dataset.warned){ containerEl.insertAdjacentHTML('beforeend', '<div style="font-size:11.5px;color:var(--wrong);margin-top:6px;">⚠️ Perangkat ini tidak mendukung suara otomatis.</div>'); containerEl.dataset.warned='1'; }
+    return;
+  }
+  speechSynthesis.cancel(); // selalu mulai bersih — ini yang memperbaiki tombol yang "tidak bisa diputar"
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang='id-ID'; utter.rate=0.88; utter.pitch=1;
+  const voices = speechSynthesis.getVoices();
+  const idVoice = voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('id'));
+  if(idVoice) utter.voice = idVoice;
   speechSynthesis.speak(utter);
 }
 
@@ -525,6 +749,7 @@ function toggleStory(storyId, btnId){
   el.classList.toggle('open');
   btn.textContent = el.classList.contains('open') ? 'Sembunyikan Teks Cerita' : 'Tampilkan Teks Cerita';
   updateProgress();
+  if(!isReplaying && el.classList.contains('open')){ logAction({type:'reveal', storyId, btnId}); }
 }
 
 /* ============ SUBUNIT 1: kalimat list ============ */
@@ -541,7 +766,7 @@ function renderS1(){
   el.innerHTML = s1data.map((d,i)=>`
     <div class="kalimat-row">
       <div class="krow">
-        <button class="play-btn small" onclick="playTTS(${JSON.stringify(d.text)}, this.closest('.kalimat-row'), null, null)">▶ Dengarkan</button>
+        <button class="play-btn small" onclick="playS1Item(${i}, this)">▶ Dengarkan</button>
         <div class="choice-group" id="s1-yn-${i}">
           <button class="choice-btn" onclick="s1pick(${i},true,this)">Ada Kata Penghubung</button>
           <button class="choice-btn" onclick="s1pick(${i},false,this)">Tidak Ada</button>
@@ -554,6 +779,9 @@ function renderS1(){
     </div>
   `).join('');
 }
+function playS1Item(i, btnEl){
+  playTTS(s1data[i].text, btnEl.closest('.kalimat-row'), null, null);
+}
 function s1pick(i, chosen, btn){
   const group = document.getElementById('s1-yn-'+i);
   [...group.children].forEach(b=>b.classList.add('disabled'));
@@ -562,6 +790,7 @@ function s1pick(i, chosen, btn){
   else { btn.classList.add('wrong'); [...group.children].find((b,bi)=> (bi===0)===correct)?.classList.add('correct'); }
   if(correct){ document.getElementById('s1-wp-'+i).classList.add('show'); }
   updateProgress();
+  if(!isReplaying) logAction({type:'s1pick', idx:i, chosen});
 }
 renderS1();
 
@@ -575,7 +804,7 @@ function renderS2(){
   const el = document.getElementById('s2-list');
   el.innerHTML = s2data.map((d,i)=>`
     <div class="kalimat-row">
-      <div class="krow"><button class="play-btn small" onclick="playTTS(${JSON.stringify(d.text)}, this.closest('.kalimat-row'), null, null)">▶ Dengarkan Kalimat ${i+1}</button></div>
+      <div class="krow"><button class="play-btn small" onclick="playS2Item(${i}, this)">▶ Dengarkan Kalimat ${i+1}</button></div>
       <div class="sabox-grid">
         <div class="sabox"><label>Sebab</label><input type="text" id="s2-sebab-${i}" placeholder="..."></div>
         <div class="sabox"><label>Akibat</label><input type="text" id="s2-akibat-${i}" placeholder="..."></div>
@@ -584,6 +813,9 @@ function renderS2(){
       <div class="key-box"><b>Sebab:</b> ${d.sebab} · <b>Akibat:</b> ${d.akibat}</div>
     </div>
   `).join('');
+}
+function playS2Item(i, btnEl){
+  playTTS(s2data[i].text, btnEl.closest('.kalimat-row'), null, null);
 }
 renderS2();
 
@@ -594,6 +826,9 @@ function pickOrder(card){
   orderPicks.push(card);
   card.classList.add('picked');
   card.querySelector('.badge').textContent = orderPicks.length;
+  const grid = card.parentElement;
+  const idx = [...grid.children].indexOf(card);
+  if(!isReplaying) logAction({type:'order', grid:grid.id, idx});
 }
 function resetOrder(){
   orderPicks = [];
@@ -602,6 +837,7 @@ function resetOrder(){
     c.querySelector('.badge').textContent='?';
   });
   document.getElementById('orderFeedback').classList.remove('show');
+  if(!isReplaying) saveState(s=>{ s.actions = (s.actions||[]).filter(a => !(a.type==='order' && a.grid==='orderGrid3')); });
 }
 function checkOrder(){
   const fb = document.getElementById('orderFeedback');
@@ -625,14 +861,16 @@ function checkOrder(){
 let selectedSebab = null;
 function pickSebab(el){
   if(el.classList.contains('matched')) return;
-  document.querySelectorAll('.sa-wrap .sa-pill[data-pair]').forEach(p=>{ if(!p.classList.contains('matched') && p.parentElement === el.parentElement) p.classList.remove('selected'); });
+  document.querySelectorAll('#saSebab4 .sa-pill').forEach(p=>p.classList.remove('selected'));
   el.classList.add('selected');
   selectedSebab = el;
+  if(!isReplaying){ const idx=[...el.parentElement.querySelectorAll('.sa-pill')].indexOf(el); logAction({type:'sa', col:'saSebab4', idx}); }
 }
 function pickAkibat(el){
   if(el.classList.contains('matched') || !selectedSebab) return;
   const fb = document.getElementById('saFeedback');
-  if(selectedSebab.dataset.pair === el.dataset.pair){
+  const wasMatch = selectedSebab.dataset.pair === el.dataset.pair;
+  if(wasMatch){
     selectedSebab.classList.remove('selected'); selectedSebab.classList.add('matched');
     el.classList.add('matched');
     fb.textContent = '✅ Pasangan yang tepat!'; fb.className='feedback show ok';
@@ -644,6 +882,7 @@ function pickAkibat(el){
     fb.textContent = 'Belum pas, coba pasangan lain.'; fb.className='feedback show bad';
     setTimeout(()=>el.classList.remove('wrong-flash'),350);
   }
+  if(!isReplaying){ const idx=[...el.parentElement.querySelectorAll('.sa-pill')].indexOf(el); logAction({type:'sa', col:'saAkibat4', idx}); }
 }
 
 /* ============ PETA / BUKU MINI SUMMARY ============ */
@@ -687,6 +926,7 @@ function checkMCQ(groupId, btn, chosenIdx, correctIdx){
   if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
   else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
   updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
 }
 
 /* ============ QUIZ DATA ============ */
@@ -752,6 +992,18 @@ function updateProgress(){
 if('speechSynthesis' in window){
   speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
 }
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence(); // panggil lagi untuk field baru yang muncul saat replay
+updateProgress();
 </script>
 
 <script type="module" src="../../../../assets/js/auth-guard.js"></script>
