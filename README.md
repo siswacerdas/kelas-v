@@ -216,12 +216,50 @@ materi/
 
 bank_soal/
   {id}/
-    pertanyaan : string
-    pilihan    : array
-    jawaban    : string
-    mapel      : string
-    tingkat    : string
+    // ── Field umum, wajib ada di semua jenis soal ──
+    pertanyaan   : string
+    mapel        : string   (harus SAMA PERSIS dengan salah satu window.URUTAN_MAPEL)
+    tp           : string   (kode TP — harus SAMA PERSIS dengan tp di tp-kko-index.js)
+    jenisSoal    : "pg_tunggal" | "pg_kompleks" | "pg_kategori" | "mengurutkan" | "menjodohkan"
+    kko          : "C1".."C6"  (harus ≤ kkoMax milik TP tsb, divalidasi di admin.html)
+    kompleksitas : "dasar" | "menengah" | "menantang"
+    randKey      : number 0–1  (dibuat otomatis, dipakai buat ambil soal acak dari pool)
+
+    // ── Field tambahan, tergantung jenisSoal ──
+    // pg_tunggal:  pilihan (array string), jawaban (string, 1 teks benar)
+    // pg_kompleks: pilihan (array string), jawabanBenar (array string, ≥2 jawaban benar)
+    // pg_kategori: kategori (array string), item (array {teks, kategoriBenar})
+    // mengurutkan: item (array string, urutan array = urutan yang benar)
+    // menjodohkan: pasangan (array {kiri, kanan})
+
+hasil_latihan/
+  {id}/
+    uid            : string (uid siswa dari Firebase Auth — dipakai buat batasan akses)
+    namaSiswa      : string (dipakai orang tua buat mencocokkan field `anak` miliknya)
+    mapel          : string
+    tp             : string
+    tpJudul        : string (disalin biar riwayat tetap terbaca walau tp-kko-index berubah)
+    jumlahBenar    : number
+    jumlahSoal     : number
+    skor           : number (persen, 0–100)
+    detailJawaban  : array {soalId, jenisSoal, benar}
+    timestamp      : server timestamp
+
+    // Dibuat sendiri oleh siswa saat submit kuis (pages/uji-kemampuan.html).
+    // TIDAK BISA diubah/dihapus oleh siswa maupun orang tua — lihat rules di bawah.
 ```
+
+> **Catatan migrasi:** Soal lama dengan skema bebas (`mapel` teks bebas, `tingkat`, tanpa `tp`/`jenisSoal`) TIDAK otomatis tergabung ke pool TP manapun — field `tp` kosong berarti soal itu tidak akan pernah terambil oleh Uji Kemampuan versi baru. Soal-soal lama itu perlu di-edit ulang lewat Panel Guru (isi TP & jenis soalnya) atau dihapus, tergantung apakah kontennya masih relevan.
+
+### Impor Soal Massal
+
+Karena target minimal 200 soal/TP × puluhan TP tidak realistis diisi satu-satu lewat form,
+Panel Guru punya tab **📥 Impor Massal** (`pages/admin.html#impor`): tempel array JSON berisi
+banyak soal sekaligus (skema sama seperti `bank_soal` di atas, tanpa `randKey` — dibuat otomatis),
+klik **Validasi** dulu (mengecek TP valid, KKO tidak melebihi batas TP, field wajib tiap jenis
+soal lengkap — kalau ada yang bermasalah, TIDAK ADA yang disimpan), baru klik **Impor ke
+Firestore** kalau sudah lolos validasi. Ditulis pakai `writeBatch` per 400 soal.
+
 
 ---
 
@@ -287,9 +325,30 @@ service cloud.firestore {
       allow write: if request.auth != null &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
     }
+
+    // Hasil Uji Kemampuan: siswa HANYA bisa membuat dokumen miliknya sendiri
+    // (uid harus sama dengan uid pembuat) dan TIDAK PERNAH bisa mengubah/menghapusnya
+    // — update & delete cuma diberikan ke role "guru". Orang tua bisa membaca hasil
+    // anaknya (dicocokkan lewat field `anak` di users/{uid}), tapi juga tidak
+    // diberi izin write sama sekali.
+    match /hasil_latihan/{id} {
+      allow create: if request.auth != null &&
+        request.resource.data.uid == request.auth.uid;
+      allow read: if request.auth != null && (
+        resource.data.uid == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru' ||
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'orangtua' &&
+         resource.data.namaSiswa in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.anak)
+      );
+      allow update, delete: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
   }
 }
 ```
+
+**Index komposit yang wajib dibuat di Firebase Console → Firestore → Indexes** (query di kode akan gagal tanpa ini — Firebase biasanya menyediakan link "Create Index" langsung di pesan error konsol browser saat pertama kali dicoba):
+- Koleksi `bank_soal`: `tp` (Ascending) + `randKey` (Ascending) — dipakai untuk mengambil soal acak per TP di `pages/uji-kemampuan.html`.
 
 ---
 
