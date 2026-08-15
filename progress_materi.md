@@ -317,494 +317,97 @@ Semua elemen (Menyimak, Membaca dan Memirsa, Berbicara, Menulis)
 sudah lengkap ditulis dengan standar kualitas dari Bagian 5. Tidak
 ada lagi materi Bahasa Indonesia yang berstatus "segera hadir".
 
-**Fase berikutnya (per 2026-07-27):** IPAS sudah tuntas 27/27 materi
-(lihat Bagian 7), dan Matematika sedang berjalan — 5/64 pertemuan
-selesai (lihat Bagian 8). Lima mapel lain masih placeholder kosong:
-Pendidikan Agama Islam dan Budi Pekerti, Pendidikan Pancasila, Seni
-Budaya, PJOK, Bahasa Inggris. Menunggu dokumen CP/TP/ATP resmi untuk
-mapel tersebut kalau tersedia.
+**Fase berikutnya:** 7 mapel lain masih placeholder kosong —
+Matematika (baru 1 materi pilot), IPAS, Pendidikan Agama Islam dan
+Budi Pekerti, Pendidikan Pancasila, Seni Budaya, PJOK, Bahasa
+Inggris. Menunggu arahan mapel mana yang diprioritaskan berikutnya,
+dan dokumen CP/TP/ATP resmi untuk mapel tersebut kalau tersedia
+(seperti yang sudah diberikan untuk Bahasa Indonesia).
 
 ---
 
-## 7. IPAS — Roadmap TP dari Dokumen Resmi (2026-07-26)
+## 7. IPAS — PERLU DIBANGUN ULANG (2026-08-09)
 
-Delapan dokumen sudah diterima dan dipelajari penuh: **Dokumen 1** (Analisis
-CP Fase C IPAS), **Dokumen 2** (TP Kelas 5, total 58 JP), **6 dokumen
-Scaffolding** (satu per topik), dan **PetaAktivitas_IPAS_Kelas5.docx**
-(urutan eksekusi + peringatan ketergantungan lintas mapel). Struktur folder
-mengikuti pola Bahasa Indonesia (banyak TP per mapel):
+**Kejadian penting:** environment kerja sesi ini mengalami reset teknis
+pada 2026-08-09, menghapus seluruh file kerja yang sudah disusun
+(33 materi IPAS lengkap + sebagian besar Matematika). Yang bertahan
+hanya file yang sempat dikirim lewat chat ke pengguna, dan file terakhir
+yang diunggah balik oleh pengguna (`materi-index.js` + `progress_materi.md`
+versi BI-lengkap, tanpa IPAS/Matematika).
 
-```
-pages/materi/ipas/{topik-slug}/NN-judul.html
-```
+**Status IPAS saat ini: 0/27 di repo kerja** — folder `pages/materi/ipas/`
+kosong. Seluruh 8 unit TP (Sistem Organ Tubuh TP1+TP2, Bunyi & Cahaya,
+Ekosistem TP1+TP2, Ekonomi Masyarakat, Letak Geografis versi 5-materi,
+Sejarah & Budaya versi 5-materi) perlu ditulis ulang dari nol. Semua
+keputusan desain sebelumnya (standar "Kalau Masih Bingung" + "Contoh
+Soal & Pembahasan", interpretasi bebas untuk Letak Geografis/Sejarah-
+Budaya jadi 5 sub-materi, kehati-hatian sejarah lokal sensitif) tetap
+berlaku sebagai acuan saat menulis ulang — bukan mulai dari nol secara
+konseptual, hanya filenya yang hilang.
 
-Slug topik yang dipakai: `organ-tubuh-tp2`, `organ-tubuh-tp1`,
-`bunyi-cahaya`, `ekosistem-tp1`, `ekosistem-tp2`, `ekonomi-masyarakat`,
-`letak-geografis`, `sejarah-budaya`. Semua 8 unit / 27 halaman materi
-sudah didaftarkan di `materi-index.js` dengan link aktif (pola sama
-seperti 42 titik Bahasa Indonesia) — supaya gambaran keseluruhan
-kurikulum IPAS bisa langsung dilihat siswa walau isinya menyusul.
-
-**Urutan mengajar TIDAK sama dengan urutan penomoran resmi Dokumen 2** —
-mengikuti PetaAktivitas, yang menyusun urutan berdasarkan kesiapan
-pedagogis dan ketergantungan antar-topik, bukan urutan TP1→TP2 di
-dokumen sumber:
-
-1. Organ Tubuh **TP2** (Struktur & Fungsi Organ) — didahulukan karena
-   scaffolding sumbernya sendiri menyebut dirinya "bekal" untuk TP1.
-2. Organ Tubuh **TP1** (Respons Tubuh & Refleksi Kesehatan)
-3. Bunyi & Cahaya (pemanasan Keterampilan Proses skala kecil) — **ditulis
-   duluan atas permintaan eksplisit, lihat 7a di bawah**
-4. Ekosistem TP1 (Observasi Biotik-Abiotik)
-5. Ekosistem TP2 ⭐ (Percobaan Pertumbuhan Tanaman — proyek andalan,
-   berjalan 1–2 minggu kalender, bukan satu slot JP)
-6. Ekonomi Masyarakat
-7. Letak Geografis — **⚠ butuh Geometri Matematika TP3 (sistem
-   berpetak/koordinat) sudah tuntas duluan; Geometri belum ada di web
-   saat ini (baru materi Bilangan yang selesai).**
-8. Sejarah & Budaya — **⚠ paling akhir, karena butuh 3 hal sudah
-   selesai: proyek "Peta Asal Keluarga Kelas Kami" di Pendidikan
-   Pancasila (BTI TP1), TP Letak Geografis, dan TP Ekonomi Masyarakat
-   IPAS. Mapel Pancasila belum ada sama sekali di web saat ini.**
-
-Topik Kelompok C (tata surya-rotasi-revolusi bumi; energi & mitigasi
-iklim) **tidak dibuatkan materi** — didorong penuh ke Kelas 6 sesuai
-keputusan Dokumen 1, sama seperti disepakati untuk kurikulum kelasnya.
-
-Field `elemen` diisi untuk topik yang punya >1 TP (Organ Tubuh,
-Ekosistem) supaya blok "materi lain" menghubungkan TP1↔TP2 dalam topik
-yang sama; topik dengan 1 TP saja (Bunyi-Cahaya, Ekonomi, Letak
-Geografis, Sejarah-Budaya) tidak diberi `elemen` (pola sama seperti
-Matematika pilot).
-
-Setiap TP memakai **Alternatif 1** dari dokumen Scaffolding sebagai
-jalur default (mengikuti pola Bahasa Indonesia) — kalau ternyata di
-kelas dipakai Alternatif 2 atau kombinasi, kabari saja, materinya masih
-bisa disesuaikan tanpa mengubah struktur navigasi.
-
-**Catatan kejujuran soal JP:** dokumen sumber sendiri (PetaAktivitas,
-"Catatan Penutup") mengakui total JP per topik tidak selalu genap
-2×jumlah pertemuan (mis. Organ Tubuh TP1 tertulis "6 pertemuan, 8 JP" di
-scaffolding sumber tapi "12 JP" dengan standar 2 JP/pertemuan) —
-dibiarkan apa adanya sesuai dokumen sumber, tidak memengaruhi struktur
-halaman/jumlah materi yang ditulis.
-
-## 7a. Bunyi & Cahaya — SELESAI 5/5 (2026-07-26)
-
-Ditulis lebih dulu dari 8 unit TP IPAS atas permintaan eksplisit
-(bukan mengikuti urutan pedagogis PetaAktivitas yang menempatkan Organ
-Tubuh duluan). Alternatif 1 ("Bunyi Dulu, Cahaya Kemudian") dipakai
-sebagai jalur utama. Kelima materi mengikuti siklus Keterampilan Proses
-penuh: mengamati → memprediksi → eksperimen (telepon kaleng +
-pemantulan cahaya senter) → menganalisis data (tabel perbandingan) →
-menjelaskan kaitan dengan fenomena sehari-hari (⭐ inti). Tidak menuntut
-produk akhir formal, sesuai catatan dokumen sumber. `materi-index.js`
-untuk kelima entri ini sudah diubah ke `"selesai"` (aturan batching di
-Bagian 4 sudah dipenuhi karena seluruh TP ini rampung sekaligus). 22
-materi IPAS lainnya (7 unit TP tersisa) terdaftar dengan status
-`"segera"`, halaman placeholder aktif, siap dilanjutkan topik demi
-topik sesuai arahan berikutnya.
-
-## 7b. Standar Baru: "Kalau Masih Bingung" + "Contoh Soal & Pembahasan" (2026-07-26)
-
-Setelah dicek, versi awal 5 materi Bunyi & Cahaya dinilai kurang: minim
-contoh kontekstual yang panjang, dan **tidak ada soal cek pemahaman yang
-disertai jawaban+penjelasan** — padahal materi ajar ini harus bisa
-dipakai belajar mandiri oleh siswa dengan kemampuan dasar berbeda-beda,
-bukan cuma siswa yang sudah kuat secara kognitif.
-
-Ditetapkan sebagai **standar wajib untuk SEMUA halaman materi IPAS
-(dan idealnya mapel lain) mulai sekarang**, dua komponen baru:
-
-- **🧩 Kalau Masih Bingung** — kotak penjelasan ulang pakai analogi
-  yang lebih sederhana/konkret (bukan pengulangan kalimat yang sama),
-  untuk siswa yang belum nyantol di penjelasan utama. Ditaruh setelah
-  penjelasan konsep inti halaman.
-- **📝 Contoh Soal & Pembahasan** — 2–3 soal cek pemahaman per halaman,
-  tiap soal WAJIB disertai jawaban DAN alasan/penjelasan lengkap (bukan
-  kunci jawaban telanjang), supaya siswa bisa menilai sendiri
-  pemahamannya tanpa didampingi guru. Soal sebaiknya naik tingkat
-  kesulitannya (soal 1-2 aplikasi langsung, soal terakhir menuntut
-  penalaran/transfer ke konteks baru).
-
-**Diputuskan TIDAK menambahkan** kotak tantangan/pengayaan untuk siswa
-yang sudah lancar — fokus dulu ke memastikan siswa dengan kemampuan
-dasar lemah bisa terbantu, baru dipertimbangkan lagi nanti kalau
-diminta.
-
-Kelas CSS baru yang dipakai (didefinisikan inline per halaman untuk
-saat ini, belum dipindah ke `materi.css` global): `.bingung-box`,
-`.bingung-label`, `.soal-box`, `.soal-head`, `.soal-item`, `.soal-q`,
-`.soal-a`. Kelima file Bunyi & Cahaya sudah direvisi mengikuti standar
-ini. **22 materi IPAS lain yang masih placeholder "segera hadir" WAJIB
-ditulis mengikuti standar ini sejak awal**, bukan ditulis dulu baru
-direvisi belakangan.
-
-## 7c. Sistem Organ Tubuh TP2 — SELESAI 2/2 (2026-07-26)
-
-Unit kedua yang ditulis, menyusul urutan PetaAktivitas (organ tubuh
-didahulukan setelah Bunyi & Cahaya). Alternatif 1 ("Diagram Digital via
-Proyektor") dipakai sebagai jalur utama — organ dalam tidak diamati
-langsung (tidak mungkin bagi anak SD), jadi materi 1 murni pengenalan
-letak/bentuk lewat diagram, dan materi 2 (⭐ inti) fokus fungsi tiap
-organ dikaitkan kebiasaan sehat. Mengikuti standar 7b penuh: kotak
-"Kalau Masih Bingung" (analogi rumah — jantung=pompa air, paru-paru=
-balon kembar, pencernaan=selang panjang, dipakai konsisten di kedua
-halaman) dan "Contoh Soal & Pembahasan" (3 soal per halaman). `status`
-kedua entri di `materi-index.js` sudah diubah ke `"selesai"`.
-
-## 7d. Sistem Organ Tubuh TP1 — SELESAI 6/6 (2026-07-26)
-
-Unit ketiga IPAS yang ditulis. Alternatif 1 ("Lompat Tali") dipakai
-sebagai jalur utama. Siklus Keterampilan Proses lengkap: meraba nadi →
-memprediksi (analogi mesin motor) → mengukur sebelum-sesudah lompat
-tali (analogi lomba lari adil dari 7b, dipakai ulang untuk konsep
-"pengukuran yang adil") → menyusun tabel kelas (nomor urut/inisial,
-bukan nama — sesuai catatan privasi di dokumen sumber) → membandingkan
-prediksi vs kenyataan sambil dikaitkan kebiasaan pribadi → refleksi
-personal (⭐ inti). Mengikuti standar 7b penuh di keenam halaman. Status
-6 entri di `materi-index.js` sudah diubah ke `"selesai"`.
-
-**Progres IPAS sejauh ini: 13/27 materi selesai** (Bunyi & Cahaya 5/5,
-Organ Tubuh TP2 2/2, Organ Tubuh TP1 6/6). Sisa 14 materi di 5 unit TP:
-Ekosistem TP1 (3), Ekosistem TP2 (5), Ekonomi Masyarakat (2), Letak
-Geografis (2, masih menunggu kepastian Geometri Matematika), Sejarah &
-Budaya (2, masih menunggu kepastian Pancasila BTI TP1).
-
-## 7e. Ekosistem TP1 + TP2 (Proyek Andalan) — SELESAI 8/8 (2026-07-26)
-
-Unit keempat dan kelima IPAS. Alternatif 1 dipakai di kedua TP ("Kebun
-Pot Bawaan Siswa" untuk TP1, "Kacang Hijau di Kelas" untuk TP2).
-
-TP1 (3 halaman): ciri makhluk hidup vs benda tak hidup (sengaja
-membongkar miskonsepsi "gerak = hidup" lewat analogi robot mainan vs
-kaktus diam) → checklist observasi kebun mini (analogi absensi kelas)
-→ menduga hubungan antarkomponen (analogi domino, ⭐ inti).
-
-TP2 / Proyek Andalan (5 halaman): variabel diubah vs dijaga tetap lewat
-latihan pesawat kertas (analogi resep kue) → merancang percobaan kacang
-hijau dengan kerangka diberi tapi detail teknis diputuskan kelompok →
-mencatat pertumbuhan berkala 1-2 minggu (analogi papan tinggi badan di
-dinding rumah) → mengevaluasi hasil vs prediksi dengan penekanan
-kejujuran ilmiah (analogi koki mengevaluasi resep gagal) → menyajikan
-hasil dengan argumen berbasis data (analogi reporter berita/pengacara
-di sidang, ⭐ inti, memakai kembali pola "kesimpulan lemah vs kuat" dari
-materi Bunyi & Cahaya).
-
-Standar 7b (Kalau Masih Bingung + Contoh Soal & Pembahasan) diterapkan
-penuh di kedelapan halaman. Status kedelapan entri di `materi-index.js`
-sudah diubah ke `"selesai"`.
-
-**Progres IPAS sejauh ini: 21/27 materi selesai.** Sisa 6 materi di 3
-unit TP: Ekonomi Masyarakat (2), Letak Geografis (2, masih menunggu
-kepastian Geometri Matematika), Sejarah & Budaya (2, masih menunggu
-kepastian Pancasila BTI TP1).
-
-## 7f. Kegiatan Ekonomi Masyarakat — SELESAI 2/2 (2026-07-26)
-
-Unit keenam IPAS, satu-satunya di antara sisa 3 unit yang tidak punya
-ketergantungan lintas mapel sehingga dikerjakan lebih dulu. Alternatif
-1 ("Observasi Mandiri Sekitar Rumah") dipakai. Materi 1: observasi
-jenis usaha nyata di sekitar rumah — sengaja ditekankan bahwa semua
-skala usaha (pedagang keliling sampai toko besar) sama berharganya
-untuk diamati, mengikuti catatan sensitivitas di dokumen sumber
-("hindari menilai latar ekonomi keluarga siswa") tanpa menyebutnya
-eksplisit ke siswa, cukup lewat framing non-menghakimi. Materi 2 (⭐
-inti): klasifikasi produksi/distribusi/konsumsi lewat analogi alur air
-PDAM dan alur nasi (petani→pedagang→keluarga), termasuk soal yang
-menunjukkan satu orang bisa berperan di kategori berbeda tergantung
-kegiatannya. Standar 7b diterapkan penuh. Status kedua entri di
-`materi-index.js` sudah diubah ke `"selesai"`.
-
-**Progres IPAS sejauh ini: 23/27 materi selesai.** Sisa 4 materi di 2
-unit, keduanya masih menunggu kepastian mapel lain: Letak Geografis (2,
-menunggu Geometri Matematika) dan Sejarah & Budaya (2, menunggu
-Pancasila BTI TP1).
-
-## 7g. Letak Geografis + Sejarah & Budaya — SELESAI 4/4, IPAS TUNTAS 27/27 (2026-07-26)
-
-Dua unit terakhir ditulis TANPA menunggu kepastian status Geometri
-Matematika/Pancasila BTI TP1 — atas instruksi untuk lanjut, keduanya
-dibuat **mandiri (self-contained)** supaya tidak mengasumsikan
-pengalaman lintas mapel yang mungkin belum dialami siswa:
-
-- **Letak Geografis** (2 halaman): materi 1 letak Indonesia
-  antara 2 benua/2 samudra (analogi rumah di antara dua tetangga & dua
-  kolam renang). Materi 2 (⭐ inti) memuat catatan pengantar eksplisit
-  di awal ("kalau sudah belajar sistem berpetak di Matematika... kalau
-  belum, kita bahas dasarnya di sini") lalu mengajarkan konsep grid
-  baris-kolom dari nol dengan diagram visual + analogi nomor kursi
-  bioskop — supaya berfungsi baik dipakai sebelum maupun sesudah
-  Geometri Matematika digarap.
-- **Sejarah & Budaya** (2 halaman): materi 1 TIDAK mengasumsikan proyek
-  "Peta Asal Keluarga Kelas Kami" sudah ada — dibuka dengan catatan
-  bersyarat ("kalau kelasmu sudah pernah membuat... kalau belum, kita
-  mulai dari pertanyaan sederhana") lalu tetap mencapai tujuan yang
-  sama (menumbuhkan rasa ingin tahu asal-usul keluarga) lewat jalur
-  mandiri. Materi 2 (⭐ inti) menghubungkan letak geografis-ekonomi-
-  budaya lewat analogi 3 potongan puzzle. Sensitivitas konteks lokal
-  (sejarah lokal sensitif, keragaman latar keluarga) dijaga sesuai
-  catatan dokumen sumber — tidak membahas peristiwa sejarah lokal
-  secara mendalam, hanya sebagai pemantik rasa ingin tahu.
-
-Standar 7b diterapkan penuh di keempat halaman. Status keempat entri di
-`materi-index.js` sudah diubah ke `"selesai"`.
-
-**🎉 SELURUH 27 MATERI IPAS KELAS 5 SUDAH SELESAI DITULIS.** Delapan
-unit TP, dari Bunyi & Cahaya sampai Sejarah & Budaya, semuanya
-mengikuti standar konten 6h (Kalau Masih Bingung + Contoh Soal &
-Pembahasan). Kalau nanti dipastikan Geometri Matematika/Pancasila BTI
-sudah diajarkan lebih dulu di kelas nyata, kedua unit terakhir ini bisa
-disunting ulang untuk merujuk langsung ke pengalaman itu (opsional,
-tidak wajib — versi mandiri saat ini sudah berfungsi baik apa adanya).
+**Belum dikerjakan ulang di sesi ini** — akan dikerjakan setelah
+Matematika mencapai titik aman (minimal Bilangan tuntas), mengikuti
+prioritas eksplisit pengguna untuk fokus dulu ke kualitas Matematika
+(equation dan bahasa) yang sedang berjalan.
 
 ---
 
----
+## 8. MATEMATIKA — Dibangun Ulang dengan Standar Baru (2026-08-09)
 
-## 7h. Letak Geografis + Sejarah & Budaya — DITULIS ULANG jadi 5 Sub-Materi (2026-08-01)
+Roadmap 21 TP/64 pertemuan dari sesi sebelumnya (5 elemen: Bilangan,
+Aljabar, Pengukuran, Geometri, Analisis Data & Peluang; urutan
+PetaAktivitas dengan Geometri TP3 disisipkan di antara Aljabar TP2 dan
+TP3) **tetap berlaku sebagai rencana**, tapi progres tertulisnya hilang
+akibat reset. Ditulis ulang mulai dari Bilangan, sekaligus menerapkan
+**dua perbaikan standar** yang diminta pengguna setelah meninjau hasil
+sebelumnya:
 
-Atas permintaan eksplisit, kedua unit ini **ditulis ulang dari nol**
-dengan interpretasi bebas (tidak terikat literal pada dokumen
-Scaffolding aslinya, yang dinilai belum cukup mendalam) — dari
-masing-masing 2 halaman menjadi **5 sub-materi** (4 tangga + 1 inti),
-tetap berpegang pada teks CP resmi sebagai acuan, dan tetap menjaga
-kehati-hatian yang sama soal sejarah lokal sensitif dan keragaman latar
-ekonomi keluarga.
+**1. Equation harus tersusun visual, bukan dijelaskan dalam teks.**
+Pengurangan dan pembagian bersusun sekarang memakai `<table>` HTML asli
+(kelas `.susun-tabel` untuk pengurangan, `.pjg-tabel` untuk pembagian)
+— bukan CSS letter-spacing/padding-top magic-number seperti versi
+lama yang terbukti tidak presisi di berbagai perangkat. Pembagian
+bersusun ditulis **lengkap ke bawah per langkah** (angka yang
+dikurangkan, sisa, angka turun berikutnya) — persis seperti anak
+menulis di buku — bukan dirangkum jadi kalimat penjelasan.
 
-**Letak Geografis Indonesia (5 halaman):**
-1. Mengenal Peta dan Bentuk Wilayah Indonesia — negara kepulauan
-   terbesar di dunia, ±17.000 pulau, lima pulau besar
-2. Posisi Indonesia di Antara Dua Benua dan Dua Samudra — posisi
-   silang dunia, kaitan historis jalur rempah-rempah
-3. Garis Khatulistiwa dan Iklim Tropis Indonesia — **materi baru**,
-   memperdalam cakupan CP dengan konsep iklim tropis/dua musim,
-   dihubungkan balik ke unit Kegiatan Ekonomi Masyarakat
-4. Membaca Letak dengan Sistem Berpetak — tetap mandiri
-   (self-contained), tidak mengasumsikan Geometri Matematika TP3 sudah
-   diajarkan
-5. ⭐ Menjelaskan Letak Geografis Indonesia — sintesis keempat materi
-   sebelumnya jadi satu penjelasan utuh dengan alur sebab-akibat
+**2. Bahasa penjelasan disederhanakan drastis** untuk siswa dengan
+literasi dan logika terbatas: kalimat pendek (idealnya satu ide per
+kalimat), kosakata konkret, hindari anak kalimat berlapis. Kotak
+"Kalau Masih Bingung" ikut disederhanakan dengan pola yang sama —
+analogi dipecah jadi beberapa kalimat pendek berurutan, bukan satu
+paragraf panjang.
 
-**Sejarah dan Keragaman Budaya Sekitar (5 halaman):**
-1. Mengenal Keragaman Budaya di Sekitar Kita — **materi baru**,
-   Bhinneka Tunggal Ika, rumah/pakaian/bahasa/makanan adat
-2. Sejarah Asal-Usul Keluargaku — tetap mandiri, tidak mengasumsikan
-   proyek Pancasila "Peta Asal Keluarga" sudah ada
-3. Menghargai Perbedaan sebagai Kekayaan Bersama — **materi baru**,
-   sikap non-menghakimi terhadap perbedaan, memakai ulang prinsip dari
-   unit Ekonomi Masyarakat (jangan menilai latar keluarga)
-4. Mengenal Pahlawan di Lingkungan Sekitar — **materi baru**, "pahlawan"
-   didefinisikan luas (bukan cuma pahlawan nasional), sengaja TIDAK
-   menyinggung peristiwa sejarah lokal spesifik/sensitif apa pun,
-   eksplisit mengarahkan siswa untuk tidak mendalami cerita sensitif
-   yang mungkin muncul saat bertanya ke keluarga
-5. ⭐ Menghubungkan Geografis, Ekonomi, Sejarah, dan Budaya Keluargaku —
-   sintesis 4 unsur (bertambah satu dari versi lama yang cuma 3),
-   dengan Sejarah Keluarga sebagai unsur baru yang eksplisit dirangkai
+**⚠️ Peringatan eksplisit dari pengguna:** materi Pecahan (Bilangan
+TP6-TP7) butuh perhatian ekstra karena notasi pecahan (pembilang/
+penyebut) secara historis sering tidak tampil sempurna. Perlu dites
+rendering-nya dengan cermat sebelum dianggap selesai — jangan terburu-
+buru seperti sebelumnya.
 
-Standar 7b (Kalau Masih Bingung + Contoh Soal & Pembahasan) diterapkan
-penuh di seluruh 10 halaman baru. 4 entri lama di `materi-index.js`
-dihapus, digantikan 10 entri baru, semuanya `"selesai"`.
+## 8a. Bilangan TP1–TP3 — SELESAI 9/9, Ditulis Ulang (2026-08-09)
 
-**IPAS sekarang: 33/33 materi selesai** (bertambah dari 27, karena
-kedua unit ini masing-masing mendapat 3 halaman tambahan).
+Ketiga TP ini (nilai tempat, pengurangan bersusun, pembagian bersusun)
+ditulis ulang total dari kejadian reset, sekaligus jadi tempat pertama
+kali standar equation-tabel + bahasa sederhana diterapkan dan disetujui
+pengguna lewat contoh (935÷4 dan revisi lanjutannya).
 
----
+Isi materi (level konsep) sama seperti versi sebelum reset — lihat
+prinsip di 8 di atas untuk detail perubahan gaya. Perbedaan konkret dari
+versi lama: TP1 sekarang pakai tabel HTML untuk contoh perbandingan
+9.876 vs 10.234; TP2 (pengurangan) pakai `.susun-tabel` dengan sel
+`.ubah` (angka lama dicoret kecil, angka baru di bawahnya) untuk
+menunjukkan proses pinjam; TP3 (pembagian) pakai `.pjg-tabel` dengan
+setiap langkah (kurangi → sisa → turun angka) ditulis sebagai baris
+terpisah dalam tabel, termasuk kotak coret-coretan terpisah (`.coba-box`)
+untuk menunjukkan tebakan yang salah sebelum ketemu yang benar (materi
+3, kasus 78÷17).
 
-## 8. MATEMATIKA — Roadmap dari Dokumen Resmi (2026-07-27)
+Status kesembilan entri di `materi-index.js` sudah `"selesai"`.
 
-Delapan dokumen diterima dan dipelajari penuh: **Dokumen 1** (Analisis
-CP Fase C Matematika), **Dokumen 2** (TP Kelas 5, 156 JP), **5 dokumen
-Scaffolding** (satu per elemen: Bilangan, Aljabar, Pengukuran, Geometri,
-Analisis Data & Peluang), dan **PetaAktivitas_Matematika_Kelas5.docx**
-(urutan eksekusi definitif). Struktur folder mengikuti pola IPAS:
-
-```
-pages/materi/matematika/{elemen-tpN}/NN-judul.html
-```
-
-**Total: 21 TP, 64 pertemuan** (PetaAktivitas mengoreksi total Bilangan
-dari 21 menjadi 24 pertemuan — penjumlahan eksplisit per-TP lebih
-akurat daripada ringkasan di dokumen Bilangan sendiri).
-
-**Beda penting dari IPAS/Bahasa Indonesia/Pancasila:** Matematika
-**tidak** memakai Alternatif 1/2 — jalur tunggal per TP, karena dokumen
-sumbernya sudah sangat preskriptif tanpa percabangan pedagogis.
-
-**Urutan mengajar TIDAK berurutan per elemen** — mengikuti PetaAktivitas
-persis, termasuk satu penyisipan sengaja:
-
-Bilangan TP1–TP7 (24) → Aljabar TP1–TP2 (7) → **Geometri TP3 disisipkan
-di sini (2)** → Aljabar TP3–TP4 (5) → Pengukuran TP1–TP4 (11) →
-Geometri TP1–TP2 (6) → Data & Peluang TP1–TP3 (9)
-
-Geometri TP3 (sistem berpetak/koordinat) sengaja "dicabut" dari
-rangkaian Geometri dan diajarkan berdekatan dengan Aljabar TP2, karena
-secara konseptual itu kompetensi berpikir aljabaris (posisi = pasangan
-terurut), bukan geometri bentuk-ruang — field `elemen` tetap diisi
-"Geometri" untuk ketiga TP Geometri (termasuk TP3) supaya blok "materi
-lain" tetap menghubungkan ketiganya, walau posisi mengajarnya terpisah.
-
-**Ini juga mengonfirmasi ketergantungan lintas mapel IPAS Letak
-Geografis** — Geometri TP3 inilah persis yang dimaksud "Geometri
-Matematika TP3" pada catatan progress IPAS sebelumnya (lihat Bagian
-6f). Dokumen sumber Matematika sendiri mencatat keterkaitan ini sebagai
-catatan kontekstual, keputusan integrasi diserahkan ke guru.
-
-**Dua status khusus yang wajib diingat saat menulis kontennya nanti:**
-- **Aljabar TP1** (simbol "=" sebagai relasi, pakai timbangan fisik) —
-  **remediasi wajib**, bukan pengayaan. Jangan dilewati meski terlihat
-  mudah/kekanak-kanakan — akar masalahnya adalah miskonsepsi guru yang
-  diwariskan turun-temurun (simbol "=" diajarkan sebagai "hasil",
-  bukan kesetaraan dua arah).
-- **Data & Peluang TP2** (mean-median-modus) — **pengayaan** di luar
-  tuntutan minimum CP (CP Fase C berhenti di penyajian data, tidak
-  menyentuh ukuran pemusatan). Boleh disesuaikan/dipercepat kalau
-  kalender kelas ketat.
-
-Icon per elemen: Bilangan 🔢, Aljabar ⚖️, Pengukuran 📏, Geometri 📐,
-Analisis Data dan Peluang 📊. Field `elemen` diisi untuk semua TP
-(semua elemen Matematika multi-TP) supaya blok "materi lain"
-menghubungkan antar-TP dalam elemen yang sama.
-
-Seluruh 64 slot sudah didaftarkan di `materi-index.js` dengan status
-`"segera"` (link aktif, placeholder), kecuali Bilangan TP1 yang sudah
-ditulis penuh — pola yang sama seperti IPAS: gambaran keseluruhan
-kurikulum langsung terlihat walau isinya menyusul.
-
-## 8a. Bilangan TP1 — SELESAI 1/1, Revisi Pilot (2026-07-27)
-
-Pilot lama "Bilangan Cacah dan Nilai Tempat" (di `matematika/01-....html`,
-flat file tanpa folder TP) **dihapus dan ditulis ulang** di
-`matematika/bilangan-tp1/01-nilai-tempat-dan-perbandingan-bilangan-cacah.html`.
-
-**Masalah pilot lama:** mengajarkan nilai tempat sampai **jutaan** (7
-digit, contoh 3.482.951) — melebihi cakupan resmi Dokumen 2 TP1 yang
-membatasi sampai **100.000** (ratus ribuan, 6 digit). Versi baru
-dibatasi ketat sampai 100.000, sesuai dokumen sumber.
-
-Konten baru mengikuti standar 7b penuh: nilai tempat lewat contoh angka
-nyata (40.508) dengan penekanan pada angka nol di tengah (titik rawan
-menurut rubrik Dokumen 2), analogi pecahan uang rupiah untuk nilai
-tempat, aturan 2 langkah membandingkan bilangan (jumlah digit dulu,
-baru digit terkiri) untuk membongkar miskonsepsi umum "membandingkan
-dari digit pertama yang terlihat tanpa cek jumlah digit dulu" (soal
-9.876 vs 10.234), kotak "Kalau Masih Bingung" (analogi rumah
-bertingkat), dan 3 Contoh Soal & Pembahasan.
-
-Status entri Bilangan TP1 di `materi-index.js` sudah `"selesai"`.
-
-**Progres Matematika sejauh ini: 1/64 pertemuan selesai.**
-
-## 8b. Bilangan TP2 — SELESAI 4/4 (2026-07-27)
-
-Unit kedua Matematika: pengurangan bersusun dengan peminjaman berganda,
-tepat mengikuti progresi Titik Berangkat → Garis Finis dari dokumen
-sumber (satu kali peminjaman → dua peminjaman berurutan → peminjaman
-menembus angka nol → soal cerita). Analogi tunggal dipakai konsisten
-lintas keempat halaman dan dibangun bertahap: tukar kelereng per-10 →
-tukar uang Rp10.000 jadi Rp1.000 → tukar berantai dari Rp50.000 saat
-tidak ada uang kecil sama sekali (untuk kasus angka nol berantai).
-Materi 3 secara eksplisit memakai contoh 50.004 − 28.756 langsung dari
-dokumen sumber (kasus rawan kesalahan yang disebut Dokumen 1). Materi 4
-(⭐ inti) memuat soal cerita dua-langkah (sisa saldo berturut-turut)
-sesuai instruksi dokumen, plus soal yang menuntut penjumlahan DAN
-pengurangan sekaligus untuk melatih membaca soal cerita secara utuh,
-bukan langsung mengurangi tanpa berpikir.
-
-Perhatian khusus pada miskonsepsi "mencongak sebagian" yang diperingatkan
-Dokumen 1 dan catatan rubrik dokumen sumber — dua soal & pembahasan
-secara eksplisit menyoal PROSES peminjaman (bukan cuma jawaban akhir),
-konsisten dengan instruksi "asesmen dinilai per langkah, bukan hanya
-hasil akhir".
-
-Standar 7b diterapkan penuh. Status keempat entri di `materi-index.js`
-sudah diubah ke `"selesai"`.
-
-**Progres Matematika sejauh ini: 5/64 pertemuan selesai** (Bilangan TP1
-1/1, Bilangan TP2 4/4).
-
----
-
-## 8c. Bilangan TP3 — SELESAI 4/4 (2026-08-01)
-
-Unit ketiga Matematika: pembagian bersusun dengan pembagi multi-digit,
-mengikuti progresi Titik Berangkat → Garis Finis dokumen sumber
-(penyegaran pembagi 1 digit → pembagi kelipatan 10 → pembagi 2 digit
-sembarang → soal cerita). Komponen visual baru `.bagi-wrap`/`.bagi-bracket`
-dipakai konsisten di keempat halaman untuk menampilkan pembagian
-bersusun bergaya kurung siku standar.
-
-Materi 3 secara eksplisit menampilkan tebakan awal yang KELIRU lalu
-dikoreksi (78÷17: coba 5 dulu → gagal → koreksi ke 4) — bukan
-disembunyikan/dihapus, konsisten dengan penekanan dokumen sumber bahwa
-estimasi-coba-koreksi adalah proses sah, bukan tanda kesalahan. Materi
-4 (⭐ inti) memuat 3 skenario sisa pembagian yang perlu ditafsirkan
-berbeda sesuai konteks (hasil rapi tanpa sisa, sisa disimpan apa
-adanya, sisa yang menuntut pembulatan ke atas) — keterampilan
-interpretasi kontekstual yang tidak ada di soal angka polos biasa.
-
-Perhatian khusus pada peringatan dokumen sumber soal siswa yang
-"menghindari pembagi sembarang dengan membulatkan ke kelipatan 10
-tanpa sadar" — dijadikan soal & pembahasan eksplisit di materi 3 (soal
-nomor 3, kasus Dimas).
-
-Standar 7b diterapkan penuh. Status keempat entri di `materi-index.js`
-sudah diubah ke `"selesai"`.
-
-**Progres Matematika sejauh ini: 9/64 pertemuan selesai** (Bilangan
-TP1 1/1, TP2 4/4, TP3 4/4).
-
-## 8d. Bilangan TP4 — SELESAI 4/4 (2026-08-08)
-
-Unit keempat Matematika: KPK dan FPB lewat soal cerita kontekstual
-sejak awal (sesuai penekanan keras Dokumen 1 — KPK-FPB lahir dari
-konteks nyata, bukan angka polos). Progresi: menyusun daftar
-kelipatan/faktor sistematis (jembatan tambahan di luar Dokumen 2,
-ditandai eksplisit di dokumen sumber sebagai gap yang perlu diisi) →
-soal cerita KPK/FPB terpisah jelas (bus berangkat bersamaan / bagi
-rata pensil-buku) → identifikasi mandiri tanpa label dengan angka lebih
-besar → soal cerita campuran (jadwal lomba + pembagian perlengkapan).
-
-Materi 3 secara eksplisit membongkar miskonsepsi "tebak dari kata kunci"
-('bersamaan'=KPK, 'dibagi'=FPB) yang diperingatkan dokumen sumber —
-memakai soal drama-konser yang sengaja TIDAK memakai kata "bersamaan"
-sama sekali, tapi tetap soal KPK, plus soal & pembahasan yang secara
-eksplisit menyoal kenapa jalan pintas kata kunci itu keliru (kasus
-Doni). Materi 4 (⭐ inti) memuat satu narasi panjang berisi KEDUA
-konsep sekaligus dalam konteks berbeda (jadwal lomba sekolah untuk KPK,
-pembagian perlengkapan untuk FPB) — melatih memecah soal jadi
-bagian-bagian kecil.
-
-Standar 7b diterapkan penuh. Status keempat entri di `materi-index.js`
-sudah diubah ke `"selesai"`.
-
-**Progres Matematika sejauh ini: 13/64 pertemuan selesai** (Bilangan
-TP1 1/1, TP2 4/4, TP3 4/4, TP4 4/4 — seluruh Bilangan bagian bilangan
-cacah [TP1-TP5] tinggal TP5/uang, lalu lanjut ke pecahan [TP6-TP7]).
-
-## 8e. Bilangan TP5 — SELESAI 1/1 (2026-08-08)
-
-Unit kelima Matematika, sesuai dokumen sumber bersifat murni
-integratif-aplikatif dari TP1–TP4 (tidak ada kompetensi prosedural
-baru), jadi tetap 1 halaman langsung Pertemuan Inti tanpa tangga.
-Memakai ulang tiga keterampilan sekaligus dalam konteks uang: nilai
-tempat/penjumlahan (transaksi), pengurangan bersusun peminjaman
-menembus nol dari TP2 (kembalian — sengaja pakai ulang kasus 50.000−28.750
-persis dari TP2 materi 3 supaya siswa mengenali pola yang sama),
-dan pembagian bersusun/penalaran rasio kasar dari TP3 (perbandingan
-harga per satuan isi). Contoh soal 3 sengaja menampilkan kembalian
-yang SALAH dari kasir untuk melatih kebiasaan verifikasi, bukan
-percaya begitu saja.
-
-Standar 7b diterapkan. Status entri di `materi-index.js` sudah diubah
-ke `"selesai"`.
-
-**Progres Matematika sejauh ini: 14/64 pertemuan selesai.** Seluruh
-Bilangan bagian bilangan cacah (TP1–TP5) tuntas. Berikutnya: Pecahan
-(TP6, 7 pertemuan — bagian terbesar elemen Bilangan, dan TP7, 3
-pertemuan).
+**Progres Matematika sejauh ini: 9 pertemuan selesai dengan standar
+baru** (dari target 64 total). Bilangan TP4 (KPK-FPB) dan TP5 (Uang)
+masih perlu ditulis ulang sebelum lanjut ke TP6-TP7 (Pecahan, perlu
+kehati-hatian ekstra sesuai peringatan di atas).
 
 ---
 
@@ -812,6 +415,7 @@ pertemuan).
 
 | Elemen | TP | Judul | Status |
 |---|---|---|---|
+| Matematika | – | Bilangan Cacah dan Nilai Tempat | ✅ Selesai (pilot) |
 | Menyimak | M1 | Mendengarkan dan Menunjukkan Paham | ✅ Selesai |
 | Menyimak | M1 | Memilah Mana yang Penting | ✅ Selesai |
 | Menyimak | M1 | Mencatat dengan Caraku Sendiri | ✅ Selesai |
@@ -854,40 +458,7 @@ pertemuan).
 | Menulis | TL-Imajinasi | Menyusun Alur Cerita | ✅ Selesai |
 | Menulis | TL-Imajinasi | Kata-Kata yang Punya Rasa | ✅ Selesai |
 | Menulis | TL-Imajinasi ⭐ | Ceritaku, Imajinasiku Sendiri | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP2 | Mengamati Diagram Organ Utama Tubuh | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP2 ⭐ | Fungsi Organ dan Menjaga Kesehatan Tubuh | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Meraba Detak Jantung Sendiri | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Menebak Detak Jantung Setelah Bergerak | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Mengukur Detak Jantung Sebelum dan Sesudah Aktivitas | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Membandingkan Detak Jantung Antarteman | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 | Prediksi vs Kenyataan: Detak Jantung dan Kebiasaanku | ✅ Selesai |
-| Sistem Organ Tubuh | OT-TP1 ⭐ | Refleksiku tentang Aktivitas Fisik dan Kesehatan Jantung | ✅ Selesai |
-| Gelombang Bunyi dan Cahaya | BC-TP1 | Mengamati Bunyi dan Cahaya di Sekitar | ✅ Selesai |
-| Gelombang Bunyi dan Cahaya | BC-TP1 | Memprediksi Bunyi dan Cahaya | ✅ Selesai |
-| Gelombang Bunyi dan Cahaya | BC-TP1 | Eksperimen Telepon Kaleng dan Pemantulan Cahaya | ✅ Selesai |
-| Gelombang Bunyi dan Cahaya | BC-TP1 | Membandingkan Hasil Antarbahan | ✅ Selesai |
-| Gelombang Bunyi dan Cahaya | BC-TP1 ⭐ | Bunyi dan Cahaya dalam Kehidupan Sehari-hari | ✅ Selesai |
-| Ekosistem | EKOS-TP1 | Mengenali Ciri Benda Hidup dan Tak Hidup | ✅ Selesai |
-| Ekosistem | EKOS-TP1 | Mencatat Komponen Ekosistem di Sekitar Sekolah | ✅ Selesai |
-| Ekosistem | EKOS-TP1 ⭐ | Menduga Hubungan Antarkomponen Ekosistem | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Variabel yang Diubah dan yang Dijaga Tetap | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Merancang Percobaan Pertumbuhan Tanaman | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Mencatat Pertumbuhan Tanaman Secara Berkala | ✅ Selesai |
-| Ekosistem | EKOS-TP2 | Mengevaluasi Hasil Percobaan Tanaman | ✅ Selesai |
-| Ekosistem | EKOS-TP2 ⭐ | Menyajikan Hasil Percobaan dengan Data | ✅ Selesai |
-| Kegiatan Ekonomi Masyarakat | EKON-TP1 | Mencatat Jenis Usaha di Sekitarku | ✅ Selesai |
-| Kegiatan Ekonomi Masyarakat | EKON-TP1 ⭐ | Mengklasifikasikan Kegiatan Ekonomi | ✅ Selesai |
-| Letak Geografis Indonesia | GEO-TP1 | Mengenal Peta dan Bentuk Wilayah Indonesia | ✅ Selesai |
-| Letak Geografis Indonesia | GEO-TP1 | Posisi Indonesia di Antara Dua Benua dan Dua Samudra | ✅ Selesai |
-| Letak Geografis Indonesia | GEO-TP1 | Garis Khatulistiwa dan Iklim Tropis Indonesia | ✅ Selesai |
-| Letak Geografis Indonesia | GEO-TP1 | Membaca Letak dengan Sistem Berpetak | ✅ Selesai |
-| Letak Geografis Indonesia | GEO-TP1 ⭐ | Menjelaskan Letak Geografis Indonesia | ✅ Selesai |
-| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Mengenal Keragaman Budaya di Sekitar Kita | ✅ Selesai |
-| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Sejarah Asal-Usul Keluargaku | ✅ Selesai |
-| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Menghargai Perbedaan sebagai Kekayaan Bersama | ✅ Selesai |
-| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 | Mengenal Pahlawan di Lingkungan Sekitar | ✅ Selesai |
-| Sejarah dan Keragaman Budaya Sekitar | BUDAYA-TP1 ⭐ | Menghubungkan Geografis, Ekonomi, Sejarah, dan Budaya Keluargaku | ✅ Selesai |
-| Bilangan | BIL-TP1 | Nilai Tempat dan Perbandingan Bilangan Cacah | ✅ Selesai |
+| Bilangan | BIL-TP1 ⭐ | Nilai Tempat dan Perbandingan Bilangan Cacah | ✅ Selesai |
 | Bilangan | BIL-TP2 | Pengurangan dengan Satu Kali Peminjaman | ✅ Selesai |
 | Bilangan | BIL-TP2 | Pengurangan dengan Dua Peminjaman Berurutan | ✅ Selesai |
 | Bilangan | BIL-TP2 | Pengurangan Peminjaman Berganda dan Angka Nol di Tengah | ✅ Selesai |
@@ -896,61 +467,6 @@ pertemuan).
 | Bilangan | BIL-TP3 | Pembagian dengan Pembagi Kelipatan Sepuluh | ✅ Selesai |
 | Bilangan | BIL-TP3 | Pembagian dengan Pembagi Dua Digit Sembarang | ✅ Selesai |
 | Bilangan | BIL-TP3 ⭐ | Pembagian Bersusun dalam Soal Cerita | ✅ Selesai |
-| Bilangan | BIL-TP4 | Menyusun Daftar Kelipatan dan Faktor | ✅ Selesai |
-| Bilangan | BIL-TP4 | Soal Cerita KPK atau FPB Tunggal | ✅ Selesai |
-| Bilangan | BIL-TP4 | Mengidentifikasi KPK atau FPB dari Soal Cerita | ✅ Selesai |
-| Bilangan | BIL-TP4 ⭐ | Soal Cerita Campuran KPK dan FPB | ✅ Selesai |
-| Bilangan | BIL-TP5 | Masalah Sehari-hari tentang Uang | ✅ Selesai |
-| Bilangan | BIL-TP6 | Memahami Pecahan sebagai Bagian dari Keseluruhan | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP6 | Merepresentasikan Pecahan dan Pecahan Senilai | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP6 | Membandingkan Pecahan Berpenyebut Sama | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP6 | Membandingkan Pecahan Berpenyebut Berbeda | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP6 | Menjumlahkan dan Mengurangkan Pecahan Sepenyebut | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP6 | Menjumlahkan dan Mengurangkan Pecahan Beda Penyebut | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP6 ⭐ | Pecahan Campuran dalam Soal Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP7 | Mengalikan Pecahan dengan Bilangan Asli | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP7 | Membagi Pecahan dengan Bilangan Asli | 🕓 Segera hadir (placeholder aktif) |
-| Bilangan | BIL-TP7 ⭐ | Mengubah Bentuk Pecahan dan Soal Cerita Gabungan | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP1 | Menyeimbangkan Timbangan dengan Angka Nyata | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP1 | Menerjemahkan Situasi Seimbang ke Kalimat Matematika | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP1 ⭐ | Kalimat Matematika dengan Satu Kotak Kosong | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP2 | Kalimat Satu Operasi dengan Angka sampai 1.000 | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP2 | Kalimat Gabungan Dua Operasi | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP2 | Kalimat Campuran Empat Operasi | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP2 ⭐ | Soal Cerita dengan Nilai Belum Diketahui | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP3 | Membedakan Pola Aditif dan Multiplikatif | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP3 | Mengidentifikasi dan Meniru Pola Multiplikatif | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP3 ⭐ | Mengembangkan Pola dalam Soal Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP4 | Memahami Rasio Satuan lewat Harga dan Kecepatan | 🕓 Segera hadir (placeholder aktif) |
-| Aljabar | ALJ-TP4 ⭐ | Soal Cerita Proporsional dengan Rasio Satuan | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP3 | Membaca Posisi pada Bidang Berpetak | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP3 ⭐ | Tebak Koordinat dan Soal Cerita Peta | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP1 | Menghitung Keliling Bangun Datar | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP1 | Menentukan Luas dengan Menghitung Petak Satuan | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP1 | Menurunkan Rumus Luas Jajar Genjang | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP1 | Menurunkan Rumus Luas Segitiga | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP1 ⭐ | Keliling dan Luas Gabungan dalam Soal Cerita | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP2 | Memecah Bangun Gabungan Menjadi Bangun Dasar | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP2 ⭐ | Keliling dan Luas Segi Lima-Enam dan Bangun Gabungan | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP3 | Konversi Dasar Jam-Menit-Detik | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP3 ⭐ | Durasi Perjalanan Termasuk Lintas Tengah Malam | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP4 | Mengklasifikasikan Jenis Sudut secara Visual | 🕓 Segera hadir (placeholder aktif) |
-| Pengukuran | UKUR-TP4 ⭐ | Mengukur Sudut dengan Protractor | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP1 | Memprediksi Jaring-Jaring Kubus yang Valid | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP1 | Melipat Jaring-Jaring Kubus | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP1 | Melipat dan Mengurai Jaring-Jaring Balok | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP1 ⭐ | Menggambar Tampak Depan, Atas, dan Samping | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP2 | Mengenal Istilah Sisi, Rusuk, dan Titik Sudut | 🕓 Segera hadir (placeholder aktif) |
-| Geometri | GEOM-TP2 ⭐ | Menyusun Tabel Perbandingan Bangun Datar dan Bangun Ruang | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP1 | Menyusun Tabel Frekuensi dari Data Kelas | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP1 | Menyajikan Data dalam Piktogram | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP1 | Menyajikan Data dalam Diagram Batang | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP1 ⭐ | Memilih Bentuk Penyajian Data yang Sesuai | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP2 | Menemukan Rata-Rata lewat Aktivitas Meratakan | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP2 ⭐ | Mean, Median, Modus, dan Kerentanan Rata-Rata | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP3 | Eksperimen Melempar Koin dan Dadu | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP3 | Membandingkan Kemungkinan Kejadian | 🕓 Segera hadir (placeholder aktif) |
-| Analisis Data dan Peluang | DP-TP3 ⭐ | Memprediksi dan Membuktikan Peluang pada Situasi Baru | 🕓 Segera hadir (placeholder aktif) |
 
 **Legenda:** ⭐ = Pertemuan Inti/puncak TP tersebut · ✅ Selesai · 🕓 Segera hadir (halaman & link sudah aktif, isi menyusul)
 
