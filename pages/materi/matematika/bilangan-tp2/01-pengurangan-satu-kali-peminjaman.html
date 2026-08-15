@@ -11,18 +11,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../../assets/materi.css" />
 <style>
-  .susun { font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) + 4px); text-align: right; max-width: 200px; margin: 1rem auto 1.4rem; line-height: 1.9; }
-  .susun .baris { display: flex; justify-content: flex-end; gap: 6px; }
-  .susun .digit { width: 1.6rem; text-align: center; }
-  .susun .pinjam { font-size: 12px; color: #b8791f; position: relative; top: -0.6em; }
-  .susun .coret { text-decoration: line-through; color: var(--ink-3); }
-  .susun hr { border: none; border-top: 2px solid var(--ink); margin: 4px 0; }
-  .susun .op { width: 1.2rem; }
+  .susun-tabel { border-collapse: collapse; margin: 1.2rem auto 1.4rem; font-family: 'Plus Jakarta Sans', monospace; font-weight: 700; font-size: calc(var(--content-fs) + 8px); }
+  .susun-tabel td { width: 1.3em; height: 1.3em; text-align: center; vertical-align: middle; padding: 0; }
+  .susun-tabel td.kosong, .susun-tabel td.op { border: none; }
+  .susun-tabel td.op { text-align: left; padding-left: 0.1em; }
+  .susun-tabel td.hasil { color: var(--m-color); }
+  .susun-tabel td.brk { border-top: 3px solid var(--ink); }
+  .ubah { display: flex; flex-direction: column; align-items: center; line-height: 1; }
+  .ubah .lama { text-decoration: line-through; font-size: 0.6em; color: #c76b3f; }
+  .ubah .baru { font-size: 1em; }
   .bahan-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.85rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); }
   .bahan-box b { color: var(--m-color); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
   .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
-  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
-  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.5rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.5em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.7; }
   .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
   .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
   .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
@@ -30,7 +39,7 @@
   .soal-item:last-child { border-bottom: none; }
   .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
   .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
-  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.65; }
   .soal-a b { color: #1f6f78; }
 </style>
 </head>
@@ -65,54 +74,77 @@
     </div>
 
     <div class="ma-content">
-      <p>Bayangkan kamu punya <strong>452 kelereng</strong>, disimpan rapi: 4 kantong isi 100 kelereng, 5 kantong isi 10 kelereng, dan 2 kelereng lepas. Temanmu minta <strong>137 kelereng</strong>. Masalahnya: kamu cuma punya 2 kelereng lepas, tapi dia minta 7. Kurang 5! Apa yang harus kamu lakukan?</p>
+      <p>Kamu punya 452 kelereng. Ada 4 kantong isi 100, 5 kantong isi 10, dan 2 kelereng lepas.</p>
 
-      <p>Kamu tidak akan bilang "tidak bisa" — kamu akan <strong>membuka salah satu kantong isi 10</strong>, menuangnya jadi 10 kelereng lepas. Sekarang kamu punya 12 kelereng lepas (2 + 10), cukup untuk dikasih 7. Inilah yang disebut <strong>meminjam</strong> dalam pengurangan bersusun — bukan sihir, cuma cara wajar menghadapi "tidak cukup" dengan menukar dari kantong yang nilainya lebih besar.</p>
+      <p>Temanmu minta 137 kelereng. Kamu harus kasih 7 kelereng lepas. Tapi kelereng lepasmu cuma 2. Kurang 5.</p>
 
-      <p>Sekarang lihat cara menuliskannya dalam bentuk bersusun:</p>
+      <p>Apa yang kamu lakukan? Kamu buka 1 kantong isi 10. Sekarang kelereng lepasmu jadi 12 (2 + 10). Cukup untuk dikasih 7.</p>
 
-      <div class="susun">
-        <div class="baris"><div class="digit"></div><div class="digit pinjam">4</div><div class="digit pinjam">¹5</div><div class="digit"></div></div>
-        <div class="baris"><div class="digit"></div><div class="digit coret">4</div><div class="digit coret">5</div><div class="digit">2</div></div>
-        <div class="baris"><div class="digit op">−</div><div class="digit">1</div><div class="digit">3</div><div class="digit">7</div></div>
-        <hr/>
-        <div class="baris"><div class="digit"></div><div class="digit">3</div><div class="digit">1</div><div class="digit">5</div></div>
-      </div>
+      <p>Ini yang disebut <strong>meminjam</strong>. Sekarang lihat cara menulisnya:</p>
 
-      <p>Langkah-langkahnya: (1) Di posisi <strong>satuan</strong>: 2 dikurangi 7 tidak cukup, jadi kita pinjam 1 dari posisi <strong>puluhan</strong> — puluhan yang tadinya 5 jadi 4, dan satuan yang tadinya 2 jadi 12 (2 + 10 hasil pinjaman). 12 − 7 = 5. (2) Posisi <strong>puluhan</strong>: 4 − 3 = 1 (tidak perlu pinjam lagi, karena 4 sudah cukup untuk dikurangi 3). (3) Posisi <strong>ratusan</strong>: 4 − 1 = 3. Hasilnya: <strong>315</strong>.</p>
+      <table class="susun-tabel">
+        <tr>
+          <td class="kosong"></td>
+          <td>4</td>
+          <td><div class="ubah"><span class="lama">5</span><span class="baru">4</span></div></td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td class="op">−</td>
+          <td>1</td><td>3</td><td>7</td>
+        </tr>
+        <tr>
+          <td class="kosong"></td>
+          <td class="hasil brk">3</td><td class="hasil brk">1</td><td class="hasil brk">5</td>
+        </tr>
+      </table>
 
-      <div class="bahan-box"><b>Kalau masih ragu:</b> coba dulu pakai kelereng/batang nilai tempat sungguhan atau gambar kotak-kotak. Rasakan sendiri proses "membuka kantong 10" itu sebelum lanjut ke angka saja — jangan buru-buru ke notasi kalau belum yakin dengan alasannya.</div>
+      <p>Angka 5 di kotak puluhan dicoret, diganti 4. Itu tanda kalau puluhan sudah "memberi" 1 ke satuan.</p>
+
+      <ol class="langkah">
+        <li><strong>Satuan:</strong> 2 dikurangi 7, tidak cukup. Pinjam 1 dari puluhan. Puluhan (5) jadi 4. Satuan jadi 12 (2+10). 12−7=5.</li>
+        <li><strong>Puluhan:</strong> 4 dikurangi 3. Cukup, tidak perlu pinjam lagi. 4−3=1.</li>
+        <li><strong>Ratusan:</strong> 4 dikurangi 1. 4−1=3.</li>
+      </ol>
+
+      <p>Hasilnya <strong>315</strong>.</p>
+
+      <div class="bahan-box"><b>Kalau masih ragu:</b> coba dulu pakai kelereng atau kancing sungguhan. Rasakan sendiri proses "buka kantong 10" itu. Baru setelah itu coba di kertas.</div>
 
       <div class="bingung-box">
         <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
-        <p>Bayangkan <span class="analogi">dompetmu berisi selembar uang Rp10.000 dan Rp2.000 receh</span>, dan kamu harus membayar Rp7.000 pas — tapi recehmu cuma Rp2.000, kurang. Kamu tidak akan menyerah; kamu akan menukar lembar Rp10.000 itu ke kasir jadi 10 lembar Rp1.000, sehingga uang recehmu sekarang jadi Rp12.000 (Rp2.000 + hasil tukar Rp10.000). Baru dari situ kamu bayar Rp7.000, sisa Rp5.000.</p>
-        <p>"Meminjam" dalam pengurangan bersusun itu persis proses menukar uang tadi — pindahkan nilai dari posisi yang lebih besar (puluhan) ke posisi yang kurang (satuan), sebesar 10 kali lipat, karena memang begitu aturan nilai tempat bekerja.</p>
+        <p><span class="analogi">Bayangkan kamu punya uang Rp10.000 dan Rp2.000 receh.</span></p>
+        <p>Kamu harus bayar Rp7.000. Uang recehmu cuma Rp2.000. Kurang.</p>
+        <p>Kamu tukar uang Rp10.000 ke kasir. Kasir kasih 10 lembar Rp1.000.</p>
+        <p>Sekarang uang recehmu jadi Rp12.000 (Rp2.000 + Rp10.000).</p>
+        <p>Bayar Rp7.000. Sisa Rp5.000.</p>
+        <p>"Meminjam" itu sama seperti menukar uang tadi. Pindahkan nilai dari kotak yang lebih besar (puluhan) ke kotak yang kurang (satuan).</p>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
-        Setiap kali kamu pinjam 1 dari posisi sebelah kiri, posisi itu berkurang 1 — jangan lupa menuliskannya (coret angka lama, tulis angka baru yang sudah dikurangi 1) supaya tidak salah hitung di langkah berikutnya.
+        Setiap kali kamu pinjam 1 dari kotak sebelah kiri, kotak itu berkurang 1. Jangan lupa coret angka lama, tulis angka baru.
       </div>
 
       <div class="soal-box">
         <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">1</span>Pada soal 452 − 137 di atas, kenapa posisi satuan (2) perlu meminjam, sementara posisi puluhan (5, lalu jadi 4) tidak perlu meminjam lagi?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Satuan perlu meminjam karena 2 lebih kecil dari 7 (angka yang mau dikurangkan), jadi tidak cukup dikurangi langsung. Setelah menerima pinjaman, puluhan berkurang jadi 4, dan karena 4 masih lebih besar atau sama dengan 3 (angka pengurangnya di posisi puluhan), tidak perlu pinjam lagi di posisi itu.</div>
+          <div class="soal-q"><span class="no">1</span>Kenapa satuan (2) perlu pinjam, tapi puluhan (5, lalu jadi 4) tidak perlu pinjam lagi?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Satuan perlu pinjam karena 2 lebih kecil dari 7. Tidak cukup dikurangi langsung. Setelah pinjam, puluhan jadi 4. Angka 4 masih cukup untuk dikurangi 3. Jadi tidak perlu pinjam lagi.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">2</span>Hitunglah 634 − 258 dengan cara bersusun, tunjukkan langkah peminjamannya!</div>
-          <div class="soal-a"><b>Pembahasan:</b> Satuan: 4−8 tidak cukup, pinjam 1 dari puluhan (3 jadi 2), satuan jadi 14−8=6. Puluhan: 2−5 tidak cukup juga, pinjam 1 dari ratusan (6 jadi 5), puluhan jadi 12−5=7. Ratusan: 5−2=3. Hasil: <strong>376</strong>. (Catatan: soal ini sebenarnya butuh dua peminjaman berurutan — bagus untuk pemanasan sebelum materi berikutnya!)</div>
+          <div class="soal-q"><span class="no">2</span>Hitung 634 − 258. Tunjukkan langkah pinjamnya.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Satuan: 4−8 tidak cukup. Pinjam dari puluhan (3 jadi 2). Satuan jadi 14−8=6. Puluhan: 2−5 juga tidak cukup. Pinjam dari ratusan (6 jadi 5). Puluhan jadi 12−5=7. Ratusan: 5−2=3. Hasil: <strong>376</strong>.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">3</span>Budi mengerjakan 823 − 401 dan langsung menjawab 422 tanpa proses peminjaman sama sekali. Apakah itu mungkin benar? Jelaskan.</div>
-          <div class="soal-a"><b>Pembahasan:</b> Mungkin saja benar TANPA peminjaman, karena setiap digit atas (8, 2, 3) sudah lebih besar atau sama dengan digit bawahnya (4, 0, 1) — satuan 3−1=2, puluhan 2−0=2, ratusan 8−4=4, hasil 422. Peminjaman hanya diperlukan KETIKA digit atas lebih kecil dari digit bawah di posisi yang sama — bukan aturan yang harus selalu dipakai di setiap soal pengurangan.</div>
+          <div class="soal-q"><span class="no">3</span>Budi mengerjakan 823 − 401. Jawabannya 422, tanpa pinjam sama sekali. Apakah itu mungkin benar?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Mungkin benar. Cek tiap kotak: satuan 3−1=2 (cukup). Puluhan 2−0=2 (cukup). Ratusan 8−4=4 (cukup). Semua kotak cukup, jadi tidak perlu pinjam. Hasil: 422, benar. Pinjam hanya dipakai KALAU angka atas lebih kecil dari angka bawah.</div>
         </div>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
-        Kerjakan tiga soal pengurangan bersusun berikut, tunjukkan proses peminjamannya (jangan langsung tulis jawaban akhir saja): 561 − 248, 730 − 165, 894 − 379.
+        Kerjakan tiga soal ini. Tunjukkan proses pinjamnya, jangan langsung tulis jawaban akhir: 561 − 248, 730 − 165, 894 − 379.
       </div>
     </div>
 

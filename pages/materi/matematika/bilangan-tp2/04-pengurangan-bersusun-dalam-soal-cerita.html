@@ -14,8 +14,8 @@
   .cerita-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
   .cerita-box b { color: var(--m-color); }
   .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
-  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
-  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.5rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.5em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.7; }
   .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
   .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
   .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
@@ -23,7 +23,7 @@
   .soal-item:last-child { border-bottom: none; }
   .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
   .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; }
-  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.65; }
   .soal-a b { color: #1f6f78; }
 </style>
 </head>
@@ -58,52 +58,63 @@
     </div>
 
     <div class="ma-content">
-      <p>Kamu sudah menguasai tiga jenis peminjaman: satu kali, berurutan, dan menembus angka nol. Sekarang saatnya memakai kemampuan itu untuk sesuatu yang lebih nyata — <strong>soal cerita</strong>, di mana tantangan pertamanya bukan lagi "cara menghitung", tapi "menemukan angka mana yang harus dikurangi dari angka mana".</p>
+      <p>Kamu sudah bisa pinjam satu kali, pinjam berurutan, dan pinjam menembus nol. Sekarang kita pakai semua itu untuk soal cerita.</p>
+
+      <p>Soal cerita punya tantangan baru: kamu harus tahu dulu angka mana yang dikurangi, angka mana yang jadi pengurang. Baru setelah itu hitung.</p>
 
       <div class="cerita-box">
-        <b>Contoh 1 — Selisih Populasi:</b> Kota Anggrek memiliki 62.150 penduduk. Kota Melati memiliki 38.476 penduduk. Berapa selisih jumlah penduduk kedua kota itu?
+        <b>Contoh 1 — Selisih Penduduk:</b> Kota Anggrek punya 62.150 penduduk. Kota Melati punya 38.476 penduduk. Berapa selisihnya?
       </div>
 
-      <p>Langkah pertama sebelum menghitung: pastikan angka yang LEBIH BESAR ditulis di atas (posisi yang dikurangi), angka yang lebih kecil di bawah (pengurang) — 62.150 − 38.476. Baru setelah itu kerjakan bersusun seperti biasa: satuan 0−6 pinjam, dan seterusnya sampai hasil akhir <strong>23.674</strong>.</p>
+      <p>Angka yang lebih besar ditulis di atas: 62.150 − 38.476. Kerjakan bersusun seperti biasa. Hasilnya <strong>23.674</strong>.</p>
 
       <div class="cerita-box">
-        <b>Contoh 2 — Sisa Saldo Berturut-turut:</b> Tabungan Rani awalnya Rp45.000. Dia membeli buku seharga Rp12.500, lalu membeli pensil seharga Rp3.750. Berapa sisa tabungannya?
+        <b>Contoh 2 — Sisa Uang, Dua Kali Belanja:</b> Tabungan Rani Rp45.000. Dia beli buku Rp12.500. Lalu beli pensil Rp3.750. Berapa sisa tabungannya?
       </div>
 
-      <p>Ini soal dua langkah — kamu perlu mengurangi DUA kali berturut-turut, bukan sekali saja: Rp45.000 − Rp12.500 = Rp32.500 (sisa setelah beli buku), lalu Rp32.500 − Rp3.750 = <strong>Rp28.750</strong> (sisa setelah beli pensil). Soal cerita seperti ini menuntut kamu membaca dengan teliti: berapa KALI pengurangan yang sebenarnya diminta, bukan cuma sekali kurang lalu selesai.</p>
+      <p>Ini soal DUA langkah. Kurangi dua kali, jangan sekali:</p>
+      <ol class="langkah">
+        <li>45.000 − 12.500 = 32.500 (sisa setelah beli buku)</li>
+        <li>32.500 − 3.750 = <strong>28.750</strong> (sisa setelah beli pensil)</li>
+      </ol>
+
+      <p>Baca soal pelan-pelan. Cari tahu: berapa KALI harus mengurangi? Jangan langsung kurangi sekali lalu berhenti.</p>
 
       <div class="bingung-box">
         <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
-        <p>Untuk soal cerita, langkah pertama BUKAN menghitung — langkah pertama adalah <span class="analogi">menerjemahkan cerita jadi kalimat matematika</span>, persis seperti menerjemahkan bahasa asing ke bahasa Indonesia sebelum memahaminya. Cari kata kunci: "selisih", "sisa", "berapa lebih banyak/sedikit" biasanya menandakan pengurangan. Tanyakan ke dirimu: <strong>angka mana yang lebih besar (jadi yang dikurangi), dan angka mana yang lebih kecil (jadi pengurangnya)?</strong> Baru setelah kalimat matematikanya jelas, pakai teknik peminjaman yang sudah kamu kuasai dari tiga materi sebelumnya.</p>
+        <p>Langkah pertama BUKAN menghitung. Langkah pertama adalah <span class="analogi">mengubah cerita jadi kalimat matematika.</span></p>
+        <p>Cari kata kunci: "selisih", "sisa", "berapa lebih banyak". Kata-kata ini biasanya tanda pengurangan.</p>
+        <p>Tanya ke dirimu: angka mana yang lebih besar? Itu yang dikurangi. Angka mana yang lebih kecil? Itu pengurangnya.</p>
+        <p>Setelah kalimat matematikanya jelas, baru pakai cara pinjam yang sudah kamu kuasai.</p>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
-        Soal cerita "sisa saldo berturut-turut" seperti Contoh 2 sering menjebak siswa yang buru-buru menjumlahkan dulu semua pengeluaran (12.500+3.750=16.250) lalu baru mengurangi sekali (45.000−16.250). Hasilnya sebenarnya SAMA (28.750) — tapi kalau kamu belum yakin dengan caramu sendiri, lebih aman kerjakan langkah demi langkah sesuai urutan cerita.
+        Soal "sisa uang dua kali belanja" seperti Contoh 2 sering membuat siswa buru-buru menjumlahkan dulu semua belanja (12.500+3.750=16.250), baru kurangi sekali (45.000−16.250). Hasilnya sebenarnya SAMA (28.750). Tapi kalau kamu belum yakin, lebih aman kerjakan langkah demi langkah sesuai urutan cerita.
       </div>
 
       <div class="soal-box">
         <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">1</span>Sebuah toko elektronik memiliki stok 30.005 unit barang di awal bulan. Selama sebulan terjual 17.648 unit. Berapa sisa stok di akhir bulan?</div>
-          <div class="soal-a"><b>Pembahasan:</b> 30.005 − 17.648. Ini kasus peminjaman menembus nol (mirip materi 3): satuan 5−8 pinjam menembus puluhan(0) sampai ke ratusan(0), lalu ribuan(0) — sampai ke puluh-ribuan (3). Setelah proses peminjaman lengkap, hasilnya adalah <strong>12.357</strong> unit sisa stok.</div>
+          <div class="soal-q"><span class="no">1</span>Toko elektronik punya stok 30.005 unit di awal bulan. Terjual 17.648 unit. Berapa sisa stok?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 30.005 − 17.648. Ini pinjam menembus nol (seperti materi 3). Hasilnya: <strong>12.357</strong> unit.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">2</span>Jarak kota A ke kota C adalah 456 km. Jarak kota A ke kota B (yang berada di jalan menuju C) adalah 289 km. Berapa jarak dari kota B ke kota C?</div>
-          <div class="soal-a"><b>Pembahasan:</b> 456 − 289 = 167 km. Kuncinya memahami bahwa jarak A-ke-C sama dengan jarak A-ke-B ditambah jarak B-ke-C, jadi untuk mencari jarak B-ke-C kita kurangi jarak total (A ke C) dengan jarak yang sudah diketahui (A ke B): 456 − 289. Proses peminjamannya: satuan 6−9 pinjam dari puluhan (5 jadi 4), satuan jadi 16−9=7; puluhan 4−8 pinjam dari ratusan (4 jadi 3), puluhan jadi 14−8=6; ratusan 3−2=1. Hasil: 167 km.</div>
+          <div class="soal-q"><span class="no">2</span>Jarak kota A ke kota C adalah 456 km. Jarak kota A ke kota B (di jalan menuju C) adalah 289 km. Berapa jarak B ke C?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 456 − 289 = <strong>167 km</strong>. Jarak A-ke-C sama dengan jarak A-ke-B ditambah jarak B-ke-C. Jadi untuk cari B-ke-C, kurangi jarak total dengan jarak A-ke-B yang sudah diketahui.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">3</span>Made punya tabungan Rp20.000. Dia ingin membeli mainan seharga Rp8.500 dan buku seharga Rp6.750. Apakah tabungannya cukup untuk membeli KEDUANYA? Kalau cukup, berapa sisanya?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Total harga kedua barang: Rp8.500 + Rp6.750 = Rp15.250. Karena Rp15.250 lebih kecil dari tabungan Rp20.000, artinya cukup. Sisa tabungan: Rp20.000 − Rp15.250 = Rp4.750. Perhatikan bahwa soal ini butuh DUA operasi sekaligus: penjumlahan dulu (total harga), baru pengurangan (sisa tabungan) — bukan langsung pengurangan tanpa menjumlahkan dulu.</div>
+          <div class="soal-q"><span class="no">3</span>Made punya tabungan Rp20.000. Dia mau beli mainan Rp8.500 dan buku Rp6.750. Cukupkah uangnya untuk beli keduanya? Berapa sisanya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jumlahkan dulu harga kedua barang: Rp8.500 + Rp6.750 = Rp15.250. Karena Rp15.250 lebih kecil dari Rp20.000, uangnya cukup. Sisa: Rp20.000 − Rp15.250 = <strong>Rp4.750</strong>. Soal ini butuh DUA operasi: jumlahkan dulu, baru kurangi.</div>
         </div>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
-        Selesaikan soal cerita ini, tunjukkan proses pengurangan bersusun lengkap: "Perpustakaan sekolah memiliki 15.004 buku. Sebanyak 6.758 buku dipinjam siswa Kelas 4, dan 3.246 buku lainnya dipinjam siswa Kelas 5. Berapa buku yang tersisa di perpustakaan?" Ingat: ini soal dua langkah pengurangan berturut-turut, seperti Contoh 2 di atas.
+        Selesaikan soal ini, tunjukkan langkah lengkapnya: "Perpustakaan sekolah punya 15.004 buku. Sebanyak 6.758 buku dipinjam siswa Kelas 4. Sebanyak 3.246 buku dipinjam siswa Kelas 5. Berapa buku yang tersisa?" Ingat: ini soal DUA langkah pengurangan.
       </div>
 
-      <p>Selamat, kamu sudah menguasai seluruh rangkaian pengurangan bersusun peminjaman berganda! Kemampuan ini akan langsung terpakai lagi di materi berikutnya — pembagian bersusun — yang juga menuntut ketelitian proses langkah demi langkah, bukan sekadar tebak jawaban akhir.</p>
+      <p>Selamat, kamu sudah menguasai pengurangan bersusun peminjaman berganda! Kemampuan ini akan langsung terpakai lagi di materi berikutnya: pembagian bersusun.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
