@@ -145,4 +145,8 @@
     }
     setupFontSize();
   });
+
+  // Diekspos supaya materi-progress-tracker.js (dimuat SETELAH file ini) bisa mengenali
+  // materi mana yang sedang dibuka TANPA menduplikasi logika pencocokan path di atas.
+  window.MateriNav = { currentEntry: currentEntry };
 })();
