@@ -55,11 +55,15 @@ pages/modul/
    ```
    (Path `../../../../` benar untuk kedalaman `pages/modul/{mapel}/{tp}/modul.html`
    — 4 tingkat ke atas menuju akar repo.)
-6. (Opsional, langkah lanjutan yang BELUM dilakukan otomatis) Daftarkan link
-   modul ini di tab **Modul** pada `pages/admin.html` (field "Link File Modul")
-   supaya muncul di `pages/modul.html` — sistem itu saat ini masih mengasumsikan
-   link eksternal (Drive/PDF); isi dengan path relatif ke file ini kalau mau
-   modul lokal ikut muncul di daftar tersebut.
+6. Daftarkan modul ini di `pages/modul/assets/modul-index.js` — tambahkan
+   SATU objek baru di array `MODUL_INDEX`, field `file` diisi path relatif
+   dari `pages/modul/` (mis. `"bahasa-indonesia/menyimak-tp2/modul.html"`).
+   `pages/modul.html` otomatis membaca file ini dan menampilkan modulnya
+   dengan filter mapel + pengelompokan per tema — tidak perlu ubah file lain.
+   (Tab "Modul" di `admin.html`/Firestore tetap ada, terpisah, untuk modul
+   berbentuk LINK EKSTERNAL seperti Drive/PDF — kedua sumber digabung
+   otomatis di `pages/modul.html`, ditandai label "🧩 Interaktif" vs
+   "🔗 Tautan".)
 
 ## Status isi saat ini
 
