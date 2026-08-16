@@ -25,6 +25,29 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   server sama sekali; ditunda sampai ada modul sungguhan yang mau dipakai
   (lihat `RANCANGAN-LAPORAN-SISWA.md` §7.2)
 
+### Diperbaiki (v0.10.x, sesi ini)
+- **IPAS tidak bisa diakses dari situs sama sekali padahal filenya sudah ada di
+  repo** — akar masalahnya: 33 file materi IPAS (mapel benar-benar baru) dan 5
+  file Matematika (bilangan-tp4, bilangan-tp5) ditambahkan langsung ke folder
+  `pages/materi/` TANPA entri yang sesuai di `pages/materi/assets/materi-index.js`.
+  Karena `materi.html`, Galeri Visual, dan laporan "Perkembangan Belajar Mandiri"
+  SEMUANYA murni baca dari `materi-index.js` (bukan memindai folder), 33 file
+  IPAS itu 100% tidak terlihat dari situs walau secara fisik ada di repo.
+  Diperbaiki: 38 entri (33 IPAS + 5 Matematika) ditambahkan ke `materi-index.js`,
+  metadata (judul, ringkasan, elemen, tema, urutan) diekstrak dari isi tiap file
+  materi itu sendiri. Total sekarang 89 entri = 89 file (BI 42, Matematika 14,
+  IPAS 33) — cocok persis, tidak ada lagi file yang "tidak terdaftar".
+- **Progres Materi Ajar belum menjangkau Matematika** — 14 file Matematika
+  (termasuk yang lama) belum punya tag `<script src=".../materi-progress-tracker.
+  js">`, karena file-file itu ditambahkan/diperbarui setelah pemasangan tracker
+  batch sebelumnya. Skrip penyisipan (idempoten, sama dengan yang dipakai
+  sebelumnya) dijalankan ulang — sekarang 89/89 file materi (100%) punya tracker,
+  bukan 75/81 seperti sebelumnya.
+- Ditambahkan catatan baru di `ANTIREGRESI.md` bagian "Catatan Penting": checklist
+  wajib tiap kali ada materi baru ditambahkan ke repo (oleh siapa saja, bukan cuma
+  lewat sesi kerja dengan Claude) — supaya kelas bug ini (file ada tapi tidak
+  terdaftar) tidak terulang untuk mapel/materi berikutnya.
+
 ### Ditambahkan
 - **Progres Materi Ajar** (separuh laporan "Perkembangan Belajar Mandiri",
   Pintu 2 — lihat `RANCANGAN-LAPORAN-SISWA.md` §7.1) — siswa yang membuka
@@ -583,8 +606,6 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   kategori + data tidak lengkap) — tetap 1 halaman A4 di ketiga laporan cetak; cap
   panjang catatan sengaja lebih pendek di laporan kognitif (7 kategori, grid lebih rapat)
   dibanding 2 modul lain.
-
-
 
 ### Diubah
 - **Print out Laporan Asesmen Kognitif kini mengelompokkan kartu kategori jadi 2 bagian

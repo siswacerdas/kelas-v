@@ -1164,3 +1164,23 @@ Catat setiap sesi ujicoba di sini:
   bersangkutan memanggil pola self-healing ini (lihat §27 untuk kronologi lengkap kenapa
   ini penting: sebelum ada ini, kolom baru yang lupa disinkronkan manual membuat nilainya
   DIAM-DIAM TERBUANG saat disimpan, tanpa error apa pun).
+- **PENTING — file materi HTML baru TIDAK OTOMATIS muncul di situs**: menambah file
+  `.html` baru ke folder `pages/materi/{mapel}/` (langsung, atau lewat Claude/co-guru)
+  TIDAK CUKUP — file itu TIDAK akan terlihat di `materi.html`, Galeri Visual
+  (`kelola-tp.html`/`galeri.html`), ATAU laporan "Perkembangan Belajar Mandiri`
+  (`belajar-mandiri.html`) sampai entrinya juga ditambahkan ke `pages/materi/assets/
+  materi-index.js` — SEMUA bagian itu murni baca dari array ini, bukan memindai folder.
+  **Kejadian nyata**: 33 file IPAS (mapel baru) dan 5 file Matematika ditambahkan
+  langsung ke repo tanpa entri index — akibatnya IPAS sama sekali tidak bisa diakses
+  dari situs padahal filenya sudah ada, dan progres Matematika di laporan tidak lengkap.
+  **Checklist wajib tiap kali ada materi baru ditambahkan (oleh siapa saja, termasuk co-guru
+  di luar sesi kerja dengan Claude)**: (1) tambah entri ke `materi-index.js` — SEMUA field
+  wajib diisi (`mapel`, `mapelSlug`, `mapelColor`, `mapelIcon`, `icon`, `elemen`, `tp`,
+  `tema`, `urutan`, `judul`, `ringkasan`, `status`, `file`); (2) pastikan file HTML materinya
+  sendiri sudah memuat `<script src=".../assets/materi-progress-tracker.js"></script>`
+  (cek cepat: `grep -rL "materi-progress-tracker" pages/materi --include="*.html"` dari
+  terminal, harus KOSONG — kalau ada hasil, itu file yang lolos tidak terpasang tracker-nya);
+  (3) kalau mapelnya BARU (belum pernah ada sebelumnya, seperti kasus IPAS), pastikan juga
+  warna `--m-{mapelSlug}` sudah didefinisikan di `pages/materi/assets/materi.css` DAN
+  entri mapel itu ada di `pages/infografis/assets/infografis-data.js` (kalau ingin
+  Galeri Visual-nya juga aktif untuk mapel itu).
