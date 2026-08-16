@@ -1522,5 +1522,50 @@ window.MATERI_INDEX = [
     ringkasan: "Mengubah pecahan ke berbagai bentuk pecahan lain (biasa, campuran, desimal) dan menyelesaikan soal cerita gabungan perkalian/pembagian pecahan.",
     status: "selesai",
     file: "matematika/bilangan-tp7/03-mengubah-bentuk-pecahan-dalam-soal-cerita-gabungan.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⚖️",
+    elemen: "Aljabar",
+    tp: "aljabar-tp1",
+    tema: "Aljabar · Simbol \"=\" sebagai Relasi Kesetaraan",
+    urutan: 1,
+    judul: "Menyeimbangkan Timbangan dengan Angka Nyata",
+    ringkasan: "Menyeimbangkan beban di kedua sisi timbangan fisik dengan angka nyata, membangun rasa 'kedua sisi harus sama nilai'.",
+    status: "selesai",
+    file: "matematika/aljabar-tp1/01-menyeimbangkan-timbangan-dengan-angka-nyata.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⚖️",
+    elemen: "Aljabar",
+    tp: "aljabar-tp1",
+    tema: "Aljabar · Simbol \"=\" sebagai Relasi Kesetaraan",
+    urutan: 2,
+    judul: "Menerjemahkan Timbangan ke Kalimat Matematika",
+    ringkasan: "Menerjemahkan situasi seimbang pada timbangan ke kalimat matematika angka penuh, tanpa simbol belum-diketahui.",
+    status: "selesai",
+    file: "matematika/aljabar-tp1/02-menerjemahkan-timbangan-ke-kalimat-matematika.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⚖️",
+    elemen: "Aljabar",
+    tp: "aljabar-tp1",
+    tema: "Aljabar · Simbol \"=\" sebagai Relasi Kesetaraan",
+    urutan: 3,
+    judul: "Menemukan Nilai yang Belum Diketahui",
+    ringkasan: "Menerjemahkan dan memverifikasi kalimat matematika dengan satu simbol belum-diketahui, posisi bervariasi (kiri, kanan, tengah).",
+    status: "selesai",
+    file: "matematika/aljabar-tp1/03-menemukan-nilai-yang-belum-diketahui.html"
   }
 ];
