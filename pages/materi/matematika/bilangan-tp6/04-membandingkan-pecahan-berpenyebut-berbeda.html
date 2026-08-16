@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Membandingkan Pecahan Berpenyebut Berbeda · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pecahan { display: inline-table; vertical-align: middle; margin: 0 3px; text-align: center; border-collapse: collapse; }
+  .pecahan td { padding: 0 6px; font-weight: 700; line-height: 1.15; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); color: var(--m-color); }
+  .pecahan tr.garis td { border-top: 2.5px solid var(--ink); padding: 0; height: 0; line-height: 0; font-size: 1px; }
+  .strip { display: flex; margin: 0.5rem 0; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; height: 38px; }
+  .strip .bag { flex: 1; border-right: 2px solid var(--ink); }
+  .strip .bag:last-child { border-right: none; }
+  .strip .bag.isi { background: var(--m-color); }
+  .strip-row { display: flex; align-items: center; gap: 0.8rem; margin: 0.6rem 0; }
+  .strip-row .strip { flex: 1; margin: 0; }
+  .strip-row .label { width: 100px; flex-shrink: 0; font-size: calc(var(--content-fs) - 3px); font-weight: 700; color: var(--ink-2); text-align: right; }
+  .strip-wrap { margin: 1rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .kpk-tabel { border-collapse: collapse; width: 100%; margin: 0.7rem 0 1.1rem; font-size: calc(var(--content-fs) - 3px); }
+  .kpk-tabel th, .kpk-tabel td { border: 1px solid var(--border); padding: 6px 8px; text-align: center; }
+  .kpk-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .kpk-tabel td.sama { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pecahan: Representasi, Perbandingan, dan Operasi Penjumlahan-Pengurangan · Materi 4 dari 7</div>
+      <div class="ma-cover-title">Membandingkan Pecahan Berpenyebut Berbeda</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Bagaimana kalau kita mau bandingkan <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> dengan <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>? Penyebutnya BEDA (3 dan 4), jadi kita TIDAK bisa langsung membandingkan pembilangnya. Ini seperti membandingkan roti yang dipotong dengan JUMLAH potongan berbeda — potongannya sendiri sudah beda ukuran, jadi tidak adil kalau langsung dibandingkan.</p>
+
+      <p><strong>Solusinya:</strong> ubah kedua pecahan itu supaya penyebutnya SAMA dulu, baru dibandingkan. Ingat materi KPK (Kelipatan Persekutuan Terkecil) yang sudah kamu kuasai? Kita pakai lagi di sini!</p>
+
+      <ol class="langkah">
+        <li><strong>Cari KPK dari kedua penyebut.</strong> Penyebutnya 3 dan 4. Kelipatan 3: 3, 6, 9, <strong>12</strong>, 15... Kelipatan 4: 4, 8, <strong>12</strong>, 16... KPK dari 3 dan 4 adalah 12.</li>
+        <li><strong>Ubah kedua pecahan jadi pecahan senilai berpenyebut 12.</strong> Untuk <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>: 12÷3=4, jadi kalikan pembilang dan penyebut dengan 4 → <table class="pecahan"><tr><td>8</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>. Untuk <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>: 12÷4=3, jadi kalikan pembilang dan penyebut dengan 3 → <table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>.</li>
+        <li><strong>Sekarang penyebutnya sudah sama (12), bandingkan pembilangnya.</strong> 8 dan 9 — karena 9 &gt; 8, maka <table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> lebih besar dari <table class="pecahan"><tr><td>8</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>.</li>
+        <li><strong>Kesimpulan:</strong> karena <table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> adalah bentuk lain dari <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>, dan <table class="pecahan"><tr><td>8</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> adalah bentuk lain dari <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>, maka <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> LEBIH BESAR dari <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>.</li>
+      </ol>
+
+      <table class="kpk-tabel">
+        <tr><th></th><th>Penyebut asli</th><th>Kali dengan</th><th>Penyebut baru</th></tr>
+        <tr><td><table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table></td><td>3</td><td>×4</td><td class="sama">12</td></tr>
+        <tr><td><table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table></td><td>4</td><td>×3</td><td class="sama">12</td></tr>
+      </table>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu mau membandingkan uang Rupiah dengan uang Dolar. Kamu tidak bisa langsung bandingkan angkanya begitu saja — kamu harus ubah dulu ke MATA UANG YANG SAMA (misalnya semua jadi Rupiah), baru bisa dibandingkan dengan adil.</span></p>
+        <p>Sama seperti itu, dua pecahan dengan penyebut berbeda itu seperti dua "mata uang" berbeda. KPK adalah cara kita mengubah keduanya ke "mata uang" yang sama (penyebut yang sama), supaya perbandingannya adil.</p>
+        <p>Ingat lagi cara mencari KPK dari materi sebelumnya: tulis kelipatan tiap bilangan satu-satu, lalu cari angka pertama yang muncul di KEDUA daftar kelipatan itu.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kamu tidak wajib pakai KPK — angka apa pun yang bisa dibagi oleh kedua penyebut juga boleh dipakai (misalnya hasil kali dua penyebut, 3×4=12). Tapi memakai KPK membuat angkanya paling kecil dan paling mudah dihitung, jadi itu pilihan terbaik.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Manakah yang lebih besar, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> atau <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table>?</div>
+          <div class="soal-a"><b>Pembahasan:</b> KPK dari 2 dan 5 adalah 10. <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> = <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table> (kali 5). <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> = <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table> (kali 2). Karena 5 &gt; 4, maka <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> lebih besar.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Urutkan dari yang TERKECIL: <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table></div>
+          <div class="soal-a"><b>Pembahasan:</b> KPK dari 4, 3, 6 adalah 12. <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>=<table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>=<table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table>=<table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>. Urutkan pembilang: 2, 3, 4. Jadi urutannya: <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan membandingkan <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> dan <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> dengan cara: "4 lebih kecil dari 5, jadi <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> lebih besar". Apakah cara ini benar? Buktikan dengan KPK!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Wayan itu KEBETULAN benar untuk soal ini, tapi caranya SALAH secara konsep (membandingkan penyebut saja tidak selalu benar). Bukti dengan KPK: KPK dari 4 dan 5 = 20. <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>=<table class="pecahan"><tr><td>15</td></tr><tr class="garis"><td></td></tr><tr><td>20</td></tr></table>, <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table>=<table class="pecahan"><tr><td>16</td></tr><tr class="garis"><td></td></tr><tr><td>20</td></tr></table>. Karena 16 &gt; 15, ternyata <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> yang LEBIH BESAR — kesimpulan Wayan justru TERBALIK dan salah.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil pasangan pecahan berpenyebut berbeda yang penyebutnya berasal dari angka-angka yang sudah kamu latih di materi KPK-FPB (misalnya 4 dan 6, atau 3 dan 5). Cari KPK-nya, ubah kedua pecahan jadi penyebut sama, lalu bandingkan. Tuliskan langkahmu lengkap seperti contoh di atas.
+      </div>
+
+      <p>Sekarang kamu sudah bisa membandingkan pecahan apa pun, baik penyebutnya sama maupun berbeda. Materi berikutnya akan memakai kemampuan yang sama untuk MENJUMLAHKAN dan MENGURANGKAN pecahan.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

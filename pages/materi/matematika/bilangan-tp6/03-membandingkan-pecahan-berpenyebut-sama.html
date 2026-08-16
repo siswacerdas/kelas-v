@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Membandingkan Pecahan Berpenyebut Sama · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pecahan { display: inline-table; vertical-align: middle; margin: 0 3px; text-align: center; border-collapse: collapse; }
+  .pecahan td { padding: 0 6px; font-weight: 700; line-height: 1.15; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); color: var(--m-color); }
+  .pecahan tr.garis td { border-top: 2.5px solid var(--ink); padding: 0; height: 0; line-height: 0; font-size: 1px; }
+  .strip { display: flex; margin: 0.5rem 0; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; height: 38px; }
+  .strip .bag { flex: 1; border-right: 2px solid var(--ink); }
+  .strip .bag:last-child { border-right: none; }
+  .strip .bag.isi { background: var(--m-color); }
+  .strip-row { display: flex; align-items: center; gap: 0.8rem; margin: 0.6rem 0; }
+  .strip-row .strip { flex: 1; margin: 0; }
+  .strip-row .label { width: 90px; flex-shrink: 0; font-size: calc(var(--content-fs) - 3px); font-weight: 700; color: var(--ink-2); text-align: right; }
+  .strip-wrap { margin: 1rem 0 1.3rem; }
+  .urut-box { display: flex; gap: 0.6rem; align-items: center; justify-content: center; flex-wrap: wrap; margin: 1rem 0; font-weight: 700; }
+  .urut-box .panah { color: var(--m-color); font-size: 18px; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pecahan: Representasi, Perbandingan, dan Operasi Penjumlahan-Pengurangan · Materi 3 dari 7</div>
+      <div class="ma-cover-title">Membandingkan Pecahan Berpenyebut Sama</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang giliran membandingkan pecahan — menentukan mana yang LEBIH BESAR dan mana yang LEBIH KECIL. Kita mulai dari kasus paling mudah: pecahan yang <strong>penyebutnya sama</strong>.</p>
+
+      <p>Made dan Wayan sama-sama punya roti yang SAMA UKURAN, dipotong menjadi 5 bagian sama besar. Made makan 3 bagian. Wayan makan 4 bagian. Siapa yang makan lebih banyak?</p>
+
+      <div class="strip-wrap">
+        <div class="strip-row">
+          <div class="label">Made: <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table></div>
+          <div class="strip"><div class="bag isi"></div><div class="bag isi"></div><div class="bag isi"></div><div class="bag"></div><div class="bag"></div></div>
+        </div>
+        <div class="strip-row">
+          <div class="label">Wayan: <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table></div>
+          <div class="strip"><div class="bag isi"></div><div class="bag isi"></div><div class="bag isi"></div><div class="bag isi"></div><div class="bag"></div></div>
+        </div>
+      </div>
+
+      <p>Terlihat jelas dari gambar: bagian yang diarsir Wayan lebih PANJANG. Jadi <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> LEBIH BESAR dari <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table>.</p>
+
+      <p><strong>Aturan pentingnya:</strong> kalau dua pecahan penyebutnya SAMA (kedua roti dipotong dengan jumlah potongan yang sama), maka kamu tinggal membandingkan PEMBILANGnya saja. Pembilang lebih besar berarti pecahannya lebih besar. Ini masuk akal — karena potongannya sama-sama besar (sama ukuran), yang membedakan cuma BERAPA BANYAK potongan yang diambil.</p>
+
+      <div class="contoh-box">
+        Penyebut SAMA → bandingkan PEMBILANG saja.<br>
+        <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> &gt; <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> karena 4 &gt; 3
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan dua piring nasi yang SAMA UKURAN, dan masing-masing dibagi menjadi 5 suap yang SAMA BESAR.</span></p>
+        <p>Kalau kamu tahu kedua piring itu dipotong jadi 5 suap yang sama persis besarnya, kamu tidak perlu lihat piringnya lagi untuk tahu siapa yang makan lebih banyak — kamu cukup tanya "berapa suap yang sudah dimakan?". Orang yang makan lebih banyak suap, pasti makan lebih banyak nasi. Itulah kenapa kalau penyebut (jumlah suap) sama, kamu cukup bandingkan pembilang (jumlah suap yang dimakan).</p>
+      </div>
+
+      <p>Sekarang, bagaimana kalau kita punya lebih dari dua pecahan dan diminta mengurutkannya? Caranya sama — kalau penyebutnya sama, urutkan berdasarkan pembilang saja.</p>
+
+      <p>Contoh: urutkan dari yang TERKECIL: <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>, <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>, <table class="pecahan"><tr><td>7</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>.</p>
+
+      <p>Karena penyebutnya sama-sama 8, kita urutkan pembilangnya: 2, 5, 7 (dari kecil ke besar).</p>
+
+      <div class="urut-box">
+        <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>
+        <span class="panah">&lt;</span>
+        <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>
+        <span class="panah">&lt;</span>
+        <table class="pecahan"><tr><td>7</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Aturan "bandingkan pembilang saja" HANYA berlaku kalau penyebutnya SAMA. Kalau penyebutnya berbeda, kamu tidak bisa langsung membandingkan pembilangnya begitu saja — ini akan dipelajari di materi berikutnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Manakah yang lebih besar, <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>7</td></tr></table> atau <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>7</td></tr></table>?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Penyebut sama-sama 7, jadi bandingkan pembilang: 5 &gt; 3. Jadi <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>7</td></tr></table> lebih besar.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Urutkan pecahan berikut dari yang TERBESAR: <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>9</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>9</td></tr></table>, <table class="pecahan"><tr><td>6</td></tr><tr class="garis"><td></td></tr><tr><td>9</td></tr></table></div>
+          <div class="soal-a"><b>Pembahasan:</b> Penyebut sama-sama 9, urutkan pembilang dari besar ke kecil: 6, 4, 1. Jadi urutannya: <table class="pecahan"><tr><td>6</td></tr><tr class="garis"><td></td></tr><tr><td>9</td></tr></table>, <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>9</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>9</td></tr></table>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani bilang <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> lebih besar dari <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> karena "6 nya sama, jadi lihat yang atas — 5 lebih besar dari 2, tapi 2 muncul duluan jadi menang". Apakah alasan Rani benar? Mana yang sebenarnya lebih besar?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Alasan Rani SALAH — urutan penulisan tidak menentukan mana yang lebih besar. Karena penyebut sama (6), kita bandingkan pembilang: 5 &gt; 2. Jadi <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> yang sebenarnya LEBIH BESAR, bukan <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table>.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bersama kelompokmu, buat beberapa kartu pecahan berpenyebut sama (misalnya semuanya per 10). Urutkan kartu-kartu itu dari yang terkecil ke terbesar, lalu jelaskan ke teman kelompokmu kenapa urutanmu benar — sebutkan aturan "bandingkan pembilang saja karena penyebutnya sama".
+      </div>
+
+      <p>Materi berikutnya akan sedikit lebih menantang: membandingkan pecahan yang penyebutnya BERBEDA. Kamu akan memakai lagi kemampuan mencari KPK yang sudah kamu kuasai di materi KPK-FPB!</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

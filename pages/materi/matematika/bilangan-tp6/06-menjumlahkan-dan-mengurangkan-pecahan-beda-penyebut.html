@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menjumlahkan dan Mengurangkan Pecahan Beda Penyebut · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pecahan { display: inline-table; vertical-align: middle; margin: 0 3px; text-align: center; border-collapse: collapse; }
+  .pecahan td { padding: 0 6px; font-weight: 700; line-height: 1.15; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); color: var(--m-color); }
+  .pecahan tr.garis td { border-top: 2.5px solid var(--ink); padding: 0; height: 0; line-height: 0; font-size: 1px; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .opsoal { text-align: center; font-size: calc(var(--content-fs) + 1px); font-weight: 700; margin: 0.8rem 0; color: var(--ink); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pecahan: Representasi, Perbandingan, dan Operasi Penjumlahan-Pengurangan · Materi 6 dari 7</div>
+      <div class="ma-cover-title">Menjumlahkan dan Mengurangkan Pecahan Beda Penyebut</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Bagaimana kalau soalnya <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> + <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>? Penyebutnya BEDA (3 dan 4). Kamu TIDAK BOLEH langsung menjumlahkan pembilang dan penyebutnya begitu saja — ingat, penyebut yang berbeda itu seperti "ukuran potongan" yang berbeda, tidak bisa langsung digabung.</p>
+
+      <p><strong>Solusinya sama seperti saat membandingkan pecahan:</strong> samakan dulu penyebutnya pakai KPK, BARU dijumlahkan atau dikurangi.</p>
+
+      <ol class="langkah">
+        <li><strong>Cari KPK dari kedua penyebut.</strong> Penyebutnya 3 dan 4. KPK dari 3 dan 4 adalah 12 (sudah kamu hitung di materi sebelumnya).</li>
+        <li><strong>Ubah kedua pecahan jadi pecahan senilai berpenyebut 12.</strong> <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>: 12÷3=4, kalikan pembilang & penyebut dengan 4 → <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>. <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>: 12÷4=3, kalikan pembilang & penyebut dengan 3 → <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>.</li>
+        <li><strong>Sekarang penyebutnya sudah sama, baru dijumlahkan.</strong> <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> + <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> = <table class="pecahan"><tr><td>7</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> (penyebut tetap 12, pembilang dijumlahkan: 4+3=7).</li>
+      </ol>
+
+      <div class="opsoal"><table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> + <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> = <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> + <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> = <table class="pecahan"><tr><td>7</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table></div>
+
+      <p>Caranya persis SAMA untuk pengurangan. Contoh: <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> − <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table>?</p>
+
+      <ol class="langkah">
+        <li>KPK dari 4 dan 6 adalah 12.</li>
+        <li><table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>: 12÷4=3, kalikan dengan 3 → <table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>. <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table>: 12÷6=2, kalikan dengan 2 → <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>.</li>
+        <li><table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> − <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table> = <table class="pecahan"><tr><td>7</td></tr><tr class="garis"><td></td></tr><tr><td>12</td></tr></table>.</li>
+      </ol>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Ingat lagi analogi uang Rupiah dan Dolar dari materi membandingkan pecahan.</span></p>
+        <p>Kalau kamu punya sejumlah uang Rupiah dan sejumlah uang Dolar, kamu tidak bisa langsung MENJUMLAHKAN angkanya begitu saja (misalnya 50.000 + 5 = 50.005, itu SALAH total). Kamu harus ubah dulu Dolar itu ke Rupiah (atau sebaliknya), baru bisa dijumlahkan dengan benar.</p>
+        <p>Sama seperti itu, pecahan berpenyebut beda harus diubah dulu ke "satuan" yang sama (penyebut yang sama, pakai KPK), baru bisa dijumlahkan atau dikurangi dengan benar.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Urutan langkah yang WAJIB diikuti: (1) cari KPK penyebut, (2) ubah KEDUA pecahan jadi penyebut baru itu, (3) baru jumlahkan/kurangi pembilangnya, penyebut tetap. Kalau kamu melompati langkah 1-2 dan langsung menjumlahkan pembilang serta penyebut aslinya, jawabanmu pasti salah.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Hitunglah: <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> + <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table></div>
+          <div class="soal-a"><b>Pembahasan:</b> KPK dari 2 dan 5 adalah 10. <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table>=<table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table>=<table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table>. Hasil: <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table> + <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table> = <table class="pecahan"><tr><td>7</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Ibu punya <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> kilogram gula. Dipakai <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> kilogram untuk membuat kue. Berapa kilogram sisa gula Ibu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> KPK dari 6 dan 3 adalah 6. <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> tetap <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> (sudah berpenyebut 6). <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>=<table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> (kali 2). Sisa: <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> − <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> = <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table>, disederhanakan jadi <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> kilogram.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani menghitung <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> + <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> langsung dengan cara menjumlahkan pembilang dan penyebut aslinya: (2+1) per (3+5) = <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>. Apakah ini benar? Kerjakan dengan cara yang benar!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Rani SALAH — pecahan berpenyebut beda tidak boleh dijumlah langsung seperti itu. Cara benar: KPK dari 3 dan 5 adalah 15. <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>=<table class="pecahan"><tr><td>10</td></tr><tr class="garis"><td></td></tr><tr><td>15</td></tr></table>, <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table>=<table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>15</td></tr></table>. Hasil yang benar: <table class="pecahan"><tr><td>10</td></tr><tr class="garis"><td></td></tr><tr><td>15</td></tr></table> + <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>15</td></tr></table> = <table class="pecahan"><tr><td>13</td></tr><tr class="garis"><td></td></tr><tr><td>15</td></tr></table>, jauh berbeda dari jawaban Rani.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kerjakan 4 soal penjumlahan/pengurangan pecahan berpenyebut berbeda. Tuliskan SEMUA langkahnya: cari KPK dulu, ubah kedua pecahan, baru hitung. Jangan langsung menuliskan jawaban akhir — guru ingin melihat proses berpikirmu di tiap langkah.
+      </div>
+
+      <p>Kamu sudah menguasai semua operasi dasar pecahan biasa! Materi terakhir dari rangkaian TP6 ini akan mengajakmu bekerja dengan pecahan CAMPURAN (seperti 1¾) dalam soal cerita yang lebih menantang.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

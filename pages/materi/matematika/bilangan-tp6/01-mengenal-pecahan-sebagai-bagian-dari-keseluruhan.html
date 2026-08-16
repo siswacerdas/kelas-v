@@ -1,1 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengenal Pecahan sebagai Bagian dari Keseluruhan · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pecahan { display: inline-table; vertical-align: middle; margin: 0 3px; text-align: center; border-collapse: collapse; }
+  .pecahan td { padding: 0 6px; font-weight: 700; line-height: 1.15; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); color: var(--m-color); }
+  .pecahan tr.garis td { border-top: 2.5px solid var(--ink); padding: 0; height: 0; line-height: 0; font-size: 1px; }
+  .visual-pecahan { display: flex; gap: 3px; margin: 0.8rem 0 1.1rem; flex-wrap: wrap; }
+  .visual-pecahan .kotak { width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 4px; background: #fff; }
+  .visual-pecahan .kotak.isi { background: var(--m-color); border-color: var(--m-color); }
+  .visual-caption { font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: -0.4rem 0 1.2rem; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Pecahan: Representasi, Perbandingan, dan Operasi Penjumlahan-Pengurangan · Materi 1 dari 7</div>
+      <div class="ma-cover-title">Mengenal Pecahan sebagai Bagian dari Keseluruhan</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Mulai dari sini, kita belajar jenis bilangan baru: <strong>pecahan</strong>. Pecahan BERBEDA dari bilangan cacah (1, 2, 3, ...) yang sudah kamu kuasai. Pecahan bukan cara menghitung "berapa banyak barang utuh". Pecahan adalah cara menulis "berapa BAGIAN dari satu barang utuh".</p>
+
+      <p>Lihat gambar ini. Satu coklat batangan dipotong menjadi 4 bagian sama besar. Kamu makan 3 bagian.</p>
+
+      <div class="visual-pecahan">
+        <div class="kotak isi"></div><div class="kotak isi"></div><div class="kotak isi"></div><div class="kotak"></div>
+      </div>
+      <p class="visual-caption">3 kotak berwarna sudah dimakan, dari total 4 kotak.</p>
+
+      <p>Bagian yang kamu makan ditulis sebagai pecahan:</p>
+
+      <div class="contoh-box">
+        <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>
+        &nbsp;&nbsp;dibaca <strong>"tiga per empat"</strong>
+      </div>
+
+      <p>Angka di ATAS disebut <strong>pembilang</strong> — artinya berapa BAGIAN yang diambil/dimakan/diarsir. Angka di BAWAH disebut <strong>penyebut</strong> — artinya keseluruhan dibagi menjadi berapa bagian SAMA BESAR.</p>
+
+      <p>Ini poin yang PALING penting dan sering salah dipahami: pecahan <strong>bukan dua bilangan terpisah</strong> yang kebetulan ditulis dengan garis di tengah. Angka 3 dan angka 4 pada <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> adalah SATU KESATUAN. Keduanya menceritakan satu hal yang sama: "3 dari 4 bagian yang sama besar".</p>
+
+      <p>Syarat penting: bagian-bagiannya harus <strong>sama besar</strong>. Kalau coklat dipotong menjadi 4 bagian tapi ukurannya beda-beda (ada yang besar, ada yang kecil), itu BUKAN pecahan yang benar. Pecahan hanya berlaku kalau seluruh bagian ukurannya sama.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu dan 3 temanmu berbagi satu pizza bulat, dipotong jadi 4 potongan sama besar.</span></p>
+        <p>Kalian berempat masing-masing dapat 1 potongan. Kalau kamu makan potonganmu, kamu makan "1 dari 4 bagian" — ditulis 1 per 4.</p>
+        <p>Kalau kamu SANGAT lapar dan makan potongan milikmu DAN potongan temanmu (2 potongan), kamu makan "2 dari 4 bagian" — ditulis 2 per 4.</p>
+        <p>Penyebut (angka bawah) selalu tetap 4, karena pizza itu SELALU dipotong jadi 4 bagian sejak awal — potongan itu tidak berubah biar pun ada yang dimakan atau tidak. Yang berubah cuma pembilang (angka atas): berapa potongan yang sudah diambil.</p>
+      </div>
+
+      <p>Coba lihat beberapa contoh lain:</p>
+
+      <div class="contoh-box">
+        <div class="visual-pecahan" style="justify-content:center;">
+          <div class="kotak isi"></div><div class="kotak"></div>
+        </div>
+        <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> — satu dari dua bagian ("setengah")
+      </div>
+
+      <div class="contoh-box">
+        <div class="visual-pecahan" style="justify-content:center;">
+          <div class="kotak isi"></div><div class="kotak"></div><div class="kotak"></div>
+        </div>
+        <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> — satu dari tiga bagian ("sepertiga")
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Penyebut yang lebih besar TIDAK selalu berarti bagiannya lebih besar. Kalau roti yang sama dipotong menjadi 8 bagian, tiap bagian jadi LEBIH KECIL dibanding dipotong menjadi 4 bagian. Semakin banyak potongan (penyebut besar), semakin kecil ukuran tiap potongan.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah semangka dipotong menjadi 6 bagian sama besar. Ibu mengambil 5 bagian untuk dibagikan ke tetangga. Tulis pecahan yang menunjukkan bagian yang diambil ibu!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Keseluruhan dibagi 6 bagian sama besar, jadi penyebutnya 6. Yang diambil 5 bagian, jadi pembilangnya 5. Pecahannya: <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> ("lima per enam").</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Perhatikan gambar berikut. Ada 5 kotak, 2 di antaranya diarsir. Tulis pecahannya!</div>
+          <div class="soal-a"><div class="visual-pecahan"><div class="kotak isi"></div><div class="kotak isi"></div><div class="kotak"></div><div class="kotak"></div><div class="kotak"></div></div><b>Pembahasan:</b> Total kotak (keseluruhan) = 5, jadi penyebut = 5. Kotak yang diarsir = 2, jadi pembilang = 2. Pecahannya: <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Sebuah kue dipotong menjadi 4 bagian, tapi ukuran potongannya TIDAK sama besar (ada yang besar, ada yang kecil). Bolehkah kita menulis "1 potongan besar = 1 per 4 kue"? Jelaskan alasanmu!</div>
+          <div class="soal-a"><b>Pembahasan:</b> TIDAK boleh. Pecahan hanya berlaku kalau seluruh bagian ukurannya SAMA BESAR. Karena potongan kue ini tidak sama besar, kita tidak bisa menyebutnya 1 per 4 — potongan besar itu sebenarnya mewakili bagian yang LEBIH dari seperempat kue, dan potongan kecil kurang dari seperempat.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil selembar kertas atau satu buah (apel/jeruk) di rumah. Bagi menjadi beberapa bagian SAMA BESAR bersama teman sebangkumu. Tunjukkan pada teman: kalau kamu ambil sebagian, pecahan apa yang menunjukkan bagian itu? Sebutkan pembilang dan penyebutnya, lalu jelaskan artinya dengan kata-katamu sendiri.
+      </div>
+
+      <p>Sekarang kamu sudah paham dasar pecahan sebagai bagian-dari-keseluruhan. Di materi berikutnya, kamu akan belajar sesuatu yang menarik: dua pecahan yang bentuknya beda ternyata bisa mewakili ukuran yang SAMA PERSIS. Ini disebut pecahan senilai.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
