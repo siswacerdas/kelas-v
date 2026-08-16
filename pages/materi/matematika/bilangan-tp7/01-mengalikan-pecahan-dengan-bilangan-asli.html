@@ -1,1 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengalikan Pecahan dengan Bilangan Asli · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pecahan { display: inline-table; vertical-align: middle; margin: 0 3px; text-align: center; border-collapse: collapse; }
+  .pecahan td { padding: 0 6px; font-weight: 700; line-height: 1.15; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); color: var(--m-color); }
+  .pecahan tr.garis td { border-top: 2.5px solid var(--ink); padding: 0; height: 0; line-height: 0; font-size: 1px; }
+  .campuran { display: inline-flex; align-items: center; vertical-align: middle; margin: 0 3px; }
+  .campuran .utuh { font-weight: 700; font-size: calc(var(--content-fs) + 2px); color: var(--ink); margin-right: 2px; font-family: 'Plus Jakarta Sans', monospace; }
+  .strip { display: flex; margin: 0.5rem 0; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; height: 34px; }
+  .strip .bag { flex: 1; border-right: 2px solid var(--ink); }
+  .strip .bag:last-child { border-right: none; }
+  .strip .bag.isi { background: var(--m-color); }
+  .strip-row { display: flex; align-items: center; gap: 0.7rem; margin: 0.5rem 0; }
+  .strip-row .strip { flex: 1; margin: 0; }
+  .strip-row .label { width: 76px; flex-shrink: 0; font-size: calc(var(--content-fs) - 3px); font-weight: 700; color: var(--ink-2); text-align: right; }
+  .strip-wrap { margin: 0.9rem 0 1.2rem; }
+  .opsoal { text-align: center; font-size: calc(var(--content-fs) + 1px); font-weight: 700; margin: 0.8rem 0; color: var(--ink); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Perkalian, Pembagian Pecahan dengan Bilangan Asli, dan Mengubah Bentuk Pecahan · Materi 1 dari 3</div>
+      <div class="ma-cover-title">Mengalikan Pecahan dengan Bilangan Asli</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Resep kue butuh <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> gelas tepung untuk 1 loyang. Ibu mau membuat 3 loyang sekaligus. Berapa gelas tepung yang dibutuhkan?</p>
+
+      <p>Ini artinya kamu butuh <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> gelas, SEBANYAK 3 KALI. Kita bisa hitung dengan penjumlahan berulang, seperti perkalian bilangan cacah biasa:</p>
+
+      <div class="strip-wrap">
+        <div class="strip-row">
+          <div class="label">Loyang 1:</div>
+          <div class="strip"><div class="bag isi"></div><div class="bag isi"></div><div class="bag isi"></div><div class="bag"></div></div>
+        </div>
+        <div class="strip-row">
+          <div class="label">Loyang 2:</div>
+          <div class="strip"><div class="bag isi"></div><div class="bag isi"></div><div class="bag isi"></div><div class="bag"></div></div>
+        </div>
+        <div class="strip-row">
+          <div class="label">Loyang 3:</div>
+          <div class="strip"><div class="bag isi"></div><div class="bag isi"></div><div class="bag isi"></div><div class="bag"></div></div>
+        </div>
+      </div>
+
+      <div class="opsoal"><table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> + <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> + <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> = <table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table></div>
+
+      <p>Ditulis sebagai perkalian: <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> × 3 = <table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>.</p>
+
+      <p><strong>Cara cepatnya</strong> (tanpa perlu menjumlah berulang satu-satu): kalikan PEMBILANG dengan bilangan aslinya, PENYEBUT tetap.</p>
+
+      <ol class="langkah">
+        <li>Kalikan pembilang dengan bilangan asli: 3 × 3 = 9. Ini jadi pembilang baru.</li>
+        <li>Penyebut TETAP: 4.</li>
+        <li>Hasilnya: <table class="pecahan"><tr><td>9</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>. Karena pembilang lebih besar dari penyebut, ubah ke pecahan campuran: 9÷4=2 sisa 1, jadi <span class="campuran"><span class="utuh">2</span><table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table></span>.</li>
+      </ol>
+
+      <p>Jadi Ibu butuh <span class="campuran"><span class="utuh">2</span><table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table></span> gelas tepung untuk 3 loyang kue.</p>
+
+      <div class="contoh-box">
+        Pecahan × bilangan asli → PEMBILANG dikalikan, PENYEBUT tetap.<br>
+        <table class="pecahan"><tr><td>a</td></tr><tr class="garis"><td></td></tr><tr><td>b</td></tr></table> × n = <table class="pecahan"><tr><td>a × n</td></tr><tr class="garis"><td></td></tr><tr><td>b</td></tr></table>
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Ingat lagi cara kamu belajar perkalian bilangan cacah pertama kali: 3 × 4 artinya "4 diambil sebanyak 3 kali" atau "3+3+3+3".</span></p>
+        <p>Perkalian pecahan dengan bilangan asli sama persis konsepnya: <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> × 3 artinya "<table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> diambil sebanyak 3 kali", sama seperti penjumlahan berulang yang sudah kamu lihat di atas.</p>
+        <p>Kenapa penyebutnya tidak ikut dikali? Karena penyebut menunjukkan "jadi berapa bagian 1 gelas dipotong" — itu tidak berubah, yang bertambah cuma JUMLAH potongan yang diambil (pembilangnya).</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Setelah dikalikan, cek apakah hasilnya perlu diubah jadi pecahan campuran (kalau pembilang lebih besar dari penyebut) atau disederhanakan (kalau pembilang dan penyebut punya faktor yang sama).
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Hitunglah: <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> × 4</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pembilang: 2×4=8. Penyebut tetap 5. Hasil: <table class="pecahan"><tr><td>8</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table>, diubah jadi pecahan campuran: 8÷5=1 sisa 3, jadi <span class="campuran"><span class="utuh">1</span><table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table></span>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Satu botol sirop berisi <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> liter. Made membeli 5 botol. Berapa liter sirop seluruhnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> × 5 = <table class="pecahan"><tr><td>5</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table> = <span class="campuran"><span class="utuh">2</span><table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>2</td></tr></table></span> liter.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan menghitung <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> × 3 dengan cara mengalikan pembilang DAN penyebut dengan 3, jadi jawabannya <table class="pecahan"><tr><td>6</td></tr><tr class="garis"><td></td></tr><tr><td>9</td></tr></table>. Apakah ini benar? Jelaskan dan berikan jawaban yang benar!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Wayan SALAH — dia mengira ini seperti mencari pecahan senilai (kali pembilang DAN penyebut). Padahal untuk perkalian dengan bilangan asli, hanya PEMBILANG yang dikalikan, penyebut TETAP. Jawaban yang benar: <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> × 3 = <table class="pecahan"><tr><td>6</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> = 2 (bilangan utuh, karena 6÷3 habis dibagi).</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bersama kelompokmu, pilih satu resep sederhana dengan bahan berbentuk pecahan (misalnya <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> gelas santan). Hitung kebutuhan bahan itu kalau resepnya dilipatgandakan untuk 4 porsi. Diskusikan alasan di balik hasilmu, bukan cuma jawaban akhir.
+      </div>
+
+      <p>Materi berikutnya adalah kebalikannya: bagaimana kalau pecahan itu justru dibagi rata ke beberapa bagian?</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

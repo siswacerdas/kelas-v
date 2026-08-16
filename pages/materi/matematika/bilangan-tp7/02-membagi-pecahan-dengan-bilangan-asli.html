@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Membagi Pecahan dengan Bilangan Asli · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pecahan { display: inline-table; vertical-align: middle; margin: 0 3px; text-align: center; border-collapse: collapse; }
+  .pecahan td { padding: 0 6px; font-weight: 700; line-height: 1.15; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); color: var(--m-color); }
+  .pecahan tr.garis td { border-top: 2.5px solid var(--ink); padding: 0; height: 0; line-height: 0; font-size: 1px; }
+  .strip { display: flex; margin: 0.5rem 0; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; height: 34px; position: relative; }
+  .strip .bag { flex: 1; border-right: 2px solid var(--ink); position: relative; }
+  .strip .bag:last-child { border-right: none; }
+  .strip .bag.isi { background: var(--m-color); }
+  .strip .bag.kosong { background: #fff; }
+  .strip .sekat { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed #c76b3f; }
+  .strip-wrap { margin: 0.9rem 0 1.2rem; }
+  .opsoal { text-align: center; font-size: calc(var(--content-fs) + 1px); font-weight: 700; margin: 0.8rem 0; color: var(--ink); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔢</span>
+      <div class="ma-cover-eyebrow">Bilangan · Perkalian, Pembagian Pecahan dengan Bilangan Asli, dan Mengubah Bentuk Pecahan · Materi 2 dari 3</div>
+      <div class="ma-cover-title">Membagi Pecahan dengan Bilangan Asli</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sisa kue di rumah tinggal <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> bagian. Kue itu mau dibagi RATA ke 2 orang. Berapa bagian kue yang didapat tiap orang?</p>
+
+      <p>Bayangkan <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> bagian kue itu (2 potongan dari total 3 potongan) dipotong LAGI jadi 2 bagian yang sama besar untuk dibagi ke 2 orang:</p>
+
+      <div class="strip-wrap">
+        <div class="strip">
+          <div class="bag isi" style="position:relative;"><div class="sekat" style="left:50%;"></div></div>
+          <div class="bag isi" style="position:relative;"><div class="sekat" style="left:50%;"></div></div>
+          <div class="bag kosong"></div>
+        </div>
+      </div>
+      <p style="text-align:center; font-size:calc(var(--content-fs) - 4px); color:var(--ink-3); margin-top:-0.6rem;">Garis putus-putus jingga = potongan tambahan untuk membagi ke 2 orang. Kue awalnya dipotong 3, sekarang tiap potongan yang terisi dipotong lagi jadi 2 → total 6 potongan kecil.</p>
+
+      <p>Sekarang seluruh kue "terlihat" seolah dipotong menjadi 3×2=6 bagian kecil. Dari 6 bagian kecil itu, yang terisi (bekas 2 potongan besar) jadi 2×2=4 bagian kecil. Karena dibagi ke 2 orang, tiap orang dapat 4÷2=2 bagian kecil, yaitu <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table> dari kue awal (disederhanakan jadi <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>).</p>
+
+      <div class="opsoal"><table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> ÷ 2 = <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table></div>
+
+      <p><strong>Cara cepatnya:</strong> kalikan PENYEBUT dengan bilangan aslinya, PEMBILANG tetap (kalau memungkinkan langsung dibagi, boleh juga membagi pembilang langsung — nanti dilihat di contoh soal).</p>
+
+      <ol class="langkah">
+        <li>Kalikan penyebut dengan bilangan asli: 3 × 2 = 6. Ini jadi penyebut baru.</li>
+        <li>Pembilang TETAP: 2.</li>
+        <li>Hasilnya: <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>6</td></tr></table>, disederhanakan (bagi 2) jadi <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table>.</li>
+      </ol>
+
+      <div class="contoh-box">
+        Pecahan ÷ bilangan asli → PENYEBUT dikalikan, PEMBILANG tetap.<br>
+        <table class="pecahan"><tr><td>a</td></tr><tr class="garis"><td></td></tr><tr><td>b</td></tr></table> ÷ n = <table class="pecahan"><tr><td>a</td></tr><tr class="garis"><td></td></tr><tr><td>b × n</td></tr></table>
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan sepotong besar roti dibagi rata ke beberapa orang — bukan menambah roti, tapi memotongnya jadi bagian yang LEBIH KECIL lagi.</span></p>
+        <p>Kalau <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> roti itu dibagi ke lebih banyak orang, tiap orang pasti dapat bagian yang LEBIH KECIL dari <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>3</td></tr></table> — masuk akal, karena rotinya dipotong lebih halus lagi.</p>
+        <p>Itulah kenapa PENYEBUT (jumlah potongan) yang bertambah saat kamu membagi — bukan pembilangnya. Semakin banyak dibagi, semakin banyak juga "potongan kecil" yang terbentuk, jadi angka penyebutnya membesar.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kalau PEMBILANG pecahan awal bisa dibagi HABIS oleh bilangan aslinya, kamu boleh langsung membagi pembilangnya saja (penyebut tetap) — hasilnya sama, cuma jalan pintas. Contoh: <table class="pecahan"><tr><td>6</td></tr><tr class="garis"><td></td></tr><tr><td>7</td></tr></table> ÷ 3, karena 6 habis dibagi 3, langsung: <table class="pecahan"><tr><td>2</td></tr><tr class="garis"><td></td></tr><tr><td>7</td></tr></table>. Tapi kalau pembilangnya TIDAK habis dibagi (seperti contoh di atas: 2÷2 sebenarnya habis, coba bandingkan dengan 2÷3 yang tidak habis), tetap pakai cara mengalikan penyebut supaya aman.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Hitunglah: <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> ÷ 2</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pembilang 3 tidak habis dibagi 2, jadi kalikan penyebut: 5×2=10. Pembilang tetap 3. Hasil: <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>10</td></tr></table>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah wadah berisi <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> kg tepung, mau dibagi rata ke 4 toples kecil. Berapa kg tepung tiap toples?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pembilang 4 HABIS dibagi 4, jadi bisa langsung: 4÷4=1. Hasil: <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> kg tiap toples. (Cara mengalikan penyebut juga tetap benar: 5×4=20, jadi <table class="pecahan"><tr><td>4</td></tr><tr class="garis"><td></td></tr><tr><td>20</td></tr></table>, disederhanakan jadi <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>5</td></tr></table> — hasilnya sama.)</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani menghitung <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> ÷ 2 dengan cara membagi PEMBILANG dengan 2, jadi jawabannya <table class="pecahan"><tr><td>0,5</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table>. Apakah cara ini tepat? Berikan jawaban yang benar!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Rani TIDAK tepat untuk kasus ini — pembilang 1 TIDAK habis dibagi 2, jadi tidak boleh dipaksakan membagi pembilang (apalagi sampai jadi desimal di dalam pecahan, itu bentuk yang tidak wajar). Cara yang benar: kalikan penyebut, 4×2=8, pembilang tetap 1. Jawaban yang benar: <table class="pecahan"><tr><td>1</td></tr><tr class="garis"><td></td></tr><tr><td>8</td></tr></table>.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bersama kelompokmu, bayangkan sisa bahan makanan berbentuk pecahan (misalnya <table class="pecahan"><tr><td>3</td></tr><tr class="garis"><td></td></tr><tr><td>4</td></tr></table> liter minyak) yang harus dibagi rata ke beberapa wadah (misalnya 3 wadah). Hitung berapa liter tiap wadah, gambarkan juga potongannya seperti contoh di atas untuk membuktikan jawabanmu.
+      </div>
+
+      <p>Kamu sudah menguasai perkalian DAN pembagian pecahan dengan bilangan asli! Materi terakhir dari rangkaian ini akan mengajarkan cara mengubah pecahan ke bentuk desimal, dan menggabungkan semua kemampuanmu dalam satu soal cerita.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
