@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyeimbangkan Timbangan dengan Angka Nyata · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .tb-wrap { max-width: 280px; margin: 1.1rem auto 0.3rem; }
+  .tb-bar { height: 5px; width: 100%; background: var(--ink); border-radius: 3px; transform-origin: center; margin-bottom: 2px; transition: none; }
+  .tb-bar.tilt-left { transform: rotate(-6deg); }
+  .tb-bar.tilt-right { transform: rotate(6deg); }
+  .tb-row { display: flex; align-items: flex-start; justify-content: space-between; }
+  .tb-fulcrum { width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 20px solid var(--ink); margin-top: -2px; flex-shrink: 0; }
+  .tb-pan { border: 3px solid var(--ink); border-top: none; border-radius: 0 0 30px 30px; min-width: 84px; min-height: 30px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 2px; font-weight: 700; background: #fff; font-size: calc(var(--content-fs) - 3px); padding: 4px 6px; }
+  .tb-pan.naik { margin-top: 2px; }
+  .tb-pan.turun { margin-top: 16px; }
+  .tb-pan.rata { margin-top: 9px; }
+  .satuan { display: inline-block; width: 11px; height: 11px; background: var(--m-color); border-radius: 3px; }
+  .tb-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.5rem 0 1.3rem; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⚖️</span>
+      <div class="ma-cover-eyebrow">Aljabar · Simbol "=" sebagai Relasi Kesetaraan · Materi 1 dari 3</div>
+      <div class="ma-cover-title">Menyeimbangkan Timbangan dengan Angka Nyata</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Mulai dari sini, kita belajar bagian Matematika yang baru: <strong>Aljabar</strong>. Sebelum belajar rumus atau simbol yang rumit, kita mulai dari sebuah ALAT: <strong>timbangan dua lengan</strong> (balance).</p>
+
+      <p>Timbangan ini punya 2 piring, kiri dan kanan, digantung di ujung sebuah batang. Batangnya bisa MIRING kalau salah satu piring lebih berat, atau LURUS DATAR kalau kedua piring beratnya SAMA PERSIS.</p>
+
+      <p>Lihat gambar ini. Piring kiri diisi 3 kubus satuan. Piring kanan diisi 5 kubus satuan.</p>
+
+      <div class="tb-wrap">
+        <div class="tb-bar tilt-right"></div>
+        <div class="tb-row">
+          <div class="tb-pan naik"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span></div>
+          <div class="tb-fulcrum"></div>
+          <div class="tb-pan turun"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span></div>
+        </div>
+      </div>
+      <p class="tb-caption">Kiri = 3 kubus, Kanan = 5 kubus. Piring kanan lebih berat, jadi turun. Timbangan MIRING — artinya TIDAK SEIMBANG.</p>
+
+      <p>Karena piring kanan lebih berat (5 kubus lebih banyak dari 3 kubus), piring itu turun ke bawah, dan piring kiri naik ke atas. Timbangan jadi MIRING. Ini artinya kedua sisi TIDAK sama nilainya.</p>
+
+      <p>Sekarang, coba tambahkan 2 kubus lagi ke piring kiri, supaya piring kiri jadi berisi 5 kubus juga:</p>
+
+      <div class="tb-wrap">
+        <div class="tb-bar"></div>
+        <div class="tb-row">
+          <div class="tb-pan rata"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span></div>
+          <div class="tb-fulcrum"></div>
+          <div class="tb-pan rata"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span></div>
+        </div>
+      </div>
+      <p class="tb-caption">Kiri = 5 kubus, Kanan = 5 kubus. Batangnya LURUS DATAR — timbangan SEIMBANG.</p>
+
+      <p>Sekarang batangnya LURUS DATAR — tidak miring ke mana pun. Ini terjadi HANYA kalau kedua piring punya nilai yang SAMA PERSIS. Keadaan ini disebut <strong>seimbang</strong>.</p>
+
+      <div class="contoh-box">
+        <strong>Seimbang = nilai kedua sisi SAMA.</strong><br>
+        Bukan sekadar "kelihatan mirip" atau "sama-sama ada isinya" — harus benar-benar SAMA BANYAK/SAMA NILAI.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu dan temanmu duduk di ujung-ujung papan jungkat-jungkit di taman bermain.</span></p>
+        <p>Kalau berat badan kamu dan temanmu SAMA PERSIS, papan jungkat-jungkitnya akan diam LURUS DATAR — tidak ada yang naik atau turun.</p>
+        <p>Tapi kalau salah satu dari kalian lebih berat, papan itu akan MIRING — yang lebih berat turun ke bawah, yang lebih ringan naik ke atas.</p>
+        <p>Timbangan dua lengan bekerja dengan prinsip yang SAMA PERSIS seperti jungkat-jungkit itu. Bedanya, di timbangan kita mengisi piringnya dengan kubus-kubus satuan, bukan orang.</p>
+      </div>
+
+      <p>Ada satu hal PENTING yang harus kamu perhatikan: yang menentukan seimbang atau tidak adalah JUMLAH/NILAI di tiap piring — BUKAN tampilan piringnya. Piring kiri berisi 4 kubus besar dan piring kanan berisi 4 kubus kecil TETAP seimbang, selama JUMLAHNYA sama (4 = 4). Yang tidak seimbang adalah kalau JUMLAHNYA beda, walaupun bentuk kubusnya sama persis.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Timbangan bisa seimbang dengan CARA yang berbeda-beda. Kamu bisa MENAMBAH ke piring yang lebih ringan, atau MENGURANGI dari piring yang lebih berat — keduanya sama-sama bisa membuat timbangan seimbang, asalkan hasil akhirnya kedua piring bernilai SAMA.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Piring kiri berisi 6 kubus, piring kanan berisi 6 kubus. Apakah timbangan ini seimbang? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> YA, seimbang — karena kedua piring bernilai SAMA PERSIS (6 = 6). Batang timbangan akan lurus datar.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Piring kiri berisi 7 kubus, piring kanan berisi 4 kubus. Berapa kubus yang perlu DITAMBAHKAN ke piring kanan supaya timbangan seimbang?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Piring kiri (7) lebih berat dari piring kanan (4). Selisihnya 7−4=3. Tambahkan 3 kubus ke piring kanan, sehingga piring kanan jadi 4+3=7, sama dengan piring kiri (7=7). Timbangan jadi seimbang.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made bilang piring kiri (5 kubus BESAR) dan piring kanan (5 kubus KECIL) pasti TIDAK seimbang, karena ukuran kubusnya beda. Apakah Made benar? Jelaskan alasanmu!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Made SALAH. Yang menentukan seimbang atau tidak adalah NILAI/JUMLAH di tiap piring (dalam soal ini, jumlah kubusnya), bukan ukuran fisik kubusnya. Karena jumlahnya sama-sama 5 (5=5), timbangan tetap SEIMBANG, walaupun ukuran kubusnya beda.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kalau di rumah/sekolah ada timbangan dua lengan (atau gantungan baju yang bisa dipakai sebagai pengganti, dengan kantong plastik di tiap ujung), coba isi kedua sisi dengan benda-benda kecil (kelereng, kancing, batu kerikil) sampai timbangan itu benar-benar seimbang (lurus datar). Hitung berapa benda di tiap sisi — pastikan jumlahnya SAMA. Kalau tidak ada timbangan, gambarkan di kertas seperti contoh di atas.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu menuliskan situasi timbangan yang seimbang ini ke dalam KALIMAT MATEMATIKA — inilah langkah pertama menuju pemahaman simbol "=" yang sesungguhnya.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

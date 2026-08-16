@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menemukan Nilai yang Belum Diketahui · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .tb-wrap { max-width: 280px; margin: 1.1rem auto 0.3rem; }
+  .tb-bar { height: 5px; width: 100%; background: var(--ink); border-radius: 3px; transform-origin: center; margin-bottom: 2px; }
+  .tb-row { display: flex; align-items: flex-start; justify-content: space-between; }
+  .tb-fulcrum { width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 20px solid var(--ink); margin-top: -2px; flex-shrink: 0; }
+  .tb-pan { border: 3px solid var(--ink); border-top: none; border-radius: 0 0 30px 30px; min-width: 90px; min-height: 30px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 2px; font-weight: 700; background: #fff; font-size: calc(var(--content-fs) - 3px); padding: 4px 6px; margin-top: 9px; }
+  .satuan { display: inline-block; width: 11px; height: 11px; background: var(--m-color); border-radius: 3px; }
+  .satuan.tanya { background: #fff; border: 2px solid var(--m-color); }
+  .tb-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.5rem 0 1.3rem; }
+  .kotak-tanya { display: inline-flex; align-items: center; justify-content: center; width: 1.7em; height: 1.7em; border: 2.5px solid var(--m-color); border-radius: 7px; font-weight: 700; color: var(--m-color); vertical-align: middle; margin: 0 2px; font-family: 'Plus Jakarta Sans', monospace; }
+  .opsoal { text-align: center; font-size: calc(var(--content-fs) + 1px); font-weight: 700; margin: 0.6rem 0 1.1rem; color: var(--ink); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⚖️</span>
+      <div class="ma-cover-eyebrow">Aljabar · Simbol "=" sebagai Relasi Kesetaraan · Materi 3 dari 3 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Menemukan Nilai yang Belum Diketahui</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Lihat timbangan ini. Piring kiri berisi 4 kubus DAN sebuah kotak tertutup — isinya BELUM diketahui. Piring kanan berisi 7 kubus. Timbangan ini SEIMBANG (lurus datar).</p>
+
+      <div class="tb-wrap">
+        <div class="tb-bar"></div>
+        <div class="tb-row">
+          <div class="tb-pan"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan tanya">?</span></div>
+          <div class="tb-fulcrum"></div>
+          <div class="tb-pan"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span></div>
+        </div>
+      </div>
+      <p class="tb-caption">Kiri = 4 kubus + kotak misteri. Kanan = 7 kubus. Timbangan seimbang — jadi nilai kiri PASTI sama dengan 7.</p>
+
+      <p>Kalimat matematikanya ditulis begini, dengan kotak kosong menggantikan isi yang belum diketahui:</p>
+
+      <div class="opsoal">4 + <span class="kotak-tanya">&nbsp;</span> = 7</div>
+
+      <p>Karena timbangan ini SEIMBANG, kita TAHU PASTI bahwa "4 + kotak" harus bernilai SAMA dengan 7. Pakai pemahaman kesetaraan yang sudah kamu kuasai: berapa yang harus ditambahkan ke 4 supaya jadi 7?</p>
+
+      <ol class="langkah">
+        <li>Sisi kanan sudah pasti bernilai 7 (angka polos, tidak ada yang disembunyikan).</li>
+        <li>Supaya sisi kiri juga bernilai 7, kotak itu harus berisi angka yang membuat "4 + ? = 7" benar.</li>
+        <li>4 + 3 = 7. Jadi kotak itu berisi <strong>3</strong>.</li>
+      </ol>
+
+      <div class="opsoal">4 + <span class="kotak-tanya">3</span> = 7</div>
+
+      <p><strong>Cara mengecek jawabanmu benar:</strong> masukkan angka yang kamu temukan ke kotak, lalu hitung kedua sisi. Kalau nilainya SAMA, jawabanmu benar. 4+3=7, dan sisi kanan memang 7. Cocok!</p>
+
+      <p>Sekarang, hal yang PALING penting di materi ini: kotak kosong itu <strong>TIDAK SELALU</strong> ada di sebelah kanan tanda "=", dan TIDAK SELALU di akhir kalimat. Lihat contoh-contoh berikut, semuanya SAH:</p>
+
+      <div class="contoh-box">
+        <strong>Kotak di kanan:</strong> 5 + 2 = <span class="kotak-tanya">7</span>&nbsp;&nbsp;<span style="color:var(--ink-3); font-size:calc(var(--content-fs) - 4px);">(kotak = 7)</span>
+      </div>
+      <div class="contoh-box">
+        <strong>Kotak di kiri:</strong> <span class="kotak-tanya">6</span> + 3 = 9&nbsp;&nbsp;<span style="color:var(--ink-3); font-size:calc(var(--content-fs) - 4px);">(kotak = 6)</span>
+      </div>
+      <div class="contoh-box">
+        <strong>Kotak di tengah:</strong> 8 = <span class="kotak-tanya">5</span> + 3&nbsp;&nbsp;<span style="color:var(--ink-3); font-size:calc(var(--content-fs) - 4px);">(kotak = 5)</span>
+      </div>
+
+      <p>Perhatikan contoh ketiga: <strong>8 = kotak + 3</strong>. Di sini angka polos (8) ada di SEBELAH KIRI tanda "=", bukan di kanan seperti biasanya. Ini tetap SAH dan BENAR, karena ingat — tanda "=" artinya "sama nilainya", bukan "menghasilkan ke arah kanan". Jadi kotak itu tetap bisa dicari: berapa yang ditambah 3 supaya jadi 8? Jawabannya 5.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan lagi timbangan dengan kotak tertutup di salah satu piring — di piring MANA PUN, kiri atau kanan, prinsipnya SAMA.</span></p>
+        <p>Timbangan tidak peduli kotak misteri itu ada di piring kiri atau kanan. Yang penting: begitu timbangan SEIMBANG (lurus datar), kita PASTI tahu nilai piring kiri = nilai piring kanan. Dari situ kita bisa "membongkar" isi kotak, di piring mana pun kotak itu berada.</p>
+        <p>Kesalahan yang sering terjadi: banyak siswa hanya terbiasa mengerjakan soal kalau kotaknya ada di kanan dan di akhir kalimat (seperti "5+2=☐"). Begitu kotaknya pindah ke kiri atau tengah, mereka bingung — padahal caranya SAMA PERSIS, cuma posisi kotaknya beda.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Cara paling aman menemukan isi kotak: hitung dulu sisi yang SUDAH LENGKAP (tidak ada kotaknya), lalu bandingkan dengan sisi yang ada kotaknya untuk mencari angka yang membuat keduanya SAMA. Jangan terpaku pada posisi kotak — fokus pada NILAI KESETARAAN kedua sisi.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Temukan nilai kotak: 6 + <span class="kotak-tanya">&nbsp;</span> = 10</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sisi kanan sudah pasti 10. Cari angka yang membuat 6+?=10. Jawabannya 4, karena 6+4=10. <strong>Kotak = 4</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Temukan nilai kotak: <span class="kotak-tanya">&nbsp;</span> − 3 = 5</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sisi kanan sudah pasti 5. Cari angka yang kalau dikurangi 3 hasilnya 5. Karena 8−3=5, maka <strong>kotak = 8</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan mengerjakan soal "9 = <span class="kotak-tanya">&nbsp;</span> + 4" dan langsung bingung, katanya "kok angkanya di depan, bukan di belakang seperti biasa?". Bantu Wayan: berapa nilai kotaknya, dan jelaskan kenapa posisi angka di depan itu tetap sah!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Posisi ini tetap SAH karena tanda "=" berarti "sama nilainya", bukan "menuju ke arah kanan" — jadi angka polos boleh berada di kiri ATAU kanan. Untuk mencari kotaknya: sisi kiri sudah pasti bernilai 9. Cari angka yang kalau ditambah 4 hasilnya 9. Karena 5+4=9, maka <strong>kotak = 5</strong>.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kerjakan 5 kalimat matematika dengan satu kotak kosong di posisi BERBEDA-BEDA (pastikan ada yang di kiri, ada yang di kanan, dan ada yang di tengah — jangan semuanya di posisi yang sama). Untuk dua soal, buktikan jawabanmu dengan menggambar timbangan seperti contoh di materi ini, tunjukkan kenapa kedua sisi jadi seimbang.
+      </div>
+
+      <p>Selamat, kamu sudah menyelesaikan remediasi penting tentang tanda "=" sebagai relasi kesetaraan! Pemahaman ini akan jadi fondasi kuat untuk materi berikutnya: menemukan nilai yang belum diketahui dalam kalimat matematika yang lebih rumit, dengan angka sampai 1.000 dan kombinasi dua operasi sekaligus.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

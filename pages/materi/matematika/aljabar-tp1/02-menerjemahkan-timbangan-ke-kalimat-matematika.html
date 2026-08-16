@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menerjemahkan Timbangan ke Kalimat Matematika · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .tb-wrap { max-width: 280px; margin: 1.1rem auto 0.3rem; }
+  .tb-bar { height: 5px; width: 100%; background: var(--ink); border-radius: 3px; transform-origin: center; margin-bottom: 2px; }
+  .tb-row { display: flex; align-items: flex-start; justify-content: space-between; }
+  .tb-fulcrum { width: 0; height: 0; border-left: 11px solid transparent; border-right: 11px solid transparent; border-bottom: 20px solid var(--ink); margin-top: -2px; flex-shrink: 0; }
+  .tb-pan { border: 3px solid var(--ink); border-top: none; border-radius: 0 0 30px 30px; min-width: 90px; min-height: 30px; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 2px; font-weight: 700; background: #fff; font-size: calc(var(--content-fs) - 3px); padding: 4px 6px; margin-top: 9px; }
+  .satuan { display: inline-block; width: 11px; height: 11px; background: var(--m-color); border-radius: 3px; }
+  .satuan.b { background: #c76b3f; }
+  .tb-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.5rem 0 1.3rem; }
+  .opsoal { text-align: center; font-size: calc(var(--content-fs) + 1px); font-weight: 700; margin: 0.6rem 0 1.1rem; color: var(--ink); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⚖️</span>
+      <div class="ma-cover-eyebrow">Aljabar · Simbol "=" sebagai Relasi Kesetaraan · Materi 2 dari 3</div>
+      <div class="ma-cover-title">Menerjemahkan Timbangan ke Kalimat Matematika</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang kita akan menuliskan situasi timbangan seimbang menjadi KALIMAT MATEMATIKA. Lihat gambar ini: piring kiri berisi 3 kubus DAN 2 kubus (dua warna berbeda, ditaruh bersama). Piring kanan berisi 4 kubus DAN 1 kubus.</p>
+
+      <div class="tb-wrap">
+        <div class="tb-bar"></div>
+        <div class="tb-row">
+          <div class="tb-pan"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan b"></span><span class="satuan b"></span></div>
+          <div class="tb-fulcrum"></div>
+          <div class="tb-pan"><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan"></span><span class="satuan b"></span></div>
+        </div>
+      </div>
+      <p class="tb-caption">Kiri = 3 kubus + 2 kubus = 5. Kanan = 4 kubus + 1 kubus = 5. Batangnya lurus datar — SEIMBANG.</p>
+
+      <p>Karena timbangan ini SEIMBANG, kita bisa menuliskan situasi ini sebagai kalimat matematika, dengan tanda "=" di tengah — persis meniru posisi batang timbangan yang menghubungkan piring kiri dan kanan:</p>
+
+      <div class="opsoal">3 + 2 = 4 + 1</div>
+
+      <p>Perhatikan baik-baik: <strong>tanda "=" di sini artinya "SAMA NILAINYA dengan"</strong> — sama persis dengan makna "seimbang" pada timbangan. Tanda "=" BUKAN berarti "hasilnya adalah" atau "menghasilkan", meskipun mungkin kamu sering melihatnya dipakai seperti itu (misalnya di kalkulator, tombol "=" menampilkan hasil).</p>
+
+      <p>Di sini, "=" menghubungkan DUA SISI yang NILAINYA SAMA — sisi kiri (3+2) dan sisi kanan (4+1) sama-sama bernilai 5, walaupun cara penulisannya beda.</p>
+
+      <div class="contoh-box">
+        Tanda "=" = "SAMA NILAINYA DENGAN", bukan sekadar "hasilnya".<br>
+        3 + 2 = 4 + 1 &nbsp;→&nbsp; kedua sisi SAMA-SAMA bernilai 5.
+      </div>
+
+      <p>Kalimat seperti ini bisa punya BANYAK bentuk, bukan cuma "operasi di kiri, angka polos di kanan". Berikut beberapa contoh cara menerjemahkan timbangan yang berbeda:</p>
+
+      <div class="opsoal">6 = 6</div>
+      <p style="text-align:center; font-size:calc(var(--content-fs) - 3px); color:var(--ink-3); margin-top:-0.8rem;">Kedua piring berisi angka polos, tanpa operasi apa pun — tetap sah, selama nilainya sama.</p>
+
+      <div class="opsoal">8 − 3 = 2 + 3</div>
+      <p style="text-align:center; font-size:calc(var(--content-fs) - 3px); color:var(--ink-3); margin-top:-0.8rem;">Operasi pengurangan di kiri, operasi penjumlahan di kanan — keduanya sama-sama bernilai 5.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan "=" seperti sebuah JEMBATAN yang menghubungkan dua tempat yang punya JUMLAH PENDUDUK SAMA PERSIS.</span></p>
+        <p>Jembatan itu tidak peduli bagaimana bentuk kedua tempat itu (satu desa kecil padat, satu kota besar tapi sedikit penduduknya) — yang penting JUMLAHNYA sama, jembatan itu tetap sah menghubungkan keduanya.</p>
+        <p>Begitu juga tanda "=" — dia menghubungkan dua KALIMAT ANGKA yang NILAINYA sama, tidak peduli bagaimana bentuk penulisan di kiri dan kanannya (operasi apa yang dipakai, berapa banyak angka, dst).</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Sebelum menuliskan tanda "=", SELALU cek dulu: apakah nilai sisi kiri benar-benar SAMA dengan nilai sisi kanan? Kalau tidak sama, itu BUKAN kalimat yang benar, meskipun kamu menuliskan tanda "=" di situ. Menulis "3+2=6" itu SALAH, karena 3+2 sebenarnya bernilai 5, bukan 6.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Piring kiri berisi 4 kubus dan 3 kubus. Piring kanan berisi 7 kubus polos. Timbangan ini seimbang. Tuliskan kalimat matematikanya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kiri = 4+3 = 7. Kanan = 7. Kalimatnya: <strong>4 + 3 = 7</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Apakah kalimat "9 − 4 = 2 + 3" benar? Buktikan dengan menghitung kedua sisinya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sisi kiri: 9−4=5. Sisi kanan: 2+3=5. Karena kedua sisi SAMA (5=5), kalimat ini BENAR.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani menulis kalimat "6 + 2 = 9" karena menurutnya "yang penting ada tanda sama dengan di tengah". Apakah kalimat Rani benar? Jelaskan dan perbaiki jika salah!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kalimat Rani SALAH. Tanda "=" hanya sah dipakai kalau nilai kedua sisi benar-benar SAMA — bukan sekadar diletakkan di tengah kalimat. Sisi kiri (6+2) bernilai 8, sedangkan sisi kanan bernilai 9. Karena 8 ≠ 9, kalimat itu tidak sah. Perbaikan yang benar: <strong>6 + 2 = 8</strong> (bukan 9), atau ubah sisi kanan supaya benar-benar bernilai 8.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Susun 3 situasi timbangan seimbang yang berbeda (boleh pakai kubus/kelereng sungguhan atau digambar). Tuliskan kalimat matematikanya. Untuk salah satu, buat operasi hitung di KEDUA sisi (bukan cuma satu sisi angka polos), seperti contoh "8 − 3 = 2 + 3" di atas. Tunjukkan pada teman sebangkumu dan jelaskan mengapa kalimatmu benar.
+      </div>
+
+      <p>Kamu sudah paham dasar tanda "=" sebagai relasi kesetaraan. Materi terakhir (Pertemuan Inti) akan mengajakmu selangkah lebih jauh: bagaimana kalau salah satu bagian dari kalimat itu BELUM diketahui nilainya?</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
