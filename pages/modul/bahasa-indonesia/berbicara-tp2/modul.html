@@ -1,1 +1,732 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membacakan Karya Sastra — Bahasa Indonesia Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+input.ans-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);background:#fffef9;}
+input.ans-input:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.field-row{margin-bottom:14px;}
+.field-row label{display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field-hint{font-size:12px;color:var(--ink-faint);margin-top:4px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.kalimat-row{border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fff;}
+.kalimat-row .kt{font-size:13.5px;margin-bottom:10px;line-height:1.6;font-style:italic;}
+.dim-row{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;}
+.dim-col{flex:1;min-width:150px;}
+.dim-col .dl{font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
 
+/* ============ PAGINATION / STEPPER ============ */
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
+.page{display:none;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+
+/* ============ MILESTONE (Puncak Semester/Tahun) ============ */
+.milestone{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#fff8e6;border-radius:14px;padding:18px 20px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;}
+.milestone .icon{font-size:28px;}
+.milestone strong{display:block;font-size:14px;margin-bottom:4px;}
+.milestone p{font-size:13px;opacity:.95;}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.tip-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12.5px;}
+.tip-card .ti{font-size:18px;margin-bottom:4px;}
+@media (max-width:560px){.tip-grid{grid-template-columns:1fr;}}
+.recap-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+.recap-item{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;}
+.recap-item .rn{width:22px;height:22px;border-radius:50%;background:var(--nav);color:#fff;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.check-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13.5px;}
+.check-item input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Membacakan Karya Sastra</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
+
+<div id="stepper" class="stepper"></div>
+
+<div class="wrap">
+
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> B2 — Berbicara dan Mempresentasikan · Membacakan Karya Sastra (Siklus Berkelanjutan), Bahasa Indonesia Kelas 5. TP dan 6 siklus dipakai ulang dari <code>pages/materi/bahasa-indonesia/berbicara-tp2/</code> — tidak dianalisis ulang dari CP.</li>
+<li><b>Sifat siklus berkelanjutan:</b> TP ini sengaja dirancang sebagai siklus berulang sepanjang tahun (Buku Saku CP Bagian VII) — Siklus 3 adalah titik penilaian Puncak Semester 1, Siklus 6 adalah Puncak Tahun. Modul ini memuat KESELURUHAN 6 siklus dalam satu file (mengikuti struktur materi yang sudah ada), bukan dipecah per-semester, supaya progres &amp; jawaban siswa tetap dalam satu tempat sepanjang tahun.</li>
+<li><b>Sama seperti B1:</b> ini TP performatif-ekspresif — dinilai lewat observasi performa langsung dengan rubrik (Buku Saku CP Bagian III), bukan oleh modul ini. Modul membantu siswa MENGENALI rasa dalam teks dan MERENCANAKAN penyesuaian suara (kecepatan/volume/nada) — bagian yang bisa diukur tertulis — sementara praktik membacakan sungguhan tetap dilakukan ke orang nyata di setiap siklus.</li>
+<li><b>Contoh teks di modul ini semua baru</b>, berbeda dari materi, supaya latihan mengenali rasa benar-benar menguji transfer kemampuan.</li>
+<li>Profil kelas dipakai ulang: kemampuan awal homogen, kesenjangan ekonomi tidak signifikan.</li>
+</ul>
+</details>
+
+<div class="cover">
+  <span class="kicker">✦ Bahasa Indonesia · Kelas 5 · Siklus Berkelanjutan</span>
+  <h1>Membacakan Karya Sastra</h1>
+  <p class="lede">Bismillah, mari kita mulai perjalanan sepanjang tahun ini! Kamu akan belajar membuat suaramu mengikuti rasa dalam sebuah cerita atau puisi — dari yang paling sederhana, sampai tampil membacakan karya pilihanmu di depan kelas.</p>
+  <div class="cover-meta">
+    <span>🎭 6 siklus sepanjang tahun</span>
+    <span>🏁 2 titik puncak (semester &amp; tahun)</span>
+    <span>👥 Latihan ke orang nyata di tiap siklus</span>
+  </div>
+</div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Membacakan karya sastra — puisi atau cerita pendek — beda dengan membaca teks informasi biasa. Kalau teks informasi cukup dibaca datar dan jelas, karya sastra perlu suaramu mengikuti rasa/perasaan yang ada di dalamnya.</p>
+  <p>Unit ini akan menemanimu sepanjang tahun, lewat 6 siklus yang makin lama makin menantang — dari mengenali satu rasa yang jelas, sampai memilih karya terbaikmu untuk dibacakan di depan kelas.</p>
+  <div class="produk-banner">
+    <div class="icon">🎭</div>
+    <div>
+      <strong>Yang akan kamu lakukan</strong>
+      Di tiap siklus, kamu akan berlatih mengenali rasa dalam teks, menentukan cara membacakannya, LALU benar-benar membacakannya ke orang sungguhan — makin lama makin banyak pendengarnya.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SIKLUS 1 -->
+<section class="block" id="siklus1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Siklus 1 dari 6 · Materi Pintu Masuk</div><h2 style="margin-bottom:0;">Suara yang Mengikuti Rasa</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Tiga hal yang bisa diubah dari suaramu: <b>kecepatan</b> (cepat/lambat), <b>volume</b> (keras/pelan), dan <b>nada</b> (ceria/lesu/berat). Yuk coba kenali rasa tiga teks berikut, lalu atur suaramu.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Menurutmu, kalau kamu membaca teks yang isinya menyedihkan, apakah suaramu akan otomatis berubah? Ceritakan pengalamanmu.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🎭 Kenali Rasanya, Atur Suaramu</div>
+    <div class="act-desc">Baca tiap teks, tentukan rasanya, lalu pilih kecepatan/volume/nada yang paling cocok.</div>
+    <div id="s1-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">👥 Praktik Nyata</div>
+    <div class="act-desc">Pilih salah satu teks di atas (atau puisi lain), baca dengan suara keras 2-3 kali sambil menyesuaikan suaramu. Minta seseorang di rumah mendengarkan.</div>
+    <div class="reflect-q"><label>Rasa apa yang mereka tangkap dari cara kamu membaca?</label><textarea class="ans"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Siklus 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Ada bagian yang masih membingungkan? Tuliskan.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SIKLUS 2 -->
+<section class="block" id="siklus2">
+  <div class="subunit-head"><span class="badge-num">2</span>
+    <div><div class="block-eyebrow">Siklus 2 dari 6</div><h2 style="margin-bottom:0;">Rasa yang Berubah dalam Satu Cerita</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Tidak semua cerita punya satu rasa saja. Kamu perlu menemukan titik di mana rasa berubah, lalu menyesuaikan suaramu tepat di situ.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kata-kata apa yang biasanya jadi tanda bahwa rasa dalam cerita akan berubah?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🔎 Temukan Titik Pergeserannya</div>
+    <div class="act-desc">Baca cerita berikut, lalu jawab pertanyaannya.</div>
+    <div class="kalimat-row">
+      <div class="kt">"Aku dan adikku membangun istana pasir di pantai, tertawa-tawa sambil menghias dengan kerang-kerang kecil. Istana kami jadi paling bagus di antara yang lain. Tiba-tiba ombak besar datang dan menyapu habis istana pasir kami dalam sekejap. Kami berdiri terdiam, memandangi pasir rata yang tadinya istana megah kami."</div>
+    </div>
+    <div class="field-row"><label>Kalimat mana yang jadi titik pergeseran rasa?</label>
+      <div class="choice-group" id="s2-titik">
+        <button class="choice-btn" onclick="checkMCQ('s2-titik',this,0,1)">"Aku dan adikku membangun istana pasir..."</button>
+        <button class="choice-btn" onclick="checkMCQ('s2-titik',this,1,1)">"Tiba-tiba ombak besar datang..."</button>
+      </div>
+    </div>
+    <div class="field-row"><label>Rasa 1 (sebelum pergeseran)</label>
+      <div class="choice-group" id="s2-rasa1">
+        <button class="choice-btn" onclick="checkMCQ('s2-rasa1',this,0,0)">Gembira</button>
+        <button class="choice-btn" onclick="checkMCQ('s2-rasa1',this,1,0)">Tegang</button>
+      </div>
+    </div>
+    <div class="field-row"><label>Rasa 2 (sesudah pergeseran)</label>
+      <div class="choice-group" id="s2-rasa2">
+        <button class="choice-btn" onclick="checkMCQ('s2-rasa2',this,0,1)">Sedih/kecewa</button>
+        <button class="choice-btn" onclick="checkMCQ('s2-rasa2',this,1,1)">Bangga</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">👥 Praktik Nyata</div>
+    <div class="act-desc">Baca cerita istana pasir di atas (atau teks lain), ubah suaramu tepat di titik pergeseran. Minta seseorang menebak di bagian mana rasanya berubah.</div>
+    <div class="reflect-q"><label>Apakah mereka bisa menebak dengan tepat? Ceritakan.</label><textarea class="ans"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz2"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang paling sulit dari mencari titik pergeseran rasa?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<!-- SIKLUS 3 — PUNCAK SEMESTER 1 -->
+<section class="block" id="siklus3">
+  <div class="subunit-head"><span class="badge-num badge-inti">3</span>
+    <div><div class="block-eyebrow">Siklus 3 dari 6 · Puncak Semester 1</div><h2 style="margin-bottom:0;">Membacakan Karyaku Sendiri</h2></div>
+  </div>
+  <div class="milestone"><div class="icon">🏁</div><div><strong>Ini titik puncak Semester 1</strong><p>Kamu sudah tahu persis rasa apa yang ingin disampaikan, karena kamu sendiri yang menulisnya. Tugasmu sekarang: temukan cara membacakannya supaya rasa itu sampai ke pendengar.</p></div></div>
+
+  <div class="activity">
+    <div class="act-title">📋 Kartu Persiapan Puncak Semester 1</div>
+    <div class="act-desc">Pilih satu karya sederhana milikmu sendiri (boleh dari materi Menulis, atau tulisan lain), lalu isi kotak berikut.</div>
+    <div class="field-row"><label>Judul/Tentang Apa Karyaku</label><input class="ans-input" id="k3-judul" type="text" placeholder="mis. Payung Bolong"></div>
+    <div class="field-row"><label>Rasa Paling Kuat di Karyaku</label><input class="ans-input" id="k3-rasa" type="text" placeholder="mis. tenang → malu → lega"></div>
+    <div class="field-row"><label>Apakah Ada Titik Pergeseran? Di Mana?</label><textarea class="ans" id="k3-pergeseran" placeholder="Tulis di kalimat mana rasanya berubah, kalau ada..."></textarea></div>
+    <div class="field-row"><label>Catatan Latihan (setelah baca keras 2-3 kali)</label><textarea class="ans" id="k3-catatan" placeholder="Bagian mana yang masih sulit? Apa yang sudah lancar?"></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">👥 Praktik Nyata (Penilaian Puncak Semester 1)</div>
+    <div class="act-desc">Bacakan karyamu ke kelompok kecil (2-3 orang) di rumah atau kelas.</div>
+    <div class="reflect-q"><label>Bagaimana reaksi mereka? Apakah rasa yang kamu maksud sampai?</label><textarea class="ans"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz3"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa bedanya membacakan karya sendiri dibanding teks orang lain?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(5)">Lanjut →</button></div>
+</div><!-- /page 4 -->
+
+<div class="page" data-page="5">
+<!-- SIKLUS 4 -->
+<section class="block" id="siklus4">
+  <div class="subunit-head"><span class="badge-num">4</span>
+    <div><div class="block-eyebrow">Siklus 4 dari 6 · Semester 2</div><h2 style="margin-bottom:0;">Rasa yang Tersembunyi</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Selamat datang di semester baru! Sekarang rasa dalam teks tidak dinyatakan langsung — kamu harus menyimpulkannya dari tindakan fisik, suasana, atau pertentangan kata dan tindakan.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Pernahkah kamu melihat seseorang bilang "aku baik-baik saja" tapi sebenarnya terlihat sedih? Bagaimana kamu tahu?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🔍 Temukan Rasa yang Tersembunyi</div>
+    <div class="act-desc">Baca tiap teks, cari petunjuknya, lalu pilih rasa yang tersembunyi.</div>
+    <div id="s4-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">👥 Praktik Nyata</div>
+    <div class="act-desc">Pilih salah satu teks di atas. Baca dalam hati dulu, tuliskan simpulanmu, lalu bacakan dengan suara yang sesuai. Minta seseorang menebak rasanya.</div>
+    <div class="reflect-q"><label>Apakah tebakan mereka sesuai dengan yang kamu maksud?</label><textarea class="ans"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz4"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Petunjuk mana yang paling membantumu menemukan rasa tersembunyi: tindakan fisik, suasana, atau pertentangan kata-tindakan?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(4)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(6)">Lanjut →</button></div>
+</div><!-- /page 5 -->
+
+<div class="page" data-page="6">
+<!-- SIKLUS 5 -->
+<section class="block" id="siklus5">
+  <div class="subunit-head"><span class="badge-num">5</span>
+    <div><div class="block-eyebrow">Siklus 5 dari 6</div><h2 style="margin-bottom:0;">Tampil di Kelompok Besar</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang tantangannya bukan lagi soal menemukan rasa, tapi menyampaikannya ke pendengar yang lebih banyak.</p>
+
+  <div class="activity">
+    <div class="act-title">💡 Tips Tampil ke Kelompok Besar</div>
+    <div class="tip-grid">
+      <div class="tip-card"><div class="ti">👀</div>Lirik teks, lalu angkat wajah — jangan menunduk terus-menerus ke kertas.</div>
+      <div class="tip-card"><div class="ti">🔊</div>Proyeksikan suaramu supaya terdengar sampai belakang, tapi jangan sampai ekspresi hilang.</div>
+      <div class="tip-card"><div class="ti">🐢</div>Sedikit lebih lambat dari biasanya — beri waktu pendengar menangkap tiap kata.</div>
+      <div class="tip-card"><div class="ti">📍</div>Ingat-ingat titik pentingnya sebelum tampil, supaya tidak kaget saat sampai di bagian itu.</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">👥 Praktik Nyata</div>
+    <div class="act-desc">Pilih satu teks yang sudah kamu latih dari siklus-siklus sebelumnya (atau karya sendiri). Latih membacanya dengan volume lebih besar sambil sesekali mengangkat wajah. Kumpulkan kelompok yang lebih besar dari biasanya di rumahmu.</div>
+    <div class="reflect-q"><label>Apa yang paling berbeda saat tampil ke kelompok besar, dibanding kelompok kecil?</label><textarea class="ans"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz5"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Bagian mana yang masih perlu kamu latih lagi sebelum tampil ke kelas penuh?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(5)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(7)">Lanjut →</button></div>
+</div><!-- /page 6 -->
+
+<div class="page" data-page="7">
+<!-- SIKLUS 6 — PUNCAK TAHUN -->
+<section class="block" id="siklus6">
+  <div class="subunit-head"><span class="badge-num badge-inti">6</span>
+    <div><div class="block-eyebrow">Siklus 6 dari 6 · Puncak Tahun — Saatnya Tampil!</div><h2 style="margin-bottom:0;">Karya Pilihanku</h2></div>
+  </div>
+  <div class="milestone"><div class="icon">🏆</div><div><strong>Ini titik puncak — akhir perjalanan setahun</strong><p>Gabungkan semua yang sudah kamu kuasai. Pilih karya terbaikmu sepanjang tahun untuk dibacakan di depan kelas.</p></div></div>
+
+  <div class="activity">
+    <div class="act-title">📈 Perjalananmu Sejauh Ini</div>
+    <div class="recap-list">
+      <div class="recap-item"><span class="rn">1</span>Suara mengikuti rasa — menyesuaikan kecepatan, volume, nada dengan satu rasa yang jelas.</div>
+      <div class="recap-item"><span class="rn">2</span>Rasa yang berubah — menemukan titik pergeseran dan menyesuaikan suara tepat di situ.</div>
+      <div class="recap-item"><span class="rn">3</span>Karya sendiri — menganalisis dan membacakan tulisanmu sendiri ke kelompok kecil.</div>
+      <div class="recap-item"><span class="rn">4</span>Rasa tersembunyi — menyimpulkan rasa yang tidak dinyatakan langsung.</div>
+      <div class="recap-item"><span class="rn">5</span>Kelompok besar — memproyeksikan suara tanpa kehilangan ekspresi.</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📋 Kartu Persiapan Puncak Tahun</div>
+    <div class="act-desc">Pilih karya terbaikmu sepanjang tahun (boleh dari materi Menulis mana pun), lalu isi kotak berikut.</div>
+    <div class="field-row"><label>Karya yang Kupilih</label><input class="ans-input" id="k6-judul" type="text" placeholder="Judul/tentang apa"></div>
+    <div class="field-row"><label>Kenapa Aku Memilih Karya Ini</label><textarea class="ans" id="k6-alasan" placeholder="mis. karena aku paling bangga waktu menulisnya..."></textarea></div>
+    <div class="field-row"><label>Rasa &amp; Pergeserannya (kalau ada)</label><textarea class="ans" id="k6-rasa" placeholder="..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✅ Kesiapanku</div>
+    <div class="check-item"><input type="checkbox" id="chk1"><label for="chk1">Aku sudah memilih karya terbaikku</label></div>
+    <div class="check-item"><input type="checkbox" id="chk2"><label for="chk2">Aku sudah menemukan rasa dan titik pergeserannya (kalau ada)</label></div>
+    <div class="check-item"><input type="checkbox" id="chk3"><label for="chk3">Aku sudah berlatih membaca keras beberapa kali</label></div>
+    <div class="check-item"><input type="checkbox" id="chk4"><label for="chk4">Aku ingat untuk memproyeksikan suara &amp; sesekali angkat wajah</label></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz6"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Perjalanan Setahun</h3>
+  <div class="reflect-q"><label>Melihat kembali dari Siklus 1 sampai sekarang, kemampuanmu berkembang paling banyak di bagian mana?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Bagaimana perasaanmu menjelang tampil membacakan karya pilihanmu di kelas?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, perjalanan setahun ini selesai! Tuliskan satu hal yang kamu syukuri.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(6)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(8)">Lanjut →</button></div>
+</div><!-- /page 7 -->
+
+<div class="page" data-page="8">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Rasa</dt><dd>Perasaan/emosi yang ada dalam sebuah teks sastra (gembira, sedih, tegang, dsb.).</dd>
+    <dt>Titik Pergeseran</dt><dd>Bagian dalam teks di mana rasa berubah dari satu jenis ke jenis lain.</dd>
+    <dt>Rasa Tersembunyi/Tersirat</dt><dd>Rasa yang tidak dinyatakan langsung dengan kata, tapi bisa disimpulkan dari petunjuk seperti tindakan atau suasana.</dd>
+    <dt>Proyeksi Suara</dt><dd>Membuat suara terdengar jelas sampai jarak jauh, tanpa kehilangan ekspresi.</dd>
+  </dl>
+</section>
+<div class="closing">Selamat, kamu sudah menyelesaikan seluruh perjalanan setahun Membacakan Karya Sastra! Kemampuan menyampaikan rasa lewat suara ini akan terus berguna kapan pun kamu ingin ceritamu benar-benar didengar dan dirasakan orang lain. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(7)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 8 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+/* ============================================================
+   STORAGE KEY — GANTI PER MODUL supaya progres tiap modul terpisah
+   ============================================================ */
+const STORAGE_KEY = 'modulProgress:bi-berbicara-tp2';
+const TOTAL_PAGES = 9;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+/* ============ STEPPER & HALAMAN ============ */
+const PAGE_LABELS = ['Mulai','Uji Diri','Sik.1','Sik.2','Sik.3','Sik.4','Sik.5','Sik.6','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+/* ============ SIMPAN JAWABAN TEKS (textarea/isian) ============ */
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, input.ans-input');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+/* ============ SIMPAN CENTANG (checkbox) ============ */
+function wireCheckPersistence(){
+  const state = loadState();
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(state.check && state.check[el.id] !== undefined){ el.checked = state.check[el.id]; }
+    el.addEventListener('change', ()=>{
+      saveState(s=>{ s.check = s.check || {}; s.check[el.id] = el.checked; });
+    });
+  });
+}
+
+/* ============ MEMUTAR ULANG AKSI ============ */
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+/* ============ QUIZ RENDERER (dipakai ulang untuk kuis & aktivitas pilih) ============ */
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')" style="margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;">Lihat contoh jawaban</button><div class="key-box" style="display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SIKLUS 1: kenali rasa + atur suara (3 dimensi) ============ */
+const s1data = [
+  {text:'Akhirnya nilai ulanganku keluar — sempurna! Aku melompat-lompat kegirangan, langsung berlari memeluk Ibu yang sedang memasak di dapur.',
+   rasaOptions:['Gembira','Sedih','Tegang'], rasaCorrect:0,
+   kecepatan:['Cepat','Lambat'], kecepatanCorrect:0,
+   volume:['Keras','Pelan'], volumeCorrect:0,
+   nada:['Ceria','Lesu','Berat/Waspada'], nadaCorrect:0},
+  {text:'Sepeda kesayanganku dicuri semalam. Aku berdiri lama di halaman, menatap tempat kosong itu, tidak tahu harus bilang apa.',
+   rasaOptions:['Gembira','Sedih','Tegang'], rasaCorrect:1,
+   kecepatan:['Cepat','Lambat'], kecepatanCorrect:1,
+   volume:['Keras','Pelan'], volumeCorrect:1,
+   nada:['Ceria','Lesu','Berat/Waspada'], nadaCorrect:1},
+  {text:'Pintu kamar berderit pelan padahal tidak ada angin. Aku menoleh perlahan, tanganku mulai berkeringat dingin.',
+   rasaOptions:['Gembira','Sedih','Tegang'], rasaCorrect:2,
+   kecepatan:['Cepat','Lambat'], kecepatanCorrect:1,
+   volume:['Keras','Pelan'], volumeCorrect:1,
+   nada:['Ceria','Lesu','Berat/Waspada'], nadaCorrect:2}
+];
+function renderS1(){
+  const el = document.getElementById('s1-list');
+  el.innerHTML = s1data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="kt">"${d.text}"</div>
+      <div class="field-row"><label>Rasa Teks Ini</label>
+        <div class="choice-group" id="s1-rasa-${i}">
+          ${d.rasaOptions.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s1-rasa-${i}',this,${oi},${d.rasaCorrect})">${o}</button>`).join('')}
+        </div>
+      </div>
+      <div class="dim-row">
+        <div class="dim-col"><div class="dl">Kecepatan</div>
+          <div class="choice-group" id="s1-kec-${i}">${d.kecepatan.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s1-kec-${i}',this,${oi},${d.kecepatanCorrect})">${o}</button>`).join('')}</div>
+        </div>
+        <div class="dim-col"><div class="dl">Volume</div>
+          <div class="choice-group" id="s1-vol-${i}">${d.volume.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s1-vol-${i}',this,${oi},${d.volumeCorrect})">${o}</button>`).join('')}</div>
+        </div>
+        <div class="dim-col"><div class="dl">Nada</div>
+          <div class="choice-group" id="s1-nada-${i}">${d.nada.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s1-nada-${i}',this,${oi},${d.nadaCorrect})">${o}</button>`).join('')}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+renderS1();
+
+/* ============ SIKLUS 4: rasa tersembunyi ============ */
+const s4data = [
+  {text:'Ia menggenggam piala itu erat-erat, matanya berkaca-kaca, bibirnya gemetar mencoba tersenyum.', options:['Marah','Terharu/bahagia sampai menangis','Bosan'], correct:1},
+  {text:'Buku-buku itu tersusun rapi di rak, tak tersentuh — debu pun tampak menumpuk di pojok ruangan yang gelap.', options:['Ramai/meriah','Sepi/lama tidak dipakai','Sibuk'], correct:1},
+  {text:'"Aku baik-baik saja kok," ucapnya sambil tersenyum, tapi matanya tidak menatap siapa pun. Ia buru-buru merapikan tasnya dan berjalan lebih cepat dari biasanya.', options:['Benar-benar santai','Sedih/kecewa yang disembunyikan','Sangat gembira'], correct:1}
+];
+function renderS4(){
+  const el = document.getElementById('s4-list');
+  el.innerHTML = s4data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="kt">"${d.text}"</div>
+      <div class="choice-group" id="s4-q${i}">
+        ${d.options.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s4-q${i}',this,${oi},${d.correct})">${o}</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+renderS4();
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Membacakan karya sastra beda dengan membaca teks informasi karena...', options:['Karya sastra harus dibaca sangat cepat','Suara perlu mengikuti rasa/perasaan dalam teks','Karya sastra tidak boleh dibaca keras'], correct:1},
+  {type:'bs', text:'Setiap cerita/puisi pasti hanya punya satu rasa dari awal sampai akhir.', correct:1},
+  {type:'mcq', text:'Tiga hal yang bisa diubah dari suara untuk mengikuti rasa adalah...', options:['Kecepatan, volume, nada','Judul, penulis, tahun terbit','Warna kertas, jenis huruf, ukuran'], correct:0},
+  {type:'essay', text:'Sebutkan satu contoh rasa yang bisa ada dalam sebuah cerita.'},
+  {type:'essay', text:'Pernahkah kamu membaca puisi atau cerita dengan suara keras? Ceritakan sedikit pengalamannya.'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'essay', text:'Apa tiga hal yang bisa diubah dari suara untuk mengikuti rasa sebuah teks?', tag:'isian'},
+  {type:'essay', text:'Kenapa teks bernuansa tegang dibaca lebih lambat, bukan lebih cepat, padahal isinya tentang sesuatu yang mendebarkan?', tag:'uraian', key:'Contoh: karena kecepatan lambat dengan jeda-jeda justru menciptakan kesan menahan napas dan waspada, yang cocok dengan rasa tegang. Kalau dibaca terlalu cepat, kesan menunggu itu jadi hilang.'},
+  {type:'mcq', text:'Membaca teks informasi (seperti pengumuman) sebaiknya dibaca dengan cara...', options:['Datar dan jelas','Selalu keras dan cepat','Mengikuti rasa seperti puisi'], correct:0},
+  {type:'essay', text:'Ceritakan bagaimana tanggapan orang yang mendengarkanmu membaca tadi.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz2', [
+  {type:'essay', text:'Apa yang harus dilakukan pembaca ketika menemukan "titik pergeseran" rasa dalam sebuah teks?', tag:'isian'},
+  {type:'essay', text:'Kata-kata seperti "tiba-tiba" sering berfungsi sebagai apa dalam sebuah cerita?', tag:'uraian', key:'Contoh: sebagai penanda bahwa rasa dalam teks akan segera berubah, sehingga pembaca perlu bersiap mengubah suaranya tepat di titik itu.'},
+  {type:'bs', text:'Pergeseran rasa selalu ditandai dengan kata yang jelas seperti "tiba-tiba".', correct:1},
+  {type:'essay', text:'Ceritakan pengalamanmu mencari titik pergeseran di cerita istana pasir tadi. Apakah mudah ditemukan?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz3', [
+  {type:'mcq', text:'Apa keuntungan membacakan karya sendiri dibanding karya orang lain?', options:['Lebih pendek jadi lebih cepat selesai','Kamu sudah tahu persis rasa yang ingin disampaikan','Tidak perlu berlatih sama sekali'], correct:1},
+  {type:'essay', text:'Sebelum membacakan karya sendiri dengan keras, apa yang sebaiknya dilakukan lebih dulu?', tag:'isian'},
+  {type:'essay', text:'Kenapa penting memberi jeda kecil sebelum kata yang jadi puncak perasaan di akhir cerita?', tag:'uraian', key:'Contoh: untuk memberi penekanan pada kata itu, supaya pendengar menangkap bahwa kata tersebut punya makna khusus dalam cerita.'}
+]);
+
+renderQuiz('quiz4', [
+  {type:'essay', text:'Bagaimana cara menemukan rasa yang tidak dinyatakan langsung dalam sebuah teks?', tag:'isian'},
+  {type:'essay', text:'Kenapa kalimat seperti "aku baik-baik saja" kadang perlu dibaca dengan nada yang terdengar dipaksakan, bukan benar-benar santai?', tag:'uraian', key:'Contoh: karena tindakan tokoh (tidak menatap, buru-buru pergi) menunjukkan rasa sebenarnya berbeda dari kata-kata yang diucapkan — kalau dibaca santai, pendengar tidak akan menangkap rasa yang disembunyikan itu.'},
+  {type:'mcq', text:'Petunjuk rasa tersembunyi bisa ditemukan lewat...', options:['Tindakan fisik, suasana, atau pertentangan kata-tindakan','Warna sampul buku','Jumlah halaman cerita'], correct:0},
+  {type:'essay', text:'Ceritakan hasil tebakan orang yang kamu ajak coba tadi.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz5', [
+  {type:'mcq', text:'Tantangan tambahan membacakan karya sastra ke kelompok besar (dibanding menyampaikan gagasan spontan) adalah...', options:['Harus membaca teks tertulis sambil tetap terhubung dengan pendengar','Tidak perlu bersuara sama sekali','Boleh membaca sangat cepat'], correct:0},
+  {type:'essay', text:'Saat menaikkan volume untuk kelompok besar, apa yang harus tetap dijaga?', tag:'isian'},
+  {type:'essay', text:'Kenapa untuk kelompok besar, rasa "sepi" tetap dibaca pelan tapi jelas, bukan pelan dan lirih seperti ke kelompok kecil?', tag:'uraian', key:'Contoh: karena kelompok besar butuh volume cukup untuk menjangkau bagian paling belakang, sementara kesan pelan tetap dipertahankan lewat kejelasan pengucapan, bukan lewat volume yang terlalu kecil.'}
+]);
+
+renderQuiz('quiz6', [
+  {type:'essay', text:'Apa yang membuat sebuah karya cocok dipilih untuk tampil di siklus puncak ini?', tag:'isian'},
+  {type:'essay', text:'Kenapa tetap perlu membaca ulang dan menandai rasa sebelum tampil, walau sudah berpengalaman dari siklus-siklus sebelumnya?', tag:'uraian', key:'Contoh: karena setiap karya punya rasa dan titik pergeseran yang berbeda-beda, jadi persiapan tetap perlu dilakukan setiap kali memilih karya baru — bukan sesuatu yang bisa dilakukan asal tanpa persiapan.'},
+  {type:'essay', text:'Ceritakan urutan enam siklus yang sudah kamu lewati, dari yang paling dasar sampai yang paling menantang.', tag:'penerapan'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 30;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  document.querySelectorAll('.check-item input:checked').forEach(()=>done++);
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+wireCheckPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+wireCheckPersistence();
+updateProgress();
+</script>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
