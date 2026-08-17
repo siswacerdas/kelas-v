@@ -1627,5 +1627,35 @@ window.MATERI_INDEX = [
     ringkasan: "Menyelesaikan soal cerita kontekstual yang memuat kalimat matematika dengan nilai belum diketahui, keempat operasi, angka sampai 1.000.",
     status: "selesai",
     file: "matematika/aljabar-tp2/04-soal-cerita-dengan-nilai-belum-diketahui.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🗺️",
+    elemen: "Geometri",
+    tp: "geometri-tp3",
+    tema: "Geometri · Menentukan Lokasi pada Sistem Berpetak (Koordinat Sederhana)",
+    urutan: 1,
+    judul: "Membaca Posisi pada Bidang Berpetak",
+    ringkasan: "Membaca posisi pada bidang berpetak dengan pasangan terurut sederhana (kolom, baris), belum menggunakan notasi x-y formal.",
+    status: "selesai",
+    file: "matematika/geometri-tp3/01-membaca-posisi-pada-bidang-berpetak.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🗺️",
+    elemen: "Geometri",
+    tp: "geometri-tp3",
+    tema: "Geometri · Menentukan Lokasi pada Sistem Berpetak (Koordinat Sederhana)",
+    urutan: 2,
+    judul: "Tebak Koordinat dan Soal Cerita Peta",
+    ringkasan: "Menentukan dan menandai lokasi pada peta/bidang berpetak lewat permainan 'tebak koordinat' dan soal cerita kontekstual.",
+    status: "selesai",
+    file: "matematika/geometri-tp3/02-tebak-koordinat-dan-soal-cerita-peta.html"
   }
 ];
