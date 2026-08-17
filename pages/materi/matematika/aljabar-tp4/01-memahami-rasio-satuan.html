@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memahami Rasio Satuan · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .rasio-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .rasio-tabel th, .rasio-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .rasio-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .rasio-tabel td.hasil { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⚡</span>
+      <div class="ma-cover-eyebrow">Aljabar · Bernalar Proporsional dengan Rasio Satuan · Materi 1 dari 2</div>
+      <div class="ma-cover-title">Memahami Rasio Satuan</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Di warung, kamu lihat dua kemasan minyak goreng: kemasan KECIL isi 1 liter harga Rp18.000, dan kemasan BESAR isi 5 liter harga Rp85.000. Mana yang lebih HEMAT?</p>
+
+      <p>Kamu TIDAK BISA langsung membandingkan harga totalnya (18.000 vs 85.000) — itu tidak adil, karena ukurannya beda. Yang perlu kamu bandingkan adalah harga PER SATU LITER, supaya keduanya bisa dibandingkan dengan adil. Inilah yang disebut <strong>rasio satuan</strong> (unit rate) — nilai untuk SATU satuan (satu liter, satu buah, satu kilogram, dst).</p>
+
+      <table class="rasio-tabel">
+        <tr><th></th><th>Isi</th><th>Harga Total</th><th>Harga per 1 Liter</th></tr>
+        <tr><td>Kemasan Kecil</td><td>1 liter</td><td>Rp18.000</td><td class="hasil">Rp18.000</td></tr>
+        <tr><td>Kemasan Besar</td><td>5 liter</td><td>Rp85.000</td><td class="hasil">Rp17.000</td></tr>
+      </table>
+
+      <p>Harga kemasan kecil PER LITER sudah pasti Rp18.000 (karena isinya memang 1 liter). Untuk kemasan besar, kita cari harga per liternya dengan MEMBAGI harga total dengan jumlah liternya: 85.000 ÷ 5 = 17.000.</p>
+
+      <div class="contoh-box">
+        <strong>Rasio satuan = nilai total ÷ jumlah satuan.</strong><br>
+        Kemasan besar (Rp17.000/liter) LEBIH HEMAT dari kemasan kecil (Rp18.000/liter), meski harga totalnya jauh lebih mahal.
+      </div>
+
+      <p>Inilah kegunaan rasio satuan: dengan mengubah semuanya jadi "per satu satuan yang sama", kamu bisa membandingkan barang dengan UKURAN BERBEDA secara ADIL.</p>
+
+      <p>Rasio satuan tidak cuma dipakai untuk harga. Konsep yang SAMA berlaku untuk KECEPATAN. Contoh: sebuah mobil menempuh 240 km dalam 4 jam. Berapa kecepatannya PER JAM (rasio satuan waktu)?</p>
+
+      <ol class="langkah">
+        <li>Yang mau dicari: jarak per SATU jam (rasio satuan).</li>
+        <li>Bagi jarak total dengan jumlah jam: 240 ÷ 4 = 60.</li>
+        <li>Kecepatannya adalah <strong>60 km per jam</strong>.</li>
+      </ol>
+
+      <p>Perhatikan: caranya SAMA PERSIS dengan mencari harga per liter tadi — bagi nilai total dengan jumlah satuannya. Rasio satuan selalu memakai cara berpikir yang sama, tidak peduli konteksnya harga, kecepatan, atau resep.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu membagi rata kue ulang tahun ke semua tamu, dan ingin tahu berapa bagian yang didapat SATU orang.</span></p>
+        <p>Kalau ada 240 potong kue kecil untuk 4 kelompok tamu, kamu membagi 240÷4=60 potong per kelompok. Rasio satuan bekerja dengan logika yang SAMA: "kalau totalnya sekian, untuk SATU bagian/satuan, berapa yang didapat?" — selalu dicari dengan PEMBAGIAN nilai total dengan jumlah satuannya.</p>
+        <p>Baik itu harga per liter, jarak per jam, atau kue per kelompok — semuanya menjawab pertanyaan yang SAMA: "berapa untuk SATU?"</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Saat membandingkan dua kemasan atau dua pilihan, JANGAN langsung bandingkan harga/nilai TOTALNYA — itu bisa menyesatkan kalau ukurannya berbeda. Selalu ubah dulu ke rasio satuan (per 1 satuan yang sama), baru bandingkan.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah toko menjual 6 buah apel seharga Rp30.000. Berapa harga rasio satuan (per 1 apel)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Bagi harga total dengan jumlah apel: 30.000÷6=<strong>Rp5.000 per apel</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Made bersepeda menempuh 45 km dalam 3 jam. Wayan bersepeda menempuh 56 km dalam 4 jam. Siapa yang lebih cepat (rasio satuan km per jam)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Made: 45÷3=15 km/jam. Wayan: 56÷4=14 km/jam. Karena 15 &gt; 14, <strong>Made lebih cepat</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani membandingkan kemasan A (3 kg seharga Rp45.000) dan kemasan B (5 kg seharga Rp70.000) hanya dari harga totalnya, lalu menyimpulkan kemasan A lebih hemat karena harganya lebih murah (45.000 &lt; 70.000). Apakah kesimpulan Rani tepat? Buktikan dengan rasio satuan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesimpulan Rani TIDAK tepat — dia membandingkan harga TOTAL tanpa memperhitungkan ukuran, padahal kemasannya berbeda berat (3 kg vs 5 kg). Rasio satuan kemasan A: 45.000÷3=15.000/kg. Rasio satuan kemasan B: 70.000÷5=14.000/kg. Karena 14.000 &lt; 15.000, ternyata <strong>kemasan B yang lebih hemat</strong> per kilogramnya, BUKAN kemasan A seperti dugaan Rani.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Cari 2 kemasan produk sehari-hari di rumah (atau bayangkan contohnya) dengan ukuran dan harga berbeda. Hitung rasio satuan (harga per gram/per buah/per satuan lain) dari keduanya, lalu tentukan mana yang lebih hemat. Susun dalam tabel perbandingan seperti contoh di materi ini.
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan mengajakmu menyelesaikan soal cerita proporsional yang lebih lengkap — menggabungkan konteks resep, kecepatan, dan harga per satuan sekaligus.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
