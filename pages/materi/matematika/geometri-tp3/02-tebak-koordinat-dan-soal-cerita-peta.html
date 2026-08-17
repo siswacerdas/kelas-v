@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Membaca Posisi pada Bidang Berpetak · Materi Ajar Kelas 5</title>
+<title>Tebak Koordinat dan Soal Cerita Peta · Materi Ajar Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
@@ -18,8 +18,13 @@
   .grid-tabel th.sudut { background: #fff; border: none; }
   .grid-tabel td.tanda { background: #eaf4f0; position: relative; }
   .grid-tabel td.tanda .titik { display: inline-block; width: 16px; height: 16px; border-radius: 50%; background: var(--m-color); }
+  .grid-tabel td.tanda.rumah .titik { border-radius: 3px; background: #c76b3f; width: 18px; height: 18px; }
+  .grid-tabel td.tanda.sekolah .titik { border-radius: 3px; background: #1f6f78; width: 18px; height: 18px; }
   .grid-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.5rem 0 1.3rem; }
   .posisi-tag { display: inline-flex; align-items: center; gap: 4px; font-family: 'Plus Jakarta Sans', monospace; font-weight: 700; color: var(--m-color); background: var(--paper-2); border: 1.5px solid var(--m-color); border-radius: 8px; padding: 2px 10px; }
+  .legenda { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; margin: 0.6rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .legenda .kotak { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
   .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
   .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
   .langkah li::before {
@@ -27,6 +32,7 @@
     width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
     font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
   }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
   .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
   .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
   .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
@@ -59,8 +65,8 @@
   <div class="ma-cover">
     <div class="ma-cover-inner">
       <span class="ma-cover-icon">🗺️</span>
-      <div class="ma-cover-eyebrow">Geometri · Menentukan Lokasi pada Sistem Berpetak · Materi 1 dari 2</div>
-      <div class="ma-cover-title">Membaca Posisi pada Bidang Berpetak</div>
+      <div class="ma-cover-eyebrow">Geometri · Menentukan Lokasi pada Sistem Berpetak · Materi 2 dari 2 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Tebak Koordinat dan Soal Cerita Peta</div>
     </div>
   </div>
 
@@ -73,87 +79,91 @@
     </div>
 
     <div class="ma-content">
-      <p>Materi ini masih bagian dari Matematika, tapi kali ini kita memakai cara berpikir yang mirip dengan Aljabar yang baru saja kamu pelajari — menentukan POSISI memakai pasangan angka/huruf, bukan menghitung bangun ruang.</p>
+      <p>Sekarang giliranmu tidak cuma MEMBACA posisi, tapi juga MENANDAI posisi berdasarkan pasangan (kolom, baris) yang diberikan. Ini kebalikan dari materi sebelumnya.</p>
 
-      <p>Bayangkan sebuah papan berpetak, seperti papan catur atau denah kelas. Petak-petaknya diberi LABEL: kolom (dari kiri ke kanan) diberi huruf A, B, C, D, E. Baris (dari atas ke bawah) diberi angka 1, 2, 3, 4, 5.</p>
+      <p>Contoh: kamu diminta menandai posisi <span class="posisi-tag">(D, 3)</span> pada papan berpetak. Bagaimana caranya?</p>
+
+      <ol class="langkah">
+        <li><strong>Baca kolomnya dulu</strong> (bagian pertama pasangan): D. Cari garis tegak berlabel D.</li>
+        <li><strong>Baca barisnya</strong> (bagian kedua pasangan): 3. Cari garis mendatar berlabel 3.</li>
+        <li><strong>Tandai petak</strong> di mana garis kolom D dan garis baris 3 itu BERTEMU.</li>
+      </ol>
 
       <div class="grid-scroll">
         <table class="grid-tabel">
           <tr><th class="sudut"></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>
           <tr><th>1</th><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><th>2</th><td></td><td></td><td class="tanda"><span class="titik"></span></td><td></td><td></td></tr>
-          <tr><th>3</th><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><th>2</th><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><th>3</th><td></td><td></td><td></td><td class="tanda"><span class="titik"></span></td><td></td></tr>
           <tr><th>4</th><td></td><td></td><td></td><td></td><td></td></tr>
           <tr><th>5</th><td></td><td></td><td></td><td></td><td></td></tr>
         </table>
       </div>
-      <p class="grid-caption">Ada sebuah titik di papan. Kolomnya C, barisnya 2.</p>
+      <p class="grid-caption">Petak (D, 3) sudah ditandai — pertemuan kolom D dan baris 3.</p>
 
-      <p>Untuk menyebutkan posisi titik itu, kita gabungkan KOLOM dan BARIS-nya menjadi satu PASANGAN, ditulis di dalam kurung, dipisah koma:</p>
+      <p>Ini persis seperti PERMAINAN "tebak koordinat" yang akan kamu mainkan bersama pasanganmu: satu orang MENYEBUTKAN posisi, orang lain MENANDAI posisi itu di papan berpetak masing-masing. Kalau tandanya cocok, berarti kalian berkomunikasi dengan benar!</p>
 
       <div class="contoh-box">
-        <span class="posisi-tag">(C, 2)</span><br>
-        <span style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-3);">Dibaca: "kolom C, baris 2"</span>
+        <strong>Membaca posisi</strong> (materi sebelumnya): lihat titik → sebutkan pasangan (kolom, baris).<br>
+        <strong>Menandai posisi</strong> (materi ini): dengar pasangan (kolom, baris) → tandai titiknya di papan.
       </div>
 
-      <p><strong>Urutan penulisannya PENTING dan SELALU SAMA:</strong> KOLOM (huruf) ditulis DULU, baru BARIS (angka). Ini disebut aturan yang disepakati bersama — semua orang yang membaca peta berpetak harus mengikuti urutan yang sama, supaya tidak salah paham.</p>
+      <p>Sekarang mari terapkan pada soal cerita kontekstual — sebuah peta sederhana wilayah sekitar sekolah:</p>
 
-      <ol class="langkah">
-        <li><strong>Cari kolomnya dulu</strong> — lihat titik itu ada di GARIS TEGAK yang mana (huruf apa di bagian atas).</li>
-        <li><strong>Baru cari barisnya</strong> — lihat titik itu ada di GARIS MENDATAR yang mana (angka apa di bagian samping).</li>
-        <li><strong>Tulis sebagai pasangan</strong> (kolom, baris), dalam urutan itu.</li>
-      </ol>
-
-      <p>Coba baca posisi titik-titik berikut:</p>
+      <div class="cerita-box">
+        Berikut peta sederhana sekitar sekolah dalam bentuk papan berpetak. Rumah Made berada di posisi (B, 2). Sekolah berada di posisi (D, 4).
+      </div>
 
       <div class="grid-scroll">
         <table class="grid-tabel">
           <tr><th class="sudut"></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr>
-          <tr><th>1</th><td></td><td class="tanda"><span class="titik"></span></td><td></td><td></td><td></td></tr>
-          <tr><th>2</th><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><th>3</th><td></td><td></td><td></td><td></td><td class="tanda"><span class="titik"></span></td></tr>
-          <tr><th>4</th><td></td><td></td><td></td><td></td><td></td></tr>
-          <tr><th>5</th><td class="tanda"><span class="titik"></span></td><td></td><td></td><td></td><td></td></tr>
+          <tr><th>1</th><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><th>2</th><td></td><td class="tanda rumah"><span class="titik"></span></td><td></td><td></td><td></td></tr>
+          <tr><th>3</th><td></td><td></td><td></td><td></td><td></td></tr>
+          <tr><th>4</th><td></td><td></td><td></td><td class="tanda sekolah"><span class="titik"></span></td><td></td></tr>
+          <tr><th>5</th><td></td><td></td><td></td><td></td><td></td></tr>
         </table>
       </div>
-      <p class="grid-caption">Tiga titik: kiri-atas, kanan-tengah, kiri-bawah.</p>
+      <div class="legenda">
+        <span><span class="kotak" style="background:#c76b3f;"></span> Rumah Made (B, 2)</span>
+        <span><span class="kotak" style="background:#1f6f78;"></span> Sekolah (D, 4)</span>
+      </div>
 
-      <p>Titik kiri-atas ada di kolom B, baris 1 → <span class="posisi-tag">(B, 1)</span>. Titik kanan-tengah ada di kolom E, baris 3 → <span class="posisi-tag">(E, 3)</span>. Titik kiri-bawah ada di kolom A, baris 5 → <span class="posisi-tag">(A, 5)</span>.</p>
+      <p>Dengan peta ini, kamu bisa menjawab pertanyaan seperti: "Made harus berjalan ke arah mana untuk sampai ke sekolah?" Dari (B, 2) menuju (D, 4): kolomnya berubah dari B ke D (bergeser 2 kolom ke KANAN), dan barisnya berubah dari 2 ke 4 (bergeser 2 baris ke BAWAH). Jadi Made berjalan ke arah kanan-bawah dari rumahnya.</p>
 
       <div class="bingung-box">
         <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
-        <p><span class="analogi">Bayangkan kamu mencari kursi bioskop dengan tiket bertuliskan "C5" — kolom C, kursi nomor 5.</span></p>
-        <p>Kamu tidak langsung berjalan sembarangan. Kamu cari dulu BARIS/KOLOM hurufnya (misalnya berjalan menyamping sampai ketemu jajaran "C"), BARU jalan maju-mundur mencari nomor kursi "5" di jajaran itu. Membaca posisi di papan berpetak caranya sama — cari kolom (huruf) dulu, baru baris (angka).</p>
-        <p>Kalau kamu tertukar urutannya (baris dulu baru kolom), kamu akan salah tempat duduk — sama seperti kalau di papan berpetak kamu keliru menyebut posisi.</p>
+        <p><span class="analogi">Bayangkan kamu memberi arahan lewat telepon ke temanmu yang sedang mencari suatu tempat di sebuah gedung parkir bertingkat dengan petak-petak diberi label huruf dan angka.</span></p>
+        <p>Kamu tidak bisa menunjuk langsung karena temanmu tidak melihat apa yang kamu lihat — satu-satunya cara adalah menyebutkan KODE POSISI (misalnya "cari mobilnya di B, 2"), dan temanmu akan mencari sendiri berdasarkan kode itu. Itulah kegunaan sesungguhnya dari sistem berpetak: berkomunikasi tentang LOKASI tanpa harus saling menunjuk langsung.</p>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
-        Urutan (kolom, baris) ini adalah KESEPAKATAN, bukan aturan alam. Yang penting adalah SEMUA ORANG memakai urutan yang SAMA supaya tidak salah paham. Kita akan selalu memakai urutan kolom-dulu-baris-kemudian di seluruh materi ini.
+        Saat menjelaskan arah perpindahan (kanan-kiri, atas-bawah), selalu bandingkan posisi AWAL dan posisi TUJUAN secara terpisah untuk kolom dan baris. Jangan mencampur keduanya jadi satu kesimpulan asal tebak — cek dulu kolomnya berubah ke arah mana, baru cek barisnya berubah ke arah mana.
       </div>
 
       <div class="soal-box">
         <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">1</span>Sebuah titik berada di kolom D, baris 4. Tuliskan posisinya sebagai pasangan!</div>
-          <div class="soal-a"><b>Pembahasan:</b> Kolom dulu (D), baru baris (4). Posisinya: <strong>(D, 4)</strong>.</div>
+          <div class="soal-q"><span class="no">1</span>Tandai posisi (A, 4) dan (E, 1) pada papan berpetak kolom A-E, baris 1-5. Jelaskan langkahmu!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Untuk (A, 4): cari kolom A, lalu baris 4, tandai pertemuannya (pojok kiri, agak ke bawah). Untuk (E, 1): cari kolom E, lalu baris 1, tandai pertemuannya (pojok kanan, paling atas).</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">2</span>Made membaca posisi sebuah titik sebagai (3, A) — dia menyebut baris dulu, baru kolom. Apakah ini benar? Bagaimana seharusnya ditulis?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Cara Made TIDAK sesuai kesepakatan — urutan yang benar adalah kolom DULU, baru baris. Kalau titik itu ada di kolom A dan baris 3, seharusnya ditulis <strong>(A, 3)</strong>, bukan (3, A).</div>
+          <div class="soal-q"><span class="no">2</span>Warung berada di (C, 1), dan Pasar berada di (C, 5). Apa yang bisa kamu simpulkan tentang posisi keduanya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kolom keduanya SAMA (C), jadi keduanya berada pada garis tegak yang sama (segaris lurus dari atas ke bawah). Barisnya berbeda jauh (1 dan 5), artinya Pasar berada jauh di bagian bawah peta dibanding Warung.</div>
         </div>
         <div class="soal-item">
-          <div class="soal-q"><span class="no">3</span>Dua titik: titik pertama di (B, 2), titik kedua di (E, 2). Apa persamaan dan perbedaan posisi kedua titik ini?</div>
-          <div class="soal-a"><b>Pembahasan:</b> Persamaan: keduanya ada di BARIS yang sama, yaitu baris 2 (sejajar mendatar). Perbedaan: kolomnya berbeda — titik pertama di kolom B (lebih kiri), titik kedua di kolom E (lebih kanan). Jadi kedua titik ini berada pada garis mendatar yang sama, tapi posisi kiri-kanannya berbeda.</div>
+          <div class="soal-q"><span class="no">3</span>Rani diminta menandai (B, 5) tapi dia malah menandai kolom 5 dan baris B (dia menukar urutan). Di mana sebenarnya letak kesalahan Rani, dan bagaimana cara memastikan urutan yang benar?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesalahan Rani: dia menukar urutan pasangan, padahal kesepakatan yang sudah dipelajari adalah KOLOM (huruf) dulu, baru BARIS (angka). Cara memastikan: selalu ingat "huruf duluan, angka kemudian" — dalam (B, 5), B adalah kolom (huruf, dicari dulu secara mendatar), dan 5 adalah baris (angka, dicari kemudian secara menurun).</div>
         </div>
       </div>
 
       <div class="ma-callout">
         <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
-        Bersama pasanganmu, buat papan berpetak besar di lantai atau papan tulis (kolom A-E, baris 1-5). Bergantian meletakkan benda di suatu petak, lalu minta pasanganmu menyebutkan posisinya sebagai pasangan (kolom, baris). Lakukan minimal 5 putaran bergantian peran.
+        Bersama pasanganmu, mainkan "tebak koordinat" sebanyak 5 putaran bergantian peran — satu menyebutkan posisi, satu menandai di kertas berpetak. Setelah itu, buat peta sederhana wilayah sekitar sekolah/rumahmu dalam bentuk papan berpetak, tandai minimal 3 lokasi penting dengan posisinya masing-masing.
       </div>
 
-      <p>Materi berikutnya (Pertemuan Inti) akan mengajakmu bermain "tebak koordinat" dan menandai lokasi pada peta sederhana — menggabungkan kemampuan membaca DAN menandai posisi.</p>
+      <p>Selamat! Kamu sudah menyelesaikan materi sistem berpetak. Kompetensi ini juga berkaitan dengan materi IPAS tentang Letak Geografis Indonesia — kalau kamu sudah atau akan mempelajarinya, perhatikan bagaimana peta-peta di sana juga memakai sistem baris-kolom yang serupa. Materi Aljabar berikutnya akan melanjutkan ke Pola Bilangan.</p>
     </div>
 
     <div id="ma-related" class="ma-related"></div>
