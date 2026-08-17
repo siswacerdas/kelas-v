@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pola Multiplikatif dalam Soal Cerita · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .deret-scroll { overflow-x: auto; padding-bottom: 6px; margin: 0.9rem 0; }
+  .deret { display: flex; align-items: center; justify-content: flex-start; gap: 4px; min-width: max-content; padding: 0 4px; }
+  .deret .angka { font-weight: 700; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); background: var(--paper-2); border: 2px solid var(--ink); border-radius: 8px; padding: 6px 12px; flex-shrink: 0; }
+  .deret .angka.tanya { background: #fff; border-color: var(--m-color); color: var(--m-color); }
+  .deret .angka.mundur { background: #fff; border-color: #c76b3f; color: #c76b3f; border-style: dashed; }
+  .deret .panah { display: flex; flex-direction: column; align-items: center; font-size: calc(var(--content-fs) - 5px); color: var(--m-color); font-weight: 700; flex-shrink: 0; min-width: 46px; }
+  .deret .panah.balik { color: #c76b3f; }
+  .deret .panah .garis { font-size: 15px; line-height: 1; }
+  .deret-label { text-align: center; font-size: calc(var(--content-fs) - 3px); color: var(--ink-2); font-weight: 700; margin: 0.3rem 0 1.2rem; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔁</span>
+      <div class="ma-cover-eyebrow">Aljabar · Pola Bilangan Membesar dan Mengecil · Materi 3 dari 3 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Pola Multiplikatif dalam Soal Cerita</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menerapkan pola multiplikatif pada CERITA nyata. Ada satu kemampuan BARU yang akan kamu latih: memprediksi bukan cuma angka SELANJUTNYA (maju), tapi juga angka SEBELUMNYA (mundur).</p>
+
+      <div class="cerita-box">
+        Sebuah populasi bakteri di piring petri berlipat ganda (×2) setiap jam. Setelah 3 jam pengamatan, tercatat: jam ke-1 ada 8 bakteri, jam ke-2 ada 16 bakteri, jam ke-3 ada 32 bakteri. Berapa bakteri yang akan ada di jam ke-4? Dan berapa bakteri yang ada SEBELUM pengamatan dimulai (jam ke-0)?
+      </div>
+
+      <p><strong>Memprediksi MAJU (jam ke-4):</strong> ini seperti biasa — kalikan angka terakhir dengan aturan pola.</p>
+
+      <div class="deret-scroll">
+        <div class="deret">
+          <div class="angka">8</div>
+          <div class="panah"><span class="garis">→</span>×2</div>
+          <div class="angka">16</div>
+          <div class="panah"><span class="garis">→</span>×2</div>
+          <div class="angka">32</div>
+          <div class="panah"><span class="garis">→</span>×2</div>
+          <div class="angka tanya">?</div>
+        </div>
+      </div>
+
+      <p>32×2=64. Jadi di jam ke-4, ada <strong>64 bakteri</strong>.</p>
+
+      <p><strong>Memprediksi MUNDUR (jam ke-0, sebelum pengamatan):</strong> ini yang BARU. Kalau MAJU kamu mengalikan, untuk MUNDUR kamu memakai KEBALIKANNYA — yaitu MEMBAGI. Ingat lagi konsep operasi kebalikan dari materi Aljabar sebelumnya!</p>
+
+      <div class="deret-scroll">
+        <div class="deret">
+          <div class="angka mundur">?</div>
+          <div class="panah balik"><span class="garis">→</span>÷2</div>
+          <div class="angka">8</div>
+          <div class="panah"><span class="garis">→</span>×2</div>
+          <div class="angka">16</div>
+          <div class="panah"><span class="garis">→</span>×2</div>
+          <div class="angka">32</div>
+        </div>
+      </div>
+
+      <p>Untuk mundur satu langkah dari 8 (jam ke-1) ke jam ke-0, kita BAGI dengan aturan pola (÷2), BUKAN kalikan. 8÷2=4. Jadi SEBELUM pengamatan dimulai, ada <strong>4 bakteri</strong>.</p>
+
+      <div class="contoh-box">
+        <strong>Prediksi MAJU</strong> → kalikan dengan aturan pola.<br>
+        <strong>Prediksi MUNDUR</strong> → bagi dengan aturan pola (operasi kebalikan).
+      </div>
+
+      <p>Sekarang contoh dengan pola MENGECIL — sisa obat yang berkurang setengah tiap dosis:</p>
+
+      <div class="cerita-box">
+        Seorang pasien mendapat obat sebanyak 320 mg. Setelah diminum, sisa obat dalam tubuhnya berkurang menjadi SETENGAHNYA setiap 4 jam (karena tubuh memprosesnya). Setelah 4 jam pertama, sisanya 160 mg. Setelah 8 jam, sisanya 80 mg. Berapa sisa obat setelah 12 jam? Dan berapa dosis AWAL sebelum obat mulai diproses tubuh (0 jam)?
+      </div>
+
+      <p><strong>Maju (12 jam):</strong> aturan polanya ÷2. 80÷2=40 mg.</p>
+
+      <p><strong>Mundur (0 jam, dosis awal):</strong> untuk mundur dari pola MENGECIL (÷2), kita pakai kebalikannya yaitu MENGALIKAN (×2). Dosis SEBELUM 160 mg (4 jam) adalah 160×2=320 mg — dan ini cocok dengan dosis awal yang disebutkan di cerita (320 mg)! Ini membuktikan aturan polanya benar.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu sedang memutar rekaman video ke arah BELAKANG (rewind), bukan MAJU (play).</span></p>
+        <p>Kalau video aslinya menunjukkan bakteri BERTAMBAH dua kali lipat setiap detik (maju = ×2), maka kalau diputar MUNDUR, yang terlihat adalah bakteri BERKURANG menjadi setengahnya setiap detik (mundur = ÷2) — persis kebalikan dari arah aslinya.</p>
+        <p>Begitu juga sebaliknya: kalau pola aslinya MENGECIL (÷2) saat maju, maka mundurnya akan MEMBESAR (×2) — seperti memutar mundur video obat yang berkurang, kamu akan "melihat" obatnya justru bertambah kembali ke dosis awal yang lebih besar.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Sebelum memprediksi maju ATAU mundur, pastikan dulu kamu sudah menemukan aturan pola yang BENAR (dengan mengecek minimal dua pasang angka, seperti materi sebelumnya). Kesalahan mengenali aturan akan membuat prediksi maju maupun mundur jadi salah semua.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah virus komputer menyebar dengan pola: hari ke-1 ada 5 komputer terinfeksi, hari ke-2 ada 15, hari ke-3 ada 45. Berapa komputer yang akan terinfeksi di hari ke-4? Berapa yang terinfeksi SEBELUM hari ke-1 (hari ke-0)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cek aturan: 15÷5=3, dan 45÷15=3 — aturan polanya ×3. Maju (hari ke-4): 45×3=<strong>135 komputer</strong>. Mundur (hari ke-0): kebalikan dari ×3 adalah ÷3, jadi 5÷3=<strong>1,67 (dibulatkan sekitar 1-2 komputer)</strong> — dalam konteks nyata biasanya dibulatkan ke bilangan bulat terdekat karena jumlah komputer tidak bisa pecahan.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Tumpukan roti donat di sebuah toko berkurang setengahnya setiap 2 jam karena laris terjual: pukul 10 ada 96 donat, pukul 12 ada 48, pukul 14 ada 24. Berapa donat yang tersisa pukul 16? Berapa donat yang ada SEBELUM toko buka (sebelum pukul 10)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Aturan polanya ÷2 (48÷96=0,5, dan 24÷48=0,5). Maju (pukul 16): 24÷2=<strong>12 donat</strong>. Mundur (sebelum pukul 10): kebalikan dari ÷2 adalah ×2, jadi 96×2=<strong>192 donat</strong> sebelum toko buka.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani mengerjakan soal mundur pada pola ×4 (deret 3, 12, 48) dengan cara mengalikan 3×4=12 untuk mencari angka SEBELUM 3. Apakah cara Rani benar? Jelaskan kesalahannya dan berikan cara yang tepat!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Rani SALAH. Untuk mundur pada pola yang aturannya MENGALIKAN (×4), seharusnya dipakai operasi KEBALIKANNYA yaitu MEMBAGI (÷4), bukan mengalikan lagi. Cara yang benar: angka sebelum 3 dicari dengan 3÷4=<strong>0,75</strong>. Rani keliru karena memakai operasi yang SAMA dengan arah maju, padahal arah mundur butuh operasi KEBALIKAN.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Buat sendiri satu soal cerita pertumbuhan (seperti bakteri, populasi hewan, atau uang yang dilipatgandakan) dengan pola multiplikatif. Sertakan pertanyaan MAJU (memprediksi ke depan) DAN pertanyaan MUNDUR (memprediksi ke belakang). Tukar dengan teman, lalu selesaikan soal cerita masing-masing — pastikan kalian menuliskan aturan pola dan operasi kebalikan yang dipakai untuk mundur.
+      </div>
+
+      <p>Selamat! Kamu sudah menuntaskan seluruh materi Pola Bilangan — dari membedakan pola aditif dan multiplikatif, mengidentifikasi dan meniru pola, sampai memprediksi maju dan mundur dalam soal cerita. Materi Aljabar berikutnya akan melanjutkan ke Bernalar Proporsional dengan Rasio Satuan.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

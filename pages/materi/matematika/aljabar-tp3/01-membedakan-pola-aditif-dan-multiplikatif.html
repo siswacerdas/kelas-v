@@ -1,1 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Membedakan Pola Aditif dan Multiplikatif · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .deret-scroll { overflow-x: auto; padding-bottom: 6px; margin: 0.9rem 0; }
+  .deret { display: flex; align-items: center; justify-content: flex-start; gap: 4px; min-width: max-content; padding: 0 4px; }
+  .deret .angka { font-weight: 700; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); background: var(--paper-2); border: 2px solid var(--ink); border-radius: 8px; padding: 6px 12px; flex-shrink: 0; }
+  .deret .panah { display: flex; flex-direction: column; align-items: center; font-size: calc(var(--content-fs) - 5px); color: var(--m-color); font-weight: 700; flex-shrink: 0; min-width: 46px; }
+  .deret .panah .garis { font-size: 15px; line-height: 1; }
+  .deret-label { text-align: center; font-size: calc(var(--content-fs) - 3px); color: var(--ink-2); font-weight: 700; margin: 0.3rem 0 1.2rem; }
+  .kontras-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .kontras-tabel th, .kontras-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .kontras-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔁</span>
+      <div class="ma-cover-eyebrow">Aljabar · Pola Bilangan Membesar dan Mengecil · Materi 1 dari 3</div>
+      <div class="ma-cover-title">Membedakan Pola Aditif dan Multiplikatif</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Catatan penting sebelum mulai:</strong> materi "pola bilangan" ini BUKAN tentang menggambar atau mewarnai pola hias yang indah. ini murni tentang STRUKTUR ANGKA — bagaimana satu angka berubah menjadi angka berikutnya dengan ATURAN yang tetap. Fokus kita di sini adalah berpikir dengan angka, bukan berkarya seni.</p>
+
+      <p>Kamu sudah pernah bertemu pola bilangan sederhana sebelumnya, seperti deret ini:</p>
+
+      <div class="deret-scroll">
+        <div class="deret">
+          <div class="angka">2</div>
+          <div class="panah"><span class="garis">→</span>+3</div>
+          <div class="angka">5</div>
+          <div class="panah"><span class="garis">→</span>+3</div>
+          <div class="angka">8</div>
+          <div class="panah"><span class="garis">→</span>+3</div>
+          <div class="angka">11</div>
+        </div>
+      </div>
+      <p class="deret-label">Pola ini: setiap angka bertambah TETAP dengan +3. Ini disebut pola ADITIF.</p>
+
+      <p>Pola seperti ini disebut <strong>pola aditif</strong> — setiap langkah, angkanya ditambah (atau dikurang) dengan jumlah yang SAMA setiap kali. Ini sudah kamu kuasai sejak kelas sebelumnya.</p>
+
+      <p>Sekarang, lihat deret yang BERBEDA JENIS ini:</p>
+
+      <div class="deret-scroll">
+        <div class="deret">
+          <div class="angka">2</div>
+          <div class="panah"><span class="garis">→</span>×3</div>
+          <div class="angka">6</div>
+          <div class="panah"><span class="garis">→</span>×3</div>
+          <div class="angka">18</div>
+          <div class="panah"><span class="garis">→</span>×3</div>
+          <div class="angka">54</div>
+        </div>
+      </div>
+      <p class="deret-label">Pola ini: setiap angka DIKALIKAN dengan angka TETAP (×3). Ini disebut pola MULTIPLIKATIF.</p>
+
+      <p>Perhatikan PERBEDAANNYA baik-baik. Pada pola pertama (2, 5, 8, 11), selisih antar angka SELALU +3 — angkanya bertambah dengan JUMLAH yang sama. Pada pola kedua (2, 6, 18, 54), angkanya DIKALIKAN 3 setiap langkah — bertambahnya semakin BESAR dan BESAR (dari +4, ke +12, ke +36) — bukan jumlah tetap, tapi KELIPATAN tetap.</p>
+
+      <table class="kontras-tabel">
+        <tr><th></th><th>Pola Aditif</th><th>Pola Multiplikatif</th></tr>
+        <tr><td><strong>Cara berubah</strong></td><td>Ditambah/dikurang JUMLAH tetap</td><td>Dikali/dibagi ANGKA tetap</td></tr>
+        <tr><td><strong>Contoh</strong></td><td>2, 5, 8, 11 (+3 tiap langkah)</td><td>2, 6, 18, 54 (×3 tiap langkah)</td></tr>
+        <tr><td><strong>Kecepatan pertambahan</strong></td><td>Tetap sama tiap langkah</td><td>Semakin besar tiap langkah</td></tr>
+      </table>
+
+      <p>Kenapa ini penting dibedakan dengan jelas? Karena CARA MENCARI angka berikutnya BEDA TOTAL. Kalau kamu salah mengira pola multiplikatif sebagai pola aditif (atau sebaliknya), jawabanmu akan salah jauh.</p>
+
+      <div class="contoh-box">
+        Salah kira pola 2,6,18,54 sebagai ADITIF (dikira +4 setiap kali) akan menghasilkan tebakan 2,6,10,14 — jauh berbeda dari pola sebenarnya (2,6,18,54). Jenis pola HARUS dikenali dengan benar SEBELUM mencari angka selanjutnya.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan dua cara uang tabunganmu bisa bertambah.</span></p>
+        <p><strong>Cara 1 (aditif):</strong> setiap minggu kamu diberi uang saku Rp5.000 yang SAMA. Tabunganmu bertambah dengan JUMLAH tetap tiap minggu: 5.000, 10.000, 15.000, 20.000, ...</p>
+        <p><strong>Cara 2 (multiplikatif):</strong> tabunganmu DILIPATGANDAKAN 2 kali tiap bulan (seperti bunga majemuk atau bakteri berkembang biak). Kalau mulai dari 5.000: bulan depan jadi 10.000, bulan depannya lagi jadi 20.000, lalu 40.000 — semakin lama semakin CEPAT membesar, karena yang dikalikan itu ANGKA SEBELUMNYA yang sudah membesar, bukan angka tetap yang sama.</p>
+        <p>Itulah beda mendasarnya: pola aditif tumbuh dengan kecepatan TETAP, pola multiplikatif tumbuh dengan kecepatan yang SEMAKIN BERTAMBAH (atau semakin berkurang, kalau dibagi).</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Cara memastikan jenis pola: hitung SELISIH antar angka. Kalau selisihnya SELALU SAMA di setiap langkah → aditif. Kalau selisihnya BERUBAH-UBAH (semakin besar/kecil), coba cek HASIL BAGI antar angka berurutan — kalau hasil baginya SELALU SAMA di setiap langkah → multiplikatif.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Deret berikut: 3, 9, 27, 81. Apakah ini pola aditif atau multiplikatif? Jelaskan alasanmu!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cek selisih: 9−3=6, 27−9=18, 81−27=54 — selisihnya BERUBAH-UBAH, bukan aditif. Cek hasil bagi: 9÷3=3, 27÷9=3, 81÷27=3 — hasil baginya SELALU 3. Ini pola <strong>MULTIPLIKATIF</strong>, dengan aturan "dikali 3" tiap langkah.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Deret berikut: 100, 90, 80, 70. Apakah ini pola aditif atau multiplikatif?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cek selisih: 90−100=−10, 80−90=−10, 70−80=−10 — selisihnya SELALU SAMA (−10). Ini pola <strong>ADITIF</strong>, dengan aturan "dikurangi 10" tiap langkah.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made melihat deret 4, 8, 16, 32 dan langsung menyimpulkan "ini pasti aditif karena angkanya selalu bertambah". Apakah kesimpulan Made benar? Jelaskan alasannya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesimpulan Made SALAH. "Selalu bertambah" saja tidak cukup untuk memastikan jenis pola — pola multiplikatif JUGA bisa selalu bertambah (kalau dikalikan angka lebih dari 1). Yang membedakan aditif dan multiplikatif bukan "bertambah atau tidak", tapi CARA bertambahnya: jumlah tetap (aditif) atau kelipatan tetap (multiplikatif). Cek deret ini: 8−4=4, 16−8=8, 32−16=16 (selisih berubah-ubah, bukan aditif). Cek hasil bagi: 8÷4=2, 16÷8=2, 32÷16=2 (selalu 2). Jadi ini pola <strong>MULTIPLIKATIF</strong>, bukan aditif seperti dugaan Made.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bersama kelompokmu, buat 2 deret bilangan: satu ADITIF, satu MULTIPLIKATIF, masing-masing 4 angka. Tukar dengan kelompok lain, minta mereka menentukan jenis pola dari deretmu DAN menjelaskan alasannya (bukan cuma menebak). Diskusikan: apa yang membuat kalian yakin dengan jawaban itu?
+      </div>
+
+      <p>Materi berikutnya akan fokus khusus pada pola MULTIPLIKATIF — cara mengidentifikasi dan meniru pola yang membesar maupun mengecil, dengan bantuan alat hitung.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
