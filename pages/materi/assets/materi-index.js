@@ -1657,5 +1657,50 @@ window.MATERI_INDEX = [
     ringkasan: "Menentukan dan menandai lokasi pada peta/bidang berpetak lewat permainan 'tebak koordinat' dan soal cerita kontekstual.",
     status: "selesai",
     file: "matematika/geometri-tp3/02-tebak-koordinat-dan-soal-cerita-peta.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🔁",
+    elemen: "Aljabar",
+    tp: "aljabar-tp3",
+    tema: "Aljabar · Pola Bilangan Membesar dan Mengecil (Perkalian dan Pembagian)",
+    urutan: 1,
+    judul: "Membedakan Pola Aditif dan Multiplikatif",
+    ringkasan: "Membedakan pola aditif (tambah/kurang tetap) dari pola multiplikatif (kelipatan/pembagi tetap) melalui perbandingan langsung.",
+    status: "selesai",
+    file: "matematika/aljabar-tp3/01-membedakan-pola-aditif-dan-multiplikatif.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🔁",
+    elemen: "Aljabar",
+    tp: "aljabar-tp3",
+    tema: "Aljabar · Pola Bilangan Membesar dan Mengecil (Perkalian dan Pembagian)",
+    urutan: 2,
+    judul: "Mengidentifikasi dan Meniru Pola Multiplikatif",
+    ringkasan: "Mengidentifikasi dan meniru pola bilangan multiplikatif (membesar dan mengecil) dengan bantuan kalkulator atau garis bilangan.",
+    status: "selesai",
+    file: "matematika/aljabar-tp3/02-mengidentifikasi-dan-meniru-pola-multiplikatif.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🔁",
+    elemen: "Aljabar",
+    tp: "aljabar-tp3",
+    tema: "Aljabar · Pola Bilangan Membesar dan Mengecil (Perkalian dan Pembagian)",
+    urutan: 3,
+    judul: "Pola Multiplikatif dalam Soal Cerita",
+    ringkasan: "Mengembangkan pola bilangan multiplikatif dalam soal cerita kontekstual, termasuk memprediksi suku berikutnya maupun suku sebelumnya (mundur).",
+    status: "selesai",
+    file: "matematika/aljabar-tp3/03-pola-multiplikatif-dalam-soal-cerita.html"
   }
 ];
