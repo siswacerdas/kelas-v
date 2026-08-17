@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kalimat Gabungan Dua Operasi · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .kotak-tanya { display: inline-flex; align-items: center; justify-content: center; min-width: 1.7em; height: 1.7em; padding: 0 4px; border: 2.5px solid var(--m-color); border-radius: 7px; font-weight: 700; color: var(--m-color); vertical-align: middle; margin: 0 2px; font-family: 'Plus Jakarta Sans', monospace; }
+  .opsoal { text-align: center; font-size: calc(var(--content-fs) + 1px); font-weight: 700; margin: 0.6rem 0 1.1rem; color: var(--ink); }
+  .sisi-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .sisi-tabel th, .sisi-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .sisi-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .sisi-tabel td.hasil { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔣</span>
+      <div class="ma-cover-eyebrow">Aljabar · Notasi Simbolik, Empat Operasi sampai 1.000 · Materi 2 dari 4</div>
+      <div class="ma-cover-title">Kalimat Gabungan Dua Operasi</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Perhatian: materi ini adalah lompatan penting.</strong> Sebelumnya, kotak kosongmu hanya berhadapan dengan SATU operasi di seberangnya. Sekarang, seberangnya berisi DUA operasi sekaligus. Ini bukan cuma "angka lebih besar" — ini cara berpikir yang sedikit berbeda, jadi pelan-pelan saja.</p>
+
+      <div class="opsoal"><span class="kotak-tanya">&nbsp;</span> + 15 = 32 − 7</div>
+
+      <p>Lihat kalimat ini. Sisi kiri ada kotak dan penjumlahan. Sisi kanan ada PENGURANGAN — dua angka, bukan satu angka polos seperti biasanya. Bagaimana caranya?</p>
+
+      <p><strong>Kuncinya:</strong> kerjakan dulu sisi yang SUDAH LENGKAP (tidak ada kotaknya) sampai jadi SATU angka tunggal. Sisi kanan (32−7) tidak ada kotaknya, jadi kerjakan dulu itu.</p>
+
+      <ol class="langkah">
+        <li><strong>Selesaikan dulu sisi yang lengkap (tanpa kotak):</strong> 32 − 7 = 25.</li>
+        <li><strong>Sekarang kalimatnya jadi lebih sederhana</strong>, sama seperti materi sebelumnya: <span class="kotak-tanya">&nbsp;</span> + 15 = 25.</li>
+        <li><strong>Cari kotak dengan operasi kebalikan</strong>: kebalikan penjumlahan adalah pengurangan. 25 − 15 = 10.</li>
+        <li><strong>Kotak berisi 10.</strong> (Cek ulang di kalimat ASLI: 10+15=25, dan 32−7=25. Keduanya sama-sama 25 ✓)</li>
+      </ol>
+
+      <table class="sisi-tabel">
+        <tr><th>Langkah</th><th>Sisi Kiri</th><th>Sisi Kanan</th></tr>
+        <tr><td>Kalimat asli</td><td><span class="kotak-tanya">&nbsp;</span> + 15</td><td>32 − 7</td></tr>
+        <tr><td>Sederhanakan sisi lengkap</td><td><span class="kotak-tanya">&nbsp;</span> + 15</td><td class="hasil">25</td></tr>
+        <tr><td>Cari kotak (kebalikan)</td><td class="hasil">10</td><td>25</td></tr>
+      </table>
+
+      <div class="contoh-box">
+        <strong>Strategi utama:</strong> sederhanakan dulu sisi yang TIDAK ada kotaknya sampai jadi satu angka. Setelah itu, kalimatnya kembali jadi soal SATU operasi seperti yang sudah kamu kuasai.
+      </div>
+
+      <p>Bagaimana kalau kotaknya justru ada di sisi yang punya DUA angka? Contoh:</p>
+
+      <div class="opsoal">50 − <span class="kotak-tanya">&nbsp;</span> = 18 + 9</div>
+
+      <ol class="langkah">
+        <li>Sederhanakan dulu sisi yang lengkap (tanpa kotak): 18 + 9 = 27.</li>
+        <li>Kalimatnya jadi: 50 − <span class="kotak-tanya">&nbsp;</span> = 27.</li>
+        <li>Cari kotak dengan kebalikan pengurangan: kotak adalah angka yang DIKURANGKAN dari 50 untuk menghasilkan 27, jadi kotak = 50−27 = 23.</li>
+        <li><strong>Kotak berisi 23.</strong> (Cek: 50−23=27, dan 18+9=27 ✓)</li>
+      </ol>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kalimat ini seperti dua kotak surat di kiri dan kanan sebuah jembatan timbangan, dan salah satu kotak surat itu masih terkunci berlapis dua.</span></p>
+        <p>Kalau satu sisi kuncinya cuma satu lapis (satu operasi, ada kotak), dan sisi lainnya kuncinya dua lapis TAPI tidak ada kotak yang disembunyikan (isinya sudah pasti, cuma perlu dihitung), kamu bisa BUKA DULU kunci yang dua lapis itu (hitung 32−7=25), supaya sekarang tinggal satu "kotak terkunci" yang tersisa untuk dibuka.</p>
+        <p>Jangan coba membuka DUA kotak sekaligus dari dua sisi berbeda — selesaikan dulu sisi yang bisa dipastikan nilainya, baru fokus ke sisi yang masih menyimpan kotak misteri.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Urutan kerja yang WAJIB: (1) cari sisi mana yang TIDAK ada kotaknya, (2) sederhanakan sisi itu jadi satu angka, (3) baru cari kotak di sisi lainnya dengan operasi kebalikan. Jangan langsung menebak-nebak angka tanpa melewati langkah ini.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Temukan nilai kotak: <span class="kotak-tanya">&nbsp;</span> − 20 = 45 + 15</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sederhanakan sisi kanan dulu: 45+15=60. Kalimat jadi: kotak−20=60. Kebalikan pengurangan adalah penjumlahan: 60+20=80. <strong>Kotak = 80</strong>. (Cek: 80−20=60, dan 45+15=60 ✓)</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Temukan nilai kotak: 90 − <span class="kotak-tanya">&nbsp;</span> = 60 − 25</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sederhanakan sisi kanan dulu: 60−25=35. Kalimat jadi: 90−kotak=35. Kotak adalah angka yang dikurangkan dari 90 untuk hasil 35: 90−35=55. <strong>Kotak = 55</strong>. (Cek: 90−55=35, dan 60−25=35 ✓)</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani mengerjakan "<span class="kotak-tanya">&nbsp;</span>+30=70−15" dengan cara langsung menjumlahkan 30 dan 15 untuk mencari kotak, jadi jawabannya 45. Apakah cara ini benar? Kerjakan dengan cara yang tepat!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Rani SALAH — dia menggabungkan angka dari kedua sisi secara sembarangan, bukan mengikuti langkah yang benar. Cara yang tepat: sederhanakan dulu sisi kanan (tanpa kotak): 70−15=55. Kalimat jadi: kotak+30=55. Kebalikan penjumlahan adalah pengurangan: 55−30=25. <strong>Kotak yang benar = 25</strong>, bukan 45. (Cek: 25+30=55, dan 70−15=55 ✓)</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kerjakan 4 soal kalimat gabungan dua operasi dengan satu kotak kosong. Untuk setiap soal, tuliskan dengan jelas urutan langkahmu: sisi mana yang kamu sederhanakan dulu, dan operasi kebalikan apa yang kamu pakai untuk mencari kotaknya. Kalau ragu, boleh cek pakai alat peraga timbangan.
+      </div>
+
+      <p>Materi berikutnya akan melatih kemampuanmu pada kalimat yang lebih bervariasi lagi: keempat operasi hitung (tambah, kurang, kali, bagi) tercampur bebas dengan posisi kotak yang beragam.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

@@ -1,1 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nilai Belum Diketahui pada Angka sampai 1.000 · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .kotak-tanya { display: inline-flex; align-items: center; justify-content: center; min-width: 1.7em; height: 1.7em; padding: 0 4px; border: 2.5px solid var(--m-color); border-radius: 7px; font-weight: 700; color: var(--m-color); vertical-align: middle; margin: 0 2px; font-family: 'Plus Jakarta Sans', monospace; }
+  .opsoal { text-align: center; font-size: calc(var(--content-fs) + 1px); font-weight: 700; margin: 0.6rem 0 1.1rem; color: var(--ink); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔣</span>
+      <div class="ma-cover-eyebrow">Aljabar · Notasi Simbolik, Empat Operasi sampai 1.000 · Materi 1 dari 4</div>
+      <div class="ma-cover-title">Nilai Belum Diketahui pada Angka sampai 1.000</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Di materi sebelumnya, kamu sudah menemukan nilai kotak kosong pada kalimat dengan angka KECIL (seperti 4+<span class="kotak-tanya">&nbsp;</span>=7). Sekarang kita naik level: angkanya bisa sampai <strong>1.000</strong>. Konsepnya SAMA PERSIS seperti sebelumnya — cuma angkanya lebih besar.</p>
+
+      <p>Ingat lagi prinsip dari materi timbangan: kalimat matematika dengan tanda "=" itu SAH kalau nilai kedua sisinya SAMA. Kotak kosong itu artinya "ada angka yang belum kita ketahui, tapi kita bisa mencarinya supaya kedua sisi tetap sama nilainya".</p>
+
+      <div class="opsoal">245 + <span class="kotak-tanya">&nbsp;</span> = 600</div>
+
+      <p>Cara menemukan kotaknya SAMA seperti sebelumnya:</p>
+
+      <ol class="langkah">
+        <li>Sisi kanan sudah pasti bernilai 600 (angka polos).</li>
+        <li>Cari angka yang kalau ditambah 245 hasilnya 600.</li>
+        <li>600 − 245 = 355. Jadi kotak berisi <strong>355</strong>. (Cek: 245+355=600 ✓)</li>
+      </ol>
+
+      <p>Perhatikan langkah 2-3: untuk mencari angka yang HILANG pada penjumlahan, kamu memakai operasi KEBALIKANNYA, yaitu PENGURANGAN (600−245). Ini bukan aturan baru — ini cara yang sama dengan yang kamu pakai waktu mengerjakan 4+<span class="kotak-tanya">&nbsp;</span>=7 dulu (7−4=3), hanya angkanya sekarang lebih besar.</p>
+
+      <div class="contoh-box">
+        <strong>Kotak pada penjumlahan</strong> → dicari dengan PENGURANGAN.<br>
+        <strong>Kotak pada pengurangan</strong> → dicari dengan PENJUMLAHAN (kebalikannya).
+      </div>
+
+      <p>Contoh kotak pada pengurangan:</p>
+
+      <div class="opsoal"><span class="kotak-tanya">&nbsp;</span> − 180 = 320</div>
+
+      <ol class="langkah">
+        <li>Sisi kanan sudah pasti bernilai 320.</li>
+        <li>Cari angka yang kalau dikurangi 180 hasilnya 320. Pakai operasi kebalikan dari pengurangan, yaitu PENJUMLAHAN: 320+180=500.</li>
+        <li>Kotak berisi <strong>500</strong>. (Cek: 500−180=320 ✓)</li>
+      </ol>
+
+      <p>Prinsip kebalikan ini juga berlaku untuk perkalian dan pembagian:</p>
+
+      <div class="contoh-box">
+        <strong>Kotak pada perkalian</strong> → dicari dengan PEMBAGIAN.<br>
+        <strong>Kotak pada pembagian</strong> → dicari dengan PERKALIAN (kebalikannya).
+      </div>
+
+      <p>Contoh: <span class="kotak-tanya">&nbsp;</span> × 6 = 720. Karena perkalian dan pembagian saling berkebalikan, kotak dicari dengan membagi: 720 ÷ 6 = 120. Jadi kotak berisi <strong>120</strong>.</p>
+
+      <p>Sekarang, ingat lagi pelajaran penting dari materi timbangan: kotak TIDAK SELALU ada di posisi yang sama. Posisinya bisa di kiri, kanan, atau bahkan bikin kamu perlu berpikir lebih hati-hati saat menentukan operasi kebalikan yang tepat:</p>
+
+      <div class="opsoal">840 = <span class="kotak-tanya">&nbsp;</span> + 260</div>
+
+      <p>Meski angka polos (840) ada di KIRI, caranya tetap sama: 840 bernilai pasti, cari angka yang ditambah 260 hasilnya 840. Pakai kebalikan penjumlahan (pengurangan): 840−260=580. Jadi kotak berisi <strong>580</strong>.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan operasi hitung dan kebalikannya seperti PINTU MASUK dan PINTU KELUAR yang sama, cuma arahnya berlawanan.</span></p>
+        <p>Kalau kamu MASUK lewat penjumlahan (angka bertambah), untuk KEMBALI ke angka asal kamu harus lewat pengurangan (mengambil kembali yang ditambahkan). Kalau kamu MASUK lewat perkalian (angka dilipatgandakan), untuk KEMBALI kamu harus lewat pembagian (membagi kembali pelipatgandaan itu).</p>
+        <p>Jadi setiap kali mencari kotak kosong, tanya pada dirimu: "operasi apa yang dipakai di kalimat ini? Kalau begitu, operasi KEBALIKANNYA apa?" — itulah operasi yang kamu pakai untuk menemukan kotaknya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Setelah menemukan angka untuk kotak, SELALU cek ulang dengan memasukkan angka itu ke kalimat asli dan menghitung kedua sisinya. Kalau hasilnya benar-benar SAMA, jawabanmu terbukti benar.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Temukan nilai kotak: 375 + <span class="kotak-tanya">&nbsp;</span> = 900</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kebalikan penjumlahan adalah pengurangan: 900−375=525. <strong>Kotak = 525</strong>. (Cek: 375+525=900 ✓)</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Temukan nilai kotak: <span class="kotak-tanya">&nbsp;</span> ÷ 8 = 45</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kebalikan pembagian adalah perkalian: 45×8=360. <strong>Kotak = 360</strong>. (Cek: 360÷8=45 ✓)</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made mengerjakan "950 − <span class="kotak-tanya">&nbsp;</span> = 430" dengan cara mengurangkan 950−430, hasilnya 520. Wayan bilang caranya salah karena "harusnya ditambah, bukan dikurang, karena soalnya operasi pengurangan". Siapa yang benar? Buktikan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Made yang BENAR. Wayan salah paham — aturan "kebalikan operasi" bukan berarti selalu memakai operasi tertentu tanpa berpikir, tapi memahami HUBUNGAN antar angka pada kalimat itu. Di sini, kotak adalah angka yang DIKURANGKAN dari 950 untuk menghasilkan 430 — jadi kotak = selisih 950 dan 430 = 950−430=520. Cek: 950−520=430 ✓, terbukti benar. Wayan keliru karena hanya menghafal "kebalikan pengurangan itu penjumlahan" tanpa memperhatikan bahwa yang dicari di sini adalah angka yang DIKURANGKAN, bukan hasil akhirnya.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kerjakan 4 soal kalimat matematika satu operasi dengan angka sampai 1.000, campur posisi kotak (jangan semuanya di posisi yang sama). Pastikan ada contoh dari keempat operasi (tambah, kurang, kali, bagi). Tuliskan operasi KEBALIKAN yang kamu pakai untuk tiap soal.
+      </div>
+
+      <p>Materi berikutnya akan sedikit lebih menantang: bagaimana kalau dalam satu kalimat ada DUA operasi sekaligus, bukan cuma satu?</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
