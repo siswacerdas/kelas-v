@@ -1702,5 +1702,35 @@ window.MATERI_INDEX = [
     ringkasan: "Mengembangkan pola bilangan multiplikatif dalam soal cerita kontekstual, termasuk memprediksi suku berikutnya maupun suku sebelumnya (mundur).",
     status: "selesai",
     file: "matematika/aljabar-tp3/03-pola-multiplikatif-dalam-soal-cerita.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⚡",
+    elemen: "Aljabar",
+    tp: "aljabar-tp4",
+    tema: "Aljabar · Bernalar Proporsional dengan Rasio Satuan",
+    urutan: 1,
+    judul: "Memahami Rasio Satuan",
+    ringkasan: "Memahami rasio satuan (unit rate) melalui konteks harga per satuan atau kecepatan, dibantu tabel perbandingan sederhana.",
+    status: "selesai",
+    file: "matematika/aljabar-tp4/01-memahami-rasio-satuan.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⚡",
+    elemen: "Aljabar",
+    tp: "aljabar-tp4",
+    tema: "Aljabar · Bernalar Proporsional dengan Rasio Satuan",
+    urutan: 2,
+    judul: "Soal Cerita Proporsional dengan Rasio Satuan",
+    ringkasan: "Menyelesaikan soal cerita proporsional (resep, kecepatan, harga per satuan) menggunakan rasio satuan dengan operasi perkalian/pembagian yang tepat.",
+    status: "selesai",
+    file: "matematika/aljabar-tp4/02-soal-cerita-proporsional-dengan-rasio-satuan.html"
   }
 ];
