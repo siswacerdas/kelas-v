@@ -1,1 +1,787 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menulis Cerita Imajinatif — Bahasa Indonesia Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+input.ans-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);background:#fffef9;}
+input.ans-input:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.field-row{margin-bottom:14px;}
+.field-row label{display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field-hint{font-size:12px;color:var(--ink-faint);margin-top:4px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.kalimat-row{border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fff;}
+.kalimat-row .kt{font-size:13.5px;margin-bottom:10px;line-height:1.6;font-style:italic;}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reveal-key{margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;}
+.key-box{display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;}
+.key-box.show{display:block;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+.check-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13.5px;}
+.check-item input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
 
+/* ============ PAGINATION / STEPPER ============ */
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
+.page{display:none;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+
+/* ============ KERTAS CERITA (konsisten dengan modul Menulis lain) ============ */
+.notebook-wrap{
+  background:#fffef8;border:1.5px solid var(--border);border-radius:10px;
+  padding:16px 20px 16px 40px;position:relative;
+  background-image:repeating-linear-gradient(to bottom, transparent, transparent 27px, var(--border) 28px);
+}
+.notebook-wrap::before{content:'';position:absolute;left:24px;top:0;bottom:16px;width:1.5px;background:#e0a3a3;}
+.notebook-wrap textarea{
+  border:none;background:transparent;width:100%;min-height:170px;
+  font-family:'Fraunces',serif;font-size:14.5px;line-height:28px;resize:vertical;padding:0;
+}
+.notebook-wrap textarea:focus{outline:none;}
+.recall-box{margin-top:12px;background:var(--gold-l);border:1px solid #ecd58f;border-radius:10px;padding:12px 14px;font-size:13px;display:none;}
+.recall-box.show{display:block;}
+.recall-box b{color:var(--gold-d);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.model-box{background:#f4f8f5;border:1.5px solid var(--correct);border-radius:12px;padding:16px 18px;margin-top:14px;display:none;}
+.model-box.show{display:block;}
+.model-box b{color:var(--correct);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.model-box .mrow{margin-bottom:10px;font-size:13.5px;}
+.model-box .mrow:last-child{margin-bottom:0;}
+.reveal-btn{background:var(--gold-l);border:1px solid #ecd58f;color:var(--gold-d);border-radius:20px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;}
+
+/* ============ PENUTUP PERJALANAN SETAHUN (khusus modul terakhir) ============ */
+.trophy-box{background:linear-gradient(135deg,var(--gold-d),var(--gold));color:#fff8e6;border-radius:16px;padding:26px 24px;text-align:center;margin:20px 0;}
+.trophy-box .tic{font-size:36px;margin-bottom:8px;}
+.trophy-box h3{color:#fff;font-size:19px;margin-bottom:8px;}
+.journey-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;text-align:left;}
+.journey-card{background:rgba(255,255,255,.15);border-radius:10px;padding:12px 14px;font-size:12.5px;}
+.journey-card .jc-title{font-weight:700;margin-bottom:4px;}
+@media (max-width:560px){.journey-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Menulis Imajinasi</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
+
+<div id="stepper" class="stepper"></div>
+
+<div class="wrap">
+
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> Menulis · Menulis Cerita Imajinatif (Bahasa Indonesia Kelas 5) — TP TERAKHIR dari seluruh 10 TP Bahasa Indonesia Kelas 5. TP dan 5 tangga dipakai ulang dari <code>pages/materi/bahasa-indonesia/menulis-imajinasi/</code> — tidak dianalisis ulang dari CP.</li>
+<li><b>5 subunit</b>: melontarkan ide liar → tokoh &amp; latar → alur Awal-Tengah-Akhir → kata konotatif → cerita utuh mandiri.</li>
+<li><b>Proyek menulis berkelanjutan</b> seperti modul Menulis lain — ide dari Bagian 1 dikembangkan terus sampai Bagian 4, lalu Bagian 5 memakai IDE BARU untuk penilaian mandiri (mengikuti instruksi asli materi 05 persis).</li>
+<li><b>Kriteria estetik sebagai pengayaan, bukan syarat kelulusan</b> (sesuai Buku Saku Scaffolding Bagian 0.5): kata konotatif tetap diajarkan dan diminta, tapi kekuatan tokoh-latar-alur yang koheren tetap jadi fokus utama kompetensi — bukan kecanggihan kata konotatifnya.</li>
+<li><b>Produk Belajar = penilaian akhir TP</b> (Bagian 5), 3 kriteria: tokoh &amp; latar tergambar detail, alur punya masalah yang berhubungan dengan tokoh, minimal satu kata konotatif dipilih sengaja.</li>
+<li><b>Penutup khusus:</b> karena ini TP terakhir Bahasa Indonesia Kelas 5, Bagian 5 modul ini ditutup dengan rangkuman perjalanan setahun (mengikuti nada perayaan di materi 05 yang asli) — bukan sekadar penutup unit biasa.</li>
+<li>Profil kelas dipakai ulang: kemampuan awal homogen, kesenjangan ekonomi tidak signifikan.</li>
+</ul>
+</details>
+
+<div class="cover">
+  <span class="kicker">✦ Bahasa Indonesia · Kelas 5 · TP Terakhir!</span>
+  <h1>Menulis Cerita<br>Imajinatif</h1>
+  <p class="lede">Bismillah, mari kita mulai petualangan terakhir tahun ini! Berbeda dengan menulis pengalaman atau pengamatan, cerita imajinatif boleh sepenuhnya dari khayalanmu — semakin aneh dan tidak biasa, semakin seru.</p>
+  <div class="cover-meta">
+    <span>🎨 5 bagian belajar</span>
+    <span>📓 1 proyek menulis berkelanjutan</span>
+    <span>📄 1 cerita imajinatif untuk diselesaikan</span>
+  </div>
+</div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Cerita imajinatif boleh sepenuhnya dari khayalanmu — tidak perlu berdasarkan kejadian nyata seperti unit-unit menulis sebelumnya. Semakin tidak biasa idenya, justru semakin sesuai untuk latihan ini.</p>
+  <p>Kita akan mulai dengan bermain ide bebas tanpa tekanan, lalu mengembangkannya jadi tokoh, latar, alur, dan akhirnya cerita utuh yang kaya dengan kata-kata pilihan.</p>
+  <div class="produk-banner">
+    <div class="icon">📓</div>
+    <div>
+      <strong>Yang akan kamu buat</strong>
+      Cerita imajinatif lengkap: ide liar → tokoh &amp; latar detail → alur Awal-Tengah-Akhir → diperkaya kata konotatif — digabung jadi satu cerita utuh di Bagian 5, dari ide yang benar-benar baru.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SUBUNIT 1 -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Bagian 1 dari 5 · Materi Pintu Masuk</div><h2 style="margin-bottom:0;">Melontarkan Ide-Ide Liar</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Santai saja — tidak ada ide yang salah di sini. Cara mudah: tanyakan "Apa jadinya kalau...?", lalu gabungkan beberapa hal yang biasanya tidak berhubungan.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Coba lontarkan satu ide liar sekarang juga — apa saja, tidak perlu masuk akal!
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🎲 Mana yang Lebih Liar?</div>
+    <div class="act-desc">Pilih mana yang menggabungkan lebih banyak elemen tidak biasa sekaligus.</div>
+    <div id="s1-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Pelontar Ide</div>
+    <div class="act-desc">Ikuti pola Ide 1 → Ide 2 → Ide 3 seperti contoh materi: makin ke bawah, makin banyak elemen digabung.</div>
+    <div class="field-row"><label>Ide 1 — satu elemen tidak biasa</label><input class="ans-input" id="ide1" type="text" placeholder="mis. Payung yang bisa terbang"></div>
+    <div class="field-row"><label>Ide 2 — dua elemen digabung</label><input class="ans-input" id="ide2" type="text" placeholder="mis. Payung yang bisa terbang, tapi..."></div>
+    <div class="field-row"><label>Ide 3 — beberapa elemen sekaligus, makin liar</label><textarea class="ans" id="ide3" placeholder="Kembangkan lebih jauh lagi..."></textarea></div>
+    <div class="field-hint">Pilih salah satu (biasanya Ide 3) sebagai ide pilihanmu untuk dikembangkan di bagian berikutnya.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">👥 Praktik Nyata</div>
+    <div class="act-desc">Main tanya-jawab "Apa jadinya kalau...?" dengan seseorang di rumah. Lontarkan minimal 5 ide liar bergantian.</div>
+    <div class="reflect-q"><label>Ide mana yang paling kalian suka?</label><textarea class="ans"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Ada bagian yang masih membingungkan? Tuliskan.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SUBUNIT 2 -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num">2</span>
+    <div><div class="block-eyebrow">Bagian 2 dari 5 · Pendalaman</div><h2 style="margin-bottom:0;">Tokoh dan Latar yang Tak Biasa</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Tokoh yang baik punya nama, ciri fisik khas, dan kebiasaan unik. Latar yang baik punya detail indrawi — bukan cuma "di sebuah kota", tapi bagaimana terlihat, terdengar, atau terasa.</p>
+  <button class="mini-btn ghost" onclick="showIdeRecall()" style="margin-bottom:10px;">📌 Lihat ide pilihanku dari Bagian 1</button>
+  <div class="recall-box" id="ideRecallBox"></div>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau tokohmu punya satu kebiasaan unik, kebiasaan seperti apa yang ingin kamu berikan?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🔎 Sudah Lengkap atau Belum?</div>
+    <div class="act-desc">Baca tiap deskripsi tokoh, tentukan apakah sudah lengkap (nama+ciri fisik+kebiasaan) atau belum.</div>
+    <div id="s2-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Pencipta Tokoh dan Latar</div>
+    <div class="act-desc">Kembangkan ide pilihanmu dari Bagian 1.</div>
+    <div class="field-row"><label>Tokoh (nama, ciri fisik, kebiasaan unik)</label><textarea class="ans" id="tokoh2" placeholder="Namanya..., berciri..., punya kebiasaan..."></textarea></div>
+    <div class="field-row"><label>Latar (minimal 2 detail indrawi: suara/bau/tekstur)</label><textarea class="ans" id="latar2" placeholder="Tempatnya..., terdengar..., berbau..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">👥 Praktik Nyata</div>
+    <div class="act-desc">Ceritakan tokoh dan latarmu ke seseorang. Minta mereka membayangkannya.</div>
+    <div class="reflect-q"><label>Apakah mereka bisa membayangkannya dengan jelas?</label><textarea class="ans"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz2"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Bagian mana (tokoh/latar) yang lebih mudah kamu kembangkan?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<!-- SUBUNIT 3 -->
+<section class="block" id="subunit3">
+  <div class="subunit-head"><span class="badge-num">3</span>
+    <div><div class="block-eyebrow">Bagian 3 dari 5 · Pendalaman</div><h2 style="margin-bottom:0;">Menyusun Alur Cerita</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sama seperti Menulis Pengalaman: Awal-Tengah-Akhir. Bedanya, masalah di bagian Tengah sebaiknya berhubungan dengan sifat unik tokohmu.</p>
+  <button class="mini-btn ghost" onclick="showTokohRecall()" style="margin-bottom:10px;">📌 Lihat tokoh &amp; latarku dari Bagian 2</button>
+  <div class="recall-box" id="tokohRecallBox"></div>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kenapa masalah yang berhubungan dengan sifat tokoh terasa lebih pas, dibanding masalah acak?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🔎 Masalah yang Pas atau Acak?</div>
+    <div class="act-desc">Baca tiap pasangan tokoh-masalah, tentukan apakah masalahnya berhubungan dengan sifat tokoh.</div>
+    <div id="s3-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🧱 Penyusun Alur</div>
+    <div class="act-desc">Berikan tokohmu satu masalah yang berhubungan dengan kebiasaan uniknya.</div>
+    <div class="field-row"><label>Awal — situasi biasa, sebelum masalah</label><textarea class="ans" id="alurAwal3" placeholder="..."></textarea></div>
+    <div class="field-row"><label>Tengah — masalah yang muncul</label><textarea class="ans" id="alurTengah3" placeholder="..."></textarea></div>
+    <div class="field-row"><label>Akhir — bagaimana masalah dihadapi</label><textarea class="ans" id="alurAkhir3" placeholder="..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz3"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apakah bagian Akhirmu harus selalu bahagia? Kenapa?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(5)">Lanjut →</button></div>
+</div><!-- /page 4 -->
+
+<div class="page" data-page="5">
+<!-- SUBUNIT 4 -->
+<section class="block" id="subunit4">
+  <div class="subunit-head"><span class="badge-num">4</span>
+    <div><div class="block-eyebrow">Bagian 4 dari 5 · Pendalaman</div><h2 style="margin-bottom:0;">Kata-kata yang Punya Rasa</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Kata konotatif memberi "rasa" tambahan tanpa mengubah arti dasarnya. Pilih kata yang kesannya cocok dengan suasana yang ingin kamu sampaikan.</p>
+  <button class="mini-btn ghost" onclick="showAlurRecall()" style="margin-bottom:10px;">📌 Lihat alur ceritaku dari Bagian 3</button>
+  <div class="recall-box" id="alurRecallBox"></div>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Sebutkan satu kata netral (seperti "berjalan") dan satu kata konotatif penggantinya yang kamu tahu.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🔎 Kata Mana yang Kesannya Pas?</div>
+    <div class="act-desc">Baca situasinya, pilih kata konotatif yang kesannya paling cocok.</div>
+    <div id="s4-list"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Merevisi dengan Kata Konotatif</div>
+    <div class="act-desc">Ambil 2 kalimat dari alurmu di Bagian 3. Ganti satu kata netral dengan kata konotatif yang lebih berasa.</div>
+    <div class="field-row"><label>Kalimat 1 — Kata Netral</label><input class="ans-input" id="revisi1sebelum4" type="text" placeholder="..."></div>
+    <div class="field-row"><label>Kalimat 1 — Dengan Kata Konotatif</label><input class="ans-input" id="revisi1sesudah4" type="text" placeholder="..."></div>
+    <div class="field-row" style="margin-top:14px;"><label>Kalimat 2 — Kata Netral</label><input class="ans-input" id="revisi2sebelum4" type="text" placeholder="..."></div>
+    <div class="field-row"><label>Kalimat 2 — Dengan Kata Konotatif</label><input class="ans-input" id="revisi2sesudah4" type="text" placeholder="..."></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz4"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apakah menemukan kata konotatif yang pas terasa sulit? Ceritakan.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(4)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(6)">Lanjut →</button></div>
+</div><!-- /page 5 -->
+
+<div class="page" data-page="6">
+<!-- SUBUNIT 5 — PERTEMUAN INTI -->
+<section class="block" id="subunit5">
+  <div class="subunit-head"><span class="badge-num badge-inti">5</span>
+    <div><div class="block-eyebrow">Bagian 5 dari 5 · Pertemuan Inti — Penilaian Akhir TP</div><h2 style="margin-bottom:0;">Ceritaku, Imajinasiku Sendiri</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Gabungkan semua keterampilanmu jadi satu cerita imajinatif utuh, dari IDE BARU yang belum pernah kamu tulis sebelumnya.</p>
+
+  <div class="activity">
+    <div class="act-title">📖 Contoh Model Lengkap</div>
+    <div class="act-desc">Ide: Sepatu yang bisa bernyanyi, tapi hanya bisa menyanyikan lagu sedih.</div>
+    <button class="reveal-btn" onclick="this.nextElementSibling.classList.toggle('show')">Lihat Contoh Lengkapnya</button>
+    <div class="model-box" id="modelBox5">
+      <div class="mrow"><b>1. Tokoh &amp; Latar</b>Do, sepatu kanvas biru yang warnanya pudar, punya kebiasaan bersenandung sangat pelan setiap kali pemiliknya sedang murung. Tinggal di rak sepatu dekat pintu rumah kontrakan sempit, tempat suara motor dan pedagang keliling terdengar sayup dari gang di luar jendela.</div>
+      <div class="mrow"><b>2. Alur</b>Awal: Do sering bersenandung pelan tanpa pernah didengar Rio, pemiliknya yang selalu terburu-buru. Tengah: suatu pagi Rio pulang dengan nilai ulangan jelek dan duduk lesu dekat rak sepatu — Do bersenandung lebih keras dari biasanya sampai akhirnya terdengar. Akhir: Rio terkejut lalu tertawa kecil mendengar suara sumbang itu, dan sejak itu ia sengaja duduk di dekat rak sepatu setiap kali sedih.</div>
+      <div class="mrow"><b>3. Kata Konotatif</b>"Murung" (bukan "sedih"), "lesu" (bukan "duduk"), "sumbang" (bukan "tidak merdu").</div>
+      <div class="mrow"><b>4. Cerita Lengkap</b>"Do adalah sepatu kanvas biru yang warnanya sudah agak pudar. Ia punya kebiasaan bersenandung sangat pelan setiap kali pemiliknya sedang murung, meski hampir tidak pernah ada yang mendengarnya... Rio terkejut, lalu tertawa kecil mendengar suara sumbang sepatunya bernyanyi. Sejak hari itu, setiap kali merasa sedih, Rio sengaja duduk dekat rak sepatu — menunggu Do bernyanyi untuknya."</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Ceritaku (Ide Baru)</div>
+    <div class="act-desc">Pikirkan satu ide BARU yang belum pernah kamu tulis di bagian-bagian sebelumnya.</div>
+    <div class="field-row"><label>1. Ide Liar Baruku</label><input class="ans-input" id="ide5" type="text" placeholder="..."></div>
+    <div class="field-row"><label>2. Tokoh &amp; Latar</label><textarea class="ans" id="tokohlatar5" placeholder="..."></textarea></div>
+    <div class="field-row"><label>3. Alur (Awal-Tengah-Akhir)</label><textarea class="ans" id="alur5" placeholder="..."></textarea></div>
+    <div class="field-row"><label>4. Kata Konotatif yang Kupilih (minimal satu)</label><input class="ans-input" id="konotatif5" type="text" placeholder="mis. 'menyelinap' (bukan 'berjalan')"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📄 Cerita Lengkap (Digabungkan) — Produk Belajar</div>
+    <div class="act-desc">Gabungkan keempat bagian di atas jadi satu cerita yang mengalir.</div>
+    <div class="notebook-wrap"><textarea id="ceritaFinal" placeholder="Tulis cerita imajinatifmu yang lengkap di sini..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✅ Kesiapanku (yang akan dinilai gurumu)</div>
+    <div class="check-item"><input type="checkbox" id="chk1"><label for="chk1">Tokoh dan latar tergambar jelas dengan detail</label></div>
+    <div class="check-item"><input type="checkbox" id="chk2"><label for="chk2">Alurnya punya masalah yang berhubungan dengan sifat tokoh</label></div>
+    <div class="check-item"><input type="checkbox" id="chk3"><label for="chk3">Ada minimal satu kata konotatif yang kupilih dengan sengaja</label></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Sebelum Dikumpulkan</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <div class="trophy-box">
+    <div class="tic">🏆</div>
+    <h3>Selamat! Kamu Baru Saja Menyelesaikan SELURUH Perjalanan Bahasa Indonesia Kelas 5A!</h3>
+    <p>Dari menyimak, membaca dan memirsa, berbicara, sampai menulis dalam berbagai bentuk — pengalaman, pengamatan, gagasan, dan imajinasi — kamu sudah melatih hampir semua cara berbahasa Indonesia dengan baik.</p>
+    <div class="journey-grid">
+      <div class="journey-card"><div class="jc-title">🎧 Menyimak</div>Informasi Penting · Sebab-Akibat</div>
+      <div class="journey-card"><div class="jc-title">🎬 Membaca &amp; Memirsa</div>Menganalisis Tayangan</div>
+      <div class="journey-card"><div class="jc-title">🎤 Berbicara</div>Presentasi Gagasan · Membacakan Karya Sastra</div>
+      <div class="journey-card"><div class="jc-title">✍️ Menulis</div>Pengalaman · Pengamatan · Gagasan · Imajinasi</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Perjalanan Setahun</h3>
+  <div class="reflect-q"><label>Dari semua yang sudah kamu pelajari di Bahasa Indonesia tahun ini, bagian mana yang paling berkesan?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Kemampuan berbahasa apa yang paling ingin kamu kembangkan lagi tahun depan?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, seluruh perjalanan ini selesai! Tuliskan satu hal yang kamu syukuri.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(5)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(7)">Lanjut →</button></div>
+</div><!-- /page 6 -->
+
+<div class="page" data-page="7">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Ide Liar</dt><dd>Ide bebas dan tidak biasa, dibuat tanpa tekanan harus langsung jadi cerita rapi.</dd>
+    <dt>Tokoh</dt><dd>Karakter dalam cerita, punya nama, ciri fisik khas, dan kebiasaan unik.</dd>
+    <dt>Latar</dt><dd>Tempat kejadian cerita, dilengkapi detail indrawi (suara, bau, tekstur).</dd>
+    <dt>Makna Denotatif</dt><dd>Arti harfiah/dasar sebuah kata.</dd>
+    <dt>Makna Konotatif</dt><dd>Kesan/"rasa" tambahan yang muncul dari sebuah kata, selain arti dasarnya.</dd>
+  </dl>
+</section>
+<div class="closing">Selamat, kamu sudah menyelesaikan seluruh perjalanan Bahasa Indonesia Kelas 5! Kemampuan berbahasa yang sudah kamu latih ini akan terus menemanimu, bukan cuma di sekolah, tapi sepanjang hidupmu — setiap kali kamu perlu didengar, dipahami, dan memahami orang lain. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(6)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 7 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+/* ============================================================
+   STORAGE KEY — GANTI PER MODUL supaya progres tiap modul terpisah
+   ============================================================ */
+const STORAGE_KEY = 'modulProgress:bi-menulis-imajinasi';
+const TOTAL_PAGES = 8;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+/* ============ STEPPER & HALAMAN ============ */
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Bag.3','Bag.4','Bag.5','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+/* ============ SIMPAN JAWABAN TEKS (textarea/isian) ============ */
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, input.ans-input, .notebook-wrap textarea');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+/* ============ SIMPAN CENTANG (checkbox) ============ */
+function wireCheckPersistence(){
+  const state = loadState();
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(state.check && state.check[el.id] !== undefined){ el.checked = state.check[el.id]; }
+    el.addEventListener('change', ()=>{
+      saveState(s=>{ s.check = s.check || {}; s.check[el.id] = el.checked; });
+    });
+  });
+}
+
+/* ============ MEMUTAR ULANG AKSI ============ */
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+/* ============ QUIZ RENDERER ============ */
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = '<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>' +
+        (q.key ? '<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle(\'show\')">Lihat contoh jawaban</button><div class="key-box">' + q.key + '</div>' : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SUBUNIT 1: mana yang lebih liar ============ */
+const s1data = [
+  {a:'Payung yang bisa terbang.', b:'Payung yang bisa terbang, sedih kalau hujan turun, dan hanya mau membuka kalau pemiliknya bernyanyi dulu.', correct:1},
+  {a:'Meja yang tumbuh seperti pohon setiap malam.', b:'Meja yang bisa bicara.', correct:0}
+];
+function renderS1(){
+  const el = document.getElementById('s1-list');
+  el.innerHTML = s1data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="kt">A — "${d.a}"</div>
+      <div class="kt">B — "${d.b}"</div>
+      <div class="choice-group" id="s1-q${i}">
+        <button class="choice-btn" onclick="checkMCQ('s1-q${i}',this,0,${d.correct})">A lebih liar</button>
+        <button class="choice-btn" onclick="checkMCQ('s1-q${i}',this,1,${d.correct})">B lebih liar</button>
+      </div>
+    </div>
+  `).join('');
+}
+renderS1();
+
+function showIdeRecall(){
+  const box = document.getElementById('ideRecallBox');
+  const i1 = document.getElementById('ide1').value || '(belum diisi)';
+  const i2 = document.getElementById('ide2').value || '(belum diisi)';
+  const i3 = document.getElementById('ide3').value || '(belum diisi)';
+  box.innerHTML = `<b>Ide 1:</b> ${i1}<br><b>Ide 2:</b> ${i2}<br><b>Ide 3:</b> ${i3}`;
+  box.classList.add('show');
+}
+
+/* ============ SUBUNIT 2: tokoh lengkap atau belum ============ */
+const s2data = [
+  {text:'"Ada seekor naga di gunung."', correct:1},
+  {text:'"Namanya Api, naga kecil bersisik merah menyala yang selalu bersin api setiap kali flu, dan malu setengah mati sesudahnya."', correct:0}
+];
+function renderS2(){
+  const el = document.getElementById('s2-list');
+  el.innerHTML = s2data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="kt">"${d.text}"</div>
+      <div class="choice-group" id="s2-q${i}">
+        <button class="choice-btn" onclick="checkMCQ('s2-q${i}',this,0,${d.correct})">Sudah Lengkap</button>
+        <button class="choice-btn" onclick="checkMCQ('s2-q${i}',this,1,${d.correct})">Belum Lengkap</button>
+      </div>
+    </div>
+  `).join('');
+}
+renderS2();
+
+function showTokohRecall(){
+  const box = document.getElementById('tokohRecallBox');
+  const tokoh = document.getElementById('tokoh2').value || '(belum diisi)';
+  const latar = document.getElementById('latar2').value || '(belum diisi)';
+  box.innerHTML = `<b>Tokoh:</b> ${tokoh}<br><b>Latar:</b> ${latar}`;
+  box.classList.add('show');
+}
+
+/* ============ SUBUNIT 3: masalah pas atau acak ============ */
+const s3data = [
+  {text:'Tokoh: kelinci yang paling takut suara keras. Masalah: tiba-tiba ada pesta kembang api besar di dekat rumahnya.', correct:0},
+  {text:'Tokoh: kelinci yang paling takut suara keras. Masalah: ia harus mencari warna cat yang hilang.', correct:1}
+];
+function renderS3(){
+  const el = document.getElementById('s3-list');
+  el.innerHTML = s3data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="kt">"${d.text}"</div>
+      <div class="choice-group" id="s3-q${i}">
+        <button class="choice-btn" onclick="checkMCQ('s3-q${i}',this,0,${d.correct})">Berhubungan dengan Sifat Tokoh</button>
+        <button class="choice-btn" onclick="checkMCQ('s3-q${i}',this,1,${d.correct})">Masalah Acak/Tidak Berhubungan</button>
+      </div>
+    </div>
+  `).join('');
+}
+renderS3();
+
+function showAlurRecall(){
+  const box = document.getElementById('alurRecallBox');
+  const a = document.getElementById('alurAwal3').value || '(belum diisi)';
+  const t = document.getElementById('alurTengah3').value || '(belum diisi)';
+  const k = document.getElementById('alurAkhir3').value || '(belum diisi)';
+  box.innerHTML = `<b>Awal:</b> ${a}<br><b>Tengah:</b> ${t}<br><b>Akhir:</b> ${k}`;
+  box.classList.add('show');
+}
+
+/* ============ SUBUNIT 4: kata konotatif yang pas ============ */
+const s4data = [
+  {situasi:'Tokohmu sedang sangat lapar dan makan terburu-buru.', options:['melahap','mencicipi'], correct:0},
+  {situasi:'Tokohmu mengintip dari balik pintu karena takut ketahuan.', options:['menatap','mengintip'], correct:1},
+  {situasi:'Tokohmu tertawa geli tapi berusaha menahan suaranya.', options:['terkekeh','terbahak'], correct:0}
+];
+function renderS4(){
+  const el = document.getElementById('s4-list');
+  el.innerHTML = s4data.map((d,i)=>`
+    <div class="kalimat-row">
+      <div class="kt">${d.situasi}</div>
+      <div class="choice-group" id="s4-q${i}">
+        ${d.options.map((o,oi)=>`<button class="choice-btn" onclick="checkMCQ('s4-q${i}',this,${oi},${d.correct})">${o}</button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+renderS4();
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Beda cerita imajinatif dengan menulis pengalaman/pengamatan adalah...', options:['Tidak ada beda','Cerita imajinatif boleh sepenuhnya dari khayalan, tidak perlu kejadian nyata','Cerita imajinatif harus tentang hewan'], correct:1},
+  {type:'bs', text:'Di tahap melontarkan ide liar, ada ide yang dianggap "salah".', correct:1},
+  {type:'mcq', text:'Kata konotatif adalah...', options:['Arti harfiah sebuah kata','Kesan/rasa tambahan dari sebuah kata, selain arti dasarnya','Kata yang tidak punya arti'], correct:1},
+  {type:'essay', text:'Sebutkan satu unsur cerita imajinatif (tokoh/latar/alur/kata konotatif).'},
+  {type:'essay', text:'Pernahkah kamu membuat cerita khayalan sendiri? Ceritakan sedikit.'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'mcq', text:'Cara membuat ide liar yang disebutkan di materi ini adalah...', options:['Menyalin ide dari buku','Bertanya "Apa jadinya kalau...?" atau menukar satu sifat benda biasa','Menunggu ide sempurna muncul sendiri'], correct:1},
+  {type:'essay', text:'Sebutkan satu cara membuat ide liar.', tag:'isian'},
+  {type:'essay', text:'Kenapa tidak ada ide yang dianggap "salah" di tahap ini?', tag:'uraian', key:'Contoh: karena tujuannya melatih keberanian berimajinasi bebas, bukan menilai kebenaran ide — semakin tidak biasa justru semakin sesuai dengan latihan ini.'},
+  {type:'essay', text:'Ceritakan ide-ide liar yang muncul saat kamu bermain tanya-jawab tadi.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz2', [
+  {type:'mcq', text:'Tiga hal yang membuat tokoh terasa jelas dan hidup adalah...', options:['Judul, penulis, tahun cerita','Nama, ciri fisik khas, dan kebiasaan unik','Warna sampul dan jumlah halaman'], correct:1},
+  {type:'essay', text:'Sebutkan satu detail indrawi yang bisa dipakai untuk menggambarkan latar (suara/bau/tekstur).', tag:'isian'},
+  {type:'essay', text:'Kenapa "kota yang hujannya permen" terasa kurang hidup dibanding kalau ditambah detail suara dan bau?', tag:'uraian', key:'Contoh: karena tanpa detail indrawi, latar hanya jadi ide umum yang sulit dibayangkan — detail suara dan bau membuat pembaca merasa benar-benar berada di tempat itu.'},
+  {type:'essay', text:'Ceritakan tanggapan orang yang kamu ajak bicara tadi tentang tokoh dan latarmu.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz3', [
+  {type:'mcq', text:'Struktur alur cerita imajinatif memakai pola yang sama dengan...', options:['Menulis Pengamatan','Menulis Pengalaman (Awal-Tengah-Akhir)','Menulis Gagasan'], correct:1},
+  {type:'essay', text:'Sebutkan tiga bagian alur cerita.', tag:'isian'},
+  {type:'essay', text:'Kenapa masalah yang berhubungan dengan sifat unik tokoh dianggap lebih baik daripada masalah acak?', tag:'uraian', key:'Contoh: karena tokoh jadi benar-benar diuji oleh masalah yang berhubungan langsung dengan dirinya, sehingga cerita terasa lebih menyatu dan bermakna, bukan sekadar kejadian acak yang tidak berhubungan.'},
+  {type:'essay', text:'Ceritakan alur yang sudah kamu susun tadi — masalah apa yang dihadapi tokohmu?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz4', [
+  {type:'mcq', text:'Mengganti kata netral dengan kata konotatif akan...', options:['Mengubah arti dasar kalimat secara total','Menambah kesan/rasa tanpa mengubah arti dasar secara mendasar','Membuat kalimat jadi salah'], correct:1},
+  {type:'essay', text:'Sebutkan satu pasangan kata netral dan kata konotatif (mis. "berjalan" - "menyelinap").', tag:'isian'},
+  {type:'essay', text:'Kenapa memilih kata konotatif yang tepat penting untuk menyampaikan suasana cerita?', tag:'uraian', key:'Contoh: karena kata yang tepat bisa menambah kesan yang sesuai dengan suasana yang ingin disampaikan (misalnya gugup, waspada, atau santai), tanpa perlu menambah kalimat baru.'},
+  {type:'essay', text:'Ceritakan kata konotatif yang kamu pilih tadi. Kenapa kamu memilih itu?', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Urutan lengkap proses menulis cerita imajinatif adalah...', options:['Alur → tokoh → ide liar → kata konotatif','Ide liar → tokoh &amp; latar → alur → kata konotatif','Kata konotatif → ide liar → alur → tokoh'], correct:1},
+  {type:'mcq', text:'Yang akan dinilai gurumu dari ceritamu adalah...', options:['Kerapian tulisan tangan saja','Tokoh &amp; latar yang detail, alur dengan masalah terhubung tokoh, dan kata konotatif','Panjang pendeknya cerita'], correct:1},
+  {type:'essay', text:'Bagaimana perasaanmu setelah menyelesaikan cerita imajinatifmu — sekaligus seluruh perjalanan Bahasa Indonesia tahun ini?', tag:'uraian'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 20;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  document.querySelectorAll('.check-item input:checked').forEach(()=>done++);
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+wireCheckPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+wireCheckPersistence();
+updateProgress();
+</script>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
