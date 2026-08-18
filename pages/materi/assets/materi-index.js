@@ -1837,5 +1837,35 @@ window.MATERI_INDEX = [
     ringkasan: "Menghitung keliling dan luas segi lima/enam beraturan sederhana serta bangun gabungan pada soal kontekstual.",
     status: "selesai",
     file: "matematika/pengukuran-tp2/02-keliling-dan-luas-segi-lima-enam-beraturan.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⏱️",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp3",
+    tema: "Pengukuran · Durasi Waktu (Konversi Antarsatuan dan Lintas Tengah Malam)",
+    urutan: 1,
+    judul: "Konversi Dasar Antarsatuan Waktu",
+    ringkasan: "Melakukan konversi dasar antarsatuan waktu (jam ke menit, menit ke detik, dan sebaliknya) sebagai penyegaran sebelum durasi kompleks.",
+    status: "selesai",
+    file: "matematika/pengukuran-tp3/01-konversi-dasar-antarsatuan-waktu.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⏱️",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp3",
+    tema: "Pengukuran · Durasi Waktu (Konversi Antarsatuan dan Lintas Tengah Malam)",
+    urutan: 2,
+    judul: "Durasi Jadwal Perjalanan Lintas Tengah Malam",
+    ringkasan: "Menghitung durasi waktu pada soal cerita jadwal perjalanan/penerbangan nyata, termasuk situasi yang melintasi tengah malam.",
+    status: "selesai",
+    file: "matematika/pengukuran-tp3/02-durasi-jadwal-perjalanan-lintas-tengah-malam.html"
   }
 ];
