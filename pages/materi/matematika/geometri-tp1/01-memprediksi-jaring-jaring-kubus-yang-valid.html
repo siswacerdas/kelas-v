@@ -1,1 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memprediksi Jaring-Jaring Kubus yang Valid · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1.4rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📦</span>
+      <div class="ma-cover-eyebrow">Geometri · Mengonstruksi dan Mengurai Bangun Ruang · Materi 1 dari 4</div>
+      <div class="ma-cover-title">Memprediksi Jaring-Jaring Kubus yang Valid</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Mulai dari sini, kita masuk ke elemen baru: <strong>Geometri</strong>. Materi pertama membahas bangun RUANG — bangun yang punya panjang, lebar, DAN tinggi (berbeda dari bangun datar yang cuma punya panjang dan lebar).</p>
+
+      <p><strong>Jaring-jaring</strong> adalah bentuk DATAR (belum dilipat) yang kalau dilipat dengan benar, akan membentuk bangun ruang. Sebelum kamu benar-benar melipat kertas nanti, kita latihan dulu MEMPREDIKSI — hanya dengan MELIHAT gambar, bisakah kamu menebak jaring-jaring mana yang VALID (bisa membentuk kubus utuh) dan mana yang TIDAK?</p>
+
+      <p>Kubus punya 6 sisi berbentuk persegi yang sama besar. Jadi, jaring-jaring kubus yang valid HARUS terdiri dari TEPAT 6 persegi, tersusun dengan cara tertentu supaya bisa dilipat tanpa tumpang tindih dan tanpa ada celah.</p>
+
+      <p>Lihat tiga susunan berikut. Sebelum lanjut membaca, coba tebak dulu: mana yang menurutmu BISA dilipat jadi kubus utuh?</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 180 140" width="170">
+          <rect x="48" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="10" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="48" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="86" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="124" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="48" y="86" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+        </svg>
+        <svg viewBox="0 0 180 140" width="170">
+          <rect x="10" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="48" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="48" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="86" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="86" y="86" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="124" y="86" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+        </svg>
+        <svg viewBox="0 0 260 70" width="240">
+          <rect x="10" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="48" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="86" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="124" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="162" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="200" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+        </svg>
+      </div>
+      <p class="svg-caption">Susunan A (bentuk plus/salib), Susunan B (bentuk tangga), Susunan C (baris lurus 6 persegi). Mana yang bisa dilipat jadi kubus?</p>
+
+      <p>Sudah menebak? Ini jawabannya: <strong>Susunan A (VALID)</strong> dan <strong>Susunan B (VALID)</strong> — keduanya bisa dilipat menjadi kubus utuh tanpa tumpang tindih. <strong>Susunan C (TIDAK VALID)</strong> — kalau dilipat, sisi-sisinya akan saling tumpang tindih dan tidak bisa menutup semua 6 sisi kubus dengan benar.</p>
+
+      <p><strong>Bagaimana cara "membayangkan" lipatan tanpa benar-benar melipat?</strong> Bayangkan SATU persegi sebagai "alas" (dasar kubus). Persegi-persegi lain yang menempel padanya akan menjadi sisi-sisi tegak, dan salah satu di antaranya (yang posisinya tepat) akan menjadi "tutup" di bagian atas.</p>
+
+      <ol class="langkah">
+        <li>Pilih satu persegi sebagai bayangan ALAS.</li>
+        <li>Bayangkan melipat ke atas setiap persegi yang MENEMPEL LANGSUNG pada alas itu — mereka akan jadi dinding SAMPING kubus.</li>
+        <li>Persegi yang tersisa (biasanya menempel pada salah satu dinding samping, BUKAN pada alas) akan jadi TUTUP kubus, kalau posisinya tepat setelah dinding-dinding itu dilipat.</li>
+        <li>Kalau ada 2 persegi yang akan "bertabrakan" di posisi yang sama setelah dilipat (tumpang tindih), susunan itu TIDAK VALID.</li>
+      </ol>
+
+      <div class="contoh-box">
+        Ciri paling umum susunan TIDAK VALID: garis LURUS panjang berisi 4 atau lebih persegi sekaligus (seperti Susunan C) — ini hampir selalu akan membuat sisi-sisi bertabrakan atau ada bagian kubus yang tidak tertutup saat dilipat.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu membungkus kado berbentuk kubus dengan kertas kado yang sudah dipotong berbentuk persegi-persegi tersambung.</span></p>
+        <p>Kalau bentuk potongan kertasnya "menyebar" ke berbagai arah dari titik tengah (seperti Susunan A yang berbentuk plus), setiap bagian punya "tempat tujuan" yang jelas — satu jadi alas, empat jadi dinding, satu jadi tutup.</p>
+        <p>Tapi kalau kertasnya dipotong memanjang LURUS SAJA (seperti Susunan C), waktu kamu coba melipatnya mengelilingi kado, ujung-ujungnya akan saling menumpuk di tempat yang sama, dan ada sisi kado yang tidak tertutup sama sekali.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Prediksi visual ini BUKAN tebakan asal — ini melatih ROTASI MENTAL (membayangkan gerakan tanpa benar-benar menggerakkan benda), kemampuan penting dalam berpikir spasial. Jangan buru-buru melipat kertas sungguhan sebelum benar-benar mencoba menebak dulu — proses menebak inilah yang melatih otakmu.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah susunan terdiri dari 5 persegi saja (bukan 6). Bisakah ini menjadi jaring-jaring kubus yang valid? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> TIDAK BISA. Kubus punya 6 sisi, jadi jaring-jaringnya HARUS terdiri dari TEPAT 6 persegi. Kalau cuma 5, akan ada satu sisi kubus yang tidak tertutup sama sekali.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Susunan berbentuk seperti huruf "Z" (zigzag) dengan 6 persegi. Apakah mungkin ini valid? Bagaimana cara memastikannya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Mungkin saja VALID — banyak susunan zigzag yang valid untuk jaring-jaring kubus (seperti Susunan B pada materi ini). Cara memastikan: bayangkan satu persegi sebagai alas, lipat mental persegi-persegi yang menempel langsung sebagai dinding, dan cek apakah ada persegi yang pas menjadi tutup tanpa tumpang tindih dengan yang lain.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan menyimpulkan "semua susunan dengan 6 persegi PASTI valid untuk kubus, yang penting jumlahnya 6". Apakah kesimpulan ini benar? Buktikan dengan Susunan C dari materi ini!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesimpulan Wayan SALAH. Jumlah 6 persegi memang SYARAT WAJIB, tapi BUKAN satu-satunya syarat — SUSUNAN/POSISI persegi-persegi itu juga harus tepat. Susunan C pada materi ini punya TEPAT 6 persegi (memenuhi syarat jumlah), tapi susunannya berbentuk garis lurus sehingga TIDAK VALID (gagal syarat susunan) — buktinya, kalau dilipat, sisi-sisinya akan bertabrakan dan ada bagian yang tidak tertutup.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Gambar 6 susunan berbeda dari 6 persegi (boleh di kertas berpetak). Untuk masing-masing, TULISKAN prediksimu (valid atau tidak) SEBELUM memotong dan mencobanya secara fisik. Setelah menebak semua, diskusikan dengan temanmu alasan di balik tebakan masing-masing.
+      </div>
+
+      <p>Materi berikutnya akan membuktikan prediksimu secara LANGSUNG — kamu akan menggunting dan melipat sendiri jaring-jaring kubus dari kertas!</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

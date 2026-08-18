@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Visualisasi Spasial: Tampak Depan, Atas, Samping · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1.2rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .view-item { display: flex; flex-direction: column; align-items: center; }
+  .view-label { font-weight: 700; font-size: calc(var(--content-fs) - 3px); color: var(--ink-2); margin-top: 0.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📦</span>
+      <div class="ma-cover-eyebrow">Geometri · Mengonstruksi dan Mengurai Bangun Ruang · Materi 4 dari 4 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Visualisasi Spasial: Tampak Depan, Atas, Samping</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Ambil kotak kapur atau buku di kelasmu, letakkan di meja. Kalau kamu berjalan MENGELILINGI benda itu dan memotretnya dari arah berbeda, foto-fotonya akan terlihat BEDA — meskipun bendanya SAMA. Inilah yang disebut visualisasi spasial: memahami bahwa satu bangun ruang bisa terlihat berbeda tergantung dari mana kamu melihatnya.</p>
+
+      <p>Ada TIGA sudut pandang standar yang biasa dipakai: <strong>tampak depan</strong> (dilihat langsung dari depan), <strong>tampak atas</strong> (dilihat dari atas, seperti burung terbang), dan <strong>tampak samping</strong> (dilihat dari sisi kiri atau kanan).</p>
+
+      <p>Lihat balok berikut, dengan ukuran panjang 6cm, tinggi 4cm, dan kedalaman 3cm:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 240 200" width="260">
+          <rect x="60" y="100" width="100" height="80" fill="var(--m-color)" opacity="0.25" stroke="var(--ink)" stroke-width="2.5"/>
+          <polygon points="60,100 160,100 200,60 100,60" fill="var(--m-color)" opacity="0.4" stroke="var(--ink)" stroke-width="2.5"/>
+          <polygon points="160,100 160,180 200,140 200,60" fill="var(--m-color)" opacity="0.12" stroke="var(--ink)" stroke-width="2.5"/>
+          <text x="110" y="195" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">panjang = 6 cm</text>
+          <text x="40" y="140" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle" transform="rotate(-90 40 140)">tinggi = 4 cm</text>
+          <text x="182" y="78" font-size="10" font-weight="700" fill="var(--ink-2)" text-anchor="middle">kedalaman = 3 cm</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Balok dilihat dari sudut 3 dimensi (seperti kamu melihatnya langsung).</p>
+
+      <p>Sekarang, bayangkan kamu berjalan tepat ke DEPAN balok itu, sampai kamu hanya melihat SATU sisi saja (tidak ada kedalaman terlihat) — itulah <strong>tampak depan</strong>:</p>
+
+      <div class="svg-wrap">
+        <div class="view-item">
+          <svg viewBox="0 0 140 100" width="130">
+            <rect x="20" y="10" width="100" height="80" fill="var(--m-color)" opacity="0.25" stroke="var(--ink)" stroke-width="2.5"/>
+            <text x="70" y="55" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">6 × 4</text>
+          </svg>
+          <div class="view-label">Tampak Depan</div>
+        </div>
+        <div class="view-item">
+          <svg viewBox="0 0 140 60" width="130">
+            <rect x="20" y="10" width="100" height="40" fill="var(--m-color)" opacity="0.25" stroke="var(--ink)" stroke-width="2.5"/>
+            <text x="70" y="35" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">6 × 3</text>
+          </svg>
+          <div class="view-label">Tampak Atas</div>
+        </div>
+        <div class="view-item">
+          <svg viewBox="0 0 100 100" width="90">
+            <rect x="10" y="10" width="40" height="80" fill="var(--m-color)" opacity="0.25" stroke="var(--ink)" stroke-width="2.5"/>
+            <text x="30" y="55" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">3 × 4</text>
+          </svg>
+          <div class="view-label">Tampak Samping</div>
+        </div>
+      </div>
+      <p class="svg-caption">Ketiga tampak digambar sebagai bangun DATAR (2D) — bukan lagi 3D — karena kamu hanya melihat satu sisi pada satu waktu.</p>
+
+      <p>Perhatikan baik-baik: SETIAP tampak digambar sebagai PERSEGI PANJANG DATAR (2D), bukan gambar 3D lagi — karena saat kamu melihat dari SATU arah, kamu cuma melihat DUA ukuran (bukan tiga) pada saat bersamaan.</p>
+
+      <ol class="langkah">
+        <li><strong>Tampak depan</strong> menunjukkan PANJANG dan TINGGI balok (6cm × 4cm) — kedalaman "tersembunyi" di baliknya, tidak terlihat.</li>
+        <li><strong>Tampak atas</strong> menunjukkan PANJANG dan KEDALAMAN (6cm × 3cm) — tinggi tidak terlihat karena kamu melihat dari atas ke bawah.</li>
+        <li><strong>Tampak samping</strong> menunjukkan KEDALAMAN dan TINGGI (3cm × 4cm) — panjang tidak terlihat karena kamu melihat dari samping.</li>
+      </ol>
+
+      <div class="contoh-box">
+        Setiap tampak "mengorbankan" SATU dimensi (yang tidak terlihat dari arah itu), dan menampilkan DUA dimensi lainnya sebagai bangun datar.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu memotret sebuah kulkas dengan kamera dari tiga posisi berbeda: langsung di depan pintu, dari atas menggunakan tangga, dan dari samping.</span></p>
+        <p>Foto dari DEPAN akan menunjukkan lebar dan tinggi kulkas (pintu kulkas terlihat penuh), tapi kamu TIDAK bisa melihat seberapa dalam kulkas itu dari foto ini. Foto dari ATAS akan menunjukkan lebar dan kedalaman (seperti melihat "peta" kulkas dari langit-langit), tapi tingginya tidak terlihat. Foto dari SAMPING menunjukkan kedalaman dan tinggi.</p>
+        <p>Ketiga foto itu SEMUANYA benar dan menggambarkan kulkas yang SAMA — hanya saja masing-masing menunjukkan informasi yang BERBEDA, karena sudut pandangnya berbeda.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Untuk menggambar ketiga tampak dengan benar, kamu perlu benar-benar MEMEGANG dan MEMUTAR benda nyata (bukan hanya membayangkan dari gambar di buku) — lihat langsung dari tiap arah, baru gambarkan apa yang kamu lihat. Ini melatih hubungan antara benda fisik dan representasi gambarnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah kotak kubus punya sisi 5cm. Apakah tampak depan, atas, dan sampingnya akan terlihat SAMA atau BERBEDA? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Untuk KUBUS, ketiga tampak itu akan terlihat SAMA — semuanya berupa persegi 5cm × 5cm, karena kubus punya panjang, lebar, dan tinggi yang SAMA PERSIS di segala arah. Ini beda dengan balok biasa, yang tampaknya bisa berbeda-beda karena ukurannya tidak semuanya sama.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah balok punya tampak depan 8cm × 3cm, dan tampak atas 8cm × 5cm. Berapa ukuran panjang, tinggi, dan kedalaman balok itu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Panjang (angka yang muncul di KEDUA tampak) = 8cm. Tinggi (dari tampak depan, angka yang tidak muncul di tampak atas) = 3cm. Kedalaman (dari tampak atas, angka yang tidak muncul di tampak depan) = 5cm.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan menggambar tampak SAMPING sebuah balok sebagai persegi panjang 6cm × 4cm — padahal angka 6cm itu sebenarnya PANJANG balok (yang seharusnya hanya muncul di tampak depan dan atas). Apa kesalahan Wayan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesalahan Wayan: dia salah memasukkan ukuran PANJANG ke dalam tampak samping, padahal tampak samping seharusnya hanya menampilkan KEDALAMAN dan TINGGI (bukan panjang). Ini tanda Wayan belum benar-benar membayangkan sudut pandang samping dengan tepat — dia mungkin masih membayangkan tampak depan, bukan tampak samping yang sesungguhnya.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil bangun ruang hasil lipatanmu sendiri (dari materi sebelumnya) atau benda nyata di kelas (kotak kapur, buku). Gambarkan tampak depan, atas, dan samping dari benda itu di kertas — pastikan kamu benar-benar melihat dari tiap arah, bukan menebak dari ingatan.
+      </div>
+
+      <p>Selamat! Kamu sudah menyelesaikan seluruh materi Geometri TP1 — dari memprediksi dan membuktikan jaring-jaring kubus, melipat dan mengurai balok, sampai visualisasi spasial tiga sudut pandang. Materi Geometri berikutnya akan membandingkan karakteristik (sisi, rusuk, titik sudut) antar bangun datar dan bangun ruang.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

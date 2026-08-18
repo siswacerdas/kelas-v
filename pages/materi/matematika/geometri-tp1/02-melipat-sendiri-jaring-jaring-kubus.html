@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Melipat Sendiri Jaring-Jaring Kubus · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1.4rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📦</span>
+      <div class="ma-cover-eyebrow">Geometri · Mengonstruksi dan Mengurai Bangun Ruang · Materi 2 dari 4</div>
+      <div class="ma-cover-title">Melipat Sendiri Jaring-Jaring Kubus</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya MEMBUKTIKAN prediksimu dari materi sebelumnya — dengan tangan sendiri, bukan cuma membayangkan. Siapkan kertas, gunting, dan penggaris.</p>
+
+      <p><strong>Langkah membuat jaring-jaring kubus sendiri:</strong></p>
+
+      <ol class="langkah">
+        <li>Gambar pola jaring-jaring berbentuk PLUS (seperti Susunan A di materi sebelumnya) di kertas, dengan 6 persegi berukuran SAMA (misalnya 5cm × 5cm setiap persegi).</li>
+        <li>Gunting mengikuti GARIS LUAR pola itu saja — jangan gunting garis-garis di DALAM pola (garis antar-persegi itu akan jadi lipatan, bukan potongan).</li>
+        <li>Lipat setiap garis antar-persegi dengan rapi, tegak lurus (90°) — ingat materi sudut siku-siku!</li>
+        <li>Lipat semua sisi ke atas sampai membentuk kotak tertutup. Rekatkan bagian-bagian yang bertemu dengan lem atau selotip.</li>
+      </ol>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 180 140" width="200">
+          <rect x="48" y="10" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="10" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="48" y="48" width="36" height="36" fill="#c76b3f" opacity="0.3" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="86" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="124" y="48" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="48" y="86" width="36" height="36" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <text x="66" y="70" font-size="10" font-weight="700" fill="#c76b3f" text-anchor="middle">ALAS</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Persegi jingga di tengah (ALAS) tidak dilipat — 4 persegi di sekelilingnya dilipat ke atas jadi dinding, 1 persegi ujung dilipat jadi tutup.</p>
+
+      <p>Setelah kamu melipat dan merekatkan Susunan A (bentuk plus), <strong>hasilnya HARUS berupa kubus utuh</strong> — semua 6 sisi tertutup rapat, tidak ada celah, tidak ada tumpang tindih. Ini membuktikan prediksimu sebelumnya (bahwa Susunan A VALID) BENAR.</p>
+
+      <p>Coba juga lipat Susunan B (bentuk tangga) dari materi sebelumnya. Perhatikan: meski bentuknya beda dari Susunan A, hasilnya TETAP kubus utuh juga — membuktikan ada LEBIH DARI SATU susunan yang valid untuk jaring-jaring kubus yang sama.</p>
+
+      <div class="contoh-box">
+        Kalau kamu berani coba, lipat juga Susunan C (baris lurus 6 persegi) dari materi sebelumnya. Kamu akan MELIHAT LANGSUNG kenapa itu gagal — sisi-sisinya akan saling menumpuk dan ada bagian kubus yang tidak tertutup, PERSIS seperti prediksimu.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan proses ini seperti menguji sebuah rancangan (blueprint) sebelum benar-benar dipakai membangun sesuatu.</span></p>
+        <p>Prediksi visualmu di materi sebelumnya itu seperti membuat RANCANGAN di atas kertas — masuk akal secara teori, tapi belum tentu benar-benar berfungsi sampai DIUJI secara nyata. Melipat kertas sungguhan adalah "uji coba" yang membuktikan apakah rancanganmu benar-benar bekerja atau tidak.</p>
+        <p>Kalau ternyata prediksimu MELESET (kamu kira valid tapi ternyata tidak, atau sebaliknya), itu bukan masalah — justru itu kesempatan bagus untuk memperbaiki cara berpikirmu tentang rotasi mental, dengan membandingkan bayanganmu dan kenyataan fisiknya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kalau prediksimu meleset (misalnya kamu kira TIDAK valid, tapi ternyata BISA dilipat jadi kubus), jangan langsung dilewati — coba pahami DI MANA letak kesalahan bayanganmu. Ulangi proses membayangkan sambil melihat hasil lipatan fisiknya, supaya "mata batin"-mu makin terlatih untuk soal berikutnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Setelah melipat Susunan A menjadi kubus, berapa banyak sisi kubus yang seharusnya tertutup rapat (tanpa celah)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kubus punya <strong>6 sisi</strong>, dan seluruhnya harus tertutup rapat tanpa celah maupun tumpang tindih setelah dilipat dengan benar.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Made melipat sebuah jaring-jaring dan hasilnya ada CELAH (bagian kubus yang tidak tertutup). Apa kemungkinan penyebabnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kemungkinan penyebabnya: (1) susunan jaring-jaringnya memang TIDAK VALID sejak awal (seperti Susunan C), atau (2) susunannya sebenarnya valid tapi Made salah melipat (lipatan tidak tegak lurus/90°, atau salah mengurutkan arah lipatan).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani berhasil melipat Susunan A dan Susunan B, keduanya jadi kubus yang sama ukurannya. Dia bingung: "kok bisa dua susunan beda bentuk menghasilkan kubus yang sama?" Bantu Rani memahami ini!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini WAJAR dan membuktikan konsep penting: ada BANYAK cara (lebih dari satu susunan) untuk "membongkar" kubus yang sama menjadi bentuk datar. Sama seperti kamu bisa melipat baju dengan cara berbeda tapi hasilnya tetap baju yang sama — susunan jaring-jaring yang berbeda hanyalah CARA BERBEDA menyusun 6 sisi kubus sebelum dilipat, tapi kubus hasil akhirnya bisa identik.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Buat dan lipat SENDIRI jaring-jaring kubus dari kertas (pakai pola valid yang sudah kamu pelajari). Bandingkan hasil lipatanmu dengan prediksi Tangga 1 — apakah sesuai? Diskusikan dengan kelompokmu jika ada prediksi yang meleset dari kenyataan.
+      </div>
+
+      <p>Materi berikutnya akan melangkah ke bangun ruang lain: BALOK — dan kamu juga akan berlatih arah SEBALIKNYA, yaitu MENGURAI bangun ruang fisik kembali menjadi jaring-jaring.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Melipat Balok dan Mengurai Kembali · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; align-items: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-arrow { font-size: 26px; color: var(--m-color); font-weight: 700; flex-shrink: 0; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📦</span>
+      <div class="ma-cover-eyebrow">Geometri · Mengonstruksi dan Mengurai Bangun Ruang · Materi 3 dari 4</div>
+      <div class="ma-cover-title">Melipat Balok dan Mengurai Kembali</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Balok</strong> mirip kubus (sama-sama punya 6 sisi persegi panjang), tapi BEDANYA: sisi-sisi balok TIDAK semuanya sama besar. Balok punya 3 PASANG sisi — tiap pasang punya ukuran sama, tapi antar-pasang ukurannya berbeda.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 420 240" width="380">
+          <rect x="80" y="0" width="120" height="80" fill="var(--m-color)" opacity="0.15" stroke="var(--ink)" stroke-width="2"/>
+          <text x="140" y="44" font-size="12" font-weight="700" fill="var(--ink-2)" text-anchor="middle">atas</text>
+          <rect x="0" y="80" width="80" height="60" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <text x="40" y="115" font-size="12" font-weight="700" fill="var(--ink-2)" text-anchor="middle">kiri</text>
+          <rect x="80" y="80" width="120" height="60" fill="#c76b3f" opacity="0.3" stroke="var(--ink)" stroke-width="2"/>
+          <text x="140" y="115" font-size="12" font-weight="700" fill="#c76b3f" text-anchor="middle">depan</text>
+          <rect x="200" y="80" width="80" height="60" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <text x="240" y="115" font-size="12" font-weight="700" fill="var(--ink-2)" text-anchor="middle">kanan</text>
+          <rect x="280" y="80" width="120" height="60" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <text x="340" y="115" font-size="12" font-weight="700" fill="var(--ink-2)" text-anchor="middle">belakang</text>
+          <rect x="80" y="140" width="120" height="80" fill="var(--m-color)" opacity="0.15" stroke="var(--ink)" stroke-width="2"/>
+          <text x="140" y="184" font-size="12" font-weight="700" fill="var(--ink-2)" text-anchor="middle">bawah</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Jaring-jaring balok: 3 pasang sisi (atas-bawah, depan-belakang, kiri-kanan), tiap pasang ukurannya sama.</p>
+
+      <p>Perhatikan: sisi "depan" dan "belakang" ukurannya SAMA (sepasang). Sisi "kiri" dan "kanan" ukurannya SAMA (sepasang lain). Sisi "atas" dan "bawah" ukurannya SAMA (sepasang lain lagi). Tapi ANTAR pasangan, ukurannya BERBEDA — inilah yang membedakan balok dari kubus (di kubus, SEMUA pasangan ukurannya sama, karena semua sisinya persegi identik).</p>
+
+      <p><strong>Cara melipat balok</strong> sama seperti melipat kubus — lipat setiap garis dengan tegak lurus, rekatkan sisi-sisi yang bertemu, sampai terbentuk kotak balok yang tertutup rapat.</p>
+
+      <p>Sekarang, ada kemampuan BARU yang perlu kamu latih: <strong>MENGURAI</strong> (unfold) — kebalikan dari melipat. Ambil sebuah kotak bekas berbentuk balok (misalnya kotak pasta gigi atau kotak sereal kecil), lalu buka SEMUA lemnya dengan hati-hati sampai kotak itu kembali menjadi bentuk DATAR (jaring-jaring).</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 200 160" width="150">
+          <rect x="40" y="60" width="100" height="70" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2.5"/>
+          <polygon points="40,60 140,60 170,30 70,30" fill="var(--m-color)" opacity="0.35" stroke="var(--ink)" stroke-width="2.5"/>
+          <polygon points="140,60 140,130 170,100 170,30" fill="var(--m-color)" opacity="0.1" stroke="var(--ink)" stroke-width="2.5"/>
+          <text x="90" y="150" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">Balok (terlipat)</text>
+        </svg>
+        <span class="svg-arrow">→</span>
+        <svg viewBox="0 0 420 240" width="240">
+          <rect x="80" y="0" width="120" height="80" fill="var(--m-color)" opacity="0.15" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="0" y="80" width="80" height="60" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="80" y="80" width="120" height="60" fill="#c76b3f" opacity="0.3" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="200" y="80" width="80" height="60" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="280" y="80" width="120" height="60" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="80" y="140" width="120" height="80" fill="var(--m-color)" opacity="0.15" stroke="var(--ink)" stroke-width="2"/>
+          <text x="140" y="230" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">Jaring-jaring (diurai)</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Mengurai = kebalikan dari melipat. Bangun ruang utuh dibuka lagi menjadi bentuk datar.</p>
+
+      <ol class="langkah">
+        <li><strong>Sebelum benar-benar membuka kotak</strong>, coba PREDIKSI dulu: kira-kira, akan berbentuk apa jaring-jaringnya kalau dibuka? Berapa banyak sisi yang akan terlihat sekaligus dalam satu bentangan?</li>
+        <li><strong>Buka kotak itu perlahan</strong>, ikuti garis lipatan yang sudah ada.</li>
+        <li><strong>Bandingkan hasilnya</strong> dengan prediksimu — apakah sesuai?</li>
+        <li><strong>Perhatikan pola pasangan sisinya</strong>: identifikasi mana pasangan atas-bawah, depan-belakang, kiri-kanan pada hasil uraianmu.</li>
+      </ol>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan mengurai kotak seperti memutar mundur video proses melipat origami.</span></p>
+        <p>Kalau kamu merekam video saat melipat jaring-jaring jadi kotak, lalu memutarnya MUNDUR (rewind), kamu akan melihat proses SEBALIKNYA — kotak yang tadinya tertutup, perlahan "terbuka" kembali menjadi bentuk datar. Mengonstruksi (melipat) dan mengurai (membuka) adalah DUA ARAH dari proses yang SAMA, seperti maju dan mundurnya sebuah video.</p>
+        <p>Siswa yang HANYA bisa melipat (tapi tidak bisa mengurai/membayangkan uraiannya) biasanya cuma menghafal GERAKAN TANGAN, bukan benar-benar memahami STRUKTUR bangun ruang itu. Makanya kemampuan mengurai ini penting dilatih terpisah, bukan diasumsikan otomatis bisa hanya karena sudah bisa melipat.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Satu bangun ruang balok bisa diurai menjadi LEBIH DARI SATU bentuk jaring-jaring yang berbeda (sama seperti kubus di materi sebelumnya) — tergantung dari sisi mana kamu mulai membukanya. Semua itu tetap SAH, selama tetap terdiri dari 3 pasang sisi yang benar ukurannya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah balok punya jaring-jaring dengan sisi "depan" berukuran 8cm × 5cm. Berapa ukuran sisi "belakang"-nya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sisi depan dan belakang adalah SATU PASANG (ukurannya sama), jadi sisi belakang juga berukuran <strong>8cm × 5cm</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Made mengurai kotak susu berbentuk balok dan mendapati HANYA ADA 5 sisi yang terlihat (bukan 6). Apa yang mungkin terjadi?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kemungkinan: (1) ada sisi yang terlewat/tidak terurai sempurna (masih menempel), atau (2) kotak susu itu memang punya bagian yang direkatkan permanen dan tidak bisa dibuka sepenuhnya (beberapa kemasan memang dirancang begitu). Made perlu memeriksa ulang apakah benar-benar semua lipatan sudah dibuka.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani bilang "kubus itu balok yang istimewa, karena kubus juga punya 3 pasang sisi seperti balok". Apakah pernyataan Rani benar? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pernyataan Rani BENAR. Kubus memang bisa dianggap sebagai kasus KHUSUS dari balok — bedanya, pada kubus, KETIGA pasang sisi itu punya ukuran yang SAMA PERSIS satu sama lain (semuanya persegi identik), sedangkan pada balok biasa, ketiga pasangnya boleh berbeda ukuran. Jadi kubus = balok yang semua pasangnya kebetulan sama besar.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil satu kotak bekas kemasan berbentuk balok (kotak pasta gigi, kotak sereal, dll). Sebelum membukanya, PREDIKSI dulu bentuk jaring-jaringnya. Lalu buka perlahan dan bandingkan dengan prediksimu. Gambar ulang jaring-jaring balok itu di kertas, beri label ukuran tiap sisi dan tandai pasangan-pasangannya.
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan mengajakmu ke kemampuan spasial lain: menggambar bangun ruang dari TIGA sudut pandang berbeda — tampak depan, atas, dan samping.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
