@@ -1807,5 +1807,35 @@ window.MATERI_INDEX = [
     ringkasan: "Menentukan keliling dan luas gabungan persegi, persegi panjang, dan segitiga pada soal cerita kontekstual.",
     status: "selesai",
     file: "matematika/pengukuran-tp1/05-keliling-dan-luas-gabungan-dalam-soal-cerita.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🧩",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp2",
+    tema: "Pengukuran · Keliling dan Luas Segi Banyak Beraturan (Segi Lima-Enam) dan Bangun Gabungan",
+    urutan: 1,
+    judul: "Memecah Bangun Gabungan Menjadi Bangun Dasar",
+    ringkasan: "Memecah (secara visual, dengan menggambar garis bantu) bangun gabungan menjadi kumpulan bangun-bangun dasar yang sudah dikuasai.",
+    status: "selesai",
+    file: "matematika/pengukuran-tp2/01-memecah-bangun-gabungan-menjadi-bangun-dasar.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🧩",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp2",
+    tema: "Pengukuran · Keliling dan Luas Segi Banyak Beraturan (Segi Lima-Enam) dan Bangun Gabungan",
+    urutan: 2,
+    judul: "Keliling dan Luas Segi Lima/Enam Beraturan",
+    ringkasan: "Menghitung keliling dan luas segi lima/enam beraturan sederhana serta bangun gabungan pada soal kontekstual.",
+    status: "selesai",
+    file: "matematika/pengukuran-tp2/02-keliling-dan-luas-segi-lima-enam-beraturan.html"
   }
 ];
