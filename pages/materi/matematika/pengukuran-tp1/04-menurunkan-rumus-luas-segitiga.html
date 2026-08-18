@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menurunkan Rumus Luas Segitiga · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📐</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga · Materi 4 dari 5</div>
+      <div class="ma-cover-title">Menurunkan Rumus Luas Segitiga</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Lihat segitiga ini, dengan alas dan tinggi yang ditandai:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 150" width="320">
+          <polygon points="40,120 200,120 100,20" fill="var(--m-color)" opacity="0.25" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="100" y1="20" x2="100" y2="120" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="120" y="145" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">alas</text>
+          <text x="118" y="75" font-size="13" font-weight="700" fill="var(--ink-2)" text-anchor="middle">tinggi</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Segitiga dengan alas dan tinggi (garis putus-putus tegak lurus dari puncak ke alas).</p>
+
+      <p>Sekarang, siapkan SATU LAGI segitiga yang PERSIS SAMA (kongruen — sama bentuk dan ukuran) dengan segitiga di atas. Putar segitiga kedua itu 180 derajat (dibalik), lalu tempelkan pada segitiga pertama:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 300 150" width="360">
+          <polygon points="40,120 200,120 100,20" fill="var(--m-color)" opacity="0.3" stroke="var(--ink)" stroke-width="2.5"/>
+          <polygon points="200,120 260,20 100,20" fill="#c76b3f" opacity="0.45" stroke="#c76b3f" stroke-width="2.5"/>
+          <text x="120" y="145" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">alas</text>
+          <text x="90" y="75" font-size="13" font-weight="700" fill="var(--ink-2)" text-anchor="middle">tinggi</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Segitiga kedua (jingga, sama bentuk & ukuran, diputar 180°) digabungkan → membentuk JAJAR GENJANG utuh.</p>
+
+      <p>Perhatikan hasilnya: DUA segitiga kongruen yang digabungkan membentuk SATU jajar genjang utuh, dengan alas dan tinggi yang SAMA PERSIS dengan segitiga aslinya!</p>
+
+      <ol class="langkah">
+        <li>Kamu sudah tahu dari materi sebelumnya: <strong>Luas jajar genjang = alas × tinggi</strong>.</li>
+        <li>Jajar genjang ini terbentuk dari DUA segitiga yang SAMA PERSIS (kongruen).</li>
+        <li>Karena kedua segitiga itu identik, luas SATU segitiga = SETENGAH dari luas jajar genjang.</li>
+        <li>Jadi: <strong>Luas segitiga = ½ × alas × tinggi</strong>.</li>
+      </ol>
+
+      <div class="contoh-box">
+        <strong>Luas segitiga = ½ × alas × tinggi</strong><br>
+        <span style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-3);">Angka "setengah" ini BUKAN angka ajaib — dia muncul karena segitiga itu PERSIS setengah dari jajar genjang yang terbentuk dari dua segitiga kembar.</span>
+      </div>
+
+      <p>Sama seperti materi sebelumnya, "tinggi" pada segitiga adalah jarak TEGAK LURUS dari alas ke titik puncak yang berseberangan — BUKAN panjang sisi miring segitiga.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu memotong selembar kertas persegi panjang secara diagonal (dari sudut ke sudut yang berseberangan), menghasilkan DUA segitiga siku-siku yang persis sama besar.</span></p>
+        <p>Kedua segitiga itu, kalau digabung lagi, membentuk PERSEGI PANJANG utuh. Karena keduanya sama persis, jelas bahwa SATU segitiga adalah SETENGAH dari luas persegi panjang penuh. Ini gambaran paling sederhana dari asal-usul faktor ½.</p>
+        <p>Untuk segitiga sembarang (bukan siku-siku), logikanya sama, hanya bentuk "pasangannya" jadi jajar genjang, bukan persegi panjang — tapi prinsip "segitiga = setengah dari bangun genapnya" tetap berlaku.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Jangan lupa mengalikan dengan ½ (atau membagi dengan 2) di akhir perhitungan luas segitiga — ini kesalahan yang PALING sering terjadi. Ingat, alas × tinggi saja adalah luas JAJAR GENJANG (bangun genapnya), bukan luas segitiga.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah segitiga punya alas 16 cm dan tinggi 9 cm. Berapa luasnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Luas = ½×16×9 = ½×144=<strong>72 cm²</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah segitiga punya luas 40 cm² dan alas 10 cm. Berapa tingginya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Luas=½×alas×tinggi, jadi 40=½×10×tinggi → 40=5×tinggi → tinggi=40÷5=<strong>8 cm</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan menghitung luas segitiga (alas 12 cm, tinggi 5 cm) dengan cara 12×5=60 cm², lupa mengalikan ½. Berapa jawaban yang seharusnya, dan berapa selisihnya dari jawaban Wayan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jawaban yang benar: ½×12×5=½×60=<strong>30 cm²</strong>. Selisih dari jawaban Wayan (60 cm²) adalah 60−30=30 cm² — Wayan menjawab TEPAT DUA KALI LIPAT dari yang seharusnya, karena lupa mengalikan ½ (dia sebenarnya menghitung luas jajar genjang, bukan segitiga).</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Gunting dua segitiga kertas yang KONGRUEN (sama persis) — boleh menjiplak satu segitiga dua kali. Gabungkan keduanya menjadi jajar genjang seperti pada materi ini. Ukur alas dan tinggi segitigamu, hitung luasnya dengan rumus, lalu gambarkan pada selembar kertas mengapa luas segitiga adalah setengah dari jajar genjang — seolah kamu menjelaskan ke teman yang belum tahu rumus ini.
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan menggabungkan SEMUA yang sudah kamu pelajari — keliling dan luas persegi, persegi panjang, DAN segitiga — untuk menyelesaikan soal cerita dengan bangun GABUNGAN yang lebih kompleks.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

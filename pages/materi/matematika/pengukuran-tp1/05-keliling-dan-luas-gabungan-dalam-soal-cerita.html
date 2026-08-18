@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Keliling dan Luas Gabungan dalam Soal Cerita · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .rincian-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .rincian-tabel th, .rincian-tabel td { border: 1px solid var(--border); padding: 7px 9px; text-align: center; }
+  .rincian-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .rincian-tabel td.hasil { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📐</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga · Materi 5 dari 5 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Keliling dan Luas Gabungan dalam Soal Cerita</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Di dunia nyata, bangun datar jarang berbentuk persegi panjang atau segitiga polos saja — sering kali bentuknya GABUNGAN dari beberapa bangun dasar. Kabar baiknya: kamu SUDAH menguasai semua yang dibutuhkan (keliling dan luas persegi, persegi panjang, segitiga) untuk menghitung bangun gabungan.</p>
+
+      <div class="cerita-box">
+        Sebuah taman berbentuk seperti "rumah" — bagian bawah persegi panjang (lebar 12 m, tinggi 6 m), dengan bagian atas berbentuk segitiga (alas 12 m, tinggi 4 m) sebagai atapnya. Berapa LUAS total taman itu?
+      </div>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 280 190" width="320">
+          <rect x="40" y="90" width="200" height="90" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="3"/>
+          <polygon points="40,90 240,90 140,20" fill="#c76b3f" opacity="0.3" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="140" y1="20" x2="140" y2="90" stroke="#c76b3f" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="140" y="200" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">alas atap = 12 m</text>
+          <text x="20" y="140" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle" transform="rotate(-90 20 140)">tinggi = 6 m</text>
+          <text x="165" y="55" font-size="12" font-weight="700" fill="#c76b3f" text-anchor="middle">tinggi atap = 4 m</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Taman berbentuk gabungan: persegi panjang (badan) + segitiga (atap).</p>
+
+      <p><strong>Kunci menyelesaikan bangun gabungan:</strong> pecah dulu menjadi bangun-bangun DASAR yang sudah kamu kuasai, hitung luas masing-masing secara TERPISAH, baru JUMLAHKAN semuanya.</p>
+
+      <ol class="langkah">
+        <li><strong>Pecah bangunnya:</strong> bagian bawah = persegi panjang (12m × 6m). Bagian atas = segitiga (alas 12m, tinggi 4m).</li>
+        <li><strong>Hitung luas persegi panjang:</strong> 12 × 6 = 72 m².</li>
+        <li><strong>Hitung luas segitiga:</strong> ½ × 12 × 4 = ½ × 48 = 24 m².</li>
+        <li><strong>Jumlahkan kedua luas itu:</strong> 72 + 24 = 96 m².</li>
+      </ol>
+
+      <table class="rincian-tabel">
+        <tr><th>Bagian</th><th>Bentuk</th><th>Perhitungan</th><th>Luas</th></tr>
+        <tr><td>Badan</td><td>Persegi panjang</td><td>12 × 6</td><td class="hasil">72 m²</td></tr>
+        <tr><td>Atap</td><td>Segitiga</td><td>½ × 12 × 4</td><td class="hasil">24 m²</td></tr>
+        <tr><td colspan="3"><strong>Total Luas</strong></td><td class="hasil">96 m²</td></tr>
+      </table>
+
+      <p>Total luas taman itu adalah <strong>96 m²</strong>.</p>
+
+      <div class="contoh-box">
+        <strong>Strategi bangun gabungan:</strong> pecah → hitung tiap bagian secara terpisah → jumlahkan. Jangan mencoba menghitung "sekaligus" tanpa memecahnya dulu — itu akan membingungkan dan rawan salah.
+      </div>
+
+      <p>Untuk KELILING bangun gabungan, ceritanya sedikit berbeda — kamu HANYA menjumlahkan sisi-sisi yang ada di TEPI LUAR bangun gabungan itu, TANPA menghitung garis batas dalam (garis putus-putus yang memisahkan persegi panjang dan segitiga BUKAN bagian dari keliling, karena itu di DALAM bangun, bukan di tepi luarnya).</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu mengecat lantai taman "rumah" itu dengan cat, dan memasang pagar mengelilingi tepinya.</span></p>
+        <p>Untuk CAT (luas), kamu perlu tahu berapa m² permukaan yang perlu dicat — ini termasuk SELURUH daerah di dalam bangun, baik bagian persegi panjang maupun segitiga, dijumlahkan semua.</p>
+        <p>Untuk PAGAR (keliling), kamu hanya perlu mengukur tepi LUAR taman itu — garis batas antara persegi panjang dan segitiga di TENGAH bangun itu tidak butuh pagar, karena itu bukan tepi luar, melainkan garis bantu yang kita buat sendiri untuk membantu perhitungan luas.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Sebelum menghitung, gambar dulu garis bantu yang memecah bangun gabungan menjadi bangun-bangun dasar. Beri label ukuran pada setiap bagian. Baru mulai hitung luas tiap bagian secara terpisah. Jangan melompat langsung ke perhitungan tanpa gambar garis bantu ini — risiko salah jauh lebih besar.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah lantai ruangan berbentuk gabungan: persegi panjang (8m × 5m) dengan segitiga tambahan di salah satu sisi (alas 5m, tinggi 3m). Berapa luas total lantai itu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Luas persegi panjang: 8×5=40 m². Luas segitiga: ½×5×3=7,5 m². Total: 40+7,5=<strong>47,5 m²</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah bangun gabungan terdiri dari persegi (sisi 6 cm) dan segitiga (alas 6 cm, tinggi 4 cm) yang menempel di satu sisi persegi. Berapa luas totalnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Luas persegi: 6×6=36 cm². Luas segitiga: ½×6×4=12 cm². Total: 36+12=<strong>48 cm²</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made menghitung keliling bangun "rumah" (seperti contoh di materi ini) dengan cara menjumlahkan SEMUA sisi termasuk garis batas dalam antara persegi panjang dan segitiga. Apakah caranya tepat? Jelaskan kesalahannya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Made TIDAK tepat. Keliling hanya menghitung sisi-sisi di TEPI LUAR bangun gabungan — garis batas dalam (yang memisahkan persegi panjang dan segitiga) bukan bagian dari tepi luar, jadi TIDAK ikut dihitung dalam keliling. Garis itu hanya alat bantu untuk memecah bangun demi menghitung LUAS, bukan bagian dari keliling.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ukur atau rancang denah ruangan (kelas, kamar, atau taman) yang berbentuk gabungan dari persegi/persegi panjang dan segitiga. Gambar garis bantu untuk memecahnya menjadi bangun dasar, hitung LUAS totalnya (jumlahkan bagian-bagian), lalu hitung juga KELILING-nya (hanya sisi tepi luar).
+      </div>
+
+      <p>Selamat! Kamu sudah menyelesaikan seluruh materi Pengukuran TP1 — dari keliling dasar, menghitung petak satuan, menemukan sendiri rumus luas jajar genjang dan segitiga, sampai bangun gabungan. Materi berikutnya akan memperluas kemampuanmu ke segi banyak beraturan (segi lima dan segi enam) serta bangun gabungan yang lebih beragam.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

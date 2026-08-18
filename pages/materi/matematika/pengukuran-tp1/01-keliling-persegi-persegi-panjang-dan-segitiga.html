@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Keliling Persegi, Persegi Panjang, dan Segitiga · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .bangun-wrap { display: flex; flex-direction: column; align-items: center; margin: 1.1rem auto 0.3rem; }
+  .sisi-atas { font-weight: 700; color: var(--m-color); margin-bottom: 4px; font-size: calc(var(--content-fs) - 2px); font-family: 'Plus Jakarta Sans', monospace; }
+  .sisi-bawah { font-weight: 700; color: var(--m-color); margin-top: 4px; font-size: calc(var(--content-fs) - 2px); font-family: 'Plus Jakarta Sans', monospace; }
+  .baris-tengah { display: flex; align-items: center; gap: 8px; }
+  .sisi-kiri, .sisi-kanan { font-weight: 700; color: var(--m-color); font-size: calc(var(--content-fs) - 2px); font-family: 'Plus Jakarta Sans', monospace; white-space: nowrap; }
+  .kotak-bangun { border: 3px solid var(--ink); background: var(--paper-2); border-radius: 4px; flex-shrink: 0; }
+  .bangun-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📐</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga · Materi 1 dari 5</div>
+      <div class="ma-cover-title">Keliling Persegi, Persegi Panjang, dan Segitiga</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Mulai dari sini, kita masuk ke elemen baru: <strong>Pengukuran</strong>. Sebelum masuk ke materi baru (luas), kita segarkan dulu kemampuanmu tentang KELILING — sesuatu yang sudah pernah kamu pelajari.</p>
+
+      <p><strong>Keliling</strong> adalah jarak total mengelilingi tepi sebuah bangun datar — kalau kamu berjalan menyusuri seluruh sisi luar bangun itu sampai kembali ke titik awal, jarak yang kamu tempuh adalah kelilingnya. Cara menghitungnya: <strong>jumlahkan panjang SEMUA sisi</strong>.</p>
+
+      <p><strong>Persegi Panjang</strong> — punya 2 pasang sisi sejajar (panjang dan lebar):</p>
+
+      <div class="bangun-wrap">
+        <div class="sisi-atas">8 cm</div>
+        <div class="baris-tengah">
+          <div class="sisi-kiri">5 cm</div>
+          <div class="kotak-bangun" style="width:160px; height:100px;"></div>
+        </div>
+      </div>
+      <p class="bangun-caption">Persegi panjang: panjang 8 cm, lebar 5 cm.</p>
+
+      <p>Persegi panjang punya 4 sisi: dua sisi panjang (8 cm) dan dua sisi lebar (5 cm). Kelilingnya:</p>
+
+      <div class="contoh-box">
+        K = 8 + 5 + 8 + 5 = 26 cm<br>
+        <span style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-3);">(atau cara cepat: K = 2 × (panjang + lebar) = 2 × (8+5) = 2×13 = 26 cm)</span>
+      </div>
+
+      <p><strong>Persegi</strong> — bentuk KHUSUS dari persegi panjang, di mana SEMUA sisinya sama panjang:</p>
+
+      <div class="bangun-wrap">
+        <div class="sisi-atas">6 cm</div>
+        <div class="baris-tengah">
+          <div class="sisi-kiri">6 cm</div>
+          <div class="kotak-bangun" style="width:110px; height:110px;"></div>
+        </div>
+      </div>
+      <p class="bangun-caption">Persegi: keempat sisinya sama, 6 cm.</p>
+
+      <div class="contoh-box">
+        K = 6 + 6 + 6 + 6 = 24 cm<br>
+        <span style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-3);">(cara cepat: K = 4 × sisi = 4×6 = 24 cm)</span>
+      </div>
+
+      <p><strong>Segitiga</strong> — punya 3 sisi, dan sisi-sisinya bisa PANJANGNYA BERBEDA-BEDA (tidak selalu sama seperti persegi):</p>
+
+      <div class="contoh-box">
+        Segitiga dengan sisi 7 cm, 9 cm, dan 5 cm.<br>
+        K = 7 + 9 + 5 = <strong>21 cm</strong>
+      </div>
+
+      <p>Tidak ada "rumus cepat" khusus untuk keliling segitiga sembarang — cukup jumlahkan ketiga sisinya, apa adanya.</p>
+
+      <ol class="langkah">
+        <li>Kenali bangunnya: persegi, persegi panjang, atau segitiga.</li>
+        <li>Catat panjang SEMUA sisinya (bukan cuma satu-dua sisi).</li>
+        <li>Jumlahkan semuanya. Untuk persegi panjang dan persegi, kamu boleh pakai jalan pintas (2×(p+l) atau 4×sisi), tapi keduanya berasal dari prinsip yang sama: menjumlahkan semua sisi.</li>
+      </ol>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu memasang pagar mengelilingi taman berbentuk persegi panjang.</span></p>
+        <p>Panjang KAWAT PAGAR yang kamu butuhkan sama dengan KELILING taman itu — karena pagar harus mengelilingi SELURUH tepi taman, satu putaran penuh. Kalau taman punya 4 sisi (dua sisi 8 meter, dua sisi 5 meter), kawat yang dibutuhkan adalah jumlah dari keempat sisi itu: 8+5+8+5=26 meter.</p>
+        <p>Rumus jalan pintas "2×(p+l)" itu sebenarnya cuma cara lebih cepat menghitung hal yang SAMA — karena ada DUA sisi panjang dan DUA sisi lebar, kamu bisa menjumlahkan p+l dulu (satu pasang), lalu kalikan 2 (karena ada dua pasang seperti itu).</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Pastikan satuan panjang SAMA di seluruh sisi sebelum dijumlahkan (semua dalam cm, atau semua dalam m — jangan campur). Kalau satuannya beda, ubah dulu ke satuan yang sama sebelum menghitung keliling.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah persegi panjang punya panjang 12 cm dan lebar 7 cm. Berapa kelilingnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> K = 2×(12+7) = 2×19 = <strong>38 cm</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah taman berbentuk persegi dengan sisi 15 meter. Berapa meter pagar yang dibutuhkan untuk mengelilingi taman itu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> K = 4×15 = <strong>60 meter</strong> pagar.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan menghitung keliling persegi panjang (panjang 10 cm, lebar 4 cm) dengan cara 10×4=40 cm. Apakah caranya benar? Jelaskan kesalahannya dan berikan jawaban yang tepat!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Wayan SALAH — dia menghitung LUAS (panjang×lebar), bukan KELILING. Keliling dihitung dengan menjumlahkan SEMUA sisi, bukan mengalikan panjang dan lebar. Cara yang benar: K = 2×(10+4) = 2×14 = <strong>28 cm</strong>. (Kebetulan 10×4 juga menghasilkan angka, tapi itu jawaban untuk pertanyaan LUAS, bukan keliling — dua konsep yang berbeda.)</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ukur keliling 3 benda nyata di kelas atau rumah (misalnya buku, meja, atau lantai ruangan) memakai tali atau penggaris. Untuk benda berbentuk persegi/persegi panjang, hitung juga dengan rumus jalan pintas dan bandingkan hasilnya dengan hasil pengukuran langsung.
+      </div>
+
+      <p>Materi berikutnya akan masuk ke topik yang BELUM pernah kamu pelajari sebelumnya: bagaimana menghitung LUAS — dimulai dari cara paling dasar, menghitung petak satuan satu per satu.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

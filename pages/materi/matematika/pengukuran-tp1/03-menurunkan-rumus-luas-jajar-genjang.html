@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menurunkan Rumus Luas Jajar Genjang · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📐</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga · Materi 3 dari 5</div>
+      <div class="ma-cover-title">Menurunkan Rumus Luas Jajar Genjang</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Jajar genjang adalah bangun datar yang MIRING — bentuknya seperti persegi panjang yang "didorong" ke samping. Karena bentuknya miring, kita tidak bisa langsung menghitung petak satuan serapi persegi panjang. Tapi ada trik cerdas: <strong>potong dan susun ulang</strong> jajar genjang itu menjadi persegi panjang!</p>
+
+      <p>Lihat jajar genjang ini. Ada garis putus-putus yang menandai potongan berbentuk segitiga di sisi kiri:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 150" width="320">
+          <polygon points="40,120 200,120 240,20 80,20" fill="var(--m-color)" opacity="0.18" stroke="var(--ink)" stroke-width="3"/>
+          <polygon points="40,120 80,120 80,20" fill="#c76b3f" opacity="0.55" stroke="#c76b3f" stroke-width="2" stroke-dasharray="5,4"/>
+          <line x1="80" y1="20" x2="80" y2="120" stroke="#c76b3f" stroke-width="2.5" stroke-dasharray="6,4"/>
+          <text x="115" y="145" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">alas</text>
+          <text x="66" y="75" font-size="13" font-weight="700" fill="#c76b3f" text-anchor="middle">tinggi</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Jajar genjang dengan garis potong (putus-putus) membentuk segitiga di sisi kiri.</p>
+
+      <p>Sekarang, potong segitiga kecil itu (yang diarsir jingga) dan PINDAHKAN ke sisi KANAN jajar genjang:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 150" width="320">
+          <polygon points="80,120 240,120 240,20 80,20" fill="var(--m-color)" opacity="0.18" stroke="var(--ink)" stroke-width="3"/>
+          <polygon points="200,120 240,120 240,20" fill="#c76b3f" opacity="0.55" stroke="#c76b3f" stroke-width="2"/>
+          <text x="160" y="145" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle">alas (sama panjang)</text>
+          <text x="256" y="75" font-size="13" font-weight="700" fill="var(--ink)" text-anchor="middle" transform="rotate(90 256 75)">tinggi</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Setelah dipindah, terbentuk PERSEGI PANJANG utuh — potongan jingga menutup celah di kanan.</p>
+
+      <p>Perhatikan baik-baik: setelah dipotong dan disusun ulang, bentuknya berubah jadi PERSEGI PANJANG — tapi <strong>LUASNYA TIDAK BERUBAH SAMA SEKALI</strong>, karena kita cuma memindahkan potongan yang sama, tidak menambah atau mengurangi apa pun.</p>
+
+      <ol class="langkah">
+        <li>Luas persegi panjang hasil susun ulang = panjang × lebar (sudah kamu kuasai dari materi sebelumnya).</li>
+        <li>Panjang persegi panjang itu = ALAS jajar genjang asli (tidak berubah saat dipotong-susun).</li>
+        <li>Lebar persegi panjang itu = TINGGI jajar genjang asli (jarak tegak lurus dari alas ke sisi atas).</li>
+        <li>Karena luasnya SAMA (cuma dipindah, bukan ditambah), maka: <strong>Luas jajar genjang = alas × tinggi</strong>.</li>
+      </ol>
+
+      <div class="contoh-box">
+        <strong>Luas jajar genjang = alas × tinggi</strong><br>
+        <span style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-3);">Rumus ini kamu TEMUKAN SENDIRI dari aktivitas potong-susun, bukan dihafal begitu saja.</span>
+      </div>
+
+      <p><strong>Perhatikan istilah "tinggi" di sini</strong> — ini BUKAN panjang sisi miring jajar genjang, melainkan jarak TEGAK LURUS dari alas ke sisi sejajarnya di atas (seperti garis putus-putus jingga pada gambar pertama). Ini beda dengan sisi miringnya.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan setumpuk buku yang disusun rapi tegak lurus (jadi seperti persegi panjang dari samping), lalu kamu dorong perlahan bagian atasnya ke samping (jadi miring, seperti jajar genjang).</span></p>
+        <p>Meskipun bentuknya sekarang miring, JUMLAH KERTAS di dalam tumpukan buku itu TIDAK BERUBAH — cuma posisinya yang bergeser. Luas jajar genjang bekerja dengan prinsip yang sama: meski tampilannya miring, "isinya" (luasnya) tetap sama seperti kalau dia tegak lurus (persegi panjang), asalkan alas dan TINGGI (jarak tegak lurus, bukan sisi miring) tetap sama.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kesalahan yang PALING sering terjadi: siswa memakai panjang SISI MIRING sebagai "tinggi", padahal tinggi jajar genjang adalah jarak TEGAK LURUS dari alas ke sisi atas — biasanya digambar dengan garis putus-putus yang membentuk sudut siku-siku dengan alas.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah jajar genjang punya alas 14 cm dan tinggi 6 cm. Berapa luasnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Luas = alas × tinggi = 14×6=<strong>84 cm²</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah jajar genjang punya luas 60 cm² dan alas 10 cm. Berapa tingginya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena luas=alas×tinggi, maka tinggi=luas÷alas=60÷10=<strong>6 cm</strong> (ingat konsep operasi kebalikan dari materi Aljabar!).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Sebuah jajar genjang punya sisi miring 10 cm, alas 8 cm, dan tinggi tegak lurus 6 cm. Rani menghitung luasnya dengan cara alas × sisi miring = 8×10=80 cm². Apakah caranya tepat? Jelaskan kesalahannya dan berikan jawaban yang benar!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Rani SALAH. Dia memakai SISI MIRING (10 cm) sebagai pengganti tinggi, padahal rumus luas jajar genjang butuh TINGGI TEGAK LURUS (6 cm), bukan sisi miring. Cara yang benar: Luas = alas × tinggi = 8×6=<strong>48 cm²</strong>, bukan 80 cm² seperti hitungan Rani.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Gunting sebuah jajar genjang dari kertas. Potong bagian segitiga di salah satu ujungnya (seperti pada gambar), lalu susun ulang menjadi persegi panjang. Ukur alas dan tinggi jajar genjang aslimu, hitung luasnya dengan rumus, lalu buktikan dengan menghitung luas persegi panjang hasil susun ulangmu — pastikan hasilnya sama.
+      </div>
+
+      <p>Materi berikutnya akan melanjutkan petualangan potong-susun ini untuk menemukan rumus luas SEGITIGA — dan kamu akan menemukan sendiri dari mana asal faktor "setengah" yang sering muncul di rumus luas segitiga!</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
