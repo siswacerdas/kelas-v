@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Keliling dan Luas Segi Lima/Enam Beraturan · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1.4rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🧩</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Segi Banyak Beraturan dan Bangun Gabungan · Materi 2 dari 2 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Keliling dan Luas Segi Lima/Enam Beraturan</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Segi banyak BERATURAN</strong> adalah bangun datar dengan banyak sisi, di mana SEMUA sisinya sama panjang. Segi lima beraturan punya 5 sisi sama panjang, segi enam beraturan punya 6 sisi sama panjang.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 190" width="220">
+          <polygon points="130,30 196.6,78.4 171.2,156.6 88.8,156.6 63.4,78.4" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="3"/>
+          <text x="130" y="185" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">Segi Lima Beraturan (5 sisi sama)</text>
+        </svg>
+        <svg viewBox="0 0 260 200" width="220">
+          <polygon points="130,30 190.6,65 190.6,135 130,170 69.4,135 69.4,65" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="3"/>
+          <text x="130" y="195" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">Segi Enam Beraturan (6 sisi sama)</text>
+        </svg>
+      </div>
+
+      <p><strong>Menghitung KELILING segi banyak beraturan itu MUDAH</strong>, karena semua sisinya sama panjang — kamu tinggal mengalikan panjang satu sisi dengan BANYAK sisinya.</p>
+
+      <div class="contoh-box">
+        <strong>Keliling segi banyak beraturan = banyak sisi × panjang satu sisi</strong><br>
+        Segi lima dengan sisi 8 cm: K = 5×8=40 cm.<br>
+        Segi enam dengan sisi 8 cm: K = 6×8=48 cm.
+      </div>
+
+      <p><strong>Menghitung LUAS segi banyak beraturan lebih menantang</strong> — bentuknya tidak sesederhana persegi panjang. Cara yang kita pakai adalah kemampuan yang SUDAH kamu latih di materi sebelumnya: <strong>memecah bangun itu menjadi bangun-bangun dasar yang sudah kamu kenal</strong>.</p>
+
+      <p>Lihat bangun mirip segi lima berikut — sebenarnya ini terbentuk dari PERSEGI PANJANG (badan) dan SEGITIGA (atap), seperti bentuk "rumah" yang sudah kamu pelajari:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 190" width="260">
+          <rect x="50" y="90" width="160" height="80" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="3"/>
+          <polygon points="50,90 210,90 130,30" fill="#c76b3f" opacity="0.3" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="130" y1="30" x2="130" y2="90" stroke="#c76b3f" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="130" y="185" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">alas atap = 12 cm, tinggi atap = 5 cm</text>
+          <text x="30" y="130" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle" transform="rotate(-90 30 130)">tinggi badan = 8 cm</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Bangun "segi lima" ini adalah gabungan persegi panjang (12cm × 8cm) dan segitiga (alas 12cm, tinggi 5cm).</p>
+
+      <ol class="langkah">
+        <li>Pecah bangun menjadi persegi panjang (badan) dan segitiga (atap) — sama persis seperti materi sebelumnya.</li>
+        <li>Luas persegi panjang: 12 × 8 = 96 cm².</li>
+        <li>Luas segitiga: ½ × 12 × 5 = 30 cm².</li>
+        <li>Jumlahkan: 96 + 30 = <strong>126 cm²</strong>.</li>
+      </ol>
+
+      <p>Untuk bangun mirip segi enam, caranya serupa — bisa dipecah menjadi PERSEGI PANJANG di tengah dan DUA SEGITIGA di kedua ujungnya:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 300 160" width="300">
+          <rect x="90" y="30" width="120" height="100" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="3"/>
+          <polygon points="90,30 90,130 40,80" fill="#c76b3f" opacity="0.3" stroke="var(--ink)" stroke-width="3"/>
+          <polygon points="210,30 210,130 260,80" fill="#c76b3f" opacity="0.3" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="90" y1="80" x2="40" y2="80" stroke="#c76b3f" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="150" y="150" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">tengah = 10 cm × 10 cm</text>
+          <text x="60" y="65" font-size="11" font-weight="700" fill="#c76b3f" text-anchor="middle">tinggi = 6cm</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Bangun "segi enam" ini: persegi (10cm×10cm) di tengah, DUA segitiga kongruen (alas 10cm, tinggi 6cm) di kedua ujung.</p>
+
+      <p>Luas persegi: 10×10=100 cm². Luas satu segitiga: ½×10×6=30 cm². Karena ada DUA segitiga yang kongruen (sama besar): 30×2=60 cm². Total luas: 100+60=<strong>160 cm²</strong>.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu sedang memasang ubin bermotif potongan berlian (paving hexagon) di halaman rumah.</span></p>
+        <p>Meski bentuknya "segi banyak" yang terlihat rumit, tukang pemasang ubin sebenarnya sering membayangkannya sebagai gabungan bentuk-bentuk sederhana (kotak dan segitiga) untuk menghitung berapa banyak bahan yang dibutuhkan — persis seperti yang baru saja kamu lakukan. Bangun yang terlihat rumit hampir selalu bisa "dijinakkan" dengan memecahnya menjadi bangun-bangun dasar yang familiar.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Untuk KELILING segi banyak beraturan: cukup kalikan jumlah sisi dengan panjang satu sisi (semua sisi sama). Untuk LUAS: pecah dulu jadi bangun dasar, hitung tiap bagian, baru jumlahkan — sama seperti strategi bangun gabungan yang sudah kamu kuasai.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah segi enam beraturan punya panjang sisi 9 cm. Berapa kelilingnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> K = 6×9=<strong>54 cm</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah denah ruangan berbentuk "rumah" (persegi panjang 10m×6m dengan atap segitiga alas 10m, tinggi 4m). Berapa luas total ruangan itu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Luas persegi panjang: 10×6=60 m². Luas segitiga: ½×10×4=20 m². Total: 60+20=<strong>80 m²</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made menghitung keliling segi lima beraturan (sisi 7 cm) dengan cara memecahnya jadi persegi panjang dan segitiga dulu, lalu menjumlahkan KELILING kedua bagian itu secara terpisah (termasuk garis bantu di dalam). Apakah caranya tepat? Berikan cara yang benar!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Made TIDAK tepat. Untuk segi banyak BERATURAN (semua sisi sama), keliling dihitung LANGSUNG dengan mengalikan jumlah sisi × panjang sisi, TANPA perlu memecah bangun — memecah bangun hanya diperlukan untuk menghitung LUAS, bukan keliling. Kalaupun dipecah, garis bantu di DALAM bangun tidak boleh ikut dihitung sebagai keliling (sama seperti materi sebelumnya). Cara yang benar untuk segi lima sisi 7 cm: K=5×7=<strong>35 cm</strong>.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Hitung keliling sebuah segi lima beraturan dan sebuah segi enam beraturan (tentukan sendiri panjang sisinya). Kemudian, gambar SATU bangun gabungan berbentuk seperti "segi lima" atau "segi enam" (gabungan persegi/persegi panjang dengan segitiga), beri ukuran, dan hitung luas totalnya dengan memecahnya menjadi bangun dasar.
+      </div>
+
+      <p>Selamat! Kamu sudah menyelesaikan seluruh materi Pengukuran TP1 dan TP2 — dari keliling-luas bangun dasar, potong-susun menemukan rumus, sampai segi banyak beraturan dan bangun gabungan yang lebih kompleks. Materi Pengukuran berikutnya akan berpindah topik ke Durasi Waktu — menghitung durasi termasuk yang melintasi tengah malam.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
