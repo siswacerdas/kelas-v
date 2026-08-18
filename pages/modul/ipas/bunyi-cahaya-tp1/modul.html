@@ -1,1 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Gelombang Bunyi dan Cahaya · IPAS Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b;
+    --gold:#b8860b;
+    --bg:#f7f1e3;
+    --ipas:#2b6ca3;
+    --ipas-light:#eaf3fb;
+    --ipas-dark:#1d4d75;
+    --ink:#2b2b26;
+    --ok:#2e7d4f;
+    --bad:#b3432b;
+    --card:#ffffff;
+    --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6;
+    padding-bottom:80px;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
 
+  nav.topnav{
+    background:var(--nav); color:#fff; padding:.8em 1.2em;
+    display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;
+  }
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+
+  header.modul-head{
+    max-width:800px; margin:1.5em auto 0; padding:0 1.2em;
+  }
+  .modul-eyebrow{
+    display:inline-block; background:var(--ipas-light); color:var(--ipas-dark);
+    font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase;
+    padding:.3em .8em; border-radius:999px; margin-bottom:.6em;
+  }
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+
+  .stepper-wrap{
+    position:sticky; top:0; z-index:20; background:var(--bg);
+    border-bottom:1px solid var(--line); padding:.6em 1.2em;
+  }
+  .stepper{
+    max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto;
+    padding-bottom:.2em;
+  }
+  .step-dot{
+    flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%;
+    background:#fff; border:2px solid var(--line); color:#8a8471;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;
+  }
+  .step-dot.active{background:var(--ipas); border-color:var(--ipas); color:#fff;}
+  .step-dot.done{background:var(--ipas-light); border-color:var(--ipas); color:var(--ipas-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);
+  }
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{
+    flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%;
+    background:var(--ipas); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-weight:700;
+  }
+  .badge-inti{background:var(--gold);}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+
+  .callout{
+    background:var(--ipas-light); border-left:4px solid var(--ipas);
+    padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;
+  }
+  .callout.warn{background:#fbeee7; border-left-color:var(--bad);}
+
+  textarea.ans, input.ans-input{
+    width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line);
+    border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);
+  }
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+
+  .quiz-item{border-top:1px dashed var(--line); padding-top:1em; margin-top:1em;}
+  .quiz-item:first-child{border-top:none; padding-top:0; margin-top:0;}
+  .quiz-q{font-weight:600; margin-bottom:.6em;}
+  .choice-btn{
+    display:block; width:100%; text-align:left; padding:.6em .9em; margin-bottom:.4em;
+    border:1.5px solid var(--line); border-radius:8px; background:#fff; cursor:pointer;
+    font-family:inherit; font-size:.96em; color:var(--ink); transition:.12s;
+  }
+  .choice-btn:hover{border-color:var(--ipas);}
+  .choice-btn.correct{background:#e6f4ea; border-color:var(--ok); color:#1e5c37; font-weight:600;}
+  .choice-btn.wrong{background:#fbe9e4; border-color:var(--bad); color:#8a2f1a;}
+  .choice-btn[disabled]{cursor:default;}
+  .quiz-feedback{font-size:.9em; margin-top:.4em; padding:.5em .7em; border-radius:6px;}
+  .quiz-feedback.ok{background:#e6f4ea; color:#1e5c37;}
+  .quiz-feedback.bad{background:#fbe9e4; color:#8a2f1a;}
+
+  .check-item{display:flex; align-items:flex-start; gap:.5em; margin-bottom:.5em; font-size:.95em;}
+  .check-item input{margin-top:.25em;}
+
+  .reveal-btn{
+    background:none; border:1.5px solid var(--ipas); color:var(--ipas-dark);
+    border-radius:999px; padding:.4em 1em; font-weight:600; font-size:.85em; cursor:pointer;
+  }
+  .reveal-box{display:none; margin-top:.6em; background:var(--ipas-light); border-radius:8px; padding:.7em .9em; font-size:.92em;}
+  .reveal-box.show{display:block;}
+
+  .data-table{width:100%; border-collapse:collapse; margin:.6em 0;}
+  .data-table th, .data-table td{border:1px solid var(--line); padding:.4em .5em; font-size:.9em;}
+  .data-table th{background:var(--ipas-light); color:var(--ipas-dark);}
+  .data-table input{width:100%; border:none; background:transparent; font-family:inherit; font-size:.95em;}
+
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{
+    font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em;
+    border-radius:999px; border:none; cursor:pointer;
+  }
+  .btn-primary{background:var(--ipas); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--ipas-dark); border:1.5px solid var(--ipas);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+
+  details.guru-note{
+    background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px;
+    padding:.8em 1em; margin:1.4em 0; font-size:.92em;
+  }
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+
+  .glossary dt{font-weight:700; color:var(--ipas-dark); margin-top:.6em;}
+  .glossary dd{margin:.15em 0 0;}
+
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>IPAS · Bunyi dan Cahaya</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">IPAS · Kelompok A (Sains-Eksperimental)</span>
+  <h1>Gelombang Bunyi dan Cahaya</h1>
+  <p class="sub">Modul Ajar Mandiri · Eksperimen cepat &amp; berulang tentang perambatan bunyi dan pemantulan cahaya, dikaitkan dengan fenomena sehari-hari.</p>
+</header>
+
+<div class="stepper-wrap">
+  <div class="stepper" id="stepper"></div>
+</div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Selamat datang di percobaan Bunyi dan Cahaya! 🔊💡</h2>
+      <p>Modul ini akan mengajakmu berpikir seperti ilmuwan: <strong>mengamati</strong>, <strong>memprediksi</strong>, <strong>mencoba</strong>, lalu <strong>membandingkan hasil</strong> — sebelum akhirnya menjelaskan mengapa hal itu terjadi dalam kehidupan sehari-hari.</p>
+      <div class="callout">
+        Kamu akan melakukan dua eksperimen nyata bersama teman dan gurumu di kelas:
+        <strong>telepon kaleng</strong> (bunyi) dan <strong>senter ke berbagai permukaan</strong> (cahaya).
+        Modul ini membantumu <em>menyiapkan pertanyaan, mencatat hasil, dan merefleksikan</em> — bukan menggantikan percobaan aslinya.
+      </div>
+      <p>Modul ini terbagi menjadi 5 bagian kecil (Tangga 1–4 dan satu Pertemuan Inti). Kamu boleh berhenti kapan saja — progresmu akan tersimpan otomatis di perangkat ini.</p>
+    </div>
+    <div class="nav-buttons">
+      <span></span>
+      <button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 1 — ASESMEN AWAL -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head">
+        <span class="badge-num">?</span>
+        <div><h2>Sebelum Mulai</h2><span class="tag">Asesmen Awal · apa yang sudah kamu ketahui</span></div>
+      </div>
+      <p>Jawab sebisamu — ini bukan untuk dinilai benar/salah, tapi untuk melihat titik berangkatmu.</p>
+      <div id="quiz-awal"></div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button>
+      <button class="btn btn-primary" onclick="goToPage(2)">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2 — TANGGA 1: MENGAMATI -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head">
+        <span class="badge-num">1</span>
+        <div><h2>Mengamati Bunyi dan Cahaya di Sekitar</h2><span class="tag">Tangga 1 · Mengamati</span></div>
+      </div>
+      <p>Sebelum bereksperimen, mari mengamati dulu. Bunyi dan cahaya sama-sama termasuk <strong>gelombang</strong> — sesuatu yang merambat dan bisa kita rasakan lewat telinga (bunyi) atau mata (cahaya), meski keduanya tidak bisa dilihat bentuknya secara langsung.</p>
+      <div class="callout">
+        Di kelas nanti, gurumu akan membunyikan beberapa benda (tepuk tangan, ketuk meja, suara dari jarak berbeda) dan menyorotkan senter ke beberapa permukaan (kaca, kertas, kain). Perhatikan baik-baik sebelum menjawab di bawah ini.
+      </div>
+      <label class="field-label">Sebutkan 3 sumber bunyi yang bisa kamu dengar di sekitarmu sekarang (di rumah/sekolah):</label>
+      <textarea class="ans" data-key="obs-bunyi" placeholder="Contoh: suara kipas angin, suara motor lewat, suara temanku bicara..."></textarea>
+      <label class="field-label">Sebutkan 3 benda di sekitarmu yang memantulkan cahaya (bisa kamu lihat berkilau/terang saat kena cahaya):</label>
+      <textarea class="ans" data-key="obs-cahaya" placeholder="Contoh: cermin, permukaan air, layar HP..."></textarea>
+      <div id="quiz-tangga1"></div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button>
+      <button class="btn btn-primary" onclick="goToPage(3)">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 — TANGGA 2: MEMPREDIKSI -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head">
+        <span class="badge-num">2</span>
+        <div><h2>Memprediksi Sebelum Mencoba</h2><span class="tag">Tangga 2 · Mempertanyakan dan Memprediksi</span></div>
+      </div>
+      <p>Ilmuwan selalu menebak dulu (dengan alasan) sebelum mencoba. Jawabanmu di sini <strong>tidak dinilai dari benar-salahnya</strong> — yang penting kamu punya alasan.</p>
+      <div id="quiz-prediksi"></div>
+      <label class="field-label">Tuliskan prediksimu sendiri: menurutmu, apakah bunyi akan terdengar lebih kencang atau lebih lemah kalau melewati kain tebal? Kenapa?</label>
+      <textarea class="ans" data-key="prediksi-kain" placeholder="Menurutku..., karena..."></textarea>
+      <label class="field-label">Menurutmu, cahaya senter akan memantul lebih terang pada cermin atau pada kain hitam? Kenapa?</label>
+      <textarea class="ans" data-key="prediksi-cermin" placeholder="Menurutku..., karena..."></textarea>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToPage(2)">← Kembali</button>
+      <button class="btn btn-primary" onclick="goToPage(4)">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 — TANGGA 3: EKSPERIMEN -->
+  <div class="page" data-page="4">
+    <div class="card">
+      <div class="subunit-head">
+        <span class="badge-num">3</span>
+        <div><h2>Waktunya Mencoba Sendiri!</h2><span class="tag">Tangga 3 · Merencanakan dan Melakukan Penyelidikan</span></div>
+      </div>
+      <div class="callout warn">
+        Bagian ini dilakukan <strong>bersama gurumu di kelas</strong> dengan alat nyata. Modul ini hanya membantumu mencatat hasilnya — bukan pengganti percobaannya.
+      </div>
+      <h3 style="font-size:1em; margin-top:1em;">🔊 Eksperimen Bunyi — Telepon Kaleng</h3>
+      <p>Bersama pasanganmu, buat telepon kaleng dari kaleng bekas dan benang. Coba bicara pelan lewat kaleng sambil benang kencang, lalu coba lagi sambil benang kendur.</p>
+      <label class="field-label">Catat: pada kondisi benang mana suara terdengar lebih jelas?</label>
+      <input class="ans-input" data-key="eksp-bunyi-hasil" type="text" placeholder="Contoh: benang kencang, karena...">
+
+      <h3 style="font-size:1em; margin-top:1.2em;">💡 Eksperimen Cahaya — Senter ke Berbagai Permukaan</h3>
+      <p>Sorotkan senter secara bergiliran ke: cermin, kertas putih, kertas hitam, dan permukaan air. Amati permukaan mana yang memantulkan cahaya paling terang.</p>
+      <table class="data-table">
+        <thead><tr><th>Permukaan</th><th>Terang / Redup?</th></tr></thead>
+        <tbody>
+          <tr><td>Cermin</td><td><input class="ans-input" data-key="tbl-cermin" type="text" placeholder="tulis di sini"></td></tr>
+          <tr><td>Kertas putih</td><td><input class="ans-input" data-key="tbl-kertasputih" type="text" placeholder="tulis di sini"></td></tr>
+          <tr><td>Kertas hitam</td><td><input class="ans-input" data-key="tbl-kertashitam" type="text" placeholder="tulis di sini"></td></tr>
+          <tr><td>Permukaan air</td><td><input class="ans-input" data-key="tbl-air" type="text" placeholder="tulis di sini"></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.9em; color:#5b5648;">Ulangi setiap percobaan minimal 2 kali dengan bahan yang sama untuk memastikan hasilmu konsisten — ini bagian penting dari bereksperimen dengan teliti.</p>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToPage(3)">← Kembali</button>
+      <button class="btn btn-primary" onclick="goToPage(5)">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 5 — TANGGA 4: MEMBANDINGKAN -->
+  <div class="page" data-page="5">
+    <div class="card">
+      <div class="subunit-head">
+        <span class="badge-num">4</span>
+        <div><h2>Membandingkan Hasil</h2><span class="tag">Tangga 4 · Memproses dan Menganalisis Data</span></div>
+      </div>
+      <p>Sekarang bandingkan hasil percobaanmu dengan prediksi awalmu di Tangga 2. Apakah sama atau berbeda?</p>
+      <div id="quiz-tangga4"></div>
+      <label class="field-label">Dari semua bahan yang kamu uji, bahan mana yang paling banyak meredam bunyi (membuat suara jadi lebih pelan)?</label>
+      <input class="ans-input" data-key="bandingkan-redam" type="text" placeholder="Tulis jawabanmu">
+      <label class="field-label">Apakah hasil percobaanmu sesuai dengan prediksi awalmu di Tangga 2? Jelaskan.</label>
+      <textarea class="ans" data-key="bandingkan-refleksi" placeholder="Hasilnya sesuai/tidak sesuai karena..."></textarea>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToPage(4)">← Kembali</button>
+      <button class="btn btn-primary" onclick="goToPage(6)">Lanjut ke Pertemuan Inti →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 6 — INTI -->
+  <div class="page" data-page="6">
+    <div class="card">
+      <div class="subunit-head">
+        <span class="badge-num badge-inti">⭐</span>
+        <div><h2>Pertemuan Inti — Mengaitkan dengan Kehidupan Sehari-hari</h2><span class="tag">Menjelaskan <span class="kko-tag">KKO: Menjelaskan</span></span></div>
+      </div>
+      <p>Ini bagian terakhir dan terpenting: <strong>menjelaskan</strong> mengapa gejala bunyi dan cahaya yang kamu amati terjadi juga dalam kehidupan sehari-harimu.</p>
+      <div id="quiz-inti"></div>
+      <label class="field-label">Jelaskan: mengapa ruang yang berkarpet terasa lebih "sepi" (bunyi lebih pelan) dibanding ruang berlantai keramik? Kaitkan dengan hasil percobaanmu.</label>
+      <textarea class="ans" data-key="inti-karpet" placeholder="Tulis penjelasanmu dengan kata-katamu sendiri..."></textarea>
+      <label class="field-label">Jelaskan: mengapa cermin dipakai untuk berkaca, sedangkan tembok berwarna gelap tidak? Kaitkan dengan hasil percobaanmu.</label>
+      <textarea class="ans" data-key="inti-cermin" placeholder="Tulis penjelasanmu dengan kata-katamu sendiri..."></textarea>
+      <button class="reveal-btn" onclick="toggleReveal('reveal-inti')">Lihat contoh jawaban</button>
+      <div class="reveal-box" id="reveal-inti">
+        Contoh: "Karpet punya permukaan yang lembut dan berserat sehingga menyerap sebagian bunyi, mirip seperti saat suaraku lewat kain tebal di percobaanku jadi lebih pelan. Sedangkan lantai keramik keras dan rata sehingga bunyi dipantulkan, membuat ruangan terasa lebih 'ramai' bergema."
+      </div>
+      <div class="callout" style="margin-top:1em;">
+        <strong>Catatan:</strong> Bagian ini akan dinilai gurumu lewat diskusi reflektif lisan, bukan hanya dari tulisanmu di sini — tetap siapkan dirimu untuk menjelaskan secara lisan di kelas.
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" onclick="goToPage(5)">← Kembali</button>
+      <button class="btn btn-primary" onclick="goToPage(7)">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 7 — GLOSARIUM + PENUTUP -->
+  <div class="page" data-page="7">
+    <div class="card">
+      <h2>Glosarium</h2>
+      <dl class="glossary">
+        <dt>Gelombang</dt><dd>Sesuatu yang merambat dari satu tempat ke tempat lain membawa energi, seperti bunyi dan cahaya.</dd>
+        <dt>Perambatan bunyi</dt><dd>Bagaimana bunyi bergerak/menyebar melewati suatu bahan (udara, benang, kain, dsb).</dd>
+        <dt>Peredaman</dt><dd>Berkurangnya kekuatan/kekencangan bunyi karena melewati atau mengenai suatu bahan.</dd>
+        <dt>Pemantulan cahaya</dt><dd>Cahaya yang mengenai suatu permukaan lalu memantul/berbalik arah, membuat permukaan itu terlihat terang.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Selesai! 🎉</h2>
+      <p>Kamu sudah menyelesaikan seluruh rangkaian eksperimen Bunyi dan Cahaya — dari mengamati, memprediksi, mencoba, membandingkan, hingga menjelaskan kaitannya dengan kehidupan sehari-hari. Ini adalah langkah pemanasan yang bagus sebelum kita masuk ke proyek besar berikutnya: <strong>Ekosistem</strong>!</p>
+      <div class="save-row">
+        <span id="saved-label">Belum ada progres tersimpan.</span>
+        <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+      </div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> IPAS Kelompok A, "Melakukan eksperimen cepat dan berulang tentang perambatan bunyi dan pemantulan cahaya pada berbagai bahan/permukaan, lalu menjelaskan kaitannya dengan fenomena sehari-hari" (Dokumen 2 TP Kelas 5 IPAS, Bagian D) — 8 JP, 5 pertemuan (4 tangga + 1 inti).</li>
+        <li><strong>Alternatif yang dipakai:</strong> Alternatif 1 — Bunyi Dulu, Cahaya Kemudian (Scaffolding_IPAS_Kelas5_BunyiCahaya.docx). Jika kelas Ibu lebih cocok Alternatif 2 (Cahaya Dulu), urutan Tangga 1–4 tinggal dibalik tanpa mengubah struktur teknis.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi di <code>pages/materi/ipas/bunyi-cahaya-tp1/</code> belum tersedia saat modul ini dibuat, sehingga isi subunit disusun langsung dari dokumen Scaffolding dan Dokumen 2 TP IPAS. Mohon dicek ulang terhadap materi resmi begitu tersedia — kalau ada perbedaan istilah/urutan, sesuaikan teks di halaman (bukan struktur teknisnya).</li>
+        <li><strong>Jenis kompetensi:</strong> Sains-eksperimental (Kelompok A) — kategori baru di luar 4 pola HANDOFF §4 (Reseptif/Performatif/Produktif). Pendekatan yang dipakai: kuis auto-graded untuk bagian konsep (Tangga 1, 2, 4, Inti), sementara Tangga 3 (eksperimen nyata) memakai kolom catatan bebas (tidak auto-graded) karena datanya bergantung pada percobaan fisik nyata di kelas — bukan sesuatu yang bisa diprediksi/dinilai benar-salah oleh modul.
+        <li><strong>Tidak ada audio/video</strong> sesuai batasan infrastruktur — percobaan nyata dilakukan langsung dengan alat fisik di kelas, modul hanya menyiapkan pertanyaan &amp; mencatat hasil.</li>
+        <li><strong>Asesmen sumatif sesungguhnya:</strong> diskusi reflektif lisan (lihat Scaffolding_IPAS_Kelas5_BunyiCahaya.docx Blok 3) — jawaban tertulis di halaman Inti berfungsi sebagai persiapan, bukan pengganti observasi lisan guru.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:ipas-bunyi-cahaya-tp1</code> — unik, belum pernah dipakai modul lain.</li>
+        <li><strong>Warna aksen:</strong> biru (<code>--ipas:#2b6ca3</code>) dipakai sementara sebagai identitas IPAS karena variabel resmi <code>--m-ipas</code> di <code>materi.css</code> belum bisa diverifikasi. Mohon disesuaikan jika berbeda dari warna resmi.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:ipas-bunyi-cahaya-tp1";
+const TOTAL_PAGES = 8; // 0..7
+const INTI_PAGE = 6;
+
+let state = { page: 0, answers: {}, checks: {}, actions: [] };
+let isReplaying = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+function logAction(action){
+  if(isReplaying) return;
+  state.actions.push(action);
+  saveState();
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => {
+      state.answers[key] = el.value;
+      saveState();
+    });
+  });
+}
+function wireCheckPersistence(){
+  document.querySelectorAll(".check-item input[type=checkbox]").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.checks[key] !== undefined) el.checked = state.checks[key];
+    el.addEventListener("change", () => {
+      state.checks[key] = el.checked;
+      saveState();
+    });
+  });
+}
+
+function toggleReveal(id){
+  const box = document.getElementById(id);
+  if(box) box.classList.toggle("show");
+}
+
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  if(!group) return;
+  const buttons = group.querySelectorAll(".choice-btn");
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if(i === correctIdx) b.classList.add("correct");
+    if(i === chosenIdx && chosenIdx !== correctIdx) b.classList.add("wrong");
+  });
+  const fb = group.querySelector(".quiz-feedback");
+  if(fb){
+    fb.classList.remove("hidden");
+    if(chosenIdx === correctIdx){
+      fb.textContent = "Betul! " + (group.dataset.explain || "");
+      fb.classList.add("ok"); fb.classList.remove("bad");
+    }else{
+      fb.textContent = "Belum tepat. " + (group.dataset.explain || "");
+      fb.classList.add("bad"); fb.classList.remove("ok");
+    }
+  }
+  logAction({type:"mcq", group: groupId, chosen: chosenIdx});
+}
+
+function renderQuiz(containerId, items){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = items.map((item, qi) => {
+    const groupId = containerId + "-q" + qi;
+    if(item.type === "mcq"){
+      const opts = item.options.map((opt, oi) =>
+        `<button type="button" class="choice-btn" onclick="checkMCQ('${groupId}', this, ${oi}, ${item.correct})">${opt}</button>`
+      ).join("");
+      return `<div class="quiz-item">
+        <div class="quiz-q">${qi+1}. ${item.text}</div>
+        <div id="${groupId}" data-explain="${(item.explain||"").replace(/"/g,'&quot;')}">
+          ${opts}
+          <div class="quiz-feedback hidden"></div>
+        </div>
+      </div>`;
+    }
+    if(item.type === "essay"){
+      return `<div class="quiz-item">
+        <div class="quiz-q">${qi+1}. ${item.text}</div>
+        <textarea class="ans" data-key="${item.key}" placeholder="Tulis jawabanmu di sini..."></textarea>
+      </div>`;
+    }
+    return "";
+  }).join("");
+  wireTextPersistence();
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","?","1","2","3","4","⭐","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === INTI_PAGE ? " inti" : "");
+    if(i === state.page) dot.classList.add("active");
+    else if(i < state.page) dot.classList.add("done");
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {}, checks: {}, actions: [] };
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => el.value = "");
+  document.querySelectorAll(".choice-btn").forEach(b => {
+    b.disabled = false; b.classList.remove("correct","wrong");
+  });
+  document.querySelectorAll(".quiz-feedback").forEach(f => f.classList.add("hidden"));
+  document.querySelectorAll(".reveal-box").forEach(b => b.classList.remove("show"));
+  goToPage(0);
+}
+
+function replayActions(){
+  isReplaying = true;
+  state.actions.forEach(a => {
+    if(a.type === "mcq"){
+      const group = document.getElementById(a.group);
+      if(group){
+        const btn = group.querySelectorAll(".choice-btn")[a.chosen];
+        if(btn) btn.click();
+      }
+    }
+  });
+  isReplaying = false;
+}
+
+const QUIZ_AWAL = [
+  {type:"mcq", text:"Menurutmu, apa yang membuat bunyi bisa sampai ke telingamu?", options:["Bunyi merambat lewat udara/benda lain","Bunyi diam di tempat asalnya","Bunyi hanya ada di dalam telinga"], correct:0, explain:"Bunyi merambat/menyebar dari sumbernya melalui udara atau benda lain hingga sampai ke telingamu."},
+  {type:"mcq", text:"Menurutmu, mengapa kita bisa melihat benda-benda di sekitar kita?", options:["Karena benda itu bercahaya sendiri semua","Karena cahaya mengenai benda lalu memantul ke mata kita","Karena mata kita mengeluarkan sinar ke benda"], correct:1, explain:"Sebagian besar benda terlihat karena memantulkan cahaya yang mengenainya, bukan karena bercahaya sendiri."}
+];
+const QUIZ_TANGGA1 = [
+  {type:"mcq", text:"Manakah yang termasuk sumber bunyi?", options:["Cermin","Tepuk tangan","Kain hitam"], correct:1, explain:"Tepuk tangan menghasilkan getaran yang merambat sebagai bunyi."},
+  {type:"mcq", text:"Manakah permukaan yang biasanya memantulkan cahaya paling terang?", options:["Cermin","Kain wol tebal","Tanah"], correct:0, explain:"Permukaan cermin yang halus dan mengilap memantulkan cahaya paling terang."}
+];
+const QUIZ_PREDIKSI = [
+  {type:"mcq", text:"Sebelum mencoba, menurutmu benang telepon kaleng yang KENDUR akan membuat suara terdengar...", options:["Lebih jelas","Lebih tidak jelas/teredam","Sama saja"], correct:1, explain:"Benang yang kendur tidak menghantarkan getaran bunyi dengan baik, sehingga suara jadi kurang jelas — coba buktikan sendiri di percobaanmu!"}
+];
+const QUIZ_TANGGA4 = [
+  {type:"mcq", text:"Setelah eksperimen, permukaan mana yang biasanya paling redup memantulkan cahaya?", options:["Cermin","Kertas hitam","Kertas putih"], correct:1, explain:"Warna gelap/hitam menyerap lebih banyak cahaya sehingga pantulannya paling redup."}
+];
+const QUIZ_INTI = [
+  {type:"mcq", text:"Mengapa telepon kaleng dengan benang kencang lebih jelas dibanding benang kendur?", options:["Karena benang kencang menghantarkan getaran bunyi lebih baik","Karena benang kencang lebih berat","Karena warnanya lebih terang"], correct:0, explain:"Getaran bunyi merambat lebih baik lewat benang yang kencang/tegang dibanding yang kendur."}
+];
+
+function initModul(){
+  loadState();
+  renderQuiz("quiz-awal", QUIZ_AWAL);
+  renderQuiz("quiz-tangga1", QUIZ_TANGGA1);
+  renderQuiz("quiz-prediksi", QUIZ_PREDIKSI);
+  renderQuiz("quiz-tangga4", QUIZ_TANGGA4);
+  renderQuiz("quiz-inti", QUIZ_INTI);
+  wireTextPersistence();
+  wireCheckPersistence();
+  replayActions();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
