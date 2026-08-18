@@ -1957,5 +1957,35 @@ window.MATERI_INDEX = [
     ringkasan: "Menggambar dan mengenali visualisasi spasial (tampak depan, atas, samping) dari bangun ruang fisik yang sudah dibangun sendiri.",
     status: "selesai",
     file: "matematika/geometri-tp1/04-visualisasi-spasial-tampak-depan-atas-samping.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🔷",
+    elemen: "Geometri",
+    tp: "geometri-tp2",
+    tema: "Geometri · Membandingkan Karakteristik Bangun Datar dan Bangun Ruang",
+    urutan: 1,
+    judul: "Mengenal Sisi, Rusuk, dan Titik Sudut",
+    ringkasan: "Mengidentifikasi dan menamai bagian bangun ruang (sisi, rusuk, titik sudut) pada model fisik hasil lipatan sendiri, membedakan istilah yang rawan tertukar.",
+    status: "selesai",
+    file: "matematika/geometri-tp2/01-mengenal-sisi-rusuk-dan-titik-sudut.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🔷",
+    elemen: "Geometri",
+    tp: "geometri-tp2",
+    tema: "Geometri · Membandingkan Karakteristik Bangun Datar dan Bangun Ruang",
+    urutan: 2,
+    judul: "Menyusun Tabel Perbandingan Karakteristik Bangun",
+    ringkasan: "Menyusun tabel perbandingan karakteristik (jumlah sisi, rusuk, titik sudut) antar bangun datar dan antar bangun ruang berdasarkan hasil eksplorasi fisik.",
+    status: "selesai",
+    file: "matematika/geometri-tp2/02-menyusun-tabel-perbandingan-karakteristik-bangun.html"
   }
 ];
