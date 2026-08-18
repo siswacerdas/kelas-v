@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Durasi Jadwal Perjalanan Lintas Tengah Malam · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .garis-waktu { display: flex; align-items: center; margin: 1.1rem 0 0.3rem; overflow-x: auto; padding: 0 4px 6px; }
+  .gw-titik { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 70px; }
+  .gw-jam { font-weight: 700; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 2px); background: var(--paper-2); border: 2px solid var(--m-color); color: var(--m-color); border-radius: 8px; padding: 4px 8px; }
+  .gw-jam.tengah-malam { border-color: #c76b3f; color: #c76b3f; }
+  .gw-label { font-size: calc(var(--content-fs) - 5px); color: var(--ink-3); margin-top: 3px; text-align: center; }
+  .gw-garis { flex: 1; min-width: 40px; height: 3px; background: var(--ink); position: relative; }
+  .gw-garis .durasi-label { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: calc(var(--content-fs) - 5px); font-weight: 700; color: var(--ink-2); white-space: nowrap; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⏱️</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Durasi Waktu (Konversi Antarsatuan dan Lintas Tengah Malam) · Materi 2 dari 2 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Durasi Jadwal Perjalanan Lintas Tengah Malam</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Mari mulai dengan durasi yang MASIH dalam satu hari yang sama — ini yang sudah biasa kamu kerjakan:</p>
+
+      <div class="cerita-box">
+        Sebuah bus berangkat pukul 08.15 dan tiba pukul 11.40. Berapa lama perjalanan bus itu?
+      </div>
+
+      <div class="garis-waktu">
+        <div class="gw-titik"><div class="gw-jam">08.15</div><div class="gw-label">Berangkat</div></div>
+        <div class="gw-garis"><span class="durasi-label">? jam</span></div>
+        <div class="gw-titik"><div class="gw-jam">11.40</div><div class="gw-label">Tiba</div></div>
+      </div>
+
+      <p>Cara menghitungnya: kurangkan waktu tiba dengan waktu berangkat, JAM dikurangi JAM, MENIT dikurangi MENIT (mirip pengurangan bersusun yang sudah kamu kuasai):</p>
+
+      <div class="contoh-box">
+        11 jam 40 menit − 08 jam 15 menit<br>
+        Jam: 11−08=3. Menit: 40−15=25.<br>
+        Durasi = <strong>3 jam 25 menit</strong>
+      </div>
+
+      <p>Sekarang, bagaimana kalau MENIT-nya tidak cukup untuk dikurangi (seperti peminjaman pada pengurangan bersusun biasa)? Contoh: berangkat 09.50, tiba 12.20.</p>
+
+      <p>12 jam 20 menit − 09 jam 50 menit. Menit: 20−50 tidak bisa langsung (20 lebih kecil dari 50). Kita PINJAM 1 jam dari bagian jam, ubah jadi 60 menit: 12 jam 20 menit = 11 jam 80 menit. Sekarang: 11 jam 80 menit − 09 jam 50 menit = 2 jam 30 menit.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Ingat lagi cara "meminjam" pada pengurangan bersusun biasa (misalnya 120−58), di mana kamu meminjam dari nilai tempat sebelah.</span></p>
+        <p>Bedanya, pada waktu kamu meminjam "1 jam" yang setara dengan "60 menit" (BUKAN 10 seperti pada bilangan biasa) — karena satuan waktu berbasis 60, bukan berbasis 10. Prinsip meminjamnya SAMA, cuma nilai pinjamannya beda (60, bukan 10).</p>
+      </div>
+
+      <p>Sekarang bagian yang PALING menantang: durasi yang MELINTASI TENGAH MALAM (pukul 00.00). Ini kasus di mana keberangkatan terjadi MALAM, dan kedatangan terjadi KEESOKAN HARINYA.</p>
+
+      <div class="cerita-box">
+        Sebuah pesawat berangkat pukul 22.40 malam, dan tiba pukul 05.15 KEESOKAN HARINYA. Berapa lama penerbangan itu?
+      </div>
+
+      <p>Kamu TIDAK BISA langsung mengurangi 05.15−22.40 seperti biasa (hasilnya akan negatif dan membingungkan). <strong>Triknya: PECAH perjalanan itu menjadi DUA BAGIAN</strong> — dari keberangkatan sampai TENGAH MALAM (pukul 00.00), lalu dari tengah malam sampai kedatangan.</p>
+
+      <div class="garis-waktu">
+        <div class="gw-titik"><div class="gw-jam">22.40</div><div class="gw-label">Berangkat<br>(hari ini)</div></div>
+        <div class="gw-garis"><span class="durasi-label">1 jam 20 mnt</span></div>
+        <div class="gw-titik"><div class="gw-jam tengah-malam">00.00</div><div class="gw-label">Tengah Malam</div></div>
+        <div class="gw-garis"><span class="durasi-label">5 jam 15 mnt</span></div>
+        <div class="gw-titik"><div class="gw-jam">05.15</div><div class="gw-label">Tiba<br>(besok)</div></div>
+      </div>
+
+      <ol class="langkah">
+        <li><strong>Hitung bagian PERTAMA</strong> (dari berangkat sampai tengah malam): dari 22.40 ke 24.00 (yaitu 00.00). 24.00−22.40 = 1 jam 20 menit.</li>
+        <li><strong>Hitung bagian KEDUA</strong> (dari tengah malam sampai tiba): dari 00.00 ke 05.15. Ini langsung terlihat: 5 jam 15 menit.</li>
+        <li><strong>Jumlahkan kedua bagian itu:</strong> 1 jam 20 menit + 5 jam 15 menit = 6 jam 35 menit.</li>
+      </ol>
+
+      <div class="contoh-box">
+        Durasi penerbangan = 1 jam 20 menit + 5 jam 15 menit = <strong>6 jam 35 menit</strong>
+      </div>
+
+      <p><strong>Trik menghitung bagian pertama</strong> (dari suatu jam malam sampai tengah malam): anggap tengah malam sebagai pukul 24.00 (bukan 00.00), lalu kurangkan seperti biasa. 24.00−22.40=1.20 (1 jam 20 menit).</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan sebuah jam raksasa dengan 24 angka, bukan cuma 12. Setelah jarumnya sampai di angka 24 (yang sama posisinya dengan angka 0), jam itu "reset" dan mulai menghitung hari baru.</span></p>
+        <p>Kalau kamu berjalan dari angka 22 (jam 10 malam) menuju "ujung" jam itu (angka 24, yang juga posisi 00.00), kamu menempuh jarak tertentu. Lalu, dari titik reset itu (00.00), kamu berjalan LAGI sejumlah jarak baru menuju angka 5 (jam 5 pagi). Total perjalananmu adalah PENJUMLAHAN dari dua bagian jarak itu — bukan pengurangan langsung dari angka awal ke angka akhir, karena jam sudah "reset" di tengah perjalanan.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Tanda paling jelas bahwa sebuah soal melintasi tengah malam: waktu KEDATANGAN lebih KECIL angkanya dibanding waktu KEBERANGKATAN (misalnya berangkat 22.40, tiba 05.15 — 05 lebih kecil dari 22). Kalau kamu lihat pola ini, PECAH dulu jadi dua bagian lewat tengah malam, jangan langsung dikurangi.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Kereta berangkat pukul 07.20 dan tiba pukul 13.05 (masih hari yang sama). Berapa lama perjalanannya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Menit 05−20 tidak cukup, pinjam 1 jam (60 menit): 13.05=12 jam 65 menit. 12 jam 65 menit − 07 jam 20 menit = 5 jam 45 menit. <strong>Durasi = 5 jam 45 menit</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Bus malam berangkat pukul 23.30 dan tiba pukul 04.10 keesokan harinya. Berapa lama perjalanannya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Bagian 1 (23.30 ke 24.00): 24.00−23.30=30 menit. Bagian 2 (00.00 ke 04.10): 4 jam 10 menit. Total: 30 menit + 4 jam 10 menit = <strong>4 jam 40 menit</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani menghitung durasi penerbangan berangkat 21.00, tiba 03.30 keesokan hari, dengan cara langsung 21.00−03.30 dan mendapat hasil negatif sehingga dia bingung. Bantu Rani menghitung dengan cara yang benar!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesalahan Rani: dia mengurangi LANGSUNG tanpa menyadari jadwal ini melintasi tengah malam (tanda: 03.30 lebih kecil dari 21.00). Cara yang benar: Bagian 1 (21.00 ke 24.00): 3 jam. Bagian 2 (00.00 ke 03.30): 3 jam 30 menit. Total: 3 jam + 3 jam 30 menit = <strong>6 jam 30 menit</strong>.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Cari (atau buat sendiri) 3 jadwal keberangkatan-kedatangan kereta/pesawat/bus nyata. Pastikan MINIMAL SATU di antaranya melintasi tengah malam. Hitung durasi masing-masing, dan untuk yang melintasi tengah malam, tunjukkan langkah memecahnya jadi dua bagian seperti pada materi ini.
+      </div>
+
+      <p>Selamat! Kamu sudah menguasai perhitungan durasi waktu, termasuk kasus tersulit (lintas tengah malam). Materi Pengukuran berikutnya akan membahas topik yang berbeda: mengukur besar sudut dengan protractor.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

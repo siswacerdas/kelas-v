@@ -1,1 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Konversi Dasar Antarsatuan Waktu · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .satuan-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .satuan-tabel th, .satuan-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .satuan-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .satuan-tabel td.hasil { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⏱️</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Durasi Waktu (Konversi Antarsatuan dan Lintas Tengah Malam) · Materi 1 dari 2</div>
+      <div class="ma-cover-title">Konversi Dasar Antarsatuan Waktu</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sebelum menghitung durasi perjalanan yang rumit, kita segarkan dulu kemampuan dasarmu: mengubah satuan waktu dari satu bentuk ke bentuk lain (jam, menit, detik). Ini penting karena durasi jarang muncul dalam satuan yang "rapi" — kamu sering perlu mengubah dulu supaya bisa dihitung.</p>
+
+      <p>Ingat tiga fakta dasar ini baik-baik:</p>
+
+      <table class="satuan-tabel">
+        <tr><th>Satuan</th><th>Setara dengan</th></tr>
+        <tr><td>1 jam</td><td class="hasil">60 menit</td></tr>
+        <tr><td>1 menit</td><td class="hasil">60 detik</td></tr>
+        <tr><td>1 jam</td><td class="hasil">3.600 detik (60×60)</td></tr>
+      </table>
+
+      <p><strong>Mengubah dari satuan BESAR ke satuan KECIL → KALIKAN.</strong> Contoh: 3 jam = berapa menit?</p>
+
+      <div class="contoh-box">
+        3 jam × 60 = <strong>180 menit</strong>
+      </div>
+
+      <p><strong>Mengubah dari satuan KECIL ke satuan BESAR → BAGI.</strong> Contoh: 150 menit = berapa jam (dan sisa menit)?</p>
+
+      <ol class="langkah">
+        <li>Bagi 150 dengan 60 (karena 1 jam = 60 menit): 150 ÷ 60 = 2, sisa 30.</li>
+        <li>Hasil baginya (2) menjadi jumlah JAM. Sisanya (30) tetap dalam MENIT.</li>
+        <li>Jadi 150 menit = <strong>2 jam 30 menit</strong>.</li>
+      </ol>
+
+      <p>Cara yang sama berlaku untuk menit dan detik. Contoh: 4 menit 20 detik diubah semuanya ke detik:</p>
+
+      <ol class="langkah">
+        <li>Ubah bagian menit ke detik dulu: 4 menit × 60 = 240 detik.</li>
+        <li>Tambahkan sisa detik yang sudah ada: 240 + 20 = 260 detik.</li>
+        <li>Jadi 4 menit 20 detik = <strong>260 detik</strong>.</li>
+      </ol>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan mengubah satuan waktu seperti menukar uang kertas besar menjadi uang receh, atau sebaliknya.</span></p>
+        <p>Kalau kamu punya uang kertas Rp3.000 dan ingin menukarnya jadi koin Rp1.000, kamu akan dapat 3 koin (KALI, dari besar ke kecil — satu lembar besar jadi beberapa keping kecil). Tapi kalau kamu punya 15 koin Rp1.000 dan ingin tahu itu setara berapa lembar Rp5.000, kamu BAGI 15÷5=3 lembar (dari kecil ke besar — beberapa keping kecil digabung jadi satuan besar).</p>
+        <p>Satuan waktu bekerja dengan logika yang sama: besar→kecil = KALI (pecah jadi lebih banyak bagian kecil), kecil→besar = BAGI (gabungkan bagian kecil jadi satuan besar).</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Satuan waktu TIDAK memakai basis 10 seperti bilangan biasa (beda dengan cm ke m yang berbasis 10, 100, 1000). Jam-menit-detik memakai basis 60. Jangan sampai tertukar menganggap 1 jam = 100 menit — itu SALAH, yang benar 1 jam = 60 menit.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Ubahlah 5 jam menjadi menit!</div>
+          <div class="soal-a"><b>Pembahasan:</b> 5 × 60 = <strong>300 menit</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Ubahlah 200 detik menjadi menit dan detik!</div>
+          <div class="soal-a"><b>Pembahasan:</b> 200 ÷ 60 = 3, sisa 20. Jadi 200 detik = <strong>3 menit 20 detik</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan mengubah 2 jam menjadi menit dengan cara 2×100=200 menit. Apakah caranya benar? Jelaskan kesalahannya dan berikan jawaban yang tepat!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Wayan SALAH — dia mengalikan dengan 100, padahal satuan waktu memakai basis 60 (1 jam = 60 menit), BUKAN basis 100 seperti satuan panjang. Cara yang benar: 2×60=<strong>120 menit</strong>, bukan 200 menit.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Pakai jam analog atau digital sebagai alat bantu visual. Kerjakan 4 soal konversi: 2 soal dari satuan besar ke kecil (kalikan), dan 2 soal dari satuan kecil ke besar (bagi, dengan sisa). Gunakan campuran jam-menit dan menit-detik.
+      </div>
+
+      <p>Materi berikutnya (Pertemuan Inti) akan menerapkan kemampuan konversi ini pada soal cerita jadwal perjalanan nyata — termasuk kasus paling menantang: durasi yang melintasi tengah malam!</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
