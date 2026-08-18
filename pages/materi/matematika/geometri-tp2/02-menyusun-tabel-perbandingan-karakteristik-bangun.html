@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyusun Tabel Perbandingan Karakteristik Bangun · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1.2rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .view-item { display: flex; flex-direction: column; align-items: center; }
+  .view-label { font-weight: 700; font-size: calc(var(--content-fs) - 3px); color: var(--ink-2); margin-top: 0.3rem; }
+  .bd-tabel, .br-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .bd-tabel th, .bd-tabel td, .br-tabel th, .br-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .bd-tabel th, .br-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .bd-tabel td.hasil, .br-tabel td.hasil { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔷</span>
+      <div class="ma-cover-eyebrow">Geometri · Membandingkan Karakteristik Bangun Datar dan Bangun Ruang · Materi 2 dari 2 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Menyusun Tabel Perbandingan Karakteristik Bangun</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menyusun tabel perbandingan SENDIRI — bukan tabel yang tinggal dihafal, tapi tabel yang kamu bangun dari hasil AMATI LANGSUNG bangun-bangun datar dan bangun ruang di depanmu.</p>
+
+      <p><strong>Catatan penting sebelum mulai:</strong> pada bangun DATAR (2D), kita HANYA memakai istilah "sisi" (garis tepi bangun) dan "titik sudut" — TIDAK ada istilah "rusuk" di bangun datar, karena rusuk itu istilah khusus untuk bangun RUANG (3D), yaitu garis tempat dua PERMUKAAN bertemu. Di bangun datar, tidak ada "permukaan" yang bertemu seperti itu — makanya cukup 2 istilah saja: sisi dan titik sudut.</p>
+
+      <p>Mari amati bangun DATAR dulu:</p>
+
+      <div class="svg-wrap">
+        <div class="view-item">
+          <svg viewBox="0 0 120 110" width="100">
+            <polygon points="60,10 105,95 15,95" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2.5"/>
+          </svg>
+          <div class="view-label">Segitiga</div>
+        </div>
+        <div class="view-item">
+          <svg viewBox="0 0 120 110" width="100">
+            <rect x="20" y="20" width="80" height="80" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2.5"/>
+          </svg>
+          <div class="view-label">Persegi</div>
+        </div>
+        <div class="view-item">
+          <svg viewBox="0 0 120 110" width="100">
+            <rect x="10" y="30" width="100" height="50" fill="var(--m-color)" opacity="0.2" stroke="var(--ink)" stroke-width="2.5"/>
+          </svg>
+          <div class="view-label">Persegi Panjang</div>
+        </div>
+      </div>
+
+      <p>Hitung bersama: segitiga punya 3 garis tepi (sisi) dan 3 titik pojok (titik sudut). Persegi dan persegi panjang sama-sama punya 4 sisi dan 4 titik sudut.</p>
+
+      <table class="bd-tabel">
+        <tr><th>Bangun Datar</th><th>Jumlah Sisi</th><th>Jumlah Titik Sudut</th></tr>
+        <tr><td>Segitiga</td><td class="hasil">3</td><td class="hasil">3</td></tr>
+        <tr><td>Persegi</td><td class="hasil">4</td><td class="hasil">4</td></tr>
+        <tr><td>Persegi Panjang</td><td class="hasil">4</td><td class="hasil">4</td></tr>
+      </table>
+
+      <p>Sekarang, amati bangun RUANG (pakai model fisik hasil lipatanmu). Di sini kita pakai 3 istilah sekaligus: sisi (permukaan), rusuk (garis tepi), dan titik sudut (pojok).</p>
+
+      <div class="svg-wrap">
+        <div class="view-item">
+          <svg viewBox="0 0 160 150" width="130">
+            <polygon points="40,80 110,80 110,140 40,140" fill="var(--m-color)" opacity="0.25" stroke="var(--ink)" stroke-width="2.5"/>
+            <polygon points="40,80 110,80 140,50 70,50" fill="var(--m-color)" opacity="0.4" stroke="var(--ink)" stroke-width="2.5"/>
+            <polygon points="110,80 110,140 140,110 140,50" fill="var(--m-color)" opacity="0.15" stroke="var(--ink)" stroke-width="2.5"/>
+          </svg>
+          <div class="view-label">Kubus</div>
+        </div>
+        <div class="view-item">
+          <svg viewBox="0 0 180 150" width="150">
+            <polygon points="30,90 130,90 130,140 30,140" fill="var(--m-color)" opacity="0.25" stroke="var(--ink)" stroke-width="2.5"/>
+            <polygon points="30,90 130,90 155,55 55,55" fill="var(--m-color)" opacity="0.4" stroke="var(--ink)" stroke-width="2.5"/>
+            <polygon points="130,90 130,140 155,105 155,55" fill="var(--m-color)" opacity="0.15" stroke="var(--ink)" stroke-width="2.5"/>
+          </svg>
+          <div class="view-label">Balok</div>
+        </div>
+      </div>
+
+      <p>Ambil model fisikmu, hitung PELAN-PELAN dan pastikan tidak ada yang terlewat atau terhitung dua kali: berapa permukaan (sisi), berapa garis tepi (rusuk), dan berapa pojok (titik sudut) pada kubus?</p>
+
+      <table class="br-tabel">
+        <tr><th>Bangun Ruang</th><th>Jumlah Sisi</th><th>Jumlah Rusuk</th><th>Jumlah Titik Sudut</th></tr>
+        <tr><td>Kubus</td><td class="hasil">6</td><td class="hasil">12</td><td class="hasil">8</td></tr>
+        <tr><td>Balok</td><td class="hasil">6</td><td class="hasil">12</td><td class="hasil">8</td></tr>
+      </table>
+
+      <p>Menarik — kubus dan balok punya JUMLAH sisi, rusuk, dan titik sudut yang SAMA (6, 12, 8)! Ini karena keduanya sama-sama termasuk keluarga "prisma segi empat" — bedanya cuma UKURAN sisi-sisinya, bukan JUMLAHNYA.</p>
+
+      <div class="contoh-box">
+        Bangun datar hanya punya SISI dan TITIK SUDUT (2 karakteristik).<br>
+        Bangun ruang punya SISI, RUSUK, dan TITIK SUDUT (3 karakteristik) — karena bangun ruang punya dimensi tambahan (kedalaman/tinggi) yang menciptakan "pertemuan antar-permukaan" yang disebut rusuk.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan selembar kertas datar (2D) dibandingkan dengan kotak kertas terlipat (3D).</span></p>
+        <p>Selembar kertas datar HANYA punya tepi (sisi) dan pojok (titik sudut) — tidak ada "pertemuan dua permukaan" karena kertas itu sendiri cuma SATU permukaan tunggal yang rata. Tapi begitu kertas itu DILIPAT jadi kotak, sekarang ada BEBERAPA permukaan (sisi) yang saling BERTEMU di garis-garis tertentu — garis pertemuan itulah yang disebut rusuk, dan ini HANYA muncul karena bangunnya sudah jadi RUANG (3D), bukan lagi bidang datar tunggal.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Saat menyusun tabel perbandingan, JANGAN menyalin dari buku atau teman — hitung LANGSUNG dari model fisik di tanganmu. Kalau ragu apakah sudah menghitung SEMUA sisi/rusuk/titik sudut (atau menghitung dua kali), tandai satu-satu dengan jari sambil menghitung, jangan asal menebak.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Mengapa bangun datar (seperti persegi) tidak memiliki istilah "rusuk", sementara bangun ruang (seperti kubus) memilikinya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena "rusuk" adalah istilah untuk garis PERTEMUAN ANTAR PERMUKAAN, dan bangun datar HANYA punya satu permukaan tunggal (tidak ada permukaan lain yang bertemu dengannya) — jadi tidak ada rusuk. Bangun ruang punya BEBERAPA permukaan (sisi) yang saling bertemu, sehingga muncul garis rusuk di titik pertemuan itu.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah bangun ruang punya 6 sisi, 12 rusuk, dan 8 titik sudut. Berdasarkan tabel yang sudah kamu susun, bangun apa ini kemungkinan besar?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Berdasarkan tabel, kemungkinan besar itu adalah <strong>kubus atau balok</strong> — keduanya sama-sama punya karakteristik jumlah 6 sisi, 12 rusuk, 8 titik sudut.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made menghitung rusuk kubus dan mendapat hasil 10 (bukan 12), karena dia lupa menghitung 2 rusuk yang tersembunyi di bagian belakang model fisiknya. Apa saran terbaik untuk Made supaya tidak salah hitung lagi?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Saran terbaik: Made sebaiknya MEMUTAR model fisiknya ke berbagai arah sambil menghitung (bukan hanya melihat dari satu sudut pandang tetap), dan menandai setiap rusuk yang sudah dihitung (misalnya dengan jari atau stiker kecil) supaya tidak ada yang terlewat atau terhitung dua kali. Menghitung dari gambar 2D di buku juga berisiko membuat rusuk "tersembunyi" di baliknya, jadi memegang model fisik langsung jauh lebih akurat.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Amati bangun-bangun datar (segitiga, persegi, persegi panjang) dan bangun ruang (kubus, balok) yang disediakan. Susun SENDIRI tabel perbandingan jumlah sisi, rusuk, dan titik sudutnya (jangan menyalin dari buku). Tunjukkan pada guru bagian mana yang kamu sebut sisi dan mana yang kamu sebut rusuk pada satu bangun ruang, untuk membuktikan kamu benar-benar memahami bedanya.
+      </div>
+
+      <p>Selamat! Kamu sudah menyelesaikan SELURUH elemen Geometri Kelas 5 — dari jaring-jaring kubus dan balok, visualisasi spasial, sampai perbandingan karakteristik bangun datar dan bangun ruang. Materi Matematika berikutnya adalah elemen terakhir: Analisis Data dan Peluang, dimulai dari menyajikan data dalam tabel frekuensi, piktogram, dan diagram batang.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

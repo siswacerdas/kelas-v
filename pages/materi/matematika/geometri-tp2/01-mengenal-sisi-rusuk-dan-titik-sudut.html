@@ -1,1 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengenal Sisi, Rusuk, dan Titik Sudut · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1.4rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .istilah-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .istilah-tabel th, .istilah-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+  .istilah-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); text-align: center; }
+  .istilah-tabel td.istilah { font-weight: 700; color: var(--m-color); text-align: center; white-space: nowrap; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔷</span>
+      <div class="ma-cover-eyebrow">Geometri · Membandingkan Karakteristik Bangun Datar dan Bangun Ruang · Materi 1 dari 2</div>
+      <div class="ma-cover-title">Mengenal Sisi, Rusuk, dan Titik Sudut</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Ambil lagi bangun ruang hasil lipatanmu sendiri dari materi sebelumnya (kubus atau balok). Sebelum membandingkan berbagai bangun, kita harus SEPAKAT dulu istilah untuk menyebut bagian-bagiannya — karena tiga istilah berikut SANGAT SERING tertukar, terutama <strong>sisi</strong> dan <strong>rusuk</strong>.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 220" width="280">
+          <polygon points="60,120 160,120 160,200 60,200" fill="var(--m-color)" opacity="0.3" stroke="var(--ink)" stroke-width="2.5"/>
+          <polygon points="60,120 160,120 200,80 100,80" fill="var(--m-color)" opacity="0.15" stroke="var(--ink)" stroke-width="2.5"/>
+          <polygon points="160,120 160,200 200,160 200,80" fill="var(--m-color)" opacity="0.45" stroke="var(--ink)" stroke-width="2.5"/>
+          <circle cx="160" cy="120" r="5" fill="#c76b3f"/>
+          <line x1="60" y1="120" x2="160" y2="120" stroke="#1f6f78" stroke-width="4"/>
+          <text x="110" y="30" font-size="12" font-weight="700" fill="var(--m-color)" text-anchor="middle">SISI = permukaan datar</text>
+          <line x1="110" y1="35" x2="130" y2="90" stroke="var(--m-color)" stroke-width="1.5"/>
+          <text x="230" y="30" font-size="12" font-weight="700" fill="#1f6f78" text-anchor="middle">RUSUK = garis tepi</text>
+          <line x1="200" y1="35" x2="105" y2="118" stroke="#1f6f78" stroke-width="1.5"/>
+          <text x="230" y="220" font-size="12" font-weight="700" fill="#c76b3f" text-anchor="middle">TITIK SUDUT = pertemuan rusuk</text>
+          <line x1="200" y1="212" x2="163" y2="123" stroke="#c76b3f" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <p class="svg-caption">Kubus dengan bagian-bagiannya ditandai: sisi (permukaan), rusuk (garis tepi), titik sudut (pertemuan rusuk).</p>
+
+      <table class="istilah-tabel">
+        <tr><th>Istilah</th><th>Artinya</th></tr>
+        <tr><td class="istilah">Sisi</td><td>PERMUKAAN datar yang menutupi bangun ruang. Pada kubus, tiap sisi berbentuk persegi.</td></tr>
+        <tr><td class="istilah">Rusuk</td><td>GARIS TEPI tempat dua sisi bertemu. Rusuk berbentuk garis lurus, BUKAN permukaan.</td></tr>
+        <tr><td class="istilah">Titik Sudut</td><td>TITIK tempat beberapa rusuk bertemu (seperti "pojok" bangun ruang).</td></tr>
+      </table>
+
+      <p><strong>Ini yang paling sering tertukar:</strong> "sisi" itu PERMUKAAN (bidang datar, seperti selembar kertas), sedangkan "rusuk" itu GARIS (tepi pertemuan dua permukaan, seperti lipatan kertas). Sisi punya LUAS (bisa diukur dengan cm²), sementara rusuk punya PANJANG (diukur dengan cm) — keduanya jenis ukuran yang berbeda!</p>
+
+      <div class="contoh-box">
+        SISI = permukaan (kamu bisa MENYENTUH dan MERASAKAN LUASNYA dengan telapak tangan).<br>
+        RUSUK = garis tepi (kamu bisa MENELUSURI dengan UJUNG JARI, seperti menelusuri tepi meja).
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan sebuah kotak kado yang dibungkus kertas kado dan diikat pita di tepi-tepinya.</span></p>
+        <p>KERTAS KADO yang menutupi tiap permukaan kotak itu ibarat SISI — kamu bisa menekan telapak tanganmu rata di atasnya. PITA yang diikat mengelilingi TEPI kotak (di mana dua permukaan kertas bertemu) itu ibarat RUSUK — bentuknya garis, bukan permukaan lebar. Dan SUDUT kotak (tempat beberapa pita bertemu di satu titik, seperti pojok kado) itu ibarat TITIK SUDUT.</p>
+        <p>Coba pegang langsung bangun ruang lipatanmu: telapak tanganmu menempel di SISI (permukaan), ujung jarimu menelusuri RUSUK (garis), dan ujung jari lancip menyentuh TITIK SUDUT (satu titik).</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Latihan paling efektif untuk membedakan ketiga istilah ini: pegang bangun ruang fisikmu, lalu minta teman menyebutkan "tunjuk satu sisi", "tunjuk satu rusuk", "tunjuk satu titik sudut" secara ACAK (tidak berurutan) — supaya kamu benar-benar paham bedanya, bukan cuma menghafal urutan.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Made menunjuk sebuah garis lurus di tepi kubus (tempat dua permukaan bertemu) dan menyebutnya "sisi". Apakah penyebutan Made tepat? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Penyebutan Made TIDAK tepat. Garis lurus di tepi (tempat dua permukaan bertemu) itu disebut <strong>RUSUK</strong>, bukan sisi. "Sisi" seharusnya menunjuk pada permukaan datar (bidang), bukan garis.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Berapa banyak permukaan datar (sisi) yang dimiliki sebuah balok?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Balok punya <strong>6 sisi</strong> (permukaan) — sama seperti kubus, hanya ukurannya yang bisa berbeda antar pasangan.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani bilang "titik sudut itu sama dengan rusuk, cuma beda nama saja". Apakah pernyataan ini benar? Jelaskan perbedaannya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pernyataan Rani SALAH. Rusuk dan titik sudut adalah dua hal yang BERBEDA: rusuk adalah GARIS (punya panjang, menghubungkan dua titik), sedangkan titik sudut adalah TITIK tunggal (tempat beberapa rusuk BERTEMU, tidak punya panjang). Rusuk itu seperti "jalan", titik sudut itu seperti "persimpangan" tempat beberapa jalan itu bertemu.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil model kubus dan balok hasil lipatanmu. Tandai dengan spidol/label warna berbeda: satu warna untuk SISI (misalnya arsir satu permukaan), satu warna untuk RUSUK (garis tepi), satu warna untuk TITIK SUDUT (titik di pojok). Minta temanmu menunjuk bagian secara acak sambil kamu menyebutkan istilahnya, lalu bergantian peran.
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan mengajakmu menyusun tabel perbandingan lengkap — menghitung jumlah sisi, rusuk, dan titik sudut pada berbagai bangun datar DAN bangun ruang sekaligus.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
