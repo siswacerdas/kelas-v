@@ -39,6 +39,21 @@
 
 window.MODUL_INDEX = [
   {
+    mapel: "IPAS",
+    mapelSlug: "ipas",
+    mapelColor: "var(--m-ipas)",
+    mapelIcon: "🔬",
+    icon: "🔊",
+    elemen: "Pemahaman IPAS · Kelompok A (Sains-Eksperimental)",
+    tp: "bunyi-cahaya-tp1",
+    tema: "Gelombang Bunyi dan Cahaya",
+    urutan: 1,
+    judul: "Eksperimen Bunyi dan Cahaya",
+    ringkasan: "Berpikir seperti ilmuwan: mengamati sumber bunyi dan pantulan cahaya, memprediksi dengan alasan, mencoba telepon kaleng dan senter, membandingkan hasil, sampai menjelaskan kaitannya dengan kehidupan sehari-hari.",
+    status: "selesai",
+    file: "ipas/bunyi-cahaya-tp1/modul.html"
+  },
+  {
     mapel: "Bahasa Indonesia",
     mapelSlug: "bahasa-indonesia",
     mapelColor: "var(--m-bahasa-indonesia)",
