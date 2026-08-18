@@ -1867,5 +1867,35 @@ window.MATERI_INDEX = [
     ringkasan: "Menghitung durasi waktu pada soal cerita jadwal perjalanan/penerbangan nyata, termasuk situasi yang melintasi tengah malam.",
     status: "selesai",
     file: "matematika/pengukuran-tp3/02-durasi-jadwal-perjalanan-lintas-tengah-malam.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "📏",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp4",
+    tema: "Pengukuran · Mengukur Besar Sudut dengan Protractor dan Mengklasifikasikan Jenis Sudut",
+    urutan: 1,
+    judul: "Klasifikasi Jenis Sudut secara Visual",
+    ringkasan: "Mengklasifikasikan jenis sudut (lancip, siku-siku, tumpul) secara visual/estimasi, sebelum diperkenalkan alat ukur.",
+    status: "selesai",
+    file: "matematika/pengukuran-tp4/01-klasifikasi-jenis-sudut-secara-visual.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "📏",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp4",
+    tema: "Pengukuran · Mengukur Besar Sudut dengan Protractor dan Mengklasifikasikan Jenis Sudut",
+    urutan: 2,
+    judul: "Mengukur Sudut dengan Protractor",
+    ringkasan: "Mengukur besar sudut pada bangun datar dan benda nyata di sekitar kelas menggunakan protractor fisik secara teknis benar.",
+    status: "selesai",
+    file: "matematika/pengukuran-tp4/02-mengukur-sudut-dengan-protractor.html"
   }
 ];
