@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengukur Sudut dengan Protractor · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📏</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Mengukur Besar Sudut dengan Protractor · Materi 2 dari 2 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Mengukur Sudut dengan Protractor</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Protractor</strong> (penggaris sudut) adalah alat berbentuk setengah lingkaran dengan angka 0° sampai 180° tertulis di tepinya. Ini alat TEKNIS — kamu perlu latihan tangan langsung, bukan cuma membaca gambar dari buku, untuk benar-benar menguasainya.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 300 220" width="320">
+          <path d="M 20,170 A 130 130 0 0 1 280,170" fill="none" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="20" y1="170" x2="280" y2="170" stroke="var(--ink)" stroke-width="3"/>
+          <circle cx="150" cy="170" r="4" fill="var(--m-color)"/>
+          <line x1="280" y1="170" x2="262.6" y2="105" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <line x1="262.6" y1="105" x2="215" y2="57.4" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <line x1="215" y1="57.4" x2="150" y2="40" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <line x1="150" y1="40" x2="85" y2="57.4" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <line x1="85" y1="57.4" x2="37.4" y2="105" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <line x1="37.4" y1="105" x2="20" y2="170" stroke="var(--ink-3)" stroke-width="1.5"/>
+          <text x="280" y="192" font-size="11" fill="var(--ink-2)" text-anchor="middle">0°</text>
+          <text x="262.6" y="100" font-size="11" fill="var(--ink-2)" text-anchor="middle">30°</text>
+          <text x="215" y="52" font-size="11" fill="var(--ink-2)" text-anchor="middle">60°</text>
+          <text x="150" y="30" font-size="11" fill="var(--ink-2)" text-anchor="middle">90°</text>
+          <text x="85" y="52" font-size="11" fill="var(--ink-2)" text-anchor="middle">120°</text>
+          <text x="37" y="100" font-size="11" fill="var(--ink-2)" text-anchor="middle">150°</text>
+          <text x="20" y="192" font-size="11" fill="var(--ink-2)" text-anchor="middle">180°</text>
+          <line x1="150" y1="170" x2="215" y2="57.4" stroke="var(--m-color)" stroke-width="2.5" stroke-dasharray="5,4"/>
+          <text x="150" y="212" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">titik pusat</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Bentuk protractor: setengah lingkaran, angka 0°-180°, titik pusat di tengah garis dasar. Garis putus-putus jingga: contoh sudut yang sedang diukur (60°).</p>
+
+      <p>Ada TIGA bagian penting dari protractor yang harus kamu kenali:</p>
+
+      <ol class="langkah">
+        <li><strong>Garis dasar</strong> — garis lurus di bagian bawah protractor (dari 0° ke 180°).</li>
+        <li><strong>Titik pusat</strong> — titik di tengah garis dasar, biasanya ditandai lubang kecil atau tanda silang.</li>
+        <li><strong>Skala angka</strong> — angka 0° sampai 180° yang melengkung mengikuti tepi busur.</li>
+      </ol>
+
+      <p><strong>Langkah-langkah mengukur sudut dengan protractor:</strong></p>
+
+      <ol class="langkah">
+        <li><strong>Letakkan titik pusat protractor TEPAT di titik sudut</strong> (tempat kedua garis sudut bertemu). Ini langkah paling penting — kalau titik pusatnya geser sedikit saja, hasil ukurmu akan meleset jauh.</li>
+        <li><strong>Sejajarkan garis dasar protractor dengan salah satu sisi sudut</strong> (biasanya sisi yang mengarah ke angka 0°).</li>
+        <li><strong>Lihat di mana sisi sudut yang SATU LAGI melewati skala angka</strong> — angka di titik itu adalah besar sudutnya.</li>
+        <li><strong>Baca angkanya dengan hati-hati</strong> — protractor biasanya punya DUA baris angka (satu dari kiri ke kanan, satu dari kanan ke kiri). Pastikan kamu membaca baris yang dimulai dari 0° di sisi tempat kamu meletakkan garis dasar tadi.</li>
+      </ol>
+
+      <div class="contoh-box">
+        Contoh pada gambar: garis dasar disejajarkan ke arah 0° (kanan), sisi sudut yang satu lagi melewati angka 60° pada skala. Jadi besar sudut itu = <strong>60°</strong>.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan protractor seperti kue setengah lingkaran yang dipotong-potong menjadi 180 iris tipis, masing-masing iris mewakili 1 derajat.</span></p>
+        <p>Untuk mengukur sudut, kamu meletakkan "titik tengah kue" itu TEPAT di titik sudut yang mau diukur (seperti menaruh kue di atas sudut), lalu memutar kue itu sampai salah satu tepi potongan sejajar dengan salah satu garis sudut. Sisi sudut yang satunya akan "menunjuk" ke salah satu iris kue — angka iris itulah besar sudutnya.</p>
+        <p>Kesalahan paling umum: TIDAK menaruh titik pusat protractor TEPAT di titik sudut. Kalau ini meleset, seluruh bacaan angkanya jadi salah, walaupun kamu membaca skalanya dengan benar.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Sebelum menerima hasil ukur dari protractor, cek dulu dengan ESTIMASI VISUAL yang sudah kamu latih di materi sebelumnya: apakah sudut itu terlihat lancip, siku-siku, atau tumpul? Kalau hasil ukurmu 150° tapi sudutnya kelihatan lancip (sempit) secara visual, ada yang salah — mungkin kamu salah membaca baris skala, atau titik pusatnya bergeser. Estimasi visual adalah alat CEK KEWAJARAN, bukan pengganti pengukuran teknis.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Saat mengukur sebuah sudut, kamu membaca angka 120° pada protractor. Apakah ini masuk akal untuk sudut yang TERLIHAT tumpul (melebar)? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ya, MASUK AKAL. Sudut tumpul besarnya lebih dari 90° dan kurang dari 180° — 120° berada tepat di rentang itu, jadi hasil ukur 120° cocok dengan sudut yang terlihat melebar (tumpul).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Rani meletakkan protractor untuk mengukur sebuah sudut, tapi titik pusatnya tidak tepat di titik sudut (agak bergeser). Apa yang mungkin terjadi pada hasil pengukurannya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Hasil pengukuran Rani kemungkinan besar akan MELESET (tidak akurat) dari nilai sebenarnya, karena titik pusat protractor yang tidak tepat menyebabkan garis skala tidak lagi sejajar dengan sudut aslinya. Solusi: ulangi pengukuran dengan memastikan titik pusat protractor benar-benar tepat di titik sudut sebelum membaca skala.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made mengukur sudut yang secara visual terlihat SIKU-SIKU (seperti pojok buku), tapi hasil bacaan protractornya 100°. Apa yang sebaiknya Made lakukan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Made sebaiknya MENGULANGI pengukurannya, karena ada ketidaksesuaian antara estimasi visual (siku-siku, seharusnya sekitar 90°) dan hasil bacaan protractor (100°) — selisihnya cukup jauh untuk sebuah sudut yang terlihat siku-siku. Kemungkinan penyebabnya: titik pusat protractor bergeser, garis dasar tidak sejajar dengan sisi sudut, atau salah membaca baris skala (baris 0-180 yang terbalik).</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ukur besar 3 sudut benda nyata di sekitarmu (sudut meja, sudut buku yang dibuka sebagian, sudut segitiga bangun datar) menggunakan protractor. Catat hasilnya, lalu klasifikasikan jenis masing-masing sudut (lancip, siku-siku, tumpul). Sebelum mencatat hasil akhir, cek dulu dengan estimasi visual — apakah hasil ukurmu masuk akal?
+      </div>
+
+      <p>Selamat! Kamu sudah menyelesaikan SELURUH elemen Pengukuran Kelas 5 — dari keliling-luas, potong-susun menemukan rumus, segi banyak beraturan, durasi waktu, sampai mengukur sudut dengan protractor. Elemen berikutnya adalah Geometri — mengonstruksi dan mengurai bangun ruang lewat manipulasi fisik jaring-jaring kubus dan balok.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

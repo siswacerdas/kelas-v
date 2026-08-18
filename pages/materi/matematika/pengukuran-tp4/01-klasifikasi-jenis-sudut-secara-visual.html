@@ -1,1 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Klasifikasi Jenis Sudut secara Visual · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; gap: 1rem; flex-wrap: wrap; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .jenis-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .jenis-tabel th, .jenis-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .jenis-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📏</span>
+      <div class="ma-cover-eyebrow">Pengukuran · Mengukur Besar Sudut dengan Protractor · Materi 1 dari 2</div>
+      <div class="ma-cover-title">Klasifikasi Jenis Sudut secara Visual</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sebelum belajar mengukur sudut dengan alat, kita latihan dulu MENGENALI jenis-jenis sudut hanya dengan MELIHAT — tanpa alat ukur apa pun. Ini melatih "mata"-mu supaya nanti hasil pengukuran dengan protractor bisa kamu cek kewajaran hasilnya.</p>
+
+      <p><strong>Sudut siku-siku</strong> adalah patokan PALING penting untuk membandingkan sudut lain — besarnya PERSIS 90°, seperti sudut pojok buku atau pojok meja:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 300 200" width="240">
+          <line x1="140" y1="160" x2="260" y2="160" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="140" y1="160" x2="140" y2="40" stroke="var(--ink)" stroke-width="3"/>
+          <rect x="140" y="140" width="20" height="20" fill="none" stroke="var(--m-color)" stroke-width="2"/>
+          <text x="185" y="130" font-size="14" font-weight="700" fill="var(--m-color)" text-anchor="middle">90°</text>
+          <text x="200" y="195" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">Siku-siku</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Sudut siku-siku: TEPAT 90°, ditandai dengan kotak kecil di sudutnya (bukan lengkungan).</p>
+
+      <p><strong>Sudut lancip</strong> adalah sudut yang LEBIH KECIL dari sudut siku-siku (kurang dari 90°) — tampak "runcing" atau "sempit":</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 300 200" width="240">
+          <line x1="140" y1="160" x2="260" y2="160" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="140" y1="160" x2="232" y2="83" stroke="var(--ink)" stroke-width="3"/>
+          <path d="M 176,160 A 36 36 0 0 0 167.6,136.9" fill="none" stroke="var(--m-color)" stroke-width="2.5"/>
+          <text x="210" y="130" font-size="14" font-weight="700" fill="var(--m-color)" text-anchor="middle">40°</text>
+          <text x="200" y="195" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">Lancip (kurang dari 90°)</text>
+        </svg>
+      </div>
+
+      <p><strong>Sudut tumpul</strong> adalah sudut yang LEBIH BESAR dari sudut siku-siku (lebih dari 90°, tapi kurang dari 180°) — tampak "melebar":</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 300 200" width="240">
+          <line x1="140" y1="160" x2="260" y2="160" stroke="var(--ink)" stroke-width="3"/>
+          <line x1="140" y1="160" x2="63" y2="68" stroke="var(--ink)" stroke-width="3"/>
+          <path d="M 176,160 A 36 36 0 0 0 116.9,132.4" fill="none" stroke="var(--m-color)" stroke-width="2.5"/>
+          <text x="150" y="120" font-size="14" font-weight="700" fill="var(--m-color)" text-anchor="middle">130°</text>
+          <text x="180" y="195" font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">Tumpul (lebih dari 90°)</text>
+        </svg>
+      </div>
+
+      <table class="jenis-tabel">
+        <tr><th>Jenis Sudut</th><th>Besarnya</th><th>Patokan Visual</th></tr>
+        <tr><td>Lancip</td><td>Kurang dari 90°</td><td>Lebih "runcing" dari pojok buku</td></tr>
+        <tr><td>Siku-siku</td><td>Tepat 90°</td><td>Sama seperti pojok buku/meja</td></tr>
+        <tr><td>Tumpul</td><td>Lebih dari 90° (kurang dari 180°)</td><td>Lebih "melebar" dari pojok buku</td></tr>
+      </table>
+
+      <div class="contoh-box">
+        <strong>Cara estimasi cepat:</strong> bandingkan sudut yang kamu lihat dengan pojok buku (siku-siku) di tanganmu. Kalau lebih sempit → lancip. Kalau lebih lebar → tumpul. Kalau pas → siku-siku.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan sebuah pintu yang dibuka dengan sudut berbeda-beda dari kusennya.</span></p>
+        <p>Kalau pintu dibuka SEDIKIT (baru terbuka sedikit celah), sudut antara pintu dan dinding itu KECIL — seperti sudut lancip. Kalau pintu dibuka SAMPAI TEGAK LURUS dengan dinding (membentuk seperti huruf L), itu sudut siku-siku. Kalau pintu dibuka LEBIH LEBAR lagi (hampir menempel ke dinding sebelahnya), sudutnya jadi BESAR — seperti sudut tumpul.</p>
+        <p>Semakin lebar pintu dibuka, semakin besar sudutnya — inilah cara membayangkan hubungan antara "seberapa terbuka" sesuatu dengan besar sudutnya.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Sudut siku-siku itu istimewa karena jadi PATOKAN pembanding untuk dua jenis sudut lainnya. Latih matamu mengenali sudut siku-siku dengan tepat dulu (bandingkan dengan pojok buku), baru gunakan itu sebagai pembanding untuk menentukan lancip atau tumpul.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah sudut terlihat jauh lebih sempit dibanding pojok buku. Jenis sudut apakah itu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena lebih sempit (lebih kecil) dari sudut siku-siku (90°), sudut itu adalah <strong>sudut lancip</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah pintu dibuka sampai hampir menempel ke dinding di sebelahnya (terbuka sangat lebar, tapi belum lurus 180°). Jenis sudut apa yang terbentuk antara pintu dan dinding tempat engselnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena terbuka sangat lebar (lebih dari 90° tapi belum 180°), sudut itu adalah <strong>sudut tumpul</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made bilang "sudut yang lebih besar SELALU sudut tumpul". Apakah pernyataan ini benar? Berikan contoh yang membantah jika salah!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pernyataan Made TIDAK selalu benar. "Lebih besar" itu relatif — dua sudut lancip bisa dibandingkan (satu lancip 30°, satu lancip 60°; 60° "lebih besar" dari 30°, tapi keduanya TETAP sudut lancip karena masih di bawah 90°). Yang menentukan jenis sudut bukan "mana yang lebih besar dibanding sudut lain", melainkan APAKAH besarnya di bawah 90° (lancip), tepat 90° (siku-siku), atau di atas 90° (tumpul).</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Cari 6 sudut berbeda di sekitarmu (sudut buku, sudut meja, sudut jam dinding saat menunjukkan waktu tertentu, sudut potongan kue, dll). Klasifikasikan masing-masing sebagai lancip, siku-siku, atau tumpul HANYA dengan melihat (tanpa alat ukur), gunakan pojok buku sebagai pembanding.
+      </div>
+
+      <p>Materi berikutnya (Pertemuan Inti) akan mengajakmu mengukur besar sudut secara TEKNIS dan TEPAT memakai alat ukur sudut bernama protractor — supaya kamu tidak cuma bisa menebak jenisnya, tapi juga tahu angka pastinya.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
