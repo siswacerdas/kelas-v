@@ -1,1 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Sejarah dan Budaya · IPAS Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b; --gold:#b8860b; --bg:#f7f1e3;
+    --ipas:#2b6ca3; --ipas-light:#eaf3fb; --ipas-dark:#1d4d75;
+    --ink:#2b2b26; --ok:#2e7d4f; --bad:#b3432b; --card:#ffffff; --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6; padding-bottom:80px;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
+  nav.topnav{background:var(--nav); color:#fff; padding:.8em 1.2em; display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;}
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+  header.modul-head{max-width:800px; margin:1.5em auto 0; padding:0 1.2em;}
+  .modul-eyebrow{display:inline-block; background:var(--ipas-light); color:var(--ipas-dark); font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase; padding:.3em .8em; border-radius:999px; margin-bottom:.6em;}
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+  .stepper-wrap{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); padding:.6em 1.2em;}
+  .stepper{max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto; padding-bottom:.2em;}
+  .step-dot{flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%; background:#fff; border:2px solid var(--line); color:#8a8471; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;}
+  .step-dot.active{background:var(--ipas); border-color:var(--ipas); color:#fff;}
+  .step-dot.done{background:var(--ipas-light); border-color:var(--ipas); color:var(--ipas-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);}
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%; background:var(--ipas); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:700;}
+  .badge-inti{background:var(--gold);}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+  .callout{background:var(--ipas-light); border-left:4px solid var(--ipas); padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;}
+  .callout.warn{background:#fbeee7; border-left-color:var(--bad);}
+  .callout.sync{background:#f3ecf9; border-left-color:#7a5aa8;}
+  textarea.ans, input.ans-input{width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line); border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);}
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em; border-radius:999px; border:none; cursor:pointer;}
+  .btn-primary{background:var(--ipas); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--ipas-dark); border:1.5px solid var(--ipas);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+  details.guru-note{background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px; padding:.8em 1em; margin:1.4em 0; font-size:.92em;}
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+  .glossary dt{font-weight:700; color:var(--ipas-dark); margin-top:.6em;}
+  .glossary dd{margin:.15em 0 0;}
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>IPAS · Sejarah dan Budaya</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">IPAS · Kelompok B · Rujukan Lintas Mapel</span>
+  <h1>Sejarah dan Keragaman Budaya Sekitar</h1>
+  <p class="sub">Modul Ajar Mandiri · Menghubungkan letak geografis dan kegiatan ekonomi yang sudah kamu pelajari di IPAS dengan keragaman asal-usul keluarga di kelasmu.</p>
+</header>
+
+<div class="stepper-wrap"><div class="stepper" id="stepper"></div></div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Menyatukan Semua yang Sudah Kita Pelajari 🧩</h2>
+      <p>Modul ini berbeda dari modul-modul lain — bukan materi baru, tapi <strong>menyambungkan</strong> yang sudah kamu pelajari: Peta Asal Keluarga Kelas Kami (dari Pendidikan Pancasila), Letak Geografis, dan Kegiatan Ekonomi Masyarakat (dari IPAS).</p>
+      <div class="callout sync">
+        <strong>Sebelum lanjut, pastikan kamu sudah:</strong><br>
+        ✅ Mengerjakan proyek "Peta Asal Keluarga Kelas Kami" di Pendidikan Pancasila<br>
+        ✅ Menyelesaikan modul Letak Geografis Indonesia<br>
+        ✅ Menyelesaikan modul Kegiatan Ekonomi Masyarakat<br>
+        Kalau salah satu belum, sampaikan ke gurumu — modul ini akan lebih bermakna kalau semua bekal itu sudah kamu punya.
+      </div>
+      <p>Modul ini singkat: 1 Tangga dan 1 Pertemuan Inti.</p>
+    </div>
+    <div class="nav-buttons"><span></span><button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button></div>
+  </div>
+
+  <!-- PAGE 1 — TANGGA 1 -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><div><h2>Mengingat Kembali Peta Asal Keluarga</h2><span class="tag">Tangga 1 · Mengingat Kembali</span></div></div>
+      <p>Coba ingat kembali proyek "Peta Asal Keluarga Kelas Kami" yang sudah kamu dan teman-temanmu kerjakan.</p>
+      <label class="field-label">Apa yang paling menarik atau mengejutkan bagimu dari asal-usul keluarga teman-teman sekelasmu?</label>
+      <textarea class="ans" data-key="tangga1-menarik" placeholder="Yang paling menarik bagiku adalah..."></textarea>
+      <label class="field-label">Dari daerah mana saja asal keluarga di kelasmu (yang kamu ingat)? Sebutkan minimal 3.</label>
+      <textarea class="ans" data-key="tangga1-daerah" placeholder="1) ... &#10;2) ... &#10;3) ..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(2)">Lanjut ke Pertemuan Inti →</button></div>
+  </div>
+
+  <!-- PAGE 2 — INTI -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><div><h2>Pertemuan Inti — Menghubungkan Semuanya</h2><span class="tag">Menumbuhkan Rasa Ingin Tahu <span class="kko-tag">KKO: Afektif-Disposisional</span></span></div></div>
+      <p>Sekarang coba hubungkan tiga hal: <strong>asal daerah keluarga</strong>, <strong>letak geografis</strong> daerah itu, dan <strong>kegiatan ekonomi</strong> yang mungkin ada di sana.</p>
+      <div class="callout">Tidak ada jawaban "benar" tunggal di sini — yang penting kamu berani bertanya dan berpikir "kenapa" dan "bagaimana".</div>
+      <label class="field-label">Pilih satu daerah asal keluarga (milikmu atau temanmu). Menurutmu, bagaimana letak geografis daerah itu mungkin memengaruhi jenis usaha/kegiatan ekonomi yang ada di sana?</label>
+      <textarea class="ans" data-key="inti-hubungan" placeholder="Daerah yang kupilih: ... Menurutku, letak geografisnya (misalnya dekat laut/gunung/kota) memengaruhi kegiatan ekonominya karena..."></textarea>
+      <label class="field-label">Tuliskan minimal 2 pertanyaan yang membuatmu penasaran tentang sejarah atau budaya daerah asal keluargamu atau temanmu:</label>
+      <textarea class="ans" data-key="inti-pertanyaan" placeholder="1) ... &#10;2) ..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(3)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 3 — GLOSARIUM + PENUTUP -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <h2>Glosarium</h2>
+      <dl class="glossary">
+        <dt>Sintesis</dt><dd>Menggabungkan beberapa hal yang sudah dipelajari menjadi satu pemahaman baru yang lebih utuh.</dd>
+        <dt>Kearifan lokal</dt><dd>Kebiasaan, pengetahuan, atau nilai yang berkembang di suatu daerah dan diwariskan turun-temurun.</dd>
+        <dt>Kebhinekaan</dt><dd>Keberagaman (suku, budaya, asal daerah) yang ada dan hidup berdampingan dalam satu masyarakat.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Selesai! 🎉</h2>
+      <p>Kamu baru saja menghubungkan tiga pelajaran berbeda menjadi satu pemahaman yang utuh — inilah cara kerja IPAS yang sesungguhnya: memahami dunia sebagai satu kesatuan, bukan kotak-kotak terpisah.</p>
+      <div class="save-row"><span id="saved-label">Belum ada progres tersimpan.</span><button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button></div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> IPAS Kelompok B, "Menumbuhkan rasa ingin tahu terhadap sejarah perjuangan dan keragaman budaya di lingkungan sekitar tempat tinggal, dengan merujuk dan memperluas hasil pembelajaran yang telah dibangun pada Pendidikan Pancasila, tanpa mengajarkan ulang dari nol" (Dokumen 2 TP Kelas 5 IPAS, Bagian F) — 4 JP, 2 pertemuan (1 tangga + 1 inti).</li>
+        <li><strong>⚠ SINKRONISASI WAJIB — PALING AKHIR dalam urutan IPAS:</strong> modul ini mengasumsikan proyek "Peta Asal Keluarga Kelas Kami" dan pemantik sejarah lokal SUDAH dilaksanakan di Pendidikan Pancasila (BTI TP1), SERTA modul Letak Geografis dan Ekonomi Masyarakat IPAS sudah dikerjakan lebih dulu (keduanya menjadi bahan Pertemuan Inti). Jika urutan pelaksanaan riil di kelas berbeda, sesuaikan urutan penugasan modul supaya tidak merujuk pengalaman yang belum dialami siswa.</li>
+        <li><strong>KKO bersifat afektif-disposisional</strong> (menumbuhkan rasa ingin tahu), bukan kognitif-faktual — TIDAK ada jawaban "benar" tunggal yang dituntut, sesuai catatan sumber.</li>
+        <li><strong>Batasan konteks Depok — SANGAT PENTING:</strong> sejarah lokal sensitif (mis. peristiwa Gedoran Depok 1945) HANYA digunakan sebagai pemantik rasa ingin tahu, TIDAK dibahas tuntas atau mendetail di kelas, sesuai catatan Pendidikan Pancasila yang berlaku lintas mapel. Modul ini sendiri tidak menyinggung peristiwa spesifik tersebut — biarkan tetap begitu kecuali guru sengaja membahasnya secara terpisah dengan kehati-hatian.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi <code>pages/materi/ipas/budaya-tp1/</code> belum bisa saya baca saat modul ini dibuat; isi disusun dari Scaffolding_IPAS_Kelas5_SejarahBudaya.docx dan Dokumen2_TP_Kelas5_IPAS.docx. Mohon dicek ulang terhadap materi resmi begitu tersedia.</li>
+        <li><strong>Asesmen sumatif sesungguhnya:</strong> jurnal singkat berisi pertanyaan rasa ingin tahu (lihat Scaffolding Blok 3) — yang dinilai adalah TUMBUHNYA pertanyaan baru, bukan jawaban yang benar. Sesuai catatan sumber, TP ini TIDAK perlu dinilai sebagai nilai baru terpisah di rapor — dapat digabungkan sebagai penguatan penilaian Pendidikan Pancasila.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:ipas-budaya-tp1</code> — unik, tidak bentrok modul lain.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:ipas-budaya-tp1";
+const TOTAL_PAGES = 4; // 0..3
+const INTI_PAGE = 2;
+
+let state = { page: 0, answers: {}, actions: [] };
+let isReplaying = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => { state.answers[key] = el.value; saveState(); });
+  });
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","1","⭐","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === INTI_PAGE ? " inti" : "");
+    if(i === state.page) dot.classList.add("active");
+    else if(i < state.page) dot.classList.add("done");
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {}, actions: [] };
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => el.value = "");
+  goToPage(0);
+}
+
+function initModul(){
+  loadState();
+  wireTextPersistence();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
