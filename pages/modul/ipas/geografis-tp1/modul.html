@@ -1,1 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Letak Geografis Indonesia · IPAS Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b; --gold:#b8860b; --bg:#f7f1e3;
+    --ipas:#2b6ca3; --ipas-light:#eaf3fb; --ipas-dark:#1d4d75;
+    --ink:#2b2b26; --ok:#2e7d4f; --bad:#b3432b; --card:#ffffff; --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6; padding-bottom:80px;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
+  nav.topnav{background:var(--nav); color:#fff; padding:.8em 1.2em; display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;}
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+  header.modul-head{max-width:800px; margin:1.5em auto 0; padding:0 1.2em;}
+  .modul-eyebrow{display:inline-block; background:var(--ipas-light); color:var(--ipas-dark); font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase; padding:.3em .8em; border-radius:999px; margin-bottom:.6em;}
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+  .stepper-wrap{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); padding:.6em 1.2em;}
+  .stepper{max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto; padding-bottom:.2em;}
+  .step-dot{flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%; background:#fff; border:2px solid var(--line); color:#8a8471; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;}
+  .step-dot.active{background:var(--ipas); border-color:var(--ipas); color:#fff;}
+  .step-dot.done{background:var(--ipas-light); border-color:var(--ipas); color:var(--ipas-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);}
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%; background:var(--ipas); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:700;}
+  .badge-inti{background:var(--gold);}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+  .callout{background:var(--ipas-light); border-left:4px solid var(--ipas); padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;}
+  .callout.warn{background:#fbeee7; border-left-color:var(--bad);}
+  .callout.sync{background:#f3ecf9; border-left-color:#7a5aa8;}
+  textarea.ans, input.ans-input{width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line); border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);}
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+  .quiz-item{border-top:1px dashed var(--line); padding-top:1em; margin-top:1em;}
+  .quiz-item:first-child{border-top:none; padding-top:0; margin-top:0;}
+  .quiz-q{font-weight:600; margin-bottom:.6em;}
+  .choice-btn{display:block; width:100%; text-align:left; padding:.6em .9em; margin-bottom:.4em; border:1.5px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; font-family:inherit; font-size:.96em; color:var(--ink); transition:.12s;}
+  .choice-btn:hover{border-color:var(--ipas);}
+  .choice-btn.correct{background:#e6f4ea; border-color:var(--ok); color:#1e5c37; font-weight:600;}
+  .choice-btn.wrong{background:#fbe9e4; border-color:var(--bad); color:#8a2f1a;}
+  .choice-btn[disabled]{cursor:default;}
+  .quiz-feedback{font-size:.9em; margin-top:.4em; padding:.5em .7em; border-radius:6px;}
+  .quiz-feedback.ok{background:#e6f4ea; color:#1e5c37;}
+  .quiz-feedback.bad{background:#fbe9e4; color:#8a2f1a;}
+  .grid-map{display:grid; grid-template-columns:repeat(6, 1fr); gap:2px; background:var(--line); border:2px solid var(--ipas-dark); max-width:420px; margin:.8em auto;}
+  .grid-cell{background:#eaf3fb; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:.7em; color:#8a8471; position:relative;}
+  .grid-cell.pulau{background:#c9e3b8; font-weight:700; color:#2e5c2e;}
+  .grid-label{text-align:center; font-size:.72em; font-weight:700; color:var(--ipas-dark);}
+  .reveal-btn{background:none; border:1.5px solid var(--ipas); color:var(--ipas-dark); border-radius:999px; padding:.4em 1em; font-weight:600; font-size:.85em; cursor:pointer;}
+  .reveal-box{display:none; margin-top:.6em; background:var(--ipas-light); border-radius:8px; padding:.7em .9em; font-size:.92em;}
+  .reveal-box.show{display:block;}
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em; border-radius:999px; border:none; cursor:pointer;}
+  .btn-primary{background:var(--ipas); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--ipas-dark); border:1.5px solid var(--ipas);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+  details.guru-note{background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px; padding:.8em 1em; margin:1.4em 0; font-size:.92em;}
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+  .glossary dt{font-weight:700; color:var(--ipas-dark); margin-top:.6em;}
+  .glossary dd{margin:.15em 0 0;}
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>IPAS · Letak Geografis Indonesia</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">IPAS · Kelompok B (Sosial-Informasional)</span>
+  <h1>Letak dan Kondisi Geografis Indonesia</h1>
+  <p class="sub">Modul Ajar Mandiri · Mengamati posisi Indonesia di antara dua benua dan dua samudra, lalu menentukan lokasi pulau memakai sistem berpetak (koordinat) dari Matematika.</p>
+</header>
+
+<div class="stepper-wrap"><div class="stepper" id="stepper"></div></div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Di Mana Sebenarnya Letak Indonesia? 🗺️</h2>
+      <p>Indonesia punya posisi yang sangat istimewa di peta dunia — diapit dua benua dan dua samudra! Modul ini mengajakmu menandai posisi itu, lalu memakai kemampuan membaca sistem berpetak (koordinat baris-kolom) yang sudah kamu pelajari di Matematika untuk menemukan pulau-pulau besar Indonesia.</p>
+      <div class="callout sync">
+        <strong>Sebelum lanjut:</strong> pastikan kamu sudah belajar cara membaca sistem berpetak/koordinat (baris-kolom) di pelajaran Matematika. Kalau belum, sampaikan ke gurumu dulu ya!
+      </div>
+    </div>
+    <div class="nav-buttons"><span></span><button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button></div>
+  </div>
+
+  <!-- PAGE 1 — ASESMEN AWAL -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">?</span><div><h2>Sebelum Mulai</h2><span class="tag">Asesmen Awal</span></div></div>
+      <div id="quiz-awal"></div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(2)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 2 — TANGGA 1 -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><div><h2>Menandai Posisi Indonesia</h2><span class="tag">Tangga 1 · Mengamati</span></div></div>
+      <p>Indonesia terletak di ANTARA:</p>
+      <div class="callout">🌏 Benua Asia (utara) dan Benua Australia (selatan)<br>🌊 Samudra Hindia (barat/selatan) dan Samudra Pasifik (timur/utara)</div>
+      <p>Perhatikan peta Indonesia dan peta dunia yang ditampilkan gurumu di kelas (cetak besar atau lewat proyektor).</p>
+      <div id="quiz-tangga1"></div>
+      <label class="field-label">Coba jelaskan dengan kata-katamu sendiri: mengapa Indonesia disebut "negara kepulauan"?</label>
+      <textarea class="ans" data-key="tangga1-kepulauan" placeholder="Indonesia disebut negara kepulauan karena..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(3)">Lanjut ke Pertemuan Inti →</button></div>
+  </div>
+
+  <!-- PAGE 3 — INTI -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><div><h2>Pertemuan Inti — Membaca Koordinat Peta</h2><span class="tag">Menjelaskan <span class="kko-tag">KKO: Menjelaskan, terintegrasi Matematika</span></span></div></div>
+      <p>Sekarang gabungkan kemampuanmu membaca sistem berpetak (Matematika) dengan peta Indonesia. Contoh peta grid sederhana di bawah ini menunjukkan letak satu pulau besar:</p>
+      <div class="grid-map" id="grid-map"></div>
+      <div class="grid-label" id="grid-caption">Kolom A–F (kiri ke kanan), Baris 1–4 (atas ke bawah)</div>
+      <div id="quiz-inti"></div>
+      <label class="field-label">Pada contoh grid di atas, di kolom dan baris berapa pulau itu berada? Tuliskan koordinatnya (contoh: C2):</label>
+      <input class="ans-input" data-key="inti-koordinat" type="text" placeholder="Contoh: C2">
+      <label class="field-label">Sekarang jelaskan dengan kata-katamu sendiri: bagaimana cara kamu menentukan lokasi sebuah pulau besar Indonesia (mis. Kalimantan atau Sumatra) memakai peta berkoordinat?</label>
+      <textarea class="ans" data-key="inti-jelaskan" placeholder="Caraku menentukan lokasi pulau adalah..."></textarea>
+      <button class="reveal-btn" onclick="toggleReveal('reveal-inti')">Lihat contoh penjelasan</button>
+      <div class="reveal-box" id="reveal-inti">
+        Contoh: "Aku melihat pulau itu ada di kolom C dan baris 2, jadi koordinatnya C2. Aku menemukan itu dengan menelusuri garis kolom C ke bawah dan garis baris 2 ke samping, sampai bertemu di kotak yang sama."
+      </div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(2)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(4)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 4 — GLOSARIUM + PENUTUP -->
+  <div class="page" data-page="4">
+    <div class="card">
+      <h2>Glosarium</h2>
+      <dl class="glossary">
+        <dt>Benua</dt><dd>Daratan sangat luas di permukaan bumi (mis. Asia, Australia).</dd>
+        <dt>Samudra</dt><dd>Lautan sangat luas yang memisahkan benua-benua (mis. Samudra Hindia, Samudra Pasifik).</dd>
+        <dt>Negara kepulauan</dt><dd>Negara yang wilayahnya terdiri dari banyak pulau, dikelilingi laut.</dd>
+        <dt>Sistem berpetak (koordinat)</dt><dd>Cara menunjukkan lokasi di peta memakai kombinasi kolom dan baris (mis. C2).</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Selesai! 🎉</h2>
+      <p>Kamu sekarang paham posisi istimewa Indonesia di peta dunia, dan bisa memakai koordinat untuk menemukan lokasi di peta. Kemampuan ini akan kita pakai lagi di modul Sejarah &amp; Budaya nanti!</p>
+      <div class="save-row"><span id="saved-label">Belum ada progres tersimpan.</span><button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button></div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> IPAS Kelompok B, "Menjelaskan letak dan kondisi geografis Indonesia (posisi antara dua benua dan dua samudra, bentang kepulauan) menggunakan peta konvensional/digital, terintegrasi dengan kompetensi membaca sistem berpetak pada Matematika" (Dokumen 2 TP Kelas 5 IPAS, Bagian E) — 6 JP, 2 pertemuan (1 tangga + 1 inti).</li>
+        <li><strong>⚠ SINKRONISASI WAJIB — Matematika Geometri TP3:</strong> modul ini mengasumsikan kompetensi "membaca sistem berpetak/koordinat" dari elemen Geometri Matematika Kelas 5 SUDAH dikuasai siswa. Berdasarkan Peta_Aktivitas_IPAS_Kelas5.docx, elemen Geometri Matematika <strong>belum melalui proses scaffolding formal</strong> saat dokumen sumber disusun. <strong>Mohon verifikasi TP3 Geometri Matematika sudah diajarkan sebelum siswa mengerjakan Pertemuan Inti modul ini</strong> — kalau belum, sisipkan pengulangan singkat dasar koordinat baris-kolom (bukan pengajaran dari nol).</li>
+        <li><strong>Contoh grid pada Pertemuan Inti bersifat ILUSTRATIF</strong> (bukan peta Indonesia asli dengan koordinat geografis sesungguhnya) — dipakai untuk melatih pola pikir membaca koordinat sebelum diterapkan ke peta Indonesia sungguhan bersama guru di kelas.</li>
+        <li><strong>Alternatif yang dipakai:</strong> materi ditulis netral terhadap Alternatif 1 (Peta Fisik Cetak) / Alternatif 2 (Peta Digital Interaktif) di Scaffolding_IPAS_Kelas5_LetakGeografis.docx.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi <code>pages/materi/ipas/geografis-tp1/</code> belum bisa saya baca saat modul ini dibuat; isi disusun dari Scaffolding_IPAS_Kelas5_LetakGeografis.docx dan Dokumen2_TP_Kelas5_IPAS.docx. Mohon dicek ulang terhadap materi resmi begitu tersedia, termasuk istilah koordinat supaya konsisten dengan yang diajarkan di Matematika.</li>
+        <li><strong>Asesmen sumatif sesungguhnya:</strong> menandai posisi Indonesia pada peta asli dan menentukan lokasi pulau dengan sistem berpetak sungguhan (lihat Scaffolding Blok 3) — bukan grid ilustratif di modul ini.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:ipas-geografis-tp1</code> — unik, tidak bentrok modul lain.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:ipas-geografis-tp1";
+const TOTAL_PAGES = 5; // 0..4
+const INTI_PAGE = 3;
+
+let state = { page: 0, answers: {}, checks: {}, actions: [] };
+let isReplaying = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+function logAction(action){
+  if(isReplaying) return;
+  state.actions.push(action);
+  saveState();
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => { state.answers[key] = el.value; saveState(); });
+  });
+}
+
+function toggleReveal(id){
+  const box = document.getElementById(id);
+  if(box) box.classList.toggle("show");
+}
+
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  if(!group) return;
+  const buttons = group.querySelectorAll(".choice-btn");
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if(i === correctIdx) b.classList.add("correct");
+    if(i === chosenIdx && chosenIdx !== correctIdx) b.classList.add("wrong");
+  });
+  const fb = group.querySelector(".quiz-feedback");
+  if(fb){
+    fb.classList.remove("hidden");
+    if(chosenIdx === correctIdx){
+      fb.textContent = "Betul! " + (group.dataset.explain || "");
+      fb.classList.add("ok"); fb.classList.remove("bad");
+    }else{
+      fb.textContent = "Belum tepat. " + (group.dataset.explain || "");
+      fb.classList.add("bad"); fb.classList.remove("ok");
+    }
+  }
+  logAction({type:"mcq", group: groupId, chosen: chosenIdx});
+}
+
+function renderQuiz(containerId, items){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = items.map((item, qi) => {
+    const groupId = containerId + "-q" + qi;
+    if(item.type === "mcq"){
+      const opts = item.options.map((opt, oi) =>
+        `<button type="button" class="choice-btn" onclick="checkMCQ('${groupId}', this, ${oi}, ${item.correct})">${opt}</button>`
+      ).join("");
+      return `<div class="quiz-item">
+        <div class="quiz-q">${qi+1}. ${item.text}</div>
+        <div id="${groupId}" data-explain="${(item.explain||"").replace(/"/g,'&quot;')}">
+          ${opts}
+          <div class="quiz-feedback hidden"></div>
+        </div>
+      </div>`;
+    }
+    return "";
+  }).join("");
+  wireTextPersistence();
+}
+
+function renderGridMap(){
+  const grid = document.getElementById("grid-map");
+  if(!grid) return;
+  const cols = ["A","B","C","D","E","F"];
+  const rows = 4;
+  const pulauCol = 2; // index kolom C
+  const pulauRow = 1; // index baris 2
+  let html = "";
+  for(let r=0; r<rows; r++){
+    for(let c=0; c<cols.length; c++){
+      const isPulau = (r === pulauRow && c === pulauCol);
+      html += "<div class='grid-cell" + (isPulau ? " pulau" : "") + "'>" + (isPulau ? "🏝️" : "") + "</div>";
+    }
+  }
+  grid.innerHTML = html;
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","?","1","⭐","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === INTI_PAGE ? " inti" : "");
+    if(i === state.page) dot.classList.add("active");
+    else if(i < state.page) dot.classList.add("done");
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {}, checks: {}, actions: [] };
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => el.value = "");
+  document.querySelectorAll(".choice-btn").forEach(b => { b.disabled = false; b.classList.remove("correct","wrong"); });
+  document.querySelectorAll(".quiz-feedback").forEach(f => f.classList.add("hidden"));
+  document.querySelectorAll(".reveal-box").forEach(b => b.classList.remove("show"));
+  goToPage(0);
+}
+
+function replayActions(){
+  isReplaying = true;
+  state.actions.forEach(a => {
+    if(a.type === "mcq"){
+      const group = document.getElementById(a.group);
+      if(group){
+        const btn = group.querySelectorAll(".choice-btn")[a.chosen];
+        if(btn) btn.click();
+      }
+    }
+  });
+  isReplaying = false;
+}
+
+const QUIZ_AWAL = [
+  {type:"mcq", text:"Menurutmu, benua apa saja yang mengapit Indonesia?", options:["Asia dan Afrika","Asia dan Australia","Amerika dan Eropa"], correct:1, explain:"Indonesia terletak di antara Benua Asia (utara) dan Benua Australia (selatan)."}
+];
+const QUIZ_TANGGA1 = [
+  {type:"mcq", text:"Manakah dua samudra yang mengapit Indonesia?", options:["Samudra Hindia dan Pasifik","Samudra Atlantik dan Arktik","Samudra Pasifik dan Atlantik"], correct:0, explain:"Indonesia terletak di antara Samudra Hindia dan Samudra Pasifik."}
+];
+const QUIZ_INTI = [
+  {type:"mcq", text:"Jika sebuah pulau berada di kolom D dan baris 3, bagaimana cara menuliskan koordinatnya?", options:["3D","D3","DD3"], correct:1, explain:"Koordinat biasanya ditulis kolom dulu lalu baris, sehingga menjadi D3."}
+];
+
+function initModul(){
+  loadState();
+  renderQuiz("quiz-awal", QUIZ_AWAL);
+  renderQuiz("quiz-tangga1", QUIZ_TANGGA1);
+  renderQuiz("quiz-inti", QUIZ_INTI);
+  renderGridMap();
+  wireTextPersistence();
+  replayActions();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
