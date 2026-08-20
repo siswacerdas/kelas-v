@@ -2047,5 +2047,35 @@ window.MATERI_INDEX = [
     ringkasan: "Mengurutkan, membandingkan, dan memilih bentuk penyajian data yang paling sesuai untuk konteks soal kontekstual tertentu.",
     status: "selesai",
     file: "matematika/data-peluang-tp1/04-memilih-bentuk-penyajian-data-yang-paling-sesuai.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⚖️",
+    elemen: "Data & Peluang",
+    tp: "data-peluang-tp2",
+    tema: "Data & Peluang · Mean, Median, dan Modus (Pengayaan Informal)",
+    urutan: 1,
+    judul: "Menemukan Konsep Rata-Rata lewat Meratakan",
+    ringkasan: "Menemukan konsep rata-rata secara intuitif lewat aktivitas fisik 'meratakan' jumlah benda di beberapa wadah hingga sama banyak, sebelum diperkenalkan rumus.",
+    status: "selesai",
+    file: "matematika/data-peluang-tp2/01-menemukan-konsep-rata-rata-lewat-meratakan.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⚖️",
+    elemen: "Data & Peluang",
+    tp: "data-peluang-tp2",
+    tema: "Data & Peluang · Mean, Median, dan Modus (Pengayaan Informal)",
+    urutan: 2,
+    judul: "Mean, Median, Modus, dan Kerentanan Rata-Rata",
+    ringkasan: "Menentukan mean, median, dan modus dari data sederhana, serta mendiskusikan secara reflektif mengapa rata-rata bisa menipu jika ada data ekstrem.",
+    status: "selesai",
+    file: "matematika/data-peluang-tp2/02-mean-median-modus-dan-kerentanan-rata-rata.html"
   }
 ];
