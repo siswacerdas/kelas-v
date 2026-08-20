@@ -1,1 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menemukan Konsep Rata-Rata lewat Meratakan · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .wadah-row { display: flex; justify-content: center; align-items: flex-end; gap: 1.1rem; margin: 1rem 0 0.4rem; }
+  .wadah { display: flex; flex-direction: column; align-items: center; }
+  .wadah-isi { width: 46px; border: 3px solid var(--ink); border-top: none; border-radius: 0 0 8px 8px; display: flex; flex-direction: column-reverse; background: #fff; }
+  .wadah-isi .kelereng { height: 14px; background: var(--m-color); border-top: 1px solid #fff; }
+  .wadah-label { margin-top: 5px; font-size: calc(var(--content-fs) - 4px); font-weight: 700; color: var(--ink-2); }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⚖️</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Mean, Median, dan Modus (Pengayaan) · Materi 1 dari 2</div>
+      <div class="ma-cover-title">Menemukan Konsep Rata-Rata lewat Meratakan</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Catatan:</strong> materi ini adalah PENGAYAAN — melampaui tuntutan minimum kurikulum, tapi sangat berguna untuk melatih kemampuanmu membaca dan menilai data secara kritis di kehidupan sehari-hari.</p>
+
+      <p>Ada 4 wadah berisi kelereng dengan jumlah BERBEDA-BEDA: 2, 6, 4, 8. Kalau kelereng-kelereng itu DIPINDAH-PINDAH (tanpa menambah atau membuang satu pun) sampai SEMUA wadah punya jumlah yang SAMA RATA, berapa kelereng yang akan ada di tiap wadah?</p>
+
+      <div class="wadah-row">
+        <div class="wadah">
+          <div class="wadah-isi" style="height:32px;"><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">2</div>
+        </div>
+        <div class="wadah">
+          <div class="wadah-isi" style="height:88px;"><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">6</div>
+        </div>
+        <div class="wadah">
+          <div class="wadah-isi" style="height:60px;"><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">4</div>
+        </div>
+        <div class="wadah">
+          <div class="wadah-isi" style="height:116px;"><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">8</div>
+        </div>
+      </div>
+      <p class="svg-caption">Sebelum diratakan: 2, 6, 4, 8 kelereng.</p>
+
+      <p>Bayangkan kamu memindahkan kelereng dari wadah yang PALING BANYAK (8) ke wadah yang PALING SEDIKIT (2), lalu dari wadah 6 ke wadah 4, sampai semuanya SAMA RATA:</p>
+
+      <div class="wadah-row">
+        <div class="wadah">
+          <div class="wadah-isi" style="height:74px;"><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">5</div>
+        </div>
+        <div class="wadah">
+          <div class="wadah-isi" style="height:74px;"><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">5</div>
+        </div>
+        <div class="wadah">
+          <div class="wadah-isi" style="height:74px;"><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">5</div>
+        </div>
+        <div class="wadah">
+          <div class="wadah-isi" style="height:74px;"><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div><div class="kelereng"></div></div>
+          <div class="wadah-label">5</div>
+        </div>
+      </div>
+      <p class="svg-caption">Setelah diratakan: SEMUA wadah punya 5 kelereng. Total kelereng TETAP SAMA (2+6+4+8=20, dan 5×4=20 juga).</p>
+
+      <p>Angka "5" inilah yang disebut <strong>rata-rata (mean)</strong> — nilai yang akan didapat SETIAP wadah kalau semua kelereng dibagi rata. Ini BUKAN angka yang benar-benar ada di data asli (tidak ada wadah yang awalnya berisi 5) — rata-rata adalah "perkiraan tengah" dari semua data, seolah dibagi rata.</p>
+
+      <p><strong>Cara cepat menghitung rata-rata TANPA harus memindah-mindah kelereng sungguhan:</strong></p>
+
+      <ol class="langkah">
+        <li>Jumlahkan SEMUA data: 2+6+4+8 = 20.</li>
+        <li>Bagi dengan BANYAKNYA data (jumlah wadah): 20 ÷ 4 = 5.</li>
+        <li>Hasilnya adalah rata-rata: <strong>5</strong>.</li>
+      </ol>
+
+      <div class="contoh-box">
+        <strong>Rata-rata (mean) = jumlah semua data ÷ banyak data</strong><br>
+        Ini adalah cara CEPAT untuk mendapatkan hasil yang SAMA dengan "meratakan" secara fisik.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan 4 orang temanmu membawa uang jajan berbeda-beda, lalu kalian sepakat menggabung semua uang itu dan membaginya SAMA RATA ke semua orang.</span></p>
+        <p>Rata-rata itu seperti hasil "patungan yang dibagi rata" — bukan uang milik salah satu orang secara asli, tapi angka BARU yang muncul kalau semua digabung lalu dibagi sama banyak. Itulah kenapa rata-rata sering BUKAN angka yang benar-benar ada di antara data aslimu.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Rata-rata TIDAK HARUS berupa bilangan bulat. Kalau totalnya tidak habis dibagi jumlah data, rata-ratanya bisa berupa pecahan/desimal (misalnya 5,25) — ini tetap sah dan bermakna, meski tidak ada "5,25 kelereng" secara fisik.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Empat wadah berisi 3, 7, 5, 9 kelereng. Berapa rata-ratanya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jumlah: 3+7+5+9=24. Banyak wadah: 4. Rata-rata: 24÷4=<strong>6</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Nilai ulangan Made selama 3 kali: 80, 90, 85. Berapa rata-rata nilai Made?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jumlah: 80+90+85=255. Banyak data: 3. Rata-rata: 255÷3=<strong>85</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani punya data 4, 4, 4, 4 (semua wadah sudah sama sejak awal). Berapa rata-ratanya, dan apa yang istimewa dari kasus ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jumlah: 4+4+4+4=16. Banyak data: 4. Rata-rata: 16÷4=<strong>4</strong>. Yang istimewa: karena semua data SUDAH SAMA sejak awal (tidak perlu "diratakan" sama sekali), rata-ratanya PERSIS SAMA dengan nilai data itu sendiri — tidak ada kelereng yang perlu dipindah-pindah.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil beberapa benda kecil (kelereng, kancing, batu kerikil) dan 4-5 wadah. Bagi benda-benda itu secara TIDAK RATA ke tiap wadah, lalu coba ratakan secara FISIK dengan memindah-mindah. Setelah itu, hitung rata-rata dengan cara cepat (jumlah÷banyak data), dan cek apakah hasilnya sama dengan hasil "meratakan" secara fisik.
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan memperkenalkan dua "kawan" rata-rata: median (nilai tengah) dan modus (nilai paling sering muncul) — serta mendiskusikan kapan rata-rata bisa "menipu".</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mean, Median, Modus, dan Kerentanan Rata-Rata · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .urut-box { display: flex; gap: 0.5rem; align-items: center; justify-content: center; flex-wrap: wrap; margin: 1rem 0; }
+  .urut-box .angka { font-weight: 700; font-family: 'Plus Jakarta Sans', monospace; font-size: calc(var(--content-fs) - 1px); background: var(--paper-2); border: 2px solid var(--ink); border-radius: 8px; padding: 6px 12px; }
+  .urut-box .angka.tengah { border-color: var(--m-color); color: var(--m-color); background: #eaf4f0; }
+  .urut-box .angka.ekstrem { border-color: #c76b3f; color: #c76b3f; background: #fdf0ea; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .refleksi-box { border: 2px solid var(--m-color); border-radius: var(--r-lg); padding: 1rem 1.1rem; margin: 1.2rem 0; background: #fdf9f4; }
+  .refleksi-label { display: block; font-weight: 700; font-size: 13px; color: var(--m-color); margin-bottom: 0.5rem; }
+  .refleksi-box p { margin: 0.5em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.68; }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⚖️</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Mean, Median, dan Modus (Pengayaan) · Materi 2 dari 2 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Mean, Median, Modus, dan Kerentanan Rata-Rata</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah tahu <strong>mean</strong> (rata-rata). Sekarang kenalan dengan dua "kawan"-nya: <strong>median</strong> (nilai tengah) dan <strong>modus</strong> (nilai paling sering muncul). Ketiganya sama-sama cara meringkas SEKUMPULAN data jadi satu angka wakil — tapi dengan cara yang berbeda.</p>
+
+      <p>Data nilai ulangan 7 siswa: 70, 85, 90, 75, 80, 85, 95.</p>
+
+      <p><strong>Median</strong> — urutkan dulu data dari KECIL ke BESAR, lalu ambil angka yang PERSIS DI TENGAH:</p>
+
+      <div class="urut-box">
+        <div class="angka">70</div>
+        <div class="angka">75</div>
+        <div class="angka">80</div>
+        <div class="angka tengah">85</div>
+        <div class="angka">85</div>
+        <div class="angka">90</div>
+        <div class="angka">95</div>
+      </div>
+
+      <p>Ada 7 data (jumlah GANJIL), jadi mediannya adalah angka ke-4 (persis di tengah, dengan 3 data di kirinya dan 3 data di kanannya): <strong>85</strong>.</p>
+
+      <p>Kalau jumlah datanya GENAP, mediannya adalah RATA-RATA dari DUA angka tengah. Contoh: 70, 75, 80, 85, 90, 95 (6 data) — dua angka tengah adalah 80 dan 85, jadi median = (80+85)÷2 = 82,5.</p>
+
+      <p><strong>Modus</strong> — cari angka yang PALING SERING MUNCUL. Dari data di atas (70, 85, 90, 75, 80, 85, 95), angka 85 muncul DUA KALI, sedangkan yang lain hanya muncul sekali. Jadi modusnya adalah <strong>85</strong>.</p>
+
+      <div class="contoh-box">
+        <strong>Mean</strong> = jumlah semua data ÷ banyak data (perhitungan matematis).<br>
+        <strong>Median</strong> = nilai tengah setelah data diurutkan (posisi, bukan hitungan).<br>
+        <strong>Modus</strong> = nilai yang paling sering muncul (bisa lebih dari satu, atau tidak ada sama sekali kalau semua data unik).
+      </div>
+
+      <div class="refleksi-box">
+        <span class="refleksi-label">🤔 Diskusi Reflektif: Kenapa Rata-Rata Bisa "Menipu"?</span>
+        <p>Sekarang, mari kita selidiki sesuatu yang PENTING. Lihat data uang saku 5 siswa berikut: Rp10.000, Rp12.000, Rp11.000, Rp13.000, dan Rp150.000 (satu siswa ini kebetulan dapat uang saku ekstra dari kakeknya hari itu).</p>
+
+        <div class="urut-box">
+          <div class="angka">10.000</div>
+          <div class="angka tengah">11.000</div>
+          <div class="angka">12.000</div>
+          <div class="angka">13.000</div>
+          <div class="angka ekstrem">150.000</div>
+        </div>
+
+        <p><strong>Hitung mean-nya:</strong> (10.000+12.000+11.000+13.000+150.000) ÷ 5 = 196.000 ÷ 5 = <strong>Rp39.200</strong>.</p>
+        <p><strong>Hitung median-nya:</strong> urutkan (10.000, 11.000, 12.000, 13.000, 150.000), ambil tengah = <strong>Rp11.000</strong>.</p>
+        <p>Perhatikan SELISIH BESAR antara mean (Rp39.200) dan median (Rp11.000)! Kalau seseorang bilang "rata-rata uang saku anak-anak ini Rp39.200", itu MENYESATKAN — padahal 4 dari 5 siswa punya uang saku di sekitar Rp10.000-13.000 saja. Angka Rp39.200 itu "ditarik ke atas" oleh SATU data ekstrem (Rp150.000), padahal itu bukan gambaran yang mewakili KEBANYAKAN siswa.</p>
+        <p>Coba diskusikan dengan temanmu: menurutmu, dalam kasus ini, MEDIAN atau MEAN yang lebih JUJUR mewakili "uang saku siswa pada umumnya"? Kenapa?</p>
+      </div>
+
+      <p>Median cenderung LEBIH TAHAN terhadap data ekstrem, karena median hanya melihat POSISI di tengah (tidak peduli seberapa jauh angka ekstrem itu dari yang lain), sementara mean SANGAT dipengaruhi oleh nilai SETIAP data — termasuk yang sangat jauh berbeda dari yang lain.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan mean seperti titik keseimbangan pada sebuah jungkat-jungkit panjang, dengan tiap data sebagai beban yang diletakkan di posisinya masing-masing.</span></p>
+        <p>Kalau ada SATU beban yang sangat berat diletakkan jauh di salah satu ujung (data ekstrem), titik keseimbangan (mean) akan "tertarik" sangat jauh ke arah beban berat itu — meskipun beban-beban lain semuanya berkumpul di area yang sama sekali berbeda.</p>
+        <p>Median tidak bekerja seperti timbangan — dia hanya "berjalan" ke posisi tengah barisan data yang sudah diurutkan, tidak peduli seberapa berat/jauh data di ujung-ujungnya. Itulah kenapa median lebih "tahan banting" terhadap data ekstrem.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Ini BUKAN berarti mean selalu "buruk" dan median selalu "lebih baik" — keduanya punya kegunaan masing-masing. Yang penting: SEBELUM percaya begitu saja pada angka "rata-rata" yang kamu dengar (di berita, iklan, atau laporan), tanyakan pada dirimu: apakah ada kemungkinan data ekstrem yang menarik angka itu ke satu arah?
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Tentukan mean, median, dan modus dari data tinggi badan (cm): 130, 135, 130, 140, 132.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Mean: (130+135+130+140+132)÷5=667÷5=133,4 cm. Median: urutkan (130,130,132,135,140), tengah=<strong>132 cm</strong>. Modus: 130 muncul 2 kali (paling sering)=<strong>130 cm</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah perusahaan bilang "gaji rata-rata karyawan kami Rp8.000.000", tapi ternyata pemilik perusahaan digaji Rp80.000.000 sementara 9 karyawan lain hanya digaji sekitar Rp3.000.000. Apa yang salah dengan cara menyampaikan data ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Angka "rata-rata Rp8.000.000" itu SECARA MATEMATIS benar, tapi MENYESATKAN sebagai gambaran gaji karyawan pada umumnya — angka itu "ditarik ke atas" oleh SATU gaji pemilik yang jauh lebih besar (data ekstrem). Median akan jauh lebih mewakili kondisi SEBAGIAN BESAR karyawan (sekitar Rp3.000.000), dibanding mean yang terpengaruh data ekstrem tersebut.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan bilang "modus selalu ada di setiap kumpulan data". Apakah pernyataan Wayan benar? Berikan contoh untuk membuktikan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pernyataan Wayan SALAH. Modus TIDAK SELALU ada — kalau semua data punya nilai yang berbeda-beda (tidak ada yang berulang), tidak ada modusnya. Contoh: data 3, 7, 5, 9, 2 — semua angka muncul hanya SATU kali, jadi TIDAK ADA modus untuk data ini.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kumpulkan data nyata dari kelasmu (nilai ulangan atau tinggi badan), PASTIKAN ada minimal satu data yang jauh berbeda dari yang lain (data ekstrem). Hitung mean, median, dan modusnya. Diskusikan dengan kelompokmu: apakah rata-rata (mean) di data kalian masih cocok mewakili "kebanyakan" data, atau justru menipu karena tertarik data ekstrem?
+      </div>
+
+      <p>Selamat! Kamu sudah menyelesaikan materi pengayaan Mean, Median, dan Modus — kemampuan literasi statistik kritis yang akan sangat berguna saat kamu membaca berita, iklan, atau laporan apa pun di masa depan. Materi terakhir Matematika Kelas 5 (Data & Peluang TP3) akan mengenalkanmu pada konsep Peluang — pengenalan pertama dari eksplorasi konkret.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
