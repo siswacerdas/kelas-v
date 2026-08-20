@@ -2077,5 +2077,50 @@ window.MATERI_INDEX = [
     ringkasan: "Menentukan mean, median, dan modus dari data sederhana, serta mendiskusikan secara reflektif mengapa rata-rata bisa menipu jika ada data ekstrem.",
     status: "selesai",
     file: "matematika/data-peluang-tp2/02-mean-median-modus-dan-kerentanan-rata-rata.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🎲",
+    elemen: "Data & Peluang",
+    tp: "data-peluang-tp3",
+    tema: "Data & Peluang · Peluang — Pengenalan Awal dari Eksplorasi Konkret",
+    urutan: 1,
+    judul: "Eksplorasi Konkret: Melempar Koin dan Dadu",
+    ringkasan: "Melakukan eksplorasi konkret murni — melempar koin/dadu berulang kali dan mencatat hasil, tanpa notasi atau istilah formal peluang apa pun.",
+    status: "selesai",
+    file: "matematika/data-peluang-tp3/01-eksplorasi-konkret-melempar-koin-dan-dadu.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🎲",
+    elemen: "Data & Peluang",
+    tp: "data-peluang-tp3",
+    tema: "Data & Peluang · Peluang — Pengenalan Awal dari Eksplorasi Konkret",
+    urutan: 2,
+    judul: "Membandingkan Kemungkinan Kejadian secara Kualitatif",
+    ringkasan: "Membandingkan kemungkinan kejadian secara kualitatif (lebih besar/lebih kecil) berdasarkan pola hasil eksperimen berulang yang sudah dicatat.",
+    status: "selesai",
+    file: "matematika/data-peluang-tp3/02-membandingkan-kemungkinan-kejadian-secara-kualitatif.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🎲",
+    elemen: "Data & Peluang",
+    tp: "data-peluang-tp3",
+    tema: "Data & Peluang · Peluang — Pengenalan Awal dari Eksplorasi Konkret",
+    urutan: 3,
+    judul: "Memprediksi Kemungkinan pada Situasi Baru",
+    ringkasan: "Menentukan kejadian dengan kemungkinan lebih besar/lebih kecil pada situasi BARU, termasuk memprediksi sebelum bereksperimen untuk membuktikan prediksi.",
+    status: "selesai",
+    file: "matematika/data-peluang-tp3/03-memprediksi-kemungkinan-pada-situasi-baru.html"
   }
 ];
