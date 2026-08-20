@@ -1,1 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyusun Tabel Frekuensi dengan Turus · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .turus-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .turus-tabel th, .turus-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .turus-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .turus-tabel td.turus-cell { font-family: 'Plus Jakarta Sans', monospace; letter-spacing: 2px; color: var(--m-color); font-weight: 700; }
+  .turus-tabel td.hasil { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📊</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Mengurutkan, Membandingkan, dan Menyajikan Data · Materi 1 dari 4</div>
+      <div class="ma-cover-title">Menyusun Tabel Frekuensi dengan Turus</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Mulai dari sini, kita masuk ke elemen terakhir Matematika Kelas 5: <strong>Analisis Data dan Peluang</strong>. Materi pertama membahas cara mengumpulkan dan mencatat data — langkah PALING dasar sebelum data itu ditampilkan dalam bentuk apa pun.</p>
+
+      <p>Bayangkan gurumu bertanya ke seluruh kelas: "apa buah favoritmu?" Ada 20 siswa yang menjawab, dengan jawaban campur aduk: Apel, Jeruk, Apel, Mangga, Jeruk, Apel, dan seterusnya. Kalau dicatat satu-satu berurutan seperti itu, akan SULIT dilihat pola dan jumlahnya.</p>
+
+      <p><strong>Solusinya: TABEL FREKUENSI</strong> — tabel yang menghitung berapa KALI tiap jawaban muncul. Caranya memakai <strong>turus</strong> (tally), yaitu tanda garis yang dikelompokkan per 5.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 70" width="260">
+          <line x1="10" y1="10" x2="10" y2="50" stroke="var(--m-color)" stroke-width="3"/>
+          <line x1="25" y1="10" x2="25" y2="50" stroke="var(--m-color)" stroke-width="3"/>
+          <line x1="40" y1="10" x2="40" y2="50" stroke="var(--m-color)" stroke-width="3"/>
+          <line x1="55" y1="10" x2="55" y2="50" stroke="var(--m-color)" stroke-width="3"/>
+          <line x1="5" y1="50" x2="60" y2="10" stroke="#c76b3f" stroke-width="3"/>
+          <text x="32" y="65" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">= 5</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Satu kelompok turus: 4 garis tegak, ditutup dengan 1 garis miring (jingga) yang memotong keempatnya = mewakili 5.</p>
+
+      <p><strong>Cara mencatat turus:</strong> setiap kali ada satu jawaban baru, tambahkan SATU garis. Setelah 4 garis tegak, garis KELIMA digambar MIRING memotong keempat garis itu — ini memudahkan menghitung nanti (tinggal hitung per kelompok 5, bukan satu-satu).</p>
+
+      <p>Berikut contoh hasil pencatatan turus untuk pertanyaan buah favorit (20 siswa):</p>
+
+      <table class="turus-tabel">
+        <tr><th>Buah</th><th>Turus</th><th>Frekuensi (Jumlah)</th></tr>
+        <tr><td>Apel</td><td>
+          <svg viewBox="0 0 130 40" width="120" height="37">
+            <line x1="8" y1="6" x2="8" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="18" y1="6" x2="18" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="28" y1="6" x2="28" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="38" y1="6" x2="38" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="4" y1="30" x2="42" y2="6" stroke="#c76b3f" stroke-width="2.5"/>
+            <line x1="58" y1="6" x2="58" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="68" y1="6" x2="68" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+          </svg>
+        </td><td class="hasil">7</td></tr>
+        <tr><td>Jeruk</td><td>
+          <svg viewBox="0 0 130 40" width="120" height="37">
+            <line x1="8" y1="6" x2="8" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="18" y1="6" x2="18" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="28" y1="6" x2="28" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="38" y1="6" x2="38" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="4" y1="30" x2="42" y2="6" stroke="#c76b3f" stroke-width="2.5"/>
+          </svg>
+        </td><td class="hasil">5</td></tr>
+        <tr><td>Mangga</td><td>
+          <svg viewBox="0 0 130 40" width="120" height="37">
+            <line x1="8" y1="6" x2="8" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="18" y1="6" x2="18" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="28" y1="6" x2="28" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="38" y1="6" x2="38" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="4" y1="30" x2="42" y2="6" stroke="#c76b3f" stroke-width="2.5"/>
+            <line x1="58" y1="6" x2="58" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+          </svg>
+        </td><td class="hasil">6</td></tr>
+        <tr><td>Pisang</td><td>
+          <svg viewBox="0 0 130 40" width="120" height="37">
+            <line x1="8" y1="6" x2="8" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="18" y1="6" x2="18" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+          </svg>
+        </td><td class="hasil">2</td></tr>
+      </table>
+
+      <p><strong>Frekuensi</strong> artinya "berapa kali sesuatu muncul/terjadi". Setelah semua turus selesai dicatat, hitung TOTAL garis di tiap baris dan tulis angkanya di kolom Frekuensi.</p>
+
+      <ol class="langkah">
+        <li>Siapkan daftar kategori (misalnya nama-nama buah yang mungkin dijawab).</li>
+        <li>Untuk SETIAP jawaban yang masuk, tambahkan SATU garis turus pada kategori yang sesuai — jangan sampai ada yang terlewat atau tercatat dua kali.</li>
+        <li>Kelompokkan tiap 5 garis dengan garis miring penutup, supaya mudah dihitung.</li>
+        <li>Setelah semua data selesai dicatat, hitung total turus tiap baris dan tulis di kolom Frekuensi.</li>
+        <li><strong>Cek ulang:</strong> jumlahkan SEMUA frekuensi — hasilnya harus SAMA dengan total jumlah data yang dikumpulkan (misalnya 20 siswa).</li>
+      </ol>
+
+      <div class="contoh-box">
+        Cek pada contoh di atas: 7+5+6+2 = <strong>20</strong> — cocok dengan jumlah siswa yang ditanya. Ini membuktikan tidak ada data yang terlewat atau tercatat dua kali.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu menghitung uang koin dalam jumlah banyak — akan lebih cepat kalau kamu mengelompokkannya per 5 atau per 10 koin, dibanding menghitung satu-satu sampai ratusan.</span></p>
+        <p>Turus bekerja dengan prinsip yang sama: mengelompokkan per 5 membuat penghitungan akhir jauh lebih cepat. Kamu tinggal menghitung "berapa kelompok 5, ditambah sisa yang belum genap 5" — bukan menghitung garis satu-satu dari awal.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Selalu cek jumlah total frekuensi dengan jumlah data asli SETELAH selesai mencatat. Kalau angkanya tidak cocok, ada kesalahan pencatatan (ada yang terlewat atau tercatat dua kali) yang perlu ditelusuri ulang sebelum lanjut ke langkah berikutnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah kategori punya turus sebanyak 4 kelompok penuh (masing-masing 5) ditambah 3 garis sisa. Berapa frekuensinya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 4 kelompok × 5 = 20, ditambah sisa 3 = <strong>23</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Made mencatat data warna favorit 15 siswa. Hasil turusnya: Merah=6, Biru=4, Hijau=4. Apakah pencatatan Made sudah benar? Buktikan dengan menjumlahkan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Jumlahkan: 6+4+4=14, BUKAN 15. Ada SELISIH 1 dari total siswa yang seharusnya (15) — ini tanda ada kesalahan pencatatan (mungkin ada 1 turus yang terlewat), Made perlu menelusuri ulang datanya.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani berpendapat "menulis turus itu buang-buang waktu, lebih cepat langsung menulis angka setiap kali ada jawaban baru (misalnya coret angka lama, tulis angka baru)". Apakah pendapat Rani masuk akal? Jelaskan kelemahan caranya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Rani KURANG tepat untuk pencatatan data secara LANGSUNG (real-time) saat jawaban masuk satu-satu. Kelemahan caranya: menulis ulang angka setiap kali ada tambahan (misalnya dari "6" jadi "7") itu justru lebih LAMBAT dan lebih rawan salah dibanding menambah SATU garis turus, yang cukup 1 gerakan cepat tanpa perlu menghapus/mencoret apa pun.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kumpulkan satu data nyata dari teman-teman sekelasmu (tinggi badan dikelompokkan per rentang, makanan favorit, jumlah anggota keluarga, atau topik lain). Catat langsung dengan turus saat mengumpulkan data, lalu hitung frekuensi tiap kategori. Cek ulang: apakah total frekuensimu sama dengan jumlah teman yang kamu tanya?
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu mengubah tabel frekuensi ini menjadi bentuk VISUAL pertama: piktogram — di mana satu simbol gambar mewakili sejumlah data.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

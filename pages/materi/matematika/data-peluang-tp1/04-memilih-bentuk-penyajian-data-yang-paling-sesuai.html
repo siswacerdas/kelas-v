@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memilih Bentuk Penyajian Data yang Paling Sesuai · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pilih-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .pilih-tabel th, .pilih-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .pilih-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); text-align: center; }
+  .pilih-tabel td.nama { font-weight: 700; color: var(--m-color); text-align: center; white-space: nowrap; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📊</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Mengurutkan, Membandingkan, dan Menyajikan Data · Materi 4 dari 4 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Memilih Bentuk Penyajian Data yang Paling Sesuai</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah menguasai TIGA cara menyajikan data: tabel frekuensi, piktogram, dan diagram batang. Sekarang saatnya belajar memilih — karena TIDAK ADA satu bentuk yang selalu "paling baik". Pilihan terbaik tergantung SITUASI dan TUJUAN penyajiannya.</p>
+
+      <table class="pilih-tabel">
+        <tr><th>Bentuk</th><th>Paling Cocok Untuk...</th></tr>
+        <tr><td class="nama">Tabel Frekuensi</td><td>Melihat ANGKA PASTI dengan cepat dan akurat. Cocok kalau kamu perlu tahu jumlah TEPAT (bukan cuma perkiraan visual), atau saat data punya BANYAK kategori yang sulit digambar semua.</td></tr>
+        <tr><td class="nama">Piktogram</td><td>Menarik perhatian dan mudah dipahami SEKILAS, terutama untuk pembaca yang lebih muda atau data dengan angka yang TIDAK terlalu besar. Kurang cocok untuk angka yang sangat besar (butuh terlalu banyak simbol) atau angka yang sulit dibagi rapi.</td></tr>
+        <tr><td class="nama">Diagram Batang</td><td>Membandingkan BANYAK kategori sekaligus secara visual, terutama kalau angkanya besar atau bervariasi jauh. Lebih presisi dibanding piktogram karena memakai skala angka yang jelas.</td></tr>
+      </table>
+
+      <p>Mari latihan memilih lewat beberapa situasi:</p>
+
+      <div class="cerita-box">
+        Situasi 1: Kamu ingin menunjukkan hasil survei mainan favorit ke adik kelas 1 SD yang belum lancar membaca angka besar.
+      </div>
+
+      <p>Untuk situasi ini, <strong>PIKTOGRAM</strong> paling cocok — gambar simbol lebih mudah dipahami anak yang belum lancar membaca angka, dibanding diagram batang yang butuh membaca skala.</p>
+
+      <div class="cerita-box">
+        Situasi 2: Kamu ingin membandingkan jumlah pengunjung perpustakaan sekolah selama 6 bulan, dengan angka yang berkisar antara 150 sampai 480 pengunjung per bulan.
+      </div>
+
+      <p>Untuk situasi ini, <strong>DIAGRAM BATANG</strong> paling cocok — angkanya besar dan bervariasi jauh, akan butuh RATUSAN simbol kalau dipaksakan jadi piktogram (tidak praktis). Diagram batang dengan skala yang tepat (misalnya per 50 atau per 100) bisa menampilkan perbandingan ini dengan jelas dan ringkas.</p>
+
+      <div class="cerita-box">
+        Situasi 3: Guru meminta kamu mencatat CEPAT berapa banyak siswa yang izin sakit tiap hari selama seminggu, untuk laporan administrasi yang butuh angka PASTI.
+      </div>
+
+      <p>Untuk situasi ini, <strong>TABEL FREKUENSI</strong> paling cocok — laporan administrasi butuh angka yang PASTI dan mudah dicatat cepat, bukan gambar yang makan waktu lebih lama untuk dibuat.</p>
+
+      <div class="contoh-box">
+        <strong>Pertanyaan kunci sebelum memilih:</strong> Siapa pembacanya (anak kecil atau dewasa)? Seberapa besar angkanya? Apakah butuh angka PASTI atau cukup GAMBARAN UMUM? Apakah perlu dibuat CEPAT atau ada waktu untuk membuat yang lebih detail?
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan memilih bentuk penyajian data seperti memilih pakaian untuk acara yang berbeda-beda — kamu tidak memakai baju yang SAMA untuk pesta ulang tahun anak-anak dan untuk rapat resmi kantor.</span></p>
+        <p>Piktogram itu seperti baju CERAH dan RAMAI, cocok untuk suasana santai dan pembaca muda. Diagram batang itu seperti baju RAPI dan PRESISI, cocok untuk perbandingan angka yang serius dan besar. Tabel frekuensi itu seperti CATATAN CEPAT di buku saku, cocok untuk kebutuhan administratif yang butuh angka pasti secepat mungkin.</p>
+        <p>Tidak ada baju yang "paling bagus" secara mutlak — yang ada adalah baju yang PALING SESUAI untuk acara tertentu. Begitu juga bentuk penyajian data.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Saat memilih bentuk penyajian data untuk soal cerita, JELASKAN alasanmu — jangan cuma menjawab "diagram batang" tanpa alasan. Alasan yang baik biasanya menyebutkan: besar angkanya, siapa pembacanya, atau tujuan penyajiannya (butuh presisi atau gambaran umum).
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Kamu ingin menampilkan data jumlah buku yang dibaca 5 siswa dalam sebulan, dengan angka antara 2 sampai 8 buku, untuk dipajang di majalah dinding kelas yang dibaca semua umur. Bentuk penyajian apa yang paling sesuai? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> <strong>Piktogram</strong> paling sesuai — angkanya kecil (2-8, mudah diwakili beberapa simbol saja), menarik untuk dipajang, dan mudah dipahami pembaca segala umur di majalah dinding.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sekolah ingin membandingkan jumlah siswa di 8 kelas berbeda, dengan angka berkisar 28-35 siswa per kelas, untuk laporan resmi ke dinas pendidikan yang butuh perbandingan visual jelas antar kelas. Bentuk apa yang paling sesuai?</div>
+          <div class="soal-a"><b>Pembahasan:</b> <strong>Diagram batang</strong> paling sesuai — banyak kategori (8 kelas) dengan angka yang berdekatan tapi perlu dibandingkan secara visual dan presisi, cocok dengan kekuatan diagram batang yang punya skala jelas untuk perbandingan antar banyak kategori.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made memilih piktogram untuk menampilkan data pengunjung mal selama setahun, dengan angka mencapai ribuan pengunjung per bulan. Apakah pilihan Made tepat? Jelaskan masalahnya dan sarankan bentuk yang lebih sesuai!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pilihan Made KURANG tepat. Piktogram akan butuh SANGAT BANYAK simbol untuk mewakili angka ribuan (kecuali kuncinya dibuat sangat besar, misalnya 1 simbol = 500 pengunjung, tapi ini mengurangi presisi pembacaan). Bentuk yang lebih sesuai adalah <strong>diagram batang</strong> dengan skala besar (misalnya per 500 atau per 1000), yang bisa menampilkan angka besar dengan lebih ringkas dan tetap presisi.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Kumpulkan satu data nyata dari teman sekelasmu (topik bebas). Susun tabel frekuensinya, lalu sajikan dalam BENTUK YANG MENURUTMU PALING SESUAI (piktogram atau diagram batang) — bukan asal pilih, tapi berdasarkan pertimbangan besar angka dan tujuan penyajian. Tuliskan alasan kenapa kamu memilih bentuk itu.
+      </div>
+
+      <p>Selamat! Kamu sudah menyelesaikan materi Data & Peluang TP1 — dari mengumpulkan data dengan turus, piktogram, diagram batang, sampai memilih bentuk penyajian yang tepat. Materi berikutnya (pengayaan) akan mengenalkanmu pada konsep mean, median, dan modus — cara meringkas data jadi satu angka yang mewakili.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

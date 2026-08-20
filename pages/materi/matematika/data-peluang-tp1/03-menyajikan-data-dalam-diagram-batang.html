@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyajikan Data dalam Diagram Batang · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📊</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Mengurutkan, Membandingkan, dan Menyajikan Data · Materi 3 dari 4</div>
+      <div class="ma-cover-title">Menyajikan Data dalam Diagram Batang</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Diagram batang</strong> menyajikan data dengan BATANG (kotak persegi panjang) yang tingginya menunjukkan jumlah data. Ini lebih ABSTRAK dibanding piktogram — bukan gambar simbol satu-satu, tapi memakai SKALA angka di salah satu sumbunya.</p>
+
+      <p>Pakai lagi data buah favorit (Apel=7, Jeruk=5, Mangga=6, Pisang=2):</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 320 220" width="320">
+          <line x1="50" y1="20" x2="50" y2="180" stroke="var(--ink)" stroke-width="2"/>
+          <line x1="50" y1="180" x2="300" y2="180" stroke="var(--ink)" stroke-width="2"/>
+          <line x1="45" y1="180" x2="50" y2="180" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="42" y="184" font-size="10" fill="var(--ink-2)" text-anchor="end">0</text>
+          <line x1="45" y1="140" x2="50" y2="140" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="42" y="144" font-size="10" fill="var(--ink-2)" text-anchor="end">2</text>
+          <line x1="45" y1="100" x2="50" y2="100" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="42" y="104" font-size="10" fill="var(--ink-2)" text-anchor="end">4</text>
+          <line x1="45" y1="60" x2="50" y2="60" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="42" y="64" font-size="10" fill="var(--ink-2)" text-anchor="end">6</text>
+          <line x1="45" y1="20" x2="50" y2="20" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="42" y="24" font-size="10" fill="var(--ink-2)" text-anchor="end">8</text>
+          <rect x="75" y="40" width="40" height="140" fill="var(--m-color)" opacity="0.5" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="95" y="195" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">Apel</text>
+          <rect x="135" y="80" width="40" height="100" fill="var(--m-color)" opacity="0.5" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="155" y="195" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">Jeruk</text>
+          <rect x="195" y="60" width="40" height="120" fill="var(--m-color)" opacity="0.5" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="215" y="195" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">Mangga</text>
+          <rect x="255" y="140" width="40" height="40" fill="var(--m-color)" opacity="0.5" stroke="var(--ink)" stroke-width="1.5"/>
+          <text x="275" y="195" font-size="11" font-weight="700" fill="var(--ink)" text-anchor="middle">Pisang</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Diagram batang: sumbu tegak (kiri) menunjukkan skala jumlah (0,2,4,6,8), sumbu datar (bawah) menunjukkan kategori buah.</p>
+
+      <p><strong>Skala</strong> adalah aturan "berapa nilai per satu petak/garis" pada sumbu angka. Di contoh ini, skalanya naik per 2 (0, 2, 4, 6, 8) — bukan per 1. Kamu bisa memilih skala berapa pun, tapi HARUS KONSISTEN (jarak antar-garis harus mewakili nilai yang SAMA di seluruh sumbu).</p>
+
+      <ol class="langkah">
+        <li>Gambar dua sumbu: TEGAK (untuk angka/skala) dan DATAR (untuk nama kategori).</li>
+        <li>Tentukan skala pada sumbu tegak — pilih angka yang membuat semua data bisa digambar dengan rapi (tidak terlalu rapat, tidak terlalu jarang).</li>
+        <li>Gambar batang untuk tiap kategori, dengan TINGGI sesuai frekuensinya, dibaca dari skala sumbu tegak.</li>
+        <li>Beri jarak yang SAMA antar batang, dan pastikan lebar tiap batang SAMA (hanya tingginya yang berbeda-beda).</li>
+      </ol>
+
+      <div class="contoh-box">
+        Cara membaca tinggi batang "Mangga" (frekuensi 6): lihat di skala mana batang itu berhenti — sejajar dengan angka 6 pada sumbu tegak.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan skala pada diagram batang seperti PENGGARIS dengan satuan berbeda — ada penggaris bersatuan cm, ada yang bersatuan per 2cm.</span></p>
+        <p>Kalau kamu memakai "penggaris" dengan skala per 2 (seperti pada contoh ini), setiap kenaikan SATU garis mewakili 2 unit data — BUKAN 1 unit. Ini seperti termometer yang tandanya per 5 derajat, bukan per 1 derajat — kamu tetap bisa membaca suhu dengan tepat, asalkan kamu tahu ATURAN skalanya.</p>
+        <p>Kesalahan yang sering terjadi: siswa membaca tinggi batang sambil menganggap tiap garis = 1 unit, padahal skalanya sebenarnya per 2 atau per 5 — ini membuat pembacaan jadi salah jauh.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        SELALU periksa skala pada sumbu tegak SEBELUM membaca atau menggambar tinggi batang. Skala yang berbeda (per 1, per 2, per 5, per 10) akan membuat batang yang SAMA TINGGINYA secara visual mewakili JUMLAH yang berbeda-beda.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah diagram batang memakai skala per 5 (0,5,10,15,20). Sebuah batang berhenti tepat di tengah antara garis 10 dan 15. Berapa kira-kira nilai yang diwakili batang itu?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Tengah antara 10 dan 15 adalah <strong>12 atau 13</strong> (kira-kira setengah dari jarak 5, yaitu 2,5, ditambahkan ke 10).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Kenapa penting menjaga skala yang KONSISTEN (jarak antar garis mewakili nilai yang sama) di seluruh sumbu diagram batang?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kalau skalanya TIDAK konsisten (misalnya jarak 0-2 mewakili 2 unit, tapi jarak 2-4 mewakili 5 unit), pembaca akan salah menafsirkan TINGGI batang — batang yang lebih tinggi bisa jadi sebenarnya mewakili nilai yang lebih KECIL, tergantung di mana posisinya pada skala yang tidak konsisten itu. Ini akan membuat diagram menyesatkan.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made membuat dua diagram batang untuk data yang SAMA, tapi satu pakai skala per 1 dan satu pakai skala per 5. Rani bingung kenapa bentuk batangnya terlihat beda tinggi meski datanya sama. Jelaskan pada Rani kenapa ini terjadi!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini WAJAR terjadi. Diagram dengan skala per 1 akan menampilkan batang yang PROPORSIONAL LEBIH TINGGI (butuh lebih banyak garis/petak untuk mencapai nilai yang sama) dibanding diagram dengan skala per 5 (nilai yang sama tercapai dengan lebih sedikit petak). Meski TAMPILAN visualnya beda, DATA yang diwakili tetap SAMA — yang penting adalah membaca nilai sesuai skala masing-masing, bukan membandingkan tinggi batang secara visual antar diagram dengan skala berbeda.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil tabel frekuensi dan piktogram yang sudah kamu buat di materi sebelumnya. Gambarkan data yang SAMA itu dalam bentuk diagram batang di kertas berpetak, tentukan skala sumbu yang sesuai (misalnya tiap petak = 1 atau 2 unit). Bandingkan ketiga bentuk penyajian (tabel, piktogram, diagram batang) — mana yang menurutmu paling mudah dibaca?
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan mengajakmu MEMILIH bentuk penyajian data yang PALING SESUAI untuk berbagai konteks soal — karena tidak semua situasi cocok dengan bentuk penyajian yang sama.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyajikan Data dalam Piktogram · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .pikto-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .pikto-tabel th, .pikto-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+  .pikto-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); text-align: center; }
+  .pikto-tabel td.nama { text-align: center; font-weight: 600; }
+  .pikto-simbol { color: var(--m-color); font-size: 18px; letter-spacing: 2px; }
+  .pikto-simbol .setengah { opacity: 0.45; }
+  .kunci-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.6rem 1rem; margin: 0.6rem 0 1.2rem; background: var(--paper-2); font-size: calc(var(--content-fs) - 3px); text-align: center; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📊</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Mengurutkan, Membandingkan, dan Menyajikan Data · Materi 2 dari 4</div>
+      <div class="ma-cover-title">Menyajikan Data dalam Piktogram</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Tabel frekuensi yang sudah kamu buat memang jelas, tapi ANGKA saja kadang kurang menarik dilihat sekilas. <strong>Piktogram</strong> mengubah angka itu menjadi GAMBAR — satu simbol mewakili sejumlah data tertentu, membuat perbandingan jadi lebih mudah "dibaca sekilas".</p>
+
+      <p>Pertama, tentukan dulu: SATU SIMBOL mewakili berapa unit data? Ini disebut <strong>kunci</strong> (key) piktogram, dan HARUS dituliskan dengan jelas supaya orang lain tahu cara membacanya.</p>
+
+      <div class="kunci-box">
+        <span class="pikto-simbol">🍎</span> = 2 siswa
+      </div>
+
+      <p>Pakai data buah favorit dari materi sebelumnya (Apel=7, Jeruk=5, Mangga=6, Pisang=2). Kalau 1 simbol = 2 siswa, berapa banyak simbol yang dibutuhkan untuk tiap buah?</p>
+
+      <table class="pikto-tabel">
+        <tr><th>Buah</th><th>Piktogram</th><th>Jumlah</th></tr>
+        <tr><td class="nama">Apel</td><td class="pikto-simbol">🍎🍎🍎<span class="setengah">🍎</span></td><td>7</td></tr>
+        <tr><td class="nama">Jeruk</td><td class="pikto-simbol">🍎🍎<span class="setengah">🍎</span></td><td>5</td></tr>
+        <tr><td class="nama">Mangga</td><td class="pikto-simbol">🍎🍎🍎</td><td>6</td></tr>
+        <tr><td class="nama">Pisang</td><td class="pikto-simbol">🍎</td><td>2</td></tr>
+      </table>
+
+      <p>Perhatikan cara menghitung jumlah SIMBOL yang dibutuhkan:</p>
+
+      <ol class="langkah">
+        <li><strong>Mangga = 6, kunci = 2 per simbol.</strong> 6 ÷ 2 = 3 simbol PENUH.</li>
+        <li><strong>Apel = 7, kunci = 2 per simbol.</strong> 7 ÷ 2 = 3 sisa 1. Jadi 3 simbol PENUH + SETENGAH simbol (mewakili sisa 1, karena 1 adalah setengah dari kunci 2).</li>
+        <li><strong>Jeruk = 5, kunci = 2 per simbol.</strong> 5 ÷ 2 = 2 sisa 1. Jadi 2 simbol penuh + SETENGAH simbol.</li>
+        <li><strong>Pisang = 2, kunci = 2 per simbol.</strong> 2 ÷ 2 = 1. Jadi TEPAT 1 simbol penuh, tanpa sisa.</li>
+      </ol>
+
+      <div class="contoh-box">
+        <strong>Kasus jumlah GANJIL (tidak habis dibagi kunci):</strong> gunakan SETENGAH simbol untuk mewakili SISA yang kurang dari satu kunci penuh. Misalnya kalau kunci = 2 dan sisanya 1, gambar setengah simbol (bukan simbol penuh, karena itu akan salah mewakili jumlahnya).
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kunci piktogram seperti nilai satu lembar uang kertas dalam sebuah cerita "tabungan bergambar".</span></p>
+        <p>Kalau satu gambar uang kertas mewakili Rp2.000, dan kamu punya Rp7.000, kamu akan menggambar 3 lembar PENUH (mewakili Rp6.000) DAN setengah lembar (mewakili sisa Rp1.000, karena Rp1.000 adalah setengah dari Rp2.000). Piktogram bekerja dengan logika yang sama — simbol pecahan (setengah, seperempat, dst.) dipakai untuk mewakili SISA yang tidak cukup untuk satu simbol penuh.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        SELALU tuliskan kunci piktogram dengan JELAS di dekat gambar (misalnya "= 2 siswa"). Tanpa kunci ini, piktogrammu tidak bisa dibaca dengan benar oleh orang lain — mereka tidak akan tahu berapa nilai sebenarnya dari tiap simbol.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Jika kunci piktogram = 4 siswa per simbol, dan sebuah kategori punya frekuensi 10, berapa banyak simbol penuh dan apakah perlu simbol pecahan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 10 ÷ 4 = 2 sisa 2. Jadi 2 simbol PENUH, ditambah simbol SETENGAH (karena sisa 2 adalah setengah dari kunci 4).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah piktogram menampilkan 3 simbol penuh untuk kategori "Basket", dengan kunci = 5 siswa per simbol. Berapa jumlah siswa yang menyukai basket?</div>
+          <div class="soal-a"><b>Pembahasan:</b> 3 simbol × 5 = <strong>15 siswa</strong>.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan membuat piktogram dengan kunci = 3 siswa per simbol, untuk data frekuensi 7. Dia menggambar 3 simbol penuh (menganggap sisa 1 tetap dibulatkan jadi simbol utuh ketiga). Apakah caranya tepat? Jelaskan kesalahannya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara Wayan TIDAK tepat. 7÷3=2 sisa 1. Sisa 1 itu HANYA sepertiga dari kunci (3), BUKAN cukup untuk satu simbol PENUH lagi. Wayan seharusnya menggambar 2 simbol penuh + SEPERTIGA simbol (bukan simbol penuh ketiga), supaya jumlah yang terwakili tetap akurat (2×3 + sepertiga dari 3 = 6+1=7, bukan 2×3+3=9 seperti yang tergambar dari kesalahan Wayan).</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil tabel frekuensi yang sudah kamu buat di materi sebelumnya. Tentukan kunci piktogram yang masuk akal (misalnya 1 simbol = 2 atau 5 unit data, tergantung besar datamu). Gambarkan piktogramnya, termasuk simbol pecahan kalau ada sisa yang tidak habis dibagi kunci.
+      </div>
+
+      <p>Materi berikutnya akan memperkenalkan bentuk penyajian yang lebih ABSTRAK: diagram batang — memakai skala pada sumbu, bukan lagi gambar simbol satu-satu.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
