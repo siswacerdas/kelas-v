@@ -1,1 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eksplorasi Konkret: Melempar Koin dan Dadu · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .item-row { display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0 1.3rem; flex-wrap: wrap; }
+  .item-icon { display: flex; flex-direction: column; align-items: center; }
+  .icon-box { font-size: 48px; }
+  .icon-label { font-size: calc(var(--content-fs) - 3px); font-weight: 700; color: var(--ink-2); margin-top: 0.3rem; }
+  .catat-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .catat-tabel th, .catat-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: center; }
+  .catat-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .catat-tabel td.hasil { background: #eaf4f0; color: var(--m-color); font-weight: 700; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🎲</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Peluang — Pengenalan Awal · Materi 1 dari 3</div>
+      <div class="ma-cover-title">Eksplorasi Konkret: Melempar Koin dan Dadu</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Materi ini benar-benar BARU untukmu</strong> — berbeda dari materi lain yang biasanya melanjutkan sesuatu yang sudah kamu pelajari sebelumnya, konsep <strong>Peluang</strong> (kemungkinan) ini belum pernah disinggung sama sekali di kelas-kelas sebelumnya. Jadi kita mulai betul-betul dari NOL, lewat PENGALAMAN LANGSUNG.</p>
+
+      <p>Peluang berkaitan dengan KEJADIAN ACAK — sesuatu yang hasilnya tidak bisa dipastikan sebelumnya, seperti melempar koin atau dadu.</p>
+
+      <div class="item-row">
+        <div class="item-icon">
+          <div class="icon-box">🪙</div>
+          <div class="icon-label">Koin: 2 sisi (Angka / Gambar)</div>
+        </div>
+        <div class="item-icon">
+          <div class="icon-box">🎲</div>
+          <div class="icon-label">Dadu: 6 sisi (1-6)</div>
+        </div>
+      </div>
+
+      <p>Di materi ini, TIDAK ADA istilah formal atau rumus yang perlu dihafal. Tugasmu murni EKSPERIMEN: lempar koin atau dadu BERULANG KALI (minimal 20 kali), dan catat hasilnya pakai turus — sama seperti tabel frekuensi yang sudah kamu kuasai.</p>
+
+      <ol class="langkah">
+        <li>Siapkan koin atau dadu fisik.</li>
+        <li>Lempar SATU KALI, catat hasilnya dengan turus di tabel (Angka/Gambar untuk koin, atau 1-6 untuk dadu).</li>
+        <li>Ulangi minimal 20 kali, JANGAN berhenti di tengah jalan meski hasilnya "kelihatan" sudah jelas — semakin banyak percobaan, semakin bisa dipercaya polanya.</li>
+        <li>Setelah selesai, hitung total turus tiap hasil.</li>
+      </ol>
+
+      <p>Contoh hasil pencatatan (20 kali lempar koin):</p>
+
+      <table class="catat-tabel">
+        <tr><th>Hasil</th><th>Turus</th><th>Jumlah Muncul</th></tr>
+        <tr><td>Angka</td><td>
+          <svg viewBox="0 0 130 40" width="120" height="37">
+            <line x1="8" y1="6" x2="8" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="18" y1="6" x2="18" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="28" y1="6" x2="28" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="38" y1="6" x2="38" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="4" y1="30" x2="42" y2="6" stroke="#c76b3f" stroke-width="2.5"/>
+            <line x1="58" y1="6" x2="58" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="68" y1="6" x2="68" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="78" y1="6" x2="78" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+          </svg>
+        </td><td class="hasil">8</td></tr>
+        <tr><td>Gambar</td><td>
+          <svg viewBox="0 0 130 40" width="120" height="37">
+            <line x1="8" y1="6" x2="8" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="18" y1="6" x2="18" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="28" y1="6" x2="28" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="38" y1="6" x2="38" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="4" y1="30" x2="42" y2="6" stroke="#c76b3f" stroke-width="2.5"/>
+            <line x1="58" y1="6" x2="58" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="68" y1="6" x2="68" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="78" y1="6" x2="78" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="88" y1="6" x2="88" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+            <line x1="98" y1="6" x2="98" y2="30" stroke="var(--m-color)" stroke-width="2.5"/>
+          </svg>
+        </td><td class="hasil">12</td></tr>
+      </table>
+
+      <div class="contoh-box">
+        Total: 8+12=20, sesuai jumlah lemparan. Dalam contoh ini, "Gambar" muncul LEBIH SERING (12 kali) dibanding "Angka" (8 kali) — TAPI kalau kamu ulangi eksperimen ini lagi, hasilnya BISA BERBEDA lagi, karena ini kejadian ACAK.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu dan teman-temanmu bermain tebak-tebakan cuaca besok: hujan atau tidak.</span></p>
+        <p>Kamu tidak bisa MEMASTIKAN jawabannya sebelum besok benar-benar tiba — tapi kamu bisa mengumpulkan CATATAN dari hari-hari sebelumnya (berapa kali hujan, berapa kali tidak) untuk membuat perkiraan yang lebih masuk akal. Itulah inti dari eksplorasi peluang: kita tidak bisa MEMASTIKAN hasil satu kejadian acak, tapi lewat BANYAK percobaan, kita mulai melihat POLA yang membantu membuat perkiraan.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Jangan berhenti eksperimen setelah beberapa kali lemparan saja, meski hasilnya "kelihatan jelas". Semakin BANYAK percobaan yang kamu lakukan, semakin bisa dipercaya pola yang muncul — beberapa lemparan awal bisa saja kebetulan, tapi pola dari 20+ lemparan lebih menggambarkan kecenderungan sesungguhnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Made melempar dadu 20 kali dan mencatat hasilnya. Berapa TOTAL turus yang seharusnya dia catat di seluruh tabel (jumlah semua hasil 1 sampai 6)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Total turus harus SAMA dengan jumlah lemparan, yaitu <strong>20</strong> — tidak peduli bagaimana sebarannya di antara angka 1-6.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Rani baru melempar koin 3 kali dan mendapat "Angka" ketiga-tiganya. Dia menyimpulkan "koin ini pasti selalu keluar Angka". Apakah kesimpulan Rani tepat? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kesimpulan Rani TERBURU-BURU dan belum tentu tepat. 3 kali lemparan adalah jumlah percobaan yang TERLALU SEDIKIT untuk menyimpulkan pola yang bisa dipercaya — bisa saja itu kebetulan. Perlu lebih banyak percobaan (minimal 20 kali) sebelum menarik kesimpulan tentang kecenderungan koin itu.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan mencatat hasil lempar dadu, dan hasil "6" tidak muncul SAMA SEKALI dalam 20 kali lemparan. Apakah ini berarti dadu itu tidak bisa menghasilkan angka 6?</div>
+          <div class="soal-a"><b>Pembahasan:</b> TIDAK BERARTI begitu. Dadu tetap punya sisi bernomor 6, dan sisi itu MUNGKIN muncul di lemparan-lemparan berikutnya — kebetulan saja dalam 20 kali percobaan itu angka 6 tidak muncul. Ini contoh sifat ACAK: kejadian yang mungkin terjadi tidak selalu muncul dalam jumlah percobaan tertentu, terutama kalau jumlah percobaannya belum terlalu banyak.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Lempar koin atau dadu (pilih salah satu) SEKURANG-KURANGNYA 20 kali. Catat SETIAP hasil dengan turus di tabel, sebelum melihat pola apa pun. Setelah selesai, hitung total tiap hasil dan pastikan totalnya sesuai jumlah lemparanmu.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu MENDISKUSIKAN hasil eksperimenmu — membandingkan hasil mana yang lebih sering muncul, dan memikirkan MENGAPA itu bisa terjadi.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Membandingkan Kemungkinan Kejadian secara Kualitatif · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .dadu-row { display: flex; justify-content: center; gap: 8px; margin: 1rem 0 0.4rem; flex-wrap: wrap; }
+  .dadu-sisi { width: 48px; height: 48px; border: 2.5px solid var(--ink); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; background: var(--paper-2); color: var(--ink); }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .kelompok-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .kelompok-tabel th, .kelompok-tabel td { border: 1px solid var(--border); padding: 7px 9px; text-align: center; }
+  .kelompok-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🎲</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Peluang — Pengenalan Awal · Materi 2 dari 3</div>
+      <div class="ma-cover-title">Membandingkan Kemungkinan Kejadian secara Kualitatif</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang mari diskusikan hasil eksperimenmu dari materi sebelumnya. Lihat lagi tabel yang sudah kamu isi — angka mana yang <strong>lebih sering muncul</strong>? Angka mana yang <strong>lebih jarang</strong>?</p>
+
+      <p>Untuk koin (2 kemungkinan: Angka atau Gambar), biasanya hasilnya akan MENDEKATI seimbang setelah banyak percobaan — sekitar setengah-setengah, walaupun tidak selalu PERSIS sama.</p>
+
+      <p>Sekarang bandingkan dengan dadu (6 kemungkinan: 1 sampai 6):</p>
+
+      <div class="dadu-row">
+        <div class="dadu-sisi">1</div>
+        <div class="dadu-sisi">2</div>
+        <div class="dadu-sisi">3</div>
+        <div class="dadu-sisi">4</div>
+        <div class="dadu-sisi">5</div>
+        <div class="dadu-sisi">6</div>
+      </div>
+      <p class="svg-caption">Dadu punya 6 sisi berbeda, dibanding koin yang hanya punya 2 sisi.</p>
+
+      <p><strong>Pertanyaan untuk didiskusikan:</strong> menurutmu, apakah SATU angka tertentu pada dadu (misalnya angka 4) akan muncul SESERING "Angka" pada koin, kalau dilempar jumlah kali yang sama? Coba pikirkan dulu sebelum lanjut membaca.</p>
+
+      <p>Jawabannya: TIDAK — angka 4 pada dadu biasanya akan muncul LEBIH JARANG dibanding "Angka" pada koin. Ini karena dadu punya LEBIH BANYAK kemungkinan hasil (6 sisi) dibanding koin (2 sisi) — "peluang" untuk tiap sisi dadu jadi "terbagi" ke lebih banyak pilihan.</p>
+
+      <div class="contoh-box">
+        <strong>Semakin BANYAK kemungkinan hasil, semakin JARANG satu hasil tertentu muncul</strong> (kalau semua sisi punya kesempatan yang sama besar untuk muncul).<br>
+        Koin (2 sisi): tiap sisi punya kesempatan besar untuk muncul.<br>
+        Dadu (6 sisi): tiap sisi punya kesempatan yang lebih kecil dibanding sisi koin.
+      </div>
+
+      <p>Sekarang, mari bandingkan hasil eksperimenmu dengan hasil teman-teman sekelas yang melempar koin/dadu yang SAMA JENISNYA. Apakah polanya MIRIP satu sama lain?</p>
+
+      <table class="kelompok-tabel">
+        <tr><th>Kelompok</th><th>Angka</th><th>Gambar</th></tr>
+        <tr><td>Kelompok 1</td><td>9</td><td>11</td></tr>
+        <tr><td>Kelompok 2</td><td>11</td><td>9</td></tr>
+        <tr><td>Kelompok 3</td><td>8</td><td>12</td></tr>
+        <tr><td>Kelompok 4</td><td>10</td><td>10</td></tr>
+      </table>
+
+      <p>Perhatikan: hasil TIAP kelompok BEDA-BEDA (tidak ada yang persis sama), tapi SEMUA kelompok menunjukkan pola yang MIRIP — angkanya berkisar di sekitar 10 (setengah dari 20 lemparan), tidak ada yang jomplang jauh seperti 2 berbanding 18. Ini menunjukkan bahwa meskipun HASIL SETIAP KALI lempar acak (tidak bisa dipastikan), POLA KESELURUHAN dari banyak percobaan cenderung konsisten.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu dan 3 temanmu masing-masing melempar 20 biji jagung ke tanah, mencoba menghitung berapa yang jatuh menghadap "atas" dan berapa yang "bawah".</span></p>
+        <p>Meski hasil SETIAP orang pasti sedikit berbeda (karena acak), kalau kalian bandingkan hasil masing-masing, kalian akan melihat pola yang KURANG LEBIH mirip — tidak ada yang hasilnya "20 semua menghadap atas" sementara yang lain "20 semua menghadap bawah". Semakin banyak jagung yang dilempar, semakin MIRIP pola antar orang, karena keacakan itu "meratakan diri" kalau jumlah percobaannya cukup banyak.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Membandingkan hasil KELOMPOK LAIN yang melakukan eksperimen SERUPA adalah cara yang bagus untuk mengecek apakah pola yang kamu temukan benar-benar konsisten, atau cuma kebetulan dari percobaanmu sendiri. Kalau banyak kelompok menunjukkan pola serupa, itu tanda pola itu bisa dipercaya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Made melempar koin 20 kali (Angka=11, Gambar=9) dan dadu 20 kali (angka 6 muncul 4 kali). Menurutmu, kenapa "Angka" pada koin muncul lebih sering (11 kali) dibanding angka 6 pada dadu (4 kali)?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini terjadi karena koin hanya punya 2 kemungkinan hasil (jadi tiap sisi punya kesempatan besar untuk muncul), sedangkan dadu punya 6 kemungkinan hasil (jadi kesempatan tiap sisi tertentu, seperti angka 6, jadi lebih kecil/tersebar ke lebih banyak pilihan).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Empat kelompok melempar dadu 30 kali masing-masing, dan mencatat berapa kali angka 1 muncul: Kelompok A=6, B=4, C=5, D=5. Apa yang bisa kamu simpulkan dari kemiripan hasil ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Hasil keempat kelompok CUKUP MIRIP satu sama lain (berkisar 4-6 kali), ini menunjukkan pola yang KONSISTEN — bukan kebetulan acak dari satu kelompok saja. Ini memperkuat keyakinan bahwa angka 1 pada dadu itu memang muncul dengan kecenderungan yang mirip di seluruh percobaan, bukan hasil yang aneh dari satu kelompok tertentu.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Rani berpendapat "kalau dadu dilempar lebih banyak sisi (misalnya dadu 12 sisi), maka satu angka tertentu akan MUNCUL LEBIH SERING dibanding dadu 6 sisi". Apakah pendapat Rani tepat? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Rani TIDAK tepat — justru SEBALIKNYA. Dengan LEBIH BANYAK sisi/kemungkinan (12 sisi), setiap angka tertentu justru akan muncul LEBIH JARANG dibanding dadu dengan sisi lebih sedikit (6 sisi), karena kesempatannya "terbagi" ke lebih banyak pilihan yang mungkin.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bandingkan hasil eksperimenmu (dari materi sebelumnya) dengan hasil MINIMAL 2 kelompok/teman lain yang melempar benda SEJENIS (koin dengan koin, atau dadu dengan dadu). Diskusikan: apakah polanya mirip? Sisi mana yang cenderung lebih sering muncul di semua kelompok? Apa dugaanmu tentang alasannya?
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan menantangmu menerapkan pemahamanmu pada situasi yang BELUM PERNAH kamu coba secara langsung — memprediksi kemungkinan SEBELUM membuktikannya lewat eksperimen.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

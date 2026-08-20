@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memprediksi Kemungkinan pada Situasi Baru · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .legenda { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; margin: 0.6rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .legenda span { display: inline-flex; align-items: center; gap: 6px; }
+  .legenda .titik { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.7; font-style: italic; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #cfe2e2; border-left: 5px solid #1f6f78; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #eef6f6; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #1f6f78; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #1f6f78; }
+  .penutup-box { border: 2px solid var(--m-color); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; margin: 1.4rem 0 0.6rem; background: #fdf9f4; text-align: center; }
+  .penutup-box .judul { font-weight: 700; font-size: calc(var(--content-fs) + 1px); color: var(--m-color); margin-bottom: 0.5rem; }
+</style>
+</head>
+<body class="ma-root ma-mapel-matematika">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Matematika
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🎲</span>
+      <div class="ma-cover-eyebrow">Data &amp; Peluang · Peluang — Pengenalan Awal · Materi 3 dari 3 · Pertemuan Inti ⭐</div>
+      <div class="ma-cover-title">Memprediksi Kemungkinan pada Situasi Baru</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Sekarang saatnya menguji pemahamanmu pada situasi yang BELUM PERNAH kamu coba langsung. Bedanya dengan materi sebelumnya: kali ini kamu akan MEMPREDIKSI DULU, baru membuktikan lewat eksperimen — bukan sebaliknya.</p>
+
+      <div class="cerita-box">
+        Sebuah kantong berisi kelereng dengan warna campuran: 7 MERAH, 2 BIRU, dan 1 HIJAU. Kalau kamu mengambil SATU kelereng secara acak (tanpa melihat) dari kantong itu, warna apa yang menurutmu PALING MUNGKIN terambil?
+      </div>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 200 160" width="200">
+          <path d="M 50,40 L 150,40 L 165,150 Q 100,170 35,150 Z" fill="#f5ede0" stroke="var(--ink)" stroke-width="2.5"/>
+          <circle cx="70" cy="70" r="9" fill="#c0392b"/>
+          <circle cx="95" cy="65" r="9" fill="#c0392b"/>
+          <circle cx="120" cy="72" r="9" fill="#c0392b"/>
+          <circle cx="80" cy="95" r="9" fill="#c0392b"/>
+          <circle cx="105" cy="98" r="9" fill="#c0392b"/>
+          <circle cx="65" cy="115" r="9" fill="#c0392b"/>
+          <circle cx="130" cy="100" r="9" fill="#c0392b"/>
+          <circle cx="95" cy="125" r="9" fill="#2c6fbb"/>
+          <circle cx="125" cy="130" r="9" fill="#2c6fbb"/>
+          <circle cx="70" cy="135" r="9" fill="#3a9455"/>
+        </svg>
+      </div>
+      <div class="legenda">
+        <span><span class="titik" style="background:#c0392b;"></span> Merah × 7</span>
+        <span><span class="titik" style="background:#2c6fbb;"></span> Biru × 2</span>
+        <span><span class="titik" style="background:#3a9455;"></span> Hijau × 1</span>
+      </div>
+
+      <p><strong>Sebelum lanjut, coba pikirkan dan tuliskan prediksimu dulu</strong>, beserta ALASANNYA — jangan langsung menebak asal.</p>
+
+      <p>Jawaban yang PALING MASUK AKAL: warna <strong>MERAH</strong> paling mungkin terambil, karena jumlahnya PALING BANYAK di dalam kantong (7 dari 10 kelereng). Semakin BANYAK jumlah suatu warna dibanding warna lain, semakin BESAR kemungkinan warna itu yang terambil saat kamu mengambil secara acak.</p>
+
+      <ol class="langkah">
+        <li><strong>Amati perbandingan jumlah:</strong> Merah (7) jauh lebih banyak dari Biru (2) dan Hijau (1).</li>
+        <li><strong>Prediksi berdasarkan jumlah terbanyak:</strong> Merah PALING MUNGKIN terambil, Hijau PALING TIDAK MUNGKIN (karena jumlahnya paling sedikit).</li>
+        <li><strong>Buktikan dengan eksperimen:</strong> ambil kelereng dari kantong (kembalikan lagi setiap kali, supaya jumlah kelereng tetap sama) sebanyak 10 kali, catat warna yang terambil dengan turus.</li>
+        <li><strong>Bandingkan hasil eksperimen dengan prediksimu:</strong> apakah Merah memang paling sering terambil?</li>
+      </ol>
+
+      <div class="contoh-box">
+        <strong>Prinsip Kunci:</strong> semakin BANYAK jumlah sesuatu dibanding pilihan lain, semakin BESAR kemungkinan itu yang terjadi/terambil saat dipilih secara ACAK — TAPI ini bukan JAMINAN PASTI, hanya lebih MUNGKIN.
+      </div>
+
+      <p><strong>Penting untuk diingat:</strong> meskipun Merah PALING MUNGKIN terambil, itu BUKAN BERARTI Biru atau Hijau TIDAK MUNGKIN sama sekali. Kalau kamu mengambil 10 kali, bisa saja Hijau (yang paling sedikit) tetap terambil 1-2 kali secara kebetulan — namanya juga kejadian acak, hasilnya tidak bisa dipastikan 100%.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu mengundi siapa yang akan maju presentasi duluan di kelas, dengan menuliskan nama di kertas kecil dan memasukkannya ke kotak — tapi nama Made dituliskan di 7 kertas berbeda (karena dia sukarelawan lebih dulu), sedangkan nama-nama lain masing-masing cuma 1 kertas.</span></p>
+        <p>Kalau diambil SATU kertas secara acak, nama Made PALING MUNGKIN yang terambil — bukan karena "curang" atau "pasti", tapi karena jumlah kertas bernama Made jauh LEBIH BANYAK dibanding nama lain. Prinsip yang sama berlaku untuk kelereng di kantong: semakin banyak jumlahnya, semakin besar kemungkinan terpilih secara acak.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Prediksi yang BAIK selalu disertai ALASAN yang merujuk pada JUMLAH/PROPORSI tiap kemungkinan — bukan sekadar tebakan asal. Kalau prediksimu ternyata MELESET setelah eksperimen, itu bukan berarti caramu berpikir salah — kejadian acak memang tidak selalu sesuai prediksi, yang penting alasan di balik prediksimu tetap masuk akal.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Sebuah kantong berisi 3 kelereng kuning dan 9 kelereng ungu. Warna apa yang lebih mungkin terambil secara acak? Jelaskan alasanmu!</div>
+          <div class="soal-a"><b>Pembahasan:</b> <strong>Ungu</strong> lebih mungkin terambil, karena jumlahnya jauh lebih banyak (9) dibanding kuning (3).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Sebuah kotak berisi 5 bola merah dan 5 bola biru (jumlah SAMA). Apakah salah satu warna lebih mungkin terambil dibanding yang lain? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> TIDAK — karena jumlah kedua warna SAMA (5 dan 5), keduanya punya kemungkinan yang SAMA BESAR untuk terambil. Tidak ada warna yang "lebih mungkin" dibanding yang lain dalam kasus ini.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Made memprediksi Hijau (1 dari 10 kelereng) akan terambil paling sering karena "warna hijau itu warna favoritnya". Setelah eksperimen 10 kali, Merah (7 dari 10) memang terambil paling sering (6 kali), sesuai prediksi yang benar. Apa yang salah dengan CARA Made berpikir, meski dia akhirnya "beruntung" kalau ditanya ulang?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Cara berpikir Made SALAH meskipun jika kebetulan prediksinya benar. Alasan "warna favorit" TIDAK ADA HUBUNGANNYA dengan peluang terambilnya kelereng secara acak — yang menentukan adalah JUMLAH/PROPORSI kelereng tiap warna dalam kantong, bukan preferensi pribadi. Prediksi yang baik harus berdasarkan JUMLAH, bukan perasaan atau kesukaan semata.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Siapkan kantong berisi campuran benda kecil dengan warna/jenis berbeda dan JUMLAH yang tidak sama rata (misalnya kancing 3 warna dengan jumlah berbeda). Sebelum mengambil apa pun, tuliskan PREDIKSImu (warna apa yang paling mungkin terambil) beserta alasan berbasis jumlah. Lalu ambil kelereng/kancing 10 kali (kembalikan tiap kali) dan catat hasilnya untuk membuktikan prediksimu.
+      </div>
+
+      <div class="penutup-box">
+        <div class="judul">🎉 Selamat! Kamu Telah Menyelesaikan Seluruh Matematika Kelas 5!</div>
+        <p>Dari Bilangan (nilai tempat sampai pecahan), Aljabar (simbol "=" sampai rasio satuan), Pengukuran (keliling-luas sampai sudut), Geometri (bangun ruang sampai koordinat), hingga Data &amp; Peluang (menyajikan data sampai peluang) — kamu sudah menempuh seluruh 64 pertemuan yang dirancang untuk membangun fondasi matematika yang kuat. Teruslah berlatih dan jangan takut bertanya "kenapa" di balik setiap rumus yang kamu pakai!</p>
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
