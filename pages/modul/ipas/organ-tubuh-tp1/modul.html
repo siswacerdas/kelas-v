@@ -1,1 +1,433 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Organ Tubuh TP1 · IPAS Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b; --gold:#b8860b; --bg:#f7f1e3;
+    --ipas:#2b6ca3; --ipas-light:#eaf3fb; --ipas-dark:#1d4d75;
+    --ink:#2b2b26; --ok:#2e7d4f; --bad:#b3432b; --card:#ffffff; --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6; padding-bottom:80px;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
+  nav.topnav{background:var(--nav); color:#fff; padding:.8em 1.2em; display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;}
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+  header.modul-head{max-width:800px; margin:1.5em auto 0; padding:0 1.2em;}
+  .modul-eyebrow{display:inline-block; background:var(--ipas-light); color:var(--ipas-dark); font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase; padding:.3em .8em; border-radius:999px; margin-bottom:.6em;}
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+  .stepper-wrap{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); padding:.6em 1.2em;}
+  .stepper{max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto; padding-bottom:.2em;}
+  .step-dot{flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%; background:#fff; border:2px solid var(--line); color:#8a8471; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;}
+  .step-dot.active{background:var(--ipas); border-color:var(--ipas); color:#fff;}
+  .step-dot.done{background:var(--ipas-light); border-color:var(--ipas); color:var(--ipas-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);}
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%; background:var(--ipas); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:700;}
+  .badge-inti{background:var(--gold);}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+  .callout{background:var(--ipas-light); border-left:4px solid var(--ipas); padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;}
+  .callout.warn{background:#fbeee7; border-left-color:var(--bad);}
+  .callout.privasi{background:#f3ecf9; border-left-color:#7a5aa8;}
+  textarea.ans, input.ans-input{width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line); border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);}
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+  .quiz-item{border-top:1px dashed var(--line); padding-top:1em; margin-top:1em;}
+  .quiz-item:first-child{border-top:none; padding-top:0; margin-top:0;}
+  .quiz-q{font-weight:600; margin-bottom:.6em;}
+  .choice-btn{display:block; width:100%; text-align:left; padding:.6em .9em; margin-bottom:.4em; border:1.5px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; font-family:inherit; font-size:.96em; color:var(--ink); transition:.12s;}
+  .choice-btn:hover{border-color:var(--ipas);}
+  .choice-btn.correct{background:#e6f4ea; border-color:var(--ok); color:#1e5c37; font-weight:600;}
+  .choice-btn.wrong{background:#fbe9e4; border-color:var(--bad); color:#8a2f1a;}
+  .choice-btn[disabled]{cursor:default;}
+  .quiz-feedback{font-size:.9em; margin-top:.4em; padding:.5em .7em; border-radius:6px;}
+  .quiz-feedback.ok{background:#e6f4ea; color:#1e5c37;}
+  .quiz-feedback.bad{background:#fbe9e4; color:#8a2f1a;}
+  .data-table{width:100%; border-collapse:collapse; margin:.6em 0;}
+  .data-table th, .data-table td{border:1px solid var(--line); padding:.4em .5em; font-size:.9em; text-align:center;}
+  .data-table th{background:var(--ipas-light); color:var(--ipas-dark);}
+  .data-table td:first-child, .data-table th:first-child{text-align:left; font-weight:600;}
+  .data-table input{width:100%; border:none; background:transparent; font-family:inherit; font-size:.95em; text-align:center;}
+  .step-list{background:var(--ipas-light); border-radius:10px; padding:.9em 1.2em; margin:.8em 0;}
+  .step-list li{margin-bottom:.4em;}
+  .reveal-btn{background:none; border:1.5px solid var(--ipas); color:var(--ipas-dark); border-radius:999px; padding:.4em 1em; font-weight:600; font-size:.85em; cursor:pointer;}
+  .reveal-box{display:none; margin-top:.6em; background:var(--ipas-light); border-radius:8px; padding:.7em .9em; font-size:.92em;}
+  .reveal-box.show{display:block;}
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em; border-radius:999px; border:none; cursor:pointer;}
+  .btn-primary{background:var(--ipas); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--ipas-dark); border:1.5px solid var(--ipas);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+  details.guru-note{background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px; padding:.8em 1em; margin:1.4em 0; font-size:.92em;}
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+  .glossary dt{font-weight:700; color:var(--ipas-dark); margin-top:.6em;}
+  .glossary dd{margin:.15em 0 0;}
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>IPAS · Organ Tubuh TP1</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">IPAS · Kelompok A (Sains-Eksperimental)</span>
+  <h1>Respons Tubuh terhadap Aktivitas Fisik</h1>
+  <p class="sub">Modul Ajar Mandiri · Mengukur detak jantungmu sendiri sebelum dan sesudah beraktivitas, lalu merefleksikan kaitannya dengan kebiasaan menjaga kesehatan.</p>
+</header>
+
+<div class="stepper-wrap"><div class="stepper" id="stepper"></div></div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Waktunya Mendengarkan Detak Jantungmu Sendiri! ❤️</h2>
+      <p>Setelah mengenal letak dan fungsi jantung di modul sebelumnya, sekarang saatnya membuktikan sendiri: <strong>apa yang terjadi pada detak jantungmu saat beraktivitas fisik?</strong></p>
+      <div class="callout privasi">
+        <strong>Privasi itu penting:</strong> data detak jantung setiap anak berbeda-beda dan itu wajar. Hasil kelas nanti akan dicatat pakai nomor urut/inisial, bukan nama lengkap terbuka — jangan membanding-bandingkan detak jantungmu dengan temanmu secara terbuka ya.
+      </div>
+      <p>Modul ini terbagi menjadi 5 Tangga dan 1 Pertemuan Inti. Ada bagian yang perlu kamu lakukan langsung (meraba nadi, aktivitas fisik) bersama gurumu di kelas.</p>
+    </div>
+    <div class="nav-buttons"><span></span><button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button></div>
+  </div>
+
+  <!-- PAGE 1 — ASESMEN AWAL -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">?</span><div><h2>Sebelum Mulai</h2><span class="tag">Asesmen Awal</span></div></div>
+      <div id="quiz-awal"></div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(2)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 2 — TANGGA 1: MERABA NADI -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><div><h2>Belajar Meraba Nadi</h2><span class="tag">Tangga 1 · Mengamati (teknik dasar)</span></div></div>
+      <p>Sebelum mengukur, kamu perlu tahu caranya. Ikuti panduan gurumu langkah demi langkah:</p>
+      <ol class="step-list">
+        <li>Balikkan telapak tanganmu menghadap ke atas.</li>
+        <li>Letakkan 2 jari (telunjuk &amp; tengah) di pergelangan tanganmu, di bawah ibu jari.</li>
+        <li>Tekan perlahan sampai kamu merasakan denyut/ketukan kecil.</li>
+        <li>Hitung berapa kali denyut itu terasa dalam 15 detik, lalu kalikan 4 untuk mendapat detak per menit.</li>
+      </ol>
+      <div id="quiz-tangga1"></div>
+      <label class="field-label">Coba raba nadimu sekarang dalam keadaan diam. Berapa detak per menit yang kamu hitung?</label>
+      <input class="ans-input" data-key="tangga1-detak-diam" type="text" placeholder="Contoh: 80 kali per menit">
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(3)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 3 — TANGGA 2: PREDIKSI -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">2</span><div><h2>Memprediksi Sebelum Mencoba</h2><span class="tag">Tangga 2 · Mempertanyakan dan Memprediksi</span></div></div>
+      <p>Sebelum beraktivitas fisik, coba tebak dulu apa yang akan terjadi.</p>
+      <label class="field-label">Menurutmu, detak jantung setelah lari di tempat/lompat tali 1 menit akan lebih cepat atau lebih lambat? Kenapa?</label>
+      <textarea class="ans" data-key="tangga2-prediksi" placeholder="Menurutku..., karena..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(2)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(4)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 4 — TANGGA 3: MENGUKUR -->
+  <div class="page" data-page="4">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">3</span><div><h2>Mengukur Sebelum dan Sesudah Aktivitas</h2><span class="tag">Tangga 3 · Melakukan Penyelidikan</span></div></div>
+      <div class="callout warn">Bagian ini dilakukan langsung bersama gurumu di kelas: lompat tali atau lari di tempat selama 1 menit.</div>
+      <label class="field-label">Detak jantungmu SEBELUM beraktivitas (per menit):</label>
+      <input class="ans-input" data-key="tangga3-sebelum" type="text" placeholder="Contoh: 82">
+      <label class="field-label">Detak jantungmu SESUDAH beraktivitas (per menit):</label>
+      <input class="ans-input" data-key="tangga3-sesudah" type="text" placeholder="Contoh: 130">
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(3)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(5)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 5 — TANGGA 4: MEMBANDINGKAN TABEL -->
+  <div class="page" data-page="5">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">4</span><div><h2>Membandingkan dengan Teman Sekelas</h2><span class="tag">Tangga 4 · Memproses dan Menganalisis Data</span></div></div>
+      <p>Gurumu akan membuat tabel kelas berisi hasil semua siswa (pakai nomor urut, bukan nama). Catat beberapa contoh hasil di sini untuk membandingkan:</p>
+      <table class="data-table">
+        <thead><tr><th>Nomor</th><th>Sebelum</th><th>Sesudah</th></tr></thead>
+        <tbody>
+          <tr><td>Milikku</td><td><input class="ans-input tbl-input" data-key="tbl-milikku-sebelum" type="text"></td><td><input class="ans-input tbl-input" data-key="tbl-milikku-sesudah" type="text"></td></tr>
+          <tr><td>Contoh 1</td><td><input class="ans-input tbl-input" data-key="tbl-1-sebelum" type="text"></td><td><input class="ans-input tbl-input" data-key="tbl-1-sesudah" type="text"></td></tr>
+          <tr><td>Contoh 2</td><td><input class="ans-input tbl-input" data-key="tbl-2-sebelum" type="text"></td><td><input class="ans-input tbl-input" data-key="tbl-2-sesudah" type="text"></td></tr>
+        </tbody>
+      </table>
+      <label class="field-label">Apa yang kamu perhatikan dari perbandingan hasil-hasil ini? Apakah semua detak jantung naik?</label>
+      <textarea class="ans" data-key="tangga4-perhatian" placeholder="Aku memperhatikan..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(4)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(6)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 6 — TANGGA 5: EVALUASI -->
+  <div class="page" data-page="6">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">5</span><div><h2>Membandingkan Prediksi dengan Hasil Nyata</h2><span class="tag">Tangga 5 · Mengevaluasi dan Refleksi</span></div></div>
+      <div id="quiz-tangga5"></div>
+      <label class="field-label">Apakah prediksimu di Tangga 2 sesuai dengan hasil pengukuranmu di Tangga 3? Jelaskan.</label>
+      <textarea class="ans" data-key="tangga5-kesesuaian" placeholder="Prediksiku sesuai/tidak sesuai karena..."></textarea>
+      <label class="field-label">Bagaimana kebiasaanmu sehari-hari (aktivitas fisik, waktu tidur)? Menurutmu apakah kebiasaan itu baik untuk jantungmu?</label>
+      <textarea class="ans" data-key="tangga5-kebiasaan" placeholder="Kebiasaanku sehari-hari..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(5)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(7)">Lanjut ke Pertemuan Inti →</button></div>
+  </div>
+
+  <!-- PAGE 7 — INTI -->
+  <div class="page" data-page="7">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><div><h2>Pertemuan Inti — Refleksi Pribadi</h2><span class="tag">Merefleksikan <span class="kko-tag">KKO: Merefleksikan</span></span></div></div>
+      <p>Ini bagian terpenting: satu kesimpulan pribadi yang menghubungkan data detak jantungmu dengan cara kamu menjaga kesehatan.</p>
+      <label class="field-label">Tuliskan satu kesimpulan pribadi tentang kaitan aktivitas fisik dengan kesehatan jantungmu (sertakan angka dari hasil pengukuranmu):</label>
+      <textarea class="ans" data-key="inti-kesimpulan" placeholder="Dari hasil pengukuranku (sebelum ... kali/menit, sesudah ... kali/menit), aku menyimpulkan bahwa..."></textarea>
+      <button class="reveal-btn" onclick="toggleReveal('reveal-inti')">Lihat contoh kesimpulan yang baik</button>
+      <div class="reveal-box" id="reveal-inti">
+        Contoh: "Detak jantungku sebelum lompat tali 84 kali/menit, sesudahnya jadi 132 kali/menit. Ini menunjukkan jantungku bekerja lebih keras saat tubuh butuh lebih banyak oksigen. Aku ingin lebih rajin berolahraga supaya jantungku makin kuat, dan tidur cukup supaya tubuhku bisa istirahat."
+      </div>
+      <div class="callout" style="margin-top:1em;">
+        <strong>Catatan:</strong> Jurnal reflektifmu (prediksi → hasil → kesimpulan) inilah yang akan dinilai gurumu sebagai asesmen sumatif TP ini — bukan ketepatan medis, tapi kejujuran proses berpikirmu.
+      </div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(6)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(8)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 8 — GLOSARIUM + PENUTUP -->
+  <div class="page" data-page="8">
+    <div class="card">
+      <h2>Glosarium</h2>
+      <dl class="glossary">
+        <dt>Detak jantung</dt><dd>Jumlah kali jantung berdetak/memompa dalam satu menit, bisa dirasakan lewat nadi.</dd>
+        <dt>Nadi</dt><dd>Tempat di tubuh (mis. pergelangan tangan) di mana kita bisa merasakan denyut jantung dari luar.</dd>
+        <dt>Prediksi</dt><dd>Dugaan yang disertai alasan tentang apa yang akan terjadi, sebelum dibuktikan.</dd>
+        <dt>Refleksi</dt><dd>Memikirkan kembali suatu pengalaman/data untuk menghubungkannya dengan diri sendiri.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Selesai! 🎉</h2>
+      <p>Kamu sudah membuktikan sendiri bagaimana tubuhmu bereaksi terhadap aktivitas fisik lewat data nyata. Semoga refleksimu membantumu menjaga kesehatan jantung sejak sekarang!</p>
+      <div class="save-row"><span id="saved-label">Belum ada progres tersimpan.</span><button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button></div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> IPAS Kelompok A, "Mengukur dan membandingkan respons tubuh (detak jantung, frekuensi napas) sebelum dan sesudah aktivitas fisik, lalu merefleksikan kaitannya dengan kebiasaan menjaga kesehatan diri sendiri" (Dokumen 2 TP Kelas 5 IPAS, Bagian B, TP1).</li>
+        <li><strong>Koreksi JP:</strong> dokumen sumber mencantumkan "8 JP" untuk 6 pertemuan — tidak konsisten dengan standar 2 JP/pertemuan. Mengikuti koreksi di Peta_Aktivitas_IPAS_Kelas5.docx, modul ini dibangun untuk <strong>12 JP</strong> (6 pertemuan × 2 JP: 5 tangga + 1 inti).</li>
+        <li><strong>Urutan pengajaran:</strong> TP1 ini diajarkan SETELAH TP2 (Struktur &amp; Fungsi Organ) — pastikan modul Organ Tubuh TP2 sudah dikerjakan lebih dulu supaya siswa punya bekal pengetahuan jantung sebelum mengukur.</li>
+        <li><strong>Alternatif yang dipakai:</strong> materi ditulis netral terhadap jenis aktivitas fisik (Alternatif 1 "Lompat Tali" / Alternatif 2 "Lari di Tempat" di Scaffolding_IPAS_Kelas5_OrganTubuh.docx) — guru bebas memilih sesuai kondisi kelas/ruang.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi <code>pages/materi/ipas/organ-tubuh-tp1/</code> belum bisa saya baca saat modul ini dibuat; isi disusun dari Scaffolding_IPAS_Kelas5_OrganTubuh.docx dan Dokumen2_TP_Kelas5_IPAS.docx. Mohon dicek ulang terhadap materi resmi begitu tersedia.</li>
+        <li><strong>Privasi data kesehatan:</strong> sesuai catatan sumber, hindari membandingkan detak jantung antarsiswa secara terbuka di depan kelas — modul ini menyisipkan pengingat privasi di halaman pengantar, dan tabel Tangga 4 sengaja tidak memakai nama asli.</li>
+        <li><strong>Data pengukuran TIDAK auto-graded</strong> — bergantung pada aktivitas fisik nyata dan kondisi tubuh tiap anak yang berbeda-beda; yang dinilai adalah kejujuran proses reflektif, bukan angka tertentu.</li>
+        <li><strong>Asesmen sumatif sesungguhnya:</strong> jurnal reflektif pribadi (prediksi → hasil → kesimpulan) — lihat Scaffolding Blok 3. Jawaban di halaman Inti sudah dirancang selaras dengan format ini.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:ipas-organ-tubuh-tp1</code> — unik, tidak bentrok modul lain.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:ipas-organ-tubuh-tp1";
+const TOTAL_PAGES = 9; // 0..8
+const INTI_PAGE = 7;
+
+let state = { page: 0, answers: {}, checks: {}, actions: [] };
+let isReplaying = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+function logAction(action){
+  if(isReplaying) return;
+  state.actions.push(action);
+  saveState();
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => { state.answers[key] = el.value; saveState(); });
+  });
+}
+
+function toggleReveal(id){
+  const box = document.getElementById(id);
+  if(box) box.classList.toggle("show");
+}
+
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  if(!group) return;
+  const buttons = group.querySelectorAll(".choice-btn");
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if(i === correctIdx) b.classList.add("correct");
+    if(i === chosenIdx && chosenIdx !== correctIdx) b.classList.add("wrong");
+  });
+  const fb = group.querySelector(".quiz-feedback");
+  if(fb){
+    fb.classList.remove("hidden");
+    if(chosenIdx === correctIdx){
+      fb.textContent = "Betul! " + (group.dataset.explain || "");
+      fb.classList.add("ok"); fb.classList.remove("bad");
+    }else{
+      fb.textContent = "Belum tepat. " + (group.dataset.explain || "");
+      fb.classList.add("bad"); fb.classList.remove("ok");
+    }
+  }
+  logAction({type:"mcq", group: groupId, chosen: chosenIdx});
+}
+
+function renderQuiz(containerId, items){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = items.map((item, qi) => {
+    const groupId = containerId + "-q" + qi;
+    if(item.type === "mcq"){
+      const opts = item.options.map((opt, oi) =>
+        `<button type="button" class="choice-btn" onclick="checkMCQ('${groupId}', this, ${oi}, ${item.correct})">${opt}</button>`
+      ).join("");
+      return `<div class="quiz-item">
+        <div class="quiz-q">${qi+1}. ${item.text}</div>
+        <div id="${groupId}" data-explain="${(item.explain||"").replace(/"/g,'&quot;')}">
+          ${opts}
+          <div class="quiz-feedback hidden"></div>
+        </div>
+      </div>`;
+    }
+    return "";
+  }).join("");
+  wireTextPersistence();
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","?","1","2","3","4","5","⭐","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === INTI_PAGE ? " inti" : "");
+    if(i === state.page) dot.classList.add("active");
+    else if(i < state.page) dot.classList.add("done");
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {}, checks: {}, actions: [] };
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => el.value = "");
+  document.querySelectorAll(".choice-btn").forEach(b => { b.disabled = false; b.classList.remove("correct","wrong"); });
+  document.querySelectorAll(".quiz-feedback").forEach(f => f.classList.add("hidden"));
+  document.querySelectorAll(".reveal-box").forEach(b => b.classList.remove("show"));
+  goToPage(0);
+}
+
+function replayActions(){
+  isReplaying = true;
+  state.actions.forEach(a => {
+    if(a.type === "mcq"){
+      const group = document.getElementById(a.group);
+      if(group){
+        const btn = group.querySelectorAll(".choice-btn")[a.chosen];
+        if(btn) btn.click();
+      }
+    }
+  });
+  isReplaying = false;
+}
+
+const QUIZ_AWAL = [
+  {type:"mcq", text:"Menurutmu, apa yang terjadi pada detak jantung setelah kita berolahraga?", options:["Menjadi lebih cepat","Menjadi lebih lambat","Tidak berubah sama sekali"], correct:0, explain:"Saat tubuh bergerak aktif, jantung bekerja lebih keras memompa darah, sehingga detaknya menjadi lebih cepat."}
+];
+const QUIZ_TANGGA1 = [
+  {type:"mcq", text:"Kalau kamu menghitung denyut nadi selama 15 detik dan dapat 20 kali, berapa detak per menit?", options:["20","40","80"], correct:2, explain:"20 dikali 4 (karena 15 detik x 4 = 60 detik/1 menit) sama dengan 80 detak per menit."}
+];
+const QUIZ_TANGGA5 = [
+  {type:"mcq", text:"Kalau hasil pengukuranmu TIDAK sesuai prediksi awalmu, apa yang sebaiknya kamu lakukan?", options:["Mengubah data supaya sesuai prediksi","Tetap mencatat data yang sebenarnya dan menjelaskan kejujuran hasilnya","Tidak usah menulis kesimpulan"], correct:1, explain:"Ilmuwan yang baik selalu jujur pada data asli, meski berbeda dari prediksi awal — ini bagian penting dari berpikir ilmiah."}
+];
+
+function initModul(){
+  loadState();
+  renderQuiz("quiz-awal", QUIZ_AWAL);
+  renderQuiz("quiz-tangga1", QUIZ_TANGGA1);
+  renderQuiz("quiz-tangga5", QUIZ_TANGGA5);
+  wireTextPersistence();
+  replayActions();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
