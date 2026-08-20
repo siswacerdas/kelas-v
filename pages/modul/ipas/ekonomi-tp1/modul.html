@@ -1,1 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Ekonomi Masyarakat TP1 · IPAS Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b; --gold:#b8860b; --bg:#f7f1e3;
+    --ipas:#2b6ca3; --ipas-light:#eaf3fb; --ipas-dark:#1d4d75;
+    --ink:#2b2b26; --ok:#2e7d4f; --bad:#b3432b; --card:#ffffff; --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6; padding-bottom:80px;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
+  nav.topnav{background:var(--nav); color:#fff; padding:.8em 1.2em; display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;}
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+  header.modul-head{max-width:800px; margin:1.5em auto 0; padding:0 1.2em;}
+  .modul-eyebrow{display:inline-block; background:var(--ipas-light); color:var(--ipas-dark); font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase; padding:.3em .8em; border-radius:999px; margin-bottom:.6em;}
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+  .stepper-wrap{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); padding:.6em 1.2em;}
+  .stepper{max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto; padding-bottom:.2em;}
+  .step-dot{flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%; background:#fff; border:2px solid var(--line); color:#8a8471; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;}
+  .step-dot.active{background:var(--ipas); border-color:var(--ipas); color:#fff;}
+  .step-dot.done{background:var(--ipas-light); border-color:var(--ipas); color:var(--ipas-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);}
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%; background:var(--ipas); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:700;}
+  .badge-inti{background:var(--gold);}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+  .callout{background:var(--ipas-light); border-left:4px solid var(--ipas); padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;}
+  .callout.warn{background:#fbeee7; border-left-color:var(--bad);}
+  textarea.ans, input.ans-input{width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line); border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);}
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+  .quiz-item{border-top:1px dashed var(--line); padding-top:1em; margin-top:1em;}
+  .quiz-item:first-child{border-top:none; padding-top:0; margin-top:0;}
+  .quiz-q{font-weight:600; margin-bottom:.6em;}
+  .choice-btn{display:block; width:100%; text-align:left; padding:.6em .9em; margin-bottom:.4em; border:1.5px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; font-family:inherit; font-size:.96em; color:var(--ink); transition:.12s;}
+  .choice-btn:hover{border-color:var(--ipas);}
+  .choice-btn.correct{background:#e6f4ea; border-color:var(--ok); color:#1e5c37; font-weight:600;}
+  .choice-btn.wrong{background:#fbe9e4; border-color:var(--bad); color:#8a2f1a;}
+  .choice-btn[disabled]{cursor:default;}
+  .quiz-feedback{font-size:.9em; margin-top:.4em; padding:.5em .7em; border-radius:6px;}
+  .quiz-feedback.ok{background:#e6f4ea; color:#1e5c37;}
+  .quiz-feedback.bad{background:#fbe9e4; color:#8a2f1a;}
+  .data-table{width:100%; border-collapse:collapse; margin:.6em 0; font-size:.9em;}
+  .data-table th, .data-table td{border:1px solid var(--line); padding:.4em .5em;}
+  .data-table th{background:var(--ipas-light); color:var(--ipas-dark);}
+  .data-table input, .data-table select{width:100%; border:none; background:transparent; font-family:inherit; font-size:.95em;}
+  .table-scroll{overflow-x:auto;}
+  .reveal-btn{background:none; border:1.5px solid var(--ipas); color:var(--ipas-dark); border-radius:999px; padding:.4em 1em; font-weight:600; font-size:.85em; cursor:pointer;}
+  .reveal-box{display:none; margin-top:.6em; background:var(--ipas-light); border-radius:8px; padding:.7em .9em; font-size:.92em;}
+  .reveal-box.show{display:block;}
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em; border-radius:999px; border:none; cursor:pointer;}
+  .btn-primary{background:var(--ipas); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--ipas-dark); border:1.5px solid var(--ipas);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+  details.guru-note{background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px; padding:.8em 1em; margin:1.4em 0; font-size:.92em;}
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+  .glossary dt{font-weight:700; color:var(--ipas-dark); margin-top:.6em;}
+  .glossary dd{margin:.15em 0 0;}
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>IPAS · Ekonomi Masyarakat</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">IPAS · Kelompok B (Sosial-Informasional)</span>
+  <h1>Kegiatan Ekonomi Masyarakat</h1>
+  <p class="sub">Modul Ajar Mandiri · Mengamati dan mengklasifikasikan jenis-jenis usaha di sekitar rumah/sekolah ke dalam kategori produksi, distribusi, dan konsumsi.</p>
+</header>
+
+<div class="stepper-wrap"><div class="stepper" id="stepper"></div></div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Jadi Detektif Ekonomi di Sekitarmu! 🏪🛵</h2>
+      <p>Setiap hari kamu lewat banyak usaha kecil — warung, bengkel, tukang sayur keliling. Modul ini mengajakmu mengamati dan mengelompokkan usaha-usaha itu ke tiga kategori: <strong>produksi</strong> (membuat barang), <strong>distribusi</strong> (menyalurkan/menjual barang), dan <strong>konsumsi</strong> (memakai/menghabiskan barang).</p>
+      <div class="callout">Modul ini singkat: 1 Tangga dan 1 Pertemuan Inti. Kamu boleh mengamati dari rumah (dibantu keluarga) atau mengingat perjalananmu ke sekolah setiap hari — sesuai arahan gurumu.</div>
+    </div>
+    <div class="nav-buttons"><span></span><button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button></div>
+  </div>
+
+  <!-- PAGE 1 — ASESMEN AWAL -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">?</span><div><h2>Sebelum Mulai</h2><span class="tag">Asesmen Awal</span></div></div>
+      <div id="quiz-awal"></div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(2)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 2 — TANGGA 1 -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><div><h2>Mencatat Usaha di Sekitarmu</h2><span class="tag">Tangga 1 · Mengamati</span></div></div>
+      <div class="callout warn">Amati/ingat usaha-usaha di sekitar rumahmu atau di sepanjang perjalanan ke sekolah. Catat sebanyak yang kamu bisa — bukan dari buku, tapi dari pengamatan/ingatanmu sendiri.</div>
+      <div id="quiz-tangga1"></div>
+      <label class="field-label">Tuliskan minimal 5 jenis usaha yang kamu temui/ingat di sekitarmu (nama usahanya saja, jangan dikategorikan dulu):</label>
+      <textarea class="ans" data-key="tangga1-daftar" placeholder="1) Warung Bu Siti - jual sembako &#10;2) ... &#10;3) ..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(3)">Lanjut ke Pertemuan Inti →</button></div>
+  </div>
+
+  <!-- PAGE 3 — INTI -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><div><h2>Pertemuan Inti — Mengklasifikasikan</h2><span class="tag">Mengklasifikasikan <span class="kko-tag">KKO: Mengamati &amp; Mengklasifikasikan</span></span></div></div>
+      <p>Sekarang kelompokkan usaha-usaha yang kamu catat tadi ke tiga kategori. Ingat: <strong>produksi</strong> = membuat barang (pabrik tahu, petani), <strong>distribusi</strong> = menyalurkan/menjual (warung, pedagang keliling), <strong>konsumsi</strong> = memakai barang/jasa (rumah makan yang kita datangi, salon).</p>
+      <div id="quiz-inti"></div>
+      <p style="font-weight:600; margin-top:1em;">Isi tabel klasifikasi dari daftar usahamu di Tangga 1:</p>
+      <div class="table-scroll">
+        <table class="data-table" id="klasifikasi-table"></table>
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('reveal-inti')">Lihat contoh klasifikasi</button>
+      <div class="reveal-box" id="reveal-inti">
+        Contoh: "Petani sayur" → Produksi (menghasilkan sayur). "Tukang sayur keliling" → Distribusi (menyalurkan sayur dari petani ke rumah-rumah). "Ibu yang membeli sayur untuk dimasak" → Konsumsi (memakai/menghabiskan barang).
+      </div>
+      <label class="field-label" style="margin-top:1em;">Pilih SATU usaha dari daftarmu, lalu jelaskan alasan kenapa kamu memasukkannya ke kategori itu:</label>
+      <textarea class="ans" data-key="inti-alasan" placeholder="Usaha yang kupilih: ... Aku memasukkannya ke kategori ... karena..."></textarea>
+      <div class="callout" style="margin-top:1em;">
+        <strong>Catatan:</strong> Kamu akan mempresentasikan tabel klasifikasimu secara singkat ke kelompok kecil di kelas — siapkan alasan untuk tiap usaha yang kamu kelompokkan.
+      </div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(2)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(4)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 4 — GLOSARIUM + PENUTUP -->
+  <div class="page" data-page="4">
+    <div class="card">
+      <h2>Glosarium</h2>
+      <dl class="glossary">
+        <dt>Produksi</dt><dd>Kegiatan menghasilkan/membuat barang atau jasa (mis. petani, pabrik, tukang jahit).</dd>
+        <dt>Distribusi</dt><dd>Kegiatan menyalurkan atau menjual barang dari yang membuat ke yang membutuhkan (mis. warung, pedagang keliling, kurir).</dd>
+        <dt>Konsumsi</dt><dd>Kegiatan memakai atau menghabiskan barang/jasa untuk memenuhi kebutuhan (mis. membeli dan memakan makanan).</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Selesai! 🎉</h2>
+      <p>Kamu sudah belajar melihat kegiatan ekonomi yang selama ini ada di sekitarmu, tapi mungkin belum kamu sadari. Sampai jumpa di topik IPAS berikutnya!</p>
+      <div class="save-row"><span id="saved-label">Belum ada progres tersimpan.</span><button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button></div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> IPAS Kelompok B, "Mengamati dan mengklasifikasikan jenis-jenis kegiatan ekonomi (produksi, distribusi, konsumsi) di lingkungan sekitar rumah/sekolah" (Dokumen 2 TP Kelas 5 IPAS, Bagian G) — 6 JP, 2 pertemuan (1 tangga + 1 inti). Tanpa dependensi eksternal — bisa dikerjakan kapan saja dalam Kelompok B.</li>
+        <li><strong>Alternatif yang dipakai:</strong> materi ditulis netral terhadap Alternatif 1 (Observasi Mandiri Sekitar Rumah, ada tugas rumah) / Alternatif 2 (Mengingat Rute ke Sekolah, sepenuhnya di kelas) di Scaffolding_IPAS_Kelas5_EkonomiMasyarakat.docx — guru bebas memilih sesuai kebijakan tugas rumah kelasnya.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi <code>pages/materi/ipas/ekonomi-tp1/</code> belum bisa saya baca saat modul ini dibuat; isi disusun dari Scaffolding_IPAS_Kelas5_EkonomiMasyarakat.docx dan Dokumen2_TP_Kelas5_IPAS.docx. Mohon dicek ulang terhadap materi resmi begitu tersedia.</li>
+        <li><strong>Sensitivitas latar ekonomi keluarga:</strong> sesuai catatan sumber, hindari menilai/mengomentari jenis usaha keluarga siswa sebagai lebih rendah/kurang dibanding yang lain saat presentasi berlangsung — modul tidak meminta detail kepemilikan usaha (siapa pemiliknya), hanya jenis usaha yang diamati.</li>
+        <li><strong>Asesmen sumatif sesungguhnya:</strong> tabel klasifikasi hasil observasi dipresentasikan singkat ke kelompok kecil (lihat Scaffolding Blok 3) — dinilai dari ketepatan kategori dan kelengkapan pengamatan nyata, bukan dari daftar umum di buku.</li>
+        <li><strong>Sinkronisasi lintas mapel:</strong> topik ini TIDAK menjadi prasyarat untuk Letak Geografis, tapi hasilnya (bersama Letak Geografis) akan dirujuk di Sejarah &amp; Budaya sebagai sintesis — pastikan modul ini selesai sebelum modul Sejarah &amp; Budaya dikerjakan.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:ipas-ekonomi-tp1</code> — unik, tidak bentrok modul lain.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:ipas-ekonomi-tp1";
+const TOTAL_PAGES = 5; // 0..4
+const INTI_PAGE = 3;
+const KLASIFIKASI_ROWS = 5;
+
+let state = { page: 0, answers: {}, checks: {}, actions: [], klas: {} };
+let isReplaying = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+function logAction(action){
+  if(isReplaying) return;
+  state.actions.push(action);
+  saveState();
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => { state.answers[key] = el.value; saveState(); });
+  });
+}
+function wireKlasPersistence(){
+  document.querySelectorAll(".klas-name, .klas-select").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.klas[key] !== undefined) el.value = state.klas[key];
+    el.addEventListener("input", () => { state.klas[key] = el.value; saveState(); });
+    el.addEventListener("change", () => { state.klas[key] = el.value; saveState(); });
+  });
+}
+
+function toggleReveal(id){
+  const box = document.getElementById(id);
+  if(box) box.classList.toggle("show");
+}
+
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  if(!group) return;
+  const buttons = group.querySelectorAll(".choice-btn");
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if(i === correctIdx) b.classList.add("correct");
+    if(i === chosenIdx && chosenIdx !== correctIdx) b.classList.add("wrong");
+  });
+  const fb = group.querySelector(".quiz-feedback");
+  if(fb){
+    fb.classList.remove("hidden");
+    if(chosenIdx === correctIdx){
+      fb.textContent = "Betul! " + (group.dataset.explain || "");
+      fb.classList.add("ok"); fb.classList.remove("bad");
+    }else{
+      fb.textContent = "Belum tepat. " + (group.dataset.explain || "");
+      fb.classList.add("bad"); fb.classList.remove("ok");
+    }
+  }
+  logAction({type:"mcq", group: groupId, chosen: chosenIdx});
+}
+
+function renderQuiz(containerId, items){
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = items.map((item, qi) => {
+    const groupId = containerId + "-q" + qi;
+    if(item.type === "mcq"){
+      const opts = item.options.map((opt, oi) =>
+        `<button type="button" class="choice-btn" onclick="checkMCQ('${groupId}', this, ${oi}, ${item.correct})">${opt}</button>`
+      ).join("");
+      return `<div class="quiz-item">
+        <div class="quiz-q">${qi+1}. ${item.text}</div>
+        <div id="${groupId}" data-explain="${(item.explain||"").replace(/"/g,'&quot;')}">
+          ${opts}
+          <div class="quiz-feedback hidden"></div>
+        </div>
+      </div>`;
+    }
+    return "";
+  }).join("");
+  wireTextPersistence();
+}
+
+function renderKlasifikasiTable(){
+  const table = document.getElementById("klasifikasi-table");
+  if(!table) return;
+  let head = "<tr><th>Nama Usaha</th><th>Kategori</th></tr>";
+  let rows = "";
+  for(let i=1;i<=KLASIFIKASI_ROWS;i++){
+    rows += "<tr><td><input class='klas-name' data-key='nama-" + i + "' type='text' placeholder='Nama usaha ke-" + i + "'></td>" +
+      "<td><select class='klas-select' data-key='kategori-" + i + "'>" +
+      "<option value=''>Pilih...</option>" +
+      "<option value='produksi'>Produksi</option>" +
+      "<option value='distribusi'>Distribusi</option>" +
+      "<option value='konsumsi'>Konsumsi</option>" +
+      "</select></td></tr>";
+  }
+  table.innerHTML = head + rows;
+  wireKlasPersistence();
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","?","1","⭐","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === INTI_PAGE ? " inti" : "");
+    if(i === state.page) dot.classList.add("active");
+    else if(i < state.page) dot.classList.add("done");
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {}, checks: {}, actions: [], klas: {} };
+  document.querySelectorAll("textarea.ans, input.ans-input, .klas-name").forEach(el => el.value = "");
+  document.querySelectorAll(".klas-select").forEach(el => el.value = "");
+  document.querySelectorAll(".choice-btn").forEach(b => { b.disabled = false; b.classList.remove("correct","wrong"); });
+  document.querySelectorAll(".quiz-feedback").forEach(f => f.classList.add("hidden"));
+  document.querySelectorAll(".reveal-box").forEach(b => b.classList.remove("show"));
+  goToPage(0);
+}
+
+function replayActions(){
+  isReplaying = true;
+  state.actions.forEach(a => {
+    if(a.type === "mcq"){
+      const group = document.getElementById(a.group);
+      if(group){
+        const btn = group.querySelectorAll(".choice-btn")[a.chosen];
+        if(btn) btn.click();
+      }
+    }
+  });
+  isReplaying = false;
+}
+
+const QUIZ_AWAL = [
+  {type:"mcq", text:"Menurutmu, warung yang menjual sembako termasuk kegiatan ekonomi apa?", options:["Produksi","Distribusi","Konsumsi"], correct:1, explain:"Warung menyalurkan/menjual barang dari produsen ke pembeli — ini termasuk distribusi."}
+];
+const QUIZ_TANGGA1 = [
+  {type:"mcq", text:"Petani yang menanam padi termasuk kegiatan ekonomi apa?", options:["Produksi","Distribusi","Konsumsi"], correct:0, explain:"Petani menghasilkan/membuat barang (padi) — ini termasuk produksi."},
+  {type:"mcq", text:"Kamu membeli dan memakan bakso di kantin termasuk kegiatan ekonomi apa?", options:["Produksi","Distribusi","Konsumsi"], correct:2, explain:"Memakai/menghabiskan barang atau jasa untuk kebutuhan sendiri termasuk konsumsi."}
+];
+const QUIZ_INTI = [
+  {type:"mcq", text:"Tukang ojek online yang mengantar makanan dari restoran ke pembeli termasuk kegiatan ekonomi apa?", options:["Produksi, karena membuat makanan","Distribusi, karena menyalurkan makanan dari restoran ke pembeli","Konsumsi, karena naik motor"], correct:1, explain:"Tukang ojek online menyalurkan barang (makanan) dari yang membuat ke yang membutuhkan — ini distribusi, bukan produksi (karena tidak membuat makanannya)."}
+];
+
+function initModul(){
+  loadState();
+  renderQuiz("quiz-awal", QUIZ_AWAL);
+  renderQuiz("quiz-tangga1", QUIZ_TANGGA1);
+  renderQuiz("quiz-inti", QUIZ_INTI);
+  renderKlasifikasiTable();
+  wireTextPersistence();
+  replayActions();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
