@@ -1,1 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Sintesis Kelima Sila · Pendidikan Pancasila Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b; --gold:#b8860b; --bg:#f7f1e3;
+    --pp:#a6332a; --pp-light:#f7e8e6; --pp-dark:#7a241c;
+    --ink:#2b2b26; --ok:#2e7d4f; --bad:#b3432b; --card:#ffffff; --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6; padding-bottom:80px;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
+  nav.topnav{background:var(--nav); color:#fff; padding:.8em 1.2em; display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;}
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+  header.modul-head{max-width:800px; margin:1.5em auto 0; padding:0 1.2em;}
+  .modul-eyebrow{display:inline-block; background:var(--gold); color:#fff; font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase; padding:.3em .8em; border-radius:999px; margin-bottom:.6em;}
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+  .stepper-wrap{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); padding:.6em 1.2em;}
+  .stepper{max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto; padding-bottom:.2em;}
+  .step-dot{flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%; background:#fff; border:2px solid var(--line); color:#8a8471; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;}
+  .step-dot.active{background:var(--pp); border-color:var(--pp); color:#fff;}
+  .step-dot.done{background:var(--pp-light); border-color:var(--pp); color:var(--pp-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);}
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%; background:var(--pp); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:700;}
+  .badge-inti{background:var(--gold);}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+  .callout{background:var(--pp-light); border-left:4px solid var(--pp); padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;}
+  .callout.warn{background:#fbeee7; border-left-color:var(--bad);}
+  .callout.puncak{background:#fffbea; border-left-color:var(--gold);}
+  textarea.ans, input.ans-input{width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line); border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);}
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+  .sila-table{width:100%; border-collapse:collapse; margin:.6em 0; font-size:.9em;}
+  .sila-table th, .sila-table td{border:1px solid var(--line); padding:.5em .6em;}
+  .sila-table th{background:var(--pp-light); color:var(--pp-dark);}
+  .sila-table select, .sila-table input{width:100%; border:none; background:transparent; font-family:inherit; font-size:.95em;}
+  .table-scroll{overflow-x:auto;}
+  .sila-ref{background:var(--pp-light); border-radius:10px; padding:.9em 1.2em; margin:.8em 0; font-size:.9em;}
+  .sila-ref li{margin-bottom:.3em;}
+  .poster-box{background:#fffdf3; border:2px dashed var(--gold); border-radius:10px; padding:1em; margin:.8em 0;}
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em; border-radius:999px; border:none; cursor:pointer;}
+  .btn-primary{background:var(--pp); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--pp-dark); border:1.5px solid var(--pp);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+  details.guru-note{background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px; padding:.8em 1em; margin:1.4em 0; font-size:.92em;}
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+  .glossary dt{font-weight:700; color:var(--pp-dark); margin-top:.6em;}
+  .glossary dd{margin:.15em 0 0;}
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>Pendidikan Pancasila · Pancasila TP3</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">🏆 Penutup Tahun Ajaran Pendidikan Pancasila</span>
+  <h1>Sintesis Kelima Sila</h1>
+  <p class="sub">Modul Ajar Mandiri · Menyatukan semua pengalaman Pendidikan Pancasila sepanjang tahun ke dalam satu pemahaman utuh tentang kelima sila.</p>
+</header>
+
+<div class="stepper-wrap"><div class="stepper" id="stepper"></div></div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Ternyata, Kamu Sudah Mengalami Pancasila Sepanjang Tahun! 🌟</h2>
+      <p>Ingat semua yang sudah kamu lakukan tahun ini — musyawarah kelas, gotong royong, menghormati teman yang berbeda, mengenal wilayahmu? Semua itu sebenarnya adalah <strong>Pancasila dalam bentuk nyata</strong>, bukan sekadar hafalan lima sila di buku!</p>
+      <div class="callout puncak">
+        Ini adalah modul PENUTUP tahun ajaran Pendidikan Pancasila. Modul ini akan mengajakmu melihat kembali seluruh perjalananmu, lalu menemukan bahwa kelima sila itu sebenarnya sudah kamu jalani bersamaan, dalam satu momen yang sama.
+      </div>
+    </div>
+    <div class="nav-buttons"><span></span><button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button></div>
+  </div>
+
+  <!-- PAGE 1 — TANGGA 1: NAPAK TILAS -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><div><h2>Napak Tilas — Mencocokkan Pengalaman dengan Sila</h2><span class="tag">Tangga 1 · Recall Eksplisit</span></div></div>
+      <p>Ingat kembali lima momen yang sudah kamu alami sepanjang tahun. Cocokkan setiap momen dengan sila yang paling sesuai:</p>
+      <div class="table-scroll">
+        <table class="sila-table" id="napak-table"></table>
+      </div>
+      <p style="font-size:.85em; color:#8a8471;">Boleh merujuk catatan modul-modul sebelumnya kalau perlu.</p>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(2)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 2 — TANGGA 2 -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">2</span><div><h2>Satu Momen, Banyak Nilai</h2><span class="tag">Tangga 2 · Nilai yang Hadir Bersamaan</span></div></div>
+      <p>Sekarang bedah ulang SATU momen musyawarah Kesepakatan Kelas yang sudah kamu alami. Coba cari, apakah lebih dari satu sila muncul SEKALIGUS dalam momen itu?</p>
+      <div class="callout">Contoh: saat musyawarah, kalian mendengarkan pendapat teman (Sila 4 — kerakyatan lewat musyawarah), tetap menghormati teman yang usulannya tidak terpilih (Sila 2 — kemanusiaan), dan hasilnya berlaku adil untuk semua (Sila 5 — keadilan).</div>
+      <label class="field-label">Ceritakan satu momen Kesepakatan Kelas yang kamu ingat, lalu tunjukkan minimal 3 sila yang menurutmu hadir bersamaan di momen itu:</label>
+      <textarea class="ans" data-key="tangga2-momen" placeholder="Momen yang kuingat: ... Sila yang hadir: ..." style="min-height:7em;"></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(3)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 3 — TANGGA 3 -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">3</span><div><h2>Pancasila di Luar Kelas</h2><span class="tag">Tangga 3 · Situasi Baru Pilihan Sendiri</span></div></div>
+      <p>Sekarang coba terapkan ke situasi lain yang kamu sukai — bisa tim olahraga, kelompok bermain game, atau kelompok belajar di luar sekolah.</p>
+      <label class="field-label">Pilih satu situasi sosial favoritmu (tim/kelompok apa):</label>
+      <input class="ans-input" data-key="tangga3-situasi" type="text" placeholder="Contoh: Tim sepak bola kampungku">
+      <label class="field-label">Petakan minimal 3-4 dari 5 sila ke momen spesifik dalam situasi itu, dengan contoh konkret:</label>
+      <textarea class="ans" data-key="tangga3-pemetaan" placeholder="Sila 3 (Persatuan): saat kami..., Sila 4 (Musyawarah): saat kami..." style="min-height:7em;"></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(2)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(4)">Lanjut ke Pertemuan Inti →</button></div>
+  </div>
+
+  <!-- PAGE 4 — INTI -->
+  <div class="page" data-page="4">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐🏆</span><div><h2>Pertemuan Inti — Pancasila dalam Timku</h2><span class="tag">Mengenali <span class="kko-tag">KKO: Mengenali (Sintesis) — Penutup Tahun</span></span></div></div>
+      <div class="callout puncak">Ini adalah penutup RESMI tahun ajaran Pendidikan Pancasila Kelas 5A. Buat poster kelompok "Pancasila dalam Timku" berdasarkan situasi yang kamu pilih di Tangga 3, lalu siapkan presentasi singkat.</div>
+      <div class="poster-box">
+        <label class="field-label">📋 Rencana Poster "Pancasila dalam [Nama Situasimu]":</label>
+        <textarea class="ans" data-key="inti-poster" placeholder="Judul posterku: ... &#10;Sila 1: ... &#10;Sila 2: ... &#10;Sila 3: ... &#10;Sila 4: ... &#10;Sila 5: ..." style="min-height:9em;"></textarea>
+      </div>
+      <label class="field-label">Refleksi akhir: dari semua yang kamu pelajari tahun ini di Pendidikan Pancasila, apa satu hal yang paling berkesan buatmu?</label>
+      <textarea class="ans" data-key="inti-refleksi" placeholder="Yang paling berkesan buatku adalah..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(3)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(5)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 5 — GLOSARIUM + PENUTUP -->
+  <div class="page" data-page="5">
+    <div class="card">
+      <h2>Glosarium</h2>
+      <dl class="glossary">
+        <dt>Sintesis</dt><dd>Menggabungkan beberapa hal terpisah menjadi satu pemahaman yang utuh.</dd>
+        <dt>Napak tilas</dt><dd>Menelusuri kembali jejak/pengalaman yang sudah dilalui.</dd>
+      </dl>
+      <div class="sila-ref">
+        <strong>Pengingat Kelima Sila:</strong>
+        <ol>
+          <li>Ketuhanan Yang Maha Esa</li>
+          <li>Kemanusiaan yang Adil dan Beradab</li>
+          <li>Persatuan Indonesia</li>
+          <li>Kerakyatan yang Dipimpin oleh Hikmat Kebijaksanaan dalam Permusyawaratan/Perwakilan</li>
+          <li>Keadilan Sosial bagi Seluruh Rakyat Indonesia</li>
+        </ol>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Terima Kasih untuk Perjalanan Setahun Ini! 🎓🇮🇩</h2>
+      <p>Kamu sudah menyelesaikan seluruh perjalanan Pendidikan Pancasila Kelas 5A — dari mengenal wilayahmu sendiri, memahami sejarah Pancasila, bermusyawarah, menghormati keberagaman, sampai akhirnya menyatukan semuanya di sini. Semoga nilai-nilai ini terus kamu bawa, bukan hanya di kelas, tapi ke mana pun kamu pergi.</p>
+      <div class="save-row"><span id="saved-label">Belum ada progres tersimpan.</span><button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button></div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> Elemen Pancasila, "Mengenali kehadiran kelima nilai sila secara bersamaan dalam satu situasi sosial nyata, sebagai sintesis dari seluruh pengalaman Pendidikan Pancasila sepanjang tahun" (Scaffolding_Pendidikan_Pancasila_Kelas5.docx, TP 10) — 8 JP, 4 pertemuan (3 tangga + 1 inti). TITIK PUNCAK tahun ajaran — dikerjakan PALING TERAKHIR dari seluruh 10 unit TP Pendidikan Pancasila.</li>
+        <li><strong>⚠⚠ SANGAT PENTING — sinyal diagnostik, bukan penilaian tunggal:</strong> sesuai catatan eksplisit di Scaffolding, kesulitan siswa di TP ini BIASANYA BUKAN karena TP ini sulit secara intrinsik, melainkan karena salah satu dari 9 TP fondasi sebelumnya belum benar-benar tertanam. Kegagalan di sini adalah SINYAL untuk meninjau ulang TP mana yang masih lemah — BUKAN sekadar kesimpulan "anak ini kurang paham Pancasila". Mohon jangan menilai TP ini secara terisolasi tanpa mengecek riwayat 9 TP sebelumnya.</li>
+        <li><strong>Prasyarat WAJIB:</strong> seluruh 9 TP Pendidikan Pancasila lain (NKRI#1, Pancasila#1&amp;2, UUD1945#1/2/3, BTI#1/2/3, NKRI#2) HARUS sudah dikerjakan lebih dulu — modul ini murni sintesis, tidak mengajarkan konsep baru.</li>
+        <li><strong>Yang tidak perlu sempurna:</strong> tidak semua kelompok harus menemukan KELIMA nilai dengan sama kuat di Tangga 3/Inti — 3-4 dari 5 sudah dianggap cukup baik, sesuai catatan sumber.</li>
+        <li><strong>Tabel Napak Tilas (Tangga 1)</strong> memetakan lima pengalaman generik (Kesepakatan Kelas, jurnal keberagaman, gotong royong, kronologi Pancasila, letak wilayah) ke lima sila — silakan disesuaikan kalau urutan/istilah modul lain di kelas Ibu berbeda.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi <code>pages/materi/pendidikan-pancasila/pancasila-tp3/</code> belum bisa saya baca saat modul ini dibuat; isi disusun dari Scaffolding_Pendidikan_Pancasila_Kelas5.docx dan Peta_Aktivitas_PP_Kelas5.docx. Mohon dicek ulang terhadap materi resmi begitu tersedia.</li>
+        <li><strong>Asesmen sumatif sesungguhnya:</strong> poster kelompok "Pancasila dalam Timku" + presentasi lisan singkat — sekaligus menjadi asesmen akhir tahun resmi mata pelajaran Pendidikan Pancasila Kelas 5, bukan hanya asesmen TP ini saja.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:pp-pancasila-tp3</code> — unik, tidak bentrok modul lain.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:pp-pancasila-tp3";
+const TOTAL_PAGES = 6; // 0..5
+const INTI_PAGE = 4;
+
+let state = { page: 0, answers: {}, napak: {} };
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => { state.answers[key] = el.value; saveState(); });
+  });
+}
+function wireNapakPersistence(){
+  document.querySelectorAll(".napak-select").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.napak[key] !== undefined) el.value = state.napak[key];
+    el.addEventListener("change", () => { state.napak[key] = el.value; saveState(); });
+  });
+}
+
+const PENGALAMAN_LIST = [
+  "Musyawarah menyusun Kesepakatan Kelas",
+  "Menghormati &amp; menjaga teman yang berbeda latar belakang",
+  "Gotong royong membersihkan/menata kelas",
+  "Menelusuri kronologi lahirnya Pancasila (perubahan sila pertama demi semua keyakinan)",
+  "Mengenal wilayah kabupaten/kota dan provinsi sendiri"
+];
+const SILA_OPTIONS = ["", "Sila 1 - Ketuhanan", "Sila 2 - Kemanusiaan", "Sila 3 - Persatuan", "Sila 4 - Kerakyatan/Musyawarah", "Sila 5 - Keadilan"];
+
+function renderNapakTable(){
+  const table = document.getElementById("napak-table");
+  if(!table) return;
+  let head = "<tr><th>Pengalaman Sepanjang Tahun</th><th>Cocokkan dengan Sila</th></tr>";
+  let rows = "";
+  PENGALAMAN_LIST.forEach((p, i) => {
+    const opts = SILA_OPTIONS.map(o => `<option value="${o}">${o || "Pilih..."}</option>`).join("");
+    rows += `<tr><td>${p}</td><td><select class="napak-select" data-key="napak-${i}">${opts}</select></td></tr>`;
+  });
+  table.innerHTML = head + rows;
+  wireNapakPersistence();
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","1","2","3","⭐🏆","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === INTI_PAGE ? " inti" : "");
+    if(i === state.page) dot.classList.add("active");
+    else if(i < state.page) dot.classList.add("done");
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {}, napak: {} };
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => el.value = "");
+  document.querySelectorAll(".napak-select").forEach(el => el.value = "");
+  goToPage(0);
+}
+
+function initModul(){
+  loadState();
+  renderNapakTable();
+  wireTextPersistence();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
