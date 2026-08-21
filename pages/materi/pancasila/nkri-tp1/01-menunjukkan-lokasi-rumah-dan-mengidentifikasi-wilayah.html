@@ -1,1 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menunjukkan Lokasi Rumah dan Mengidentifikasi Wilayah Sendiri · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .isian-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .isian-tabel th, .isian-tabel td { border: 1px solid var(--border); padding: 9px 11px; text-align: left; }
+  .isian-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); width: 40%; }
+  .isian-tabel td.kosong { color: var(--ink-3); font-style: italic; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🗺️</span>
+      <div class="ma-cover-eyebrow">NKRI · Letak Kabupaten/Kota dan Provinsi · Materi 1 dari 3</div>
+      <div class="ma-cover-title">Menunjukkan Lokasi Rumah dan Mengidentifikasi Wilayah Sendiri</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Mulai dari sini, kita belajar mata pelajaran baru: <strong>Pendidikan Pancasila</strong>. Materi pertama kita bukan tentang sejarah atau simbol negara dulu — tapi tentang sesuatu yang paling dekat denganmu: <strong>tempat tinggalmu sendiri</strong>.</p>
+
+      <p>Coba jawab dulu, sejujur-jujurnya: apakah kamu benar-benar tahu nama <strong>kelurahan/desa</strong> dan <strong>kecamatan</strong> tempat rumahmu berada? Banyak siswa ternyata belum tahu persis, meskipun mereka tinggal di sana setiap hari — dan itu WAJAR, karena nama-nama itu jarang disebutkan dalam percakapan sehari-hari.</p>
+
+      <p>Sebelum lanjut, mari kita cari tahu bersama. Buka aplikasi peta digital (seperti Google Maps) di ponsel atau komputer sekolah, cari lokasi rumahmu, lalu perhatikan informasi wilayah yang muncul di sana.</p>
+
+      <table class="isian-tabel">
+        <tr><th>Nama Kelurahan/Desa</th><td class="kosong">(isi setelah mencari di peta digital)</td></tr>
+        <tr><th>Nama Kecamatan</th><td class="kosong">(isi setelah mencari di peta digital)</td></tr>
+      </table>
+
+      <p>Isian ini bukan tes — ini adalah TITIK BERANGKAT kita. Kalau kamu belum tahu, TIDAK APA-APA. Justru itulah gunanya materi ini: memastikan kamu benar-benar TAHU, bukan sekadar pernah dengar namanya.</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 200" width="240">
+          <circle cx="130" cy="100" r="90" fill="none" stroke="var(--m-color)" stroke-width="2" opacity="0.35"/>
+          <circle cx="130" cy="100" r="65" fill="none" stroke="var(--m-color)" stroke-width="2" opacity="0.5"/>
+          <circle cx="130" cy="100" r="38" fill="var(--m-color)" opacity="0.15" stroke="var(--m-color)" stroke-width="2"/>
+          <circle cx="130" cy="100" r="12" fill="var(--m-color)"/>
+          <text x="130" y="104" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Aku</text>
+          <text x="130" y="70" font-size="10" font-weight="700" fill="var(--ink-2)" text-anchor="middle">Kelurahan/Desa</text>
+          <text x="130" y="42" font-size="10" font-weight="700" fill="var(--ink-2)" text-anchor="middle">Kecamatan</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Rumahmu berada DI DALAM wilayah kelurahan/desa, yang juga berada DI DALAM wilayah kecamatan — seperti kotak di dalam kotak yang lebih besar.</p>
+
+      <p>Perhatikan gambar di atas: rumahmu bukan berdiri sendirian secara administratif. Rumahmu ada DI DALAM sebuah kelurahan/desa, dan kelurahan/desa itu ada DI DALAM sebuah kecamatan. Ini seperti kotak kecil yang berada di dalam kotak yang lebih besar lagi.</p>
+
+      <ol class="langkah">
+        <li>Buka peta digital, cari lokasi rumahmu (boleh dibantu orang tua/guru kalau belum familiar memakai aplikasinya).</li>
+        <li>Perhatikan nama wilayah yang muncul di sekitar titik lokasimu — biasanya kelurahan/desa dan kecamatan tertulis di dekat nama jalan.</li>
+        <li>Catat kedua nama itu di buku catatanmu.</li>
+        <li>Bandingkan dengan teman sebangkumu — apakah kalian tinggal di kelurahan/kecamatan yang sama, atau berbeda?</li>
+      </ol>
+
+      <div class="contoh-box">
+        Materi ini akan terus kita pakai sebagai FONDASI di pertemuan berikutnya — kita akan menyusun wilayahmu ini menjadi sebuah URUTAN lengkap, dari rumahmu sampai ke negara Indonesia.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan alamat lengkap di sebuah amplop surat — biasanya berlapis-lapis, dari yang paling detail (nama jalan, nomor rumah) sampai yang paling umum (kota, provinsi).</span></p>
+        <p>Kelurahan/desa dan kecamatan itu seperti "lapisan" alamat yang ada DI ANTARA nama jalanmu dan nama kota/kabupatenmu. Kalau kamu pernah melihat surat resmi atau kartu keluarga di rumah, coba perhatikan — biasanya nama kelurahan dan kecamatan tertulis di sana.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Tujuan materi ini BUKAN menghafal nama provinsi-provinsi di Indonesia. Tujuannya adalah memahami POSISI DIRIMU SENDIRI dalam struktur wilayah — dimulai dari yang paling dekat (rumahmu), bukan dari yang paling jauh (negara).
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Made mencari lokasi rumahnya di peta digital dan menemukan tulisan "Kelurahan Beji, Kecamatan Beji". Apa yang bisa Made simpulkan dari informasi ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Made bisa menyimpulkan bahwa rumahnya berada di wilayah kelurahan bernama Beji, yang termasuk dalam wilayah kecamatan yang JUGA bernama Beji. (Catatan: di beberapa daerah, nama kelurahan dan kecamatan memang bisa sama, ini bukan kesalahan.)</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Rani belum pernah dengar nama kecamatannya sendiri sebelumnya, dan merasa malu untuk mencari tahu. Apa yang sebaiknya Rani lakukan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Rani TIDAK PERLU malu — ini adalah hal yang WAJAR dan justru menjadi tujuan utama materi ini. Rani bisa langsung mencari lokasi rumahnya di peta digital (dibantu orang tua/guru bila perlu) untuk menemukan informasi itu, sama seperti banyak temannya yang mungkin juga baru tahu.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan bilang "kelurahan dan kecamatan itu sama saja, cuma beda nama". Apakah pendapat Wayan tepat? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Wayan KURANG tepat. Kelurahan/desa dan kecamatan adalah dua TINGKATAN wilayah yang BERBEDA — kelurahan/desa adalah wilayah yang LEBIH KECIL, dan berada DI DALAM sebuah kecamatan yang LEBIH BESAR. Satu kecamatan biasanya terdiri dari BEBERAPA kelurahan/desa, bukan cuma satu.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Cari lokasi rumahmu di peta digital bersama orang tua di rumah. Catat nama kelurahan/desa dan kecamatanmu di buku catatan. Kalau memungkinkan, tanyakan juga ke orang tua: sudah berapa lama keluargamu tinggal di wilayah itu?
+      </div>
+
+      <p>Materi berikutnya akan menyusun semua informasi ini menjadi sebuah URUTAN lengkap — dari rumahmu, sampai ke tingkat negara Indonesia.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

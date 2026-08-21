@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengurutkan Hierarki Wilayah dari Rumah sampai Negara · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .svg-wrap { display: flex; justify-content: center; margin: 1rem 0 0.3rem; overflow-x: auto; }
+  .svg-wrap svg { max-width: 100%; height: auto; }
+  .svg-caption { text-align: center; font-size: calc(var(--content-fs) - 4px); color: var(--ink-3); margin: 0.4rem 0 1.3rem; }
+  .tangga-row { display: flex; align-items: center; justify-content: flex-start; gap: 0; margin: 1rem 0 0.3rem; overflow-x: auto; padding-bottom: 6px; }
+  .tangga-item { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; min-width: 96px; }
+  .tangga-kotak { background: var(--paper-2); border: 2.5px solid var(--m-color); color: var(--m-color); font-weight: 700; border-radius: 10px; padding: 8px 10px; font-size: calc(var(--content-fs) - 3px); text-align: center; }
+  .tangga-panah { color: var(--m-color); font-weight: 700; font-size: 20px; flex-shrink: 0; padding: 0 4px; }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🗺️</span>
+      <div class="ma-cover-eyebrow">NKRI · Letak Kabupaten/Kota dan Provinsi · Materi 2 dari 3</div>
+      <div class="ma-cover-title">Mengurutkan Hierarki Wilayah dari Rumah sampai Negara</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Materi sebelumnya, kamu sudah menemukan nama kelurahan/desa dan kecamatanmu. Sekarang kita lengkapi urutannya sampai ke tingkat negara — ada 2 tingkatan lagi yang perlu ditambahkan: <strong>kabupaten/kota</strong> dan <strong>provinsi</strong>.</p>
+
+      <p>Wilayah Indonesia disusun secara BERJENJANG, seperti kotak di dalam kotak yang semakin lama semakin besar:</p>
+
+      <div class="tangga-row">
+        <div class="tangga-item"><div class="tangga-kotak">Rumahku</div></div>
+        <div class="tangga-panah">→</div>
+        <div class="tangga-item"><div class="tangga-kotak">Kelurahan/<br>Desa</div></div>
+        <div class="tangga-panah">→</div>
+        <div class="tangga-item"><div class="tangga-kotak">Kecamatan</div></div>
+        <div class="tangga-panah">→</div>
+        <div class="tangga-item"><div class="tangga-kotak">Kabupaten/<br>Kota</div></div>
+        <div class="tangga-panah">→</div>
+        <div class="tangga-item"><div class="tangga-kotak">Provinsi</div></div>
+        <div class="tangga-panah">→</div>
+        <div class="tangga-item"><div class="tangga-kotak" style="border-color:var(--m-color); background:var(--m-color); color:#fff;">Negara<br>Indonesia</div></div>
+      </div>
+      <p class="svg-caption">Urutan wilayah dari yang PALING KECIL (rumahmu) sampai yang PALING BESAR (negara Indonesia).</p>
+
+      <p><strong>Kabupaten/kota</strong> adalah wilayah yang LEBIH BESAR dari kecamatan — satu kabupaten/kota biasanya terdiri dari BEBERAPA kecamatan. <strong>Provinsi</strong> lebih besar lagi — satu provinsi biasanya terdiri dari BEBERAPA kabupaten/kota.</p>
+
+      <p>Perhatikan gambar diagram lingkaran bersarang berikut, yang menunjukkan hubungan ini dengan cara lain:</p>
+
+      <div class="svg-wrap">
+        <svg viewBox="0 0 260 260" width="260">
+          <circle cx="130" cy="130" r="120" fill="none" stroke="var(--m-color)" stroke-width="2" opacity="0.25"/>
+          <circle cx="130" cy="130" r="95" fill="none" stroke="var(--m-color)" stroke-width="2" opacity="0.35"/>
+          <circle cx="130" cy="130" r="68" fill="none" stroke="var(--m-color)" stroke-width="2" opacity="0.5"/>
+          <circle cx="130" cy="130" r="42" fill="var(--m-color)" opacity="0.15" stroke="var(--m-color)" stroke-width="2"/>
+          <circle cx="130" cy="130" r="14" fill="var(--m-color)"/>
+          <text x="130" y="134" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">Aku</text>
+          <text x="130" y="98" font-size="9" font-weight="700" fill="var(--ink-2)" text-anchor="middle">Kelurahan</text>
+          <text x="130" y="70" font-size="9" font-weight="700" fill="var(--ink-2)" text-anchor="middle">Kecamatan</text>
+          <text x="130" y="42" font-size="9" font-weight="700" fill="var(--ink-2)" text-anchor="middle">Kab/Kota</text>
+          <text x="130" y="15" font-size="9" font-weight="700" fill="var(--ink-2)" text-anchor="middle">Provinsi</text>
+        </svg>
+      </div>
+      <p class="svg-caption">Setiap lingkaran yang LEBIH BESAR mengandung SEMUA lingkaran yang lebih kecil di dalamnya.</p>
+
+      <ol class="langkah">
+        <li>Cari nama kabupaten/kota tempat tinggalmu di peta digital (biasanya nama ini juga muncul dekat lokasi rumahmu).</li>
+        <li>Cari nama provinsi tempat tinggalmu.</li>
+        <li>Susun urutan LENGKAP di buku catatanmu: Rumah → Kelurahan/Desa → Kecamatan → Kabupaten/Kota → Provinsi → Negara Indonesia.</li>
+        <li>Gambar diagram lingkaran bersarang versimu sendiri (boleh meniru contoh di atas), isi dengan nama wilayahmu masing-masing.</li>
+      </ol>
+
+      <div class="contoh-box">
+        <strong>Urutan yang TIDAK BOLEH terbalik:</strong> semakin ke kanan (atau semakin ke luar pada diagram lingkaran), wilayahnya semakin BESAR. Kabupaten/kota HARUS lebih besar dari kecamatan, provinsi HARUS lebih besar dari kabupaten/kota — bukan sebaliknya.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan susunan wilayah ini seperti boneka matryoshka (boneka Rusia yang bisa dibuka, berisi boneka lebih kecil di dalamnya, berlapis-lapis).</span></p>
+        <p>Boneka PALING KECIL adalah rumahmu. Kalau boneka itu dibuka, dia sebenarnya berada DI DALAM boneka yang sedikit lebih besar (kelurahan/desa). Boneka itu pun ada DI DALAM boneka yang lebih besar lagi (kecamatan), dan seterusnya sampai boneka PALING BESAR yaitu negara Indonesia.</p>
+        <p>Tidak mungkin boneka besar berada DI DALAM boneka kecil — begitu juga, tidak mungkin provinsi berada di dalam kecamatan. Urutannya harus selalu dari kecil ke besar.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Satu kesalahan yang sering terjadi: siswa hafal SEMUA nama wilayahnya, tapi bingung soal URUTANNYA (mana yang lebih besar, kecamatan atau kabupaten/kota?). Kalau kamu ragu, ingat aturan sederhana ini: semakin SPESIFIK/detail namanya (seperti nama kelurahan yang mungkin hanya dikenal warga sekitar), semakin KECIL wilayahnya. Semakin UMUM namanya (seperti nama provinsi yang dikenal seluruh Indonesia), semakin BESAR wilayahnya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">1</span>Made menyusun urutan wilayahnya sebagai berikut: Rumah → Kecamatan → Kelurahan → Kabupaten/Kota → Provinsi. Apakah urutan Made benar? Jelaskan jika ada kesalahan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Urutan Made SALAH — dia menukar posisi Kecamatan dan Kelurahan. Kelurahan/desa itu LEBIH KECIL dan seharusnya disebut SEBELUM kecamatan (yang lebih besar). Urutan yang benar: Rumah → Kelurahan → Kecamatan → Kabupaten/Kota → Provinsi.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">2</span>Rani tinggal di sebuah kabupaten yang terdiri dari 15 kecamatan berbeda. Apa artinya ini bagi hubungan kabupaten dan kecamatan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini membuktikan bahwa kabupaten adalah wilayah yang LEBIH BESAR, karena bisa terdiri dari BANYAK kecamatan (dalam kasus ini 15) di dalamnya — sesuai prinsip bahwa wilayah yang lebih besar "mengandung" banyak wilayah yang lebih kecil.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no">3</span>Wayan bilang "provinsi dan negara itu sebenarnya sama besarnya, cuma beda istilah". Apakah pendapat Wayan tepat? Jelaskan dengan diagram lingkaran bersarang!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Wayan TIDAK tepat. Provinsi dan negara adalah dua tingkatan yang BERBEDA — negara Indonesia terdiri dari BANYAK provinsi (34 provinsi), jadi negara adalah lingkaran PALING LUAR dan PALING BESAR, sementara provinsi adalah salah satu lingkaran di dalamnya, bukan lingkaran yang sama besarnya.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Lengkapi diagram lingkaran bersarang versimu sendiri dengan SEMUA nama wilayahmu (kelurahan/desa, kecamatan, kabupaten/kota, provinsi). Tukar buku catatan dengan teman sebangkumu — periksa urutan masing-masing, pastikan tidak ada yang terbalik.
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti) akan mengajakmu menunjukkan LANGSUNG lokasi kabupaten/kota dan provinsimu pada peta, sekaligus menjelaskan posisinya dalam struktur NKRI secara menyeluruh.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
