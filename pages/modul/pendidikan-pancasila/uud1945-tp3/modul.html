@@ -1,1 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Musyawarah dan Kesepakatan Kelas · Pendidikan Pancasila Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b; --gold:#b8860b; --bg:#f7f1e3;
+    --pp:#a6332a; --pp-light:#f7e8e6; --pp-dark:#7a241c;
+    --ink:#2b2b26; --ok:#2e7d4f; --bad:#b3432b; --card:#ffffff; --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6; padding-bottom:80px;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
+  nav.topnav{background:var(--nav); color:#fff; padding:.8em 1.2em; display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;}
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+  header.modul-head{max-width:800px; margin:1.5em auto 0; padding:0 1.2em;}
+  .modul-eyebrow{display:inline-block; background:var(--pp-light); color:var(--pp-dark); font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase; padding:.3em .8em; border-radius:999px; margin-bottom:.6em;}
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+  .stepper-wrap{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); padding:.6em 1.2em;}
+  .stepper{max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto; padding-bottom:.2em;}
+  .step-dot{flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%; background:#fff; border:2px solid var(--line); color:#8a8471; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;}
+  .step-dot.active{background:var(--pp); border-color:var(--pp); color:#fff;}
+  .step-dot.done{background:var(--pp-light); border-color:var(--pp); color:var(--pp-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+  .step-dot.lanjutan{border-color:#5a8f4a;}
+  .step-dot.lanjutan.active, .step-dot.lanjutan.done{background:#5a8f4a; border-color:#5a8f4a; color:#fff;}
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);}
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%; background:var(--pp); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:700;}
+  .badge-inti{background:var(--gold);}
+  .badge-lanjutan{background:#5a8f4a;}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+  .callout{background:var(--pp-light); border-left:4px solid var(--pp); padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;}
+  .callout.warn{background:#fbeee7; border-left-color:var(--bad);}
+  .callout.lanjutan{background:#eef3ea; border-left-color:#5a8f4a;}
+  textarea.ans, input.ans-input{width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line); border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);}
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+  .aturan-list{background:var(--pp-light); border-radius:10px; padding:.9em 1.2em; margin:.8em 0;}
+  .aturan-list li{margin-bottom:.4em;}
+  .kesepakatan-item{border:1px solid var(--line); border-radius:8px; padding:.6em .8em; margin-bottom:.5em; background:#fffdf8;}
+  .kesepakatan-doc{background:#fffdf3; border:2px dashed var(--gold); border-radius:10px; padding:1em; margin:.8em 0;}
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em; border-radius:999px; border:none; cursor:pointer;}
+  .btn-primary{background:var(--pp); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--pp-dark); border:1.5px solid var(--pp);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+  details.guru-note{background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px; padding:.8em 1em; margin:1.4em 0; font-size:.92em;}
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+  .glossary dt{font-weight:700; color:var(--pp-dark); margin-top:.6em;}
+  .glossary dd{margin:.15em 0 0;}
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>Pendidikan Pancasila · UUD 1945 TP3</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">Pendidikan Pancasila · Elemen UUD 1945</span>
+  <h1>Musyawarah dan Kesepakatan Kelas</h1>
+  <p class="sub">Modul Ajar Mandiri · Belajar bermusyawarah bersama teman sekelas, lalu menyusun aturan bersama yang akan kita pakai sepanjang semester.</p>
+</header>
+
+<div class="stepper-wrap"><div class="stepper" id="stepper"></div></div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Bagaimana Kita Membuat Keputusan Bersama? 🤝</h2>
+      <p>Kalau ada perbedaan pendapat di kelas, bagaimana caranya supaya keputusan yang diambil adil untuk semua orang? Jawabannya: <strong>musyawarah</strong> — bicara bersama, saling dengar, sampai menemukan kesepakatan.</p>
+      <div class="callout">Modul ini akan membawamu berlatih musyawarah, semakin lama semakin besar skalanya, sampai akhirnya kelasmu menyusun "Kesepakatan Kelas" yang akan dipakai sepanjang tahun!</div>
+    </div>
+    <div class="nav-buttons"><span></span><button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button></div>
+  </div>
+
+  <!-- PAGE 1 — ASESMEN AWAL -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">?</span><div><h2>Sebelum Mulai</h2><span class="tag">Asesmen Awal</span></div></div>
+      <label class="field-label">Menurutmu, apa itu musyawarah?</label>
+      <textarea class="ans" data-key="awal-definisi" placeholder="Menurutku, musyawarah adalah..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(2)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 2 — TANGGA 1 -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><div><h2>Aturan Dasar Bermusyawarah</h2><span class="tag">Tangga 1 · Mengenal Aturan Dasar</span></div></div>
+      <p>Sebelum bermusyawarah untuk hal besar, kita berlatih dulu dengan hal kecil (misalnya memilih warna poster kelompok). Ada 4 aturan dasar bermusyawarah:</p>
+      <ul class="aturan-list">
+        <li>1️⃣ Bicara satu-satu (tidak berebutan)</li>
+        <li>2️⃣ Angkat tangan sebelum bicara</li>
+        <li>3️⃣ Dengarkan teman yang sedang bicara</li>
+        <li>4️⃣ Terima hasil akhir, meski berbeda dari usulanmu</li>
+      </ul>
+      <label class="field-label">Dari keempat aturan di atas, mana yang menurutmu paling sulit kamu lakukan? Kenapa?</label>
+      <textarea class="ans" data-key="tangga1-sulit" placeholder="Yang paling sulit bagiku adalah..., karena..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(3)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 3 — TANGGA 2 -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">2</span><div><h2>Musyawarah Kelompok Kecil</h2><span class="tag">Tangga 2 · Berlatih Skala Kecil</span></div></div>
+      <div class="callout warn">Bagian ini dilakukan bersama kelompok kecilmu di kelas — bermusyawarah menentukan aturan main untuk satu permainan/proyek kelompok.</div>
+      <label class="field-label">Apa yang berhasil disepakati kelompokmu?</label>
+      <textarea class="ans" data-key="tangga2-hasil" placeholder="Kelompokku sepakat untuk..."></textarea>
+      <label class="field-label">Bagaimana proses kelompokmu sampai ke keputusan itu? (Ada yang usul apa, lalu bagaimana disepakati?)</label>
+      <textarea class="ans" data-key="tangga2-proses" placeholder="Prosesnya adalah..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(2)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(4)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 4 — TANGGA 3 -->
+  <div class="page" data-page="4">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">3</span><div><h2>Musyawarah Kelas Penuh</h2><span class="tag">Tangga 3 · Berlatih Skala Besar</span></div></div>
+      <div class="callout warn">Sekarang giliran seluruh kelasmu bermusyawarah untuk satu topik nyata (misalnya pembagian giliran piket yang adil) — belum final, masih latihan untuk Pertemuan Inti nanti.</div>
+      <label class="field-label">Usulan apa saja yang muncul dari teman-temanmu?</label>
+      <textarea class="ans" data-key="tangga3-usulan" placeholder="Usulan yang muncul: ..."></textarea>
+      <label class="field-label">Bagaimana keputusan akhirnya dicapai?</label>
+      <textarea class="ans" data-key="tangga3-keputusan" placeholder="Keputusan akhir dicapai dengan cara..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(3)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(5)">Lanjut ke Pertemuan Inti →</button></div>
+  </div>
+
+  <!-- PAGE 5 — INTI -->
+  <div class="page" data-page="5">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><div><h2>Pertemuan Inti — Menyusun Kesepakatan Kelas</h2><span class="tag">Mempraktikkan <span class="kko-tag">KKO: Mempraktikkan Musyawarah</span></span></div></div>
+      <p>Ini dia — musyawarah sungguhan untuk menyusun <strong>Kesepakatan Kelas</strong> yang akan mengikat sepanjang semester!</p>
+      <div class="callout warn">Musyawarah ini harus GENUINE — hasil akhir benar-benar mengikuti suara/konsensus kalian, bukan diarahkan diam-diam oleh guru.</div>
+      <p>Setelah musyawarah kelas selesai, catat isi Kesepakatan Kelas kalian di sini:</p>
+      <div class="kesepakatan-doc">
+        <label class="field-label">📜 Isi Kesepakatan Kelas kami:</label>
+        <textarea class="ans" data-key="inti-kesepakatan" placeholder="1) ... &#10;2) ... &#10;3) ..." style="min-height:8em;"></textarea>
+      </div>
+      <label class="field-label">Apakah usulanmu pribadi ada di dalam kesepakatan akhir? Bagaimana perasaanmu kalau usulanmu TIDAK terpilih?</label>
+      <textarea class="ans" data-key="inti-refleksi" placeholder="Usulanku... Perasaanku..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(4)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(6)">Lanjut ke Bagian Berkelanjutan →</button></div>
+  </div>
+
+  <!-- PAGE 6 — LANJUTAN 🔁 -->
+  <div class="page" data-page="6">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-lanjutan">🔁</span><div><h2>Merujuk Ulang Kesepakatan Kelas</h2><span class="tag">Berkelanjutan Sepanjang Semester</span></div></div>
+      <div class="callout lanjutan">
+        <strong>Ini bagian yang paling penting justru bukan hari ini!</strong> Kembali ke halaman ini setiap kali ada situasi yang membuat kelasmu perlu meninjau ulang Kesepakatan Kelas — entah karena ada pelanggaran, atau situasi baru yang belum tercakup.
+      </div>
+      <label class="field-label">Tambahkan catatan baru (kapan, situasi apa, apakah kesepakatan masih sesuai atau perlu direvisi):</label>
+      <textarea class="ans" data-key="lanjutan-catatan" placeholder="Contoh: Bulan ke-3, ada teman yang lupa piket terus-menerus. Kami membahas ulang di musyawarah kelas dan..."></textarea>
+      <p style="font-size:.85em; color:#8a8471;">Catatan tersimpan otomatis. Bukti keberhasilan TP ini adalah dokumen Kesepakatan Kelas BENAR-BENAR dipakai — bukan ditempel lalu dilupakan.</p>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(5)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(7)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 7 — GLOSARIUM + PENUTUP -->
+  <div class="page" data-page="7">
+    <div class="card">
+      <h2>Glosarium</h2>
+      <dl class="glossary">
+        <dt>Musyawarah</dt><dd>Proses membicarakan sesuatu bersama untuk mencapai kesepakatan, dengan saling mendengarkan pendapat.</dd>
+        <dt>Konsensus</dt><dd>Kesepakatan bersama yang dicapai setelah semua pendapat dipertimbangkan.</dd>
+        <dt>Kesepakatan Kelas</dt><dd>Aturan/kesepakatan yang dibuat bersama seluruh siswa di kelas, berlaku sepanjang semester.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>Perjalanan Berlanjut... 📜</h2>
+      <p>Kesepakatan Kelas kalian sekarang jadi pegangan bersama. Ingat untuk kembali ke halaman "Merujuk Ulang" setiap kali ada situasi yang relevan sepanjang semester!</p>
+      <div class="save-row"><span id="saved-label">Belum ada progres tersimpan.</span><button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button></div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> Elemen UUD 1945, "Mempraktikkan musyawarah untuk membuat kesepakatan dan aturan bersama di lingkungan kelas, serta menerapkannya secara konsisten" (Dokumen 2 TP Kelas 5 Pendidikan Pancasila, Bagian C No.3) — 10 JP, 5 pertemuan (3 tangga + 1 inti + 1 lanjutan berkelanjutan).</li>
+        <li><strong>⚠ SANGAT PENTING — musyawarah harus genuine:</strong> sesuai Scaffolding, musyawarah PERTAMA KALI (di Pertemuan Inti) harus benar-benar genuine — hasil akhir benar mengikuti suara terbanyak/konsensus, BUKAN diarahkan diam-diam oleh guru ke jawaban yang sudah ditentukan. Sekali kepercayaan ini rusak, sulit dipulihkan sepanjang semester, dan akan ikut merusak fondasi observasi sikap di modul Pancasila TP1&amp;2.</li>
+        <li><strong>Urutan pengajaran:</strong> TP ini dibangun di atas pemahaman norma/hak/kewajiban dari UUD1945#2 — pastikan modul UUD1945#2 sudah dikerjakan lebih dulu.</li>
+        <li><strong>🔁 Halaman Lanjutan bersifat BERKELANJUTAN</strong> — siswa/guru diharapkan kembali ke halaman ini berkali-kali sepanjang semester, DIPICU oleh peristiwa nyata (pelanggaran, situasi baru), bukan dijadwalkan kaku tiap minggu. Indikator keberhasilan TP ini sebagian besar terletak DI SINI, bukan di Pertemuan Inti — apakah dokumen masih relevan di bulan ke-5, bukan hanya bulan ke-1.</li>
+        <li><strong>Terhubung erat dengan modul lain:</strong> (a) Pancasila TP1&amp;2 — jurnal sikap siswa mengacu pada momen musyawarah dari TP ini; (b) BTI TP2 — poin sikap menghormati keberagaman akan DITAMBAHKAN ke dokumen Kesepakatan Kelas yang sama, bukan dokumen baru. Sarankan urutan: modul ini → Pancasila TP1&amp;2 / BTI TP2.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi <code>pages/materi/pendidikan-pancasila/uud1945-tp3/</code> belum bisa saya baca saat modul ini dibuat; isi disusun dari Scaffolding_Pendidikan_Pancasila_Kelas5.docx dan Peta_Aktivitas_PP_Kelas5.docx. Mohon dicek ulang terhadap materi resmi begitu tersedia.</li>
+        <li><strong>Asesmen sumatif sesungguhnya:</strong> penilaian kinerja langsung saat musyawarah berlangsung (observasi proses) + dokumen Kesepakatan Kelas sebagai bukti produk — bukan tes tertulis. Isian modul ini adalah pendukung dokumentasi, bukan pengganti observasi guru.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:pp-uud1945-tp3</code> — unik, tidak bentrok modul lain.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:pp-uud1945-tp3";
+const TOTAL_PAGES = 8; // 0..7
+const INTI_PAGE = 5;
+const LANJUTAN_PAGE = 6;
+
+let state = { page: 0, answers: {}, actions: [] };
+let isReplaying = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => { state.answers[key] = el.value; saveState(); });
+  });
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","?","1","2","3","⭐","🔁","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    let cls = "step-dot";
+    if(i === INTI_PAGE) cls += " inti";
+    if(i === LANJUTAN_PAGE) cls += " lanjutan";
+    if(i === state.page) cls += " active";
+    else if(i < state.page) cls += " done";
+    dot.className = cls;
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres (termasuk catatan Kesepakatan Kelas) dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {}, actions: [] };
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => el.value = "");
+  goToPage(0);
+}
+
+function initModul(){
+  loadState();
+  wireTextPersistence();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
