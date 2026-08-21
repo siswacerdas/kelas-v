@@ -2122,5 +2122,50 @@ window.MATERI_INDEX = [
     ringkasan: "Menentukan kejadian dengan kemungkinan lebih besar/lebih kecil pada situasi BARU, termasuk memprediksi sebelum bereksperimen untuk membuktikan prediksi.",
     status: "selesai",
     file: "matematika/data-peluang-tp3/03-memprediksi-kemungkinan-pada-situasi-baru.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🗺️",
+    elemen: "Negara Kesatuan Republik Indonesia",
+    tp: "nkri-tp1",
+    tema: "NKRI · Letak Kabupaten/Kota dan Provinsi",
+    urutan: 1,
+    judul: "Menunjukkan Lokasi Rumah dan Mengidentifikasi Wilayah Sendiri",
+    ringkasan: "Menyebutkan dan menunjukkan lokasi rumah sendiri pada peta digital, mengidentifikasi nama kelurahan/desa dan kecamatannya sebagai titik berangkat.",
+    status: "selesai",
+    file: "pancasila/nkri-tp1/01-menunjukkan-lokasi-rumah-dan-mengidentifikasi-wilayah.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🗺️",
+    elemen: "Negara Kesatuan Republik Indonesia",
+    tp: "nkri-tp1",
+    tema: "NKRI · Letak Kabupaten/Kota dan Provinsi",
+    urutan: 2,
+    judul: "Mengurutkan Hierarki Wilayah dari Rumah sampai Negara",
+    ringkasan: "Mengurutkan hierarki wilayah dari rumah → kelurahan → kecamatan → kabupaten/kota → provinsi → negara.",
+    status: "selesai",
+    file: "pancasila/nkri-tp1/02-mengurutkan-hierarki-wilayah.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🗺️",
+    elemen: "Negara Kesatuan Republik Indonesia",
+    tp: "nkri-tp1",
+    tema: "NKRI · Letak Kabupaten/Kota dan Provinsi",
+    urutan: 3,
+    judul: "Menunjukkan Lokasi Kabupaten/Kota dan Provinsi pada Peta",
+    ringkasan: "Menunjukkan lokasi kabupaten/kota DAN provinsi sendiri pada peta; menjelaskan posisinya dalam struktur NKRI dari rumah sampai negara.",
+    status: "selesai",
+    file: "pancasila/nkri-tp1/03-menunjukkan-lokasi-kabkota-dan-provinsi-inti.html"
   }
 ];
