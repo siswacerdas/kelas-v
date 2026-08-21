@@ -1,1 +1,248 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modul · Rasa Ingin Tahu terhadap Sejarah Lokal · Pendidikan Pancasila Kelas 5A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nav:#1e4d3b; --gold:#b8860b; --bg:#f7f1e3;
+    --pp:#a6332a; --pp-light:#f7e8e6; --pp-dark:#7a241c;
+    --ink:#2b2b26; --card:#ffffff; --line:#e3d9c2;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:'Plus Jakarta Sans', sans-serif; line-height:1.6; padding-bottom:80px;}
+  h1,h2,h3,h4{font-family:'Fraunces', serif; font-weight:600; color:var(--nav); margin:0 0 .5em;}
+  .hidden{display:none !important;}
+  #checking{padding:3em; text-align:center; color:var(--nav); font-family:'Fraunces', serif;}
+  nav.topnav{background:var(--nav); color:#fff; padding:.8em 1.2em; display:flex; align-items:center; gap:.6em; font-size:.9em; flex-wrap:wrap;}
+  nav.topnav a{color:#e8e2cf; text-decoration:none;}
+  nav.topnav a:hover{text-decoration:underline;}
+  nav.topnav span.sep{opacity:.5;}
+  header.modul-head{max-width:800px; margin:1.5em auto 0; padding:0 1.2em;}
+  .modul-eyebrow{display:inline-block; background:var(--pp-light); color:var(--pp-dark); font-weight:700; font-size:.78em; letter-spacing:.04em; text-transform:uppercase; padding:.3em .8em; border-radius:999px; margin-bottom:.6em;}
+  header.modul-head p.sub{color:#5b5648; margin-top:0;}
+  .stepper-wrap{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--line); padding:.6em 1.2em;}
+  .stepper{max-width:800px; margin:0 auto; display:flex; gap:.35em; overflow-x:auto; padding-bottom:.2em;}
+  .step-dot{flex:0 0 auto; width:2.1em; height:2.1em; border-radius:50%; background:#fff; border:2px solid var(--line); color:#8a8471; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:.85em; cursor:pointer; transition:.15s;}
+  .step-dot.active{background:var(--pp); border-color:var(--pp); color:#fff;}
+  .step-dot.done{background:var(--pp-light); border-color:var(--pp); color:var(--pp-dark);}
+  .step-dot.inti{border-color:var(--gold);}
+  .step-dot.inti.active, .step-dot.inti.done{background:var(--gold); border-color:var(--gold); color:#fff;}
+  main{max-width:800px; margin:0 auto; padding:1.2em;}
+  .page{display:none;}
+  .page.active{display:block;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:1.3em 1.4em; margin-bottom:1.1em; box-shadow:0 2px 8px rgba(43,32,10,.04);}
+  .subunit-head{display:flex; align-items:center; gap:.7em; margin-bottom:.7em;}
+  .badge-num{flex:0 0 auto; width:2.2em; height:2.2em; border-radius:50%; background:var(--pp); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:700;}
+  .badge-inti{background:var(--gold);}
+  .subunit-head h2{margin:0; font-size:1.15em;}
+  .subunit-head .tag{font-size:.78em; color:#8a8471; font-weight:600;}
+  .callout{background:var(--pp-light); border-left:4px solid var(--pp); padding:.8em 1em; border-radius:8px; margin:.8em 0; font-size:.95em;}
+  .callout.penting{background:#fbeee7; border-left-color:#b3432b;}
+  textarea.ans, input.ans-input{width:100%; font-family:inherit; font-size:1em; border:1.5px solid var(--line); border-radius:8px; padding:.6em .8em; background:#fffdf8; color:var(--ink);}
+  textarea.ans{min-height:5em; resize:vertical; background-image:repeating-linear-gradient(#fffdf8 0 1.6em, #e9e2cd 1.6em 1.7em); line-height:1.7em; background-attachment:local;}
+  label.field-label{display:block; font-weight:600; margin:.6em 0 .3em; font-size:.92em;}
+  .cerita-box{background:#fffdf3; border:2px dashed var(--gold); border-radius:10px; padding:1em; margin:.8em 0;}
+  .nav-buttons{display:flex; justify-content:space-between; margin-top:1.4em; gap:.6em;}
+  button.btn{font-family:inherit; font-weight:700; font-size:.95em; padding:.7em 1.4em; border-radius:999px; border:none; cursor:pointer;}
+  .btn-primary{background:var(--pp); color:#fff;}
+  .btn-secondary{background:#fff; color:var(--pp-dark); border:1.5px solid var(--pp);}
+  button.btn[disabled]{opacity:.4; cursor:not-allowed;}
+  .save-row{display:flex; justify-content:space-between; align-items:center; font-size:.8em; color:#8a8471; margin-top:.6em; flex-wrap:wrap; gap:.5em;}
+  .reset-link{background:none; border:none; color:#a0442e; text-decoration:underline; cursor:pointer; font-size:.85em; padding:0;}
+  details.guru-note{background:#fff8ea; border:1.5px dashed var(--gold); border-radius:10px; padding:.8em 1em; margin:1.4em 0; font-size:.92em;}
+  details.guru-note summary{font-weight:700; color:#8a6410; cursor:pointer;}
+  details.guru-note ul{margin:.5em 0 0; padding-left:1.2em;}
+  .kko-tag{display:inline-block; background:var(--gold); color:#fff; font-size:.72em; font-weight:700; padding:.2em .6em; border-radius:6px; margin-left:.4em; vertical-align:middle;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a>
+  <span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a>
+  <span class="sep">/</span>
+  <span>Pendidikan Pancasila · BTI TP3</span>
+</nav>
+
+<header class="modul-head">
+  <span class="modul-eyebrow">Pendidikan Pancasila · Elemen Bhinneka Tunggal Ika</span>
+  <h1>Sejarah Tempat Tinggal Kita</h1>
+  <p class="sub">Modul Ajar Mandiri · Sebuah undangan santai untuk penasaran tentang cerita masa lalu tempat tinggalmu — bukan tugas, bukan ujian.</p>
+</header>
+
+<div class="stepper-wrap"><div class="stepper" id="stepper"></div></div>
+
+<main>
+
+  <!-- PAGE 0 — PENGANTAR -->
+  <div class="page" data-page="0">
+    <div class="card">
+      <h2>Dulu, Tempat Ini Seperti Apa ya? 🏘️</h2>
+      <p>Setiap tempat punya cerita masa lalu — termasuk tempat tinggalmu sekarang. Modul ini singkat sekali, dan santai: tidak ada jawaban benar/salah, tidak ada nilai. Tujuannya cuma satu: membuatmu <strong>penasaran</strong>.</p>
+      <div class="callout">Kalau di akhir modul ini kamu jadi ingin bertanya lebih lanjut ke orang tua atau kakek-nenekmu, itu artinya modul ini sudah berhasil!</div>
+    </div>
+    <div class="nav-buttons"><span></span><button class="btn btn-primary" onclick="goToPage(1)">Mulai →</button></div>
+  </div>
+
+  <!-- PAGE 1 — TANGGA 1 -->
+  <div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><div><h2>Setiap Tempat Punya Cerita</h2><span class="tag">Tangga 1 · Gagasan Umum</span></div></div>
+      <p>Coba pikirkan: tempat tinggalmu sekarang — rumah, sekolah, jalan yang kamu lewati — dulu seperti apa ya, sebelum jadi seperti sekarang?</p>
+      <label class="field-label">(Boleh dijawab, boleh dilewati) Menurutmu, dulu tempat tinggalmu seperti apa?</label>
+      <textarea class="ans" data-key="tangga1-tebak" placeholder="Menurutku dulu tempat ini..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(0)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(2)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 2 — TANGGA 2 -->
+  <div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">2</span><div><h2>Setiap Daerah Punya Ceritanya Sendiri</h2><span class="tag">Tangga 2 · Menghubungkan dengan Keberagaman</span></div></div>
+      <p>Ingat modul "Keberagaman Asal Keluarga"? Sama seperti daerah asal keluarga teman-temanmu punya cerita masing-masing, tempat kita sekolah sekarang juga punya ceritanya sendiri.</p>
+      <label class="field-label">(Boleh dijawab, boleh dilewati) Apakah daerah asal keluargamu punya cerita sejarah yang pernah kamu dengar?</label>
+      <textarea class="ans" data-key="tangga2-cerita" placeholder="Aku pernah dengar bahwa..."></textarea>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(1)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(3)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 3 — INTI -->
+  <div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><div><h2>Satu Cerita Kecil tentang Depok</h2><span class="tag">Menunjukkan Rasa Ingin Tahu <span class="kko-tag">KKO: Menunjukkan Rasa Ingin Tahu</span></span></div></div>
+      <div class="cerita-box">
+        <p style="margin:0;">Tahukah kamu? Nama "Depok" ternyata punya cerita dari lebih 300 tahun yang lalu! Konon, dulu ada sebuah pemukiman bernama "Depok Lama" yang dibentuk oleh sekelompok keluarga yang hidup bersama secara mandiri. Nama-nama keluarga itu masih bisa ditemukan sampai sekarang lho, kalau kamu tanya orang yang sudah lama tinggal di Depok!</p>
+      </div>
+      <p>Itu baru sepotong kecil cerita. Masih banyak cerita lain tentang tempat tinggalmu yang belum kamu tahu.</p>
+      <label class="field-label">(Boleh dijawab, boleh dilewati) Apa yang membuatmu penasaran dari cerita tadi?</label>
+      <textarea class="ans" data-key="inti-penasaran" placeholder="Aku jadi penasaran tentang..."></textarea>
+      <div class="callout penting" style="margin-top:1em;">
+        <strong>Undangan untukmu:</strong> Coba tanyakan ke orang tua, kakek, atau nenekmu di rumah: "Dulu, daerah sini seperti apa ya?" Kamu tidak perlu melapor jawabannya ke sekolah — cukup nikmati saja obrolannya.
+      </div>
+    </div>
+    <div class="nav-buttons"><button class="btn btn-secondary" onclick="goToPage(2)">← Kembali</button><button class="btn btn-primary" onclick="goToPage(4)">Lanjut →</button></div>
+  </div>
+
+  <!-- PAGE 4 — PENUTUP -->
+  <div class="page" data-page="4">
+    <div class="card">
+      <h2>Selesai — Tanpa Nilai, Tanpa Tes! 🌱</h2>
+      <p>Tidak ada yang perlu kamu hafalkan dari modul ini. Kalau kamu jadi sedikit lebih penasaran tentang tempat tinggalmu, tujuan modul ini sudah tercapai.</p>
+      <div class="save-row"><span id="saved-label">Belum ada progres tersimpan.</span><button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button></div>
+    </div>
+
+    <details class="guru-note">
+      <summary>Catatan untuk Guru — MOHON DIBACA SELURUHNYA SEBELUM MENGAJAR</summary>
+      <ul>
+        <li><strong>TP sumber:</strong> Elemen Bhinneka Tunggal Ika, "Menunjukkan rasa ingin tahu terhadap sejarah lingkungan tempat tinggal sebagai bagian dari keberagaman dan dinamika sejarah bangsa, tanpa pembahasan tuntas atas peristiwa yang kompleks secara sosial-historis" (Scaffolding_Pendidikan_Pancasila_Kelas5.docx, TP 8) — 4 JP, 3 pertemuan (2 tangga + 1 inti). TIDAK punya tangga lanjutan — sesuai sifatnya sebagai pemantik murni, bukan kompetensi yang dipantau berkelanjutan.</li>
+        <li><strong>⚠⚠ SANGAT PENTING — risiko konten, BUKAN soal kognitif:</strong> sejarah lokal Depok yang tersedia adalah peristiwa kekerasan antarwarga di masa transisi kemerdekaan (dikenal sebagai "Gedoran Depok" 1945), yang TIDAK tepat dibahas tuntas pada usia ketika logika dan empati sosial anak belum terbentuk sepenuhnya. Modul ini SENGAJA TIDAK menyebutkan peristiwa tersebut sama sekali — hanya memakai fakta sejarah netral (asal-usul nama Depok, komunitas "Depok Lama") sebagai pemantik.</li>
+        <li><strong>⚠⚠ JIKA ADA SISWA BERTANYA DETAIL KEKERASAN:</strong> guru TIDAK boleh berasumsi semua siswa "kosong" soal ini — bisa jadi ada yang sudah pernah dengar cerita (sepotong-sepotong, bahkan keliru) dari keluarga. Jika muncul pertanyaan spontan ke arah itu, JANGAN menjelaskan atau mengoreksi detail kekerasannya di depan kelas. Validasi rasa ingin tahunya secara umum ("itu menarik, kamu bisa tanya lebih lanjut ke orang tua/kakek-nenekmu"), lalu alihkan kembali ke pemantik umum tanpa memperdalam topik sensitif itu di forum kelas.</li>
+        <li><strong>TIDAK ADA kuis/tes formal di modul ini SENGAJA</strong> — sesuai bunyi eksplisit TP, KKO "menunjukkan rasa ingin tahu" secara definisi tidak punya jawaban benar-salah; mengujinya dengan tes formal bertentangan dengan sifat TP ini sendiri. Semua kolom jawaban ditandai "boleh dijawab, boleh dilewati".</li>
+        <li><strong>Urutan pengajaran:</strong> TP ini dibangun di atas modul BTI#1 (Keberagaman Asal Keluarga) — pastikan modul itu sudah dikerjakan lebih dulu supaya rujukan di Tangga 2 bermakna.</li>
+        <li><strong>Rubrik penilaian (jika Ibu ingin tetap mencatat sesuatu):</strong> HANYA mencatat ADA/TIDAK ADA respons ketertarikan (bertanya/berkomentar/antusias) — TIDAK relevan dinilai benar/salah, dan siswa TIDAK perlu mengetahui detail sejarah apa pun. Tidak semua siswa harus menunjukkan ketertarikan yang sama besarnya — itu wajar.</li>
+        <li><strong>PENTING — sumber konten:</strong> file materi resmi <code>pages/materi/pendidikan-pancasila/bti-tp3/</code> belum bisa saya baca saat modul ini dibuat; isi disusun dari Scaffolding_Pendidikan_Pancasila_Kelas5.docx dan Dokumen1_Analisis_CP_PendidikanPancasila_FaseC.docx. Cerita "Depok Lama" di halaman Inti adalah fakta sejarah yang umum diketahui publik (bukan hasil riset khusus) — mohon Ibu verifikasi keakuratannya sebelum dipakai, dan sesuaikan/ganti jika Ibu punya pemantik lain yang lebih tepat/terverifikasi.</li>
+        <li><strong>STORAGE_KEY:</strong> <code>modulProgress:pp-bti-tp3</code> — unik, tidak bentrok modul lain.</li>
+      </ul>
+    </details>
+  </div>
+
+</main>
+
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+document.addEventListener("user-verified", () => {
+  document.getElementById("checking").remove();
+  document.getElementById("app-detail").classList.remove("hidden");
+  initModul();
+});
+document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+
+const STORAGE_KEY = "modulProgress:pp-bti-tp3";
+const TOTAL_PAGES = 5; // 0..4
+const INTI_PAGE = 3;
+
+let state = { page: 0, answers: {} };
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ const parsed = JSON.parse(raw); state = Object.assign(state, parsed); }
+  }catch(e){ console.warn("Gagal memuat progres:", e); }
+}
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const label = document.getElementById("saved-label");
+    if(label){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      label.textContent = "Tersimpan otomatis · " + hh + ":" + mm;
+    }
+  }catch(e){ console.warn("Gagal menyimpan progres:", e); }
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => {
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener("input", () => { state.answers[key] = el.value; saveState(); });
+  });
+}
+
+function updateStepper(){
+  const stepper = document.getElementById("stepper");
+  stepper.innerHTML = "";
+  const labels = ["🏠","1","2","⭐","📖"];
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement("div");
+    dot.className = "step-dot" + (i === INTI_PAGE ? " inti" : "");
+    if(i === state.page) dot.classList.add("active");
+    else if(i < state.page) dot.classList.add("done");
+    dot.textContent = labels[i];
+    dot.onclick = () => goToPage(i);
+    stepper.appendChild(dot);
+  }
+}
+
+function goToPage(n){
+  if(n < 0 || n >= TOTAL_PAGES) return;
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add("active");
+  state.page = n;
+  updateStepper();
+  saveState();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function resetProgress(){
+  if(!confirm("Yakin ingin menghapus semua progres dan mulai ulang dari awal?")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = { page: 0, answers: {} };
+  document.querySelectorAll("textarea.ans, input.ans-input").forEach(el => el.value = "");
+  goToPage(0);
+}
+
+function initModul(){
+  loadState();
+  wireTextPersistence();
+  goToPage(state.page || 0);
+  saveState();
+}
+</script>
+
+</body>
+</html>
