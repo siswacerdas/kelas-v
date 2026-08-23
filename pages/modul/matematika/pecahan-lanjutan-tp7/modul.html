@@ -1,1 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perkalian, Pembagian Pecahan, dan Bentuk Pecahan — Modul Ajar Mandiri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#1e4d3b; --bg:#f7f1e3; --ink:#2a2620; --paper:#fffdf8;
+  --line:#e4d9c2; --gold:#c99a2e;
+  --m:#2f6f4f;
+  --m-soft: color-mix(in srgb, #2f6f4f 12%, white);
+  --m-mid: color-mix(in srgb, #2f6f4f 35%, white);
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);}
+h1,h2,h3,.serif{font-family:'Fraunces',serif;}
+.hidden{display:none;}
+#checking{padding:40px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;color:var(--nav);}
+nav.topnav{background:var(--nav);color:#fff;padding:14px 20px;display:flex;gap:14px;align-items:center;font-size:.92rem;flex-wrap:wrap;}
+nav.topnav a{color:#fff;text-decoration:none;opacity:.85;}
+nav.topnav a:hover{opacity:1;text-decoration:underline;}
+.wrap{max-width:840px;margin:0 auto;padding:0 18px 60px;}
+.modul-head{padding:26px 0 10px;border-bottom:3px solid var(--m-mid);margin-bottom:6px;}
+.modul-head .eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#2f6f4f;font-weight:700;}
+.modul-head h1{font-size:1.6rem;margin:.25em 0 .1em;color:var(--ink);}
+.modul-head .sub{color:#6b6255;font-size:.95rem;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;margin-right:6px;}
+.badge-elemen{background:var(--m-soft);color:#2f6f4f;border:1px solid var(--m-mid);}
+.badge-lanjutan{background:#fdf0d5;color:#a86b12;border:1px solid #e8c27a;}
+.stepper{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px;}
+.step-dot{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#8a8070;cursor:pointer;}
+.step-dot.active{border-color:#2f6f4f;color:#2f6f4f;background:var(--m-soft);}
+.step-dot.done{background:#2f6f4f;border-color:#2f6f4f;color:#fff;}
+.step-dot.inti{border-color:var(--gold);}
+.step-dot.inti.done{background:var(--gold);border-color:var(--gold);}
+.page{display:none;}
+.page.active{display:block;animation:fadein .25s ease;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
+.card h2{font-size:1.25rem;margin-top:0;color:#2f6f4f;}
+.card h3{font-size:1.05rem;margin-bottom:.4em;}
+.subunit-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.badge-num{width:34px;height:34px;border-radius:50%;background:#2f6f4f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto;}
+.badge-inti{background:var(--gold);}
+.badge-diagnostik{background:#8a8070;}
+.tag{display:inline-block;font-size:.72rem;background:var(--m-soft);color:#2f6f4f;padding:2px 9px;border-radius:12px;margin-bottom:8px;font-weight:700;}
+.tag.inti{background:#fdf0d5;color:#a86b12;}
+.info-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;}
+.info-table td,.info-table th{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
+.info-table th{background:var(--m-soft);width:32%;}
+.materi-box{background:var(--m-soft);border-left:4px solid #2f6f4f;padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;font-size:.93rem;}
+label.field-label{display:block;font-weight:700;margin:14px 0 6px;font-size:.9rem;}
+textarea.ans, input.ans-input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:inherit;font-size:.93rem;background:#fffef9;}
+textarea.ans{min-height:80px;resize:vertical;}
+.quiz-item{background:#fffef9;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.q-text{font-weight:600;margin:0 0 8px;}
+.q-options{display:flex;flex-direction:column;gap:6px;}
+.opt-btn{text-align:left;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;font-size:.9rem;}
+.opt-btn:hover{background:var(--m-soft);}
+.opt-btn.correct{background:#e3f3e6;border-color:#4c9a5b;color:#215c2b;font-weight:700;}
+.opt-btn.wrong{background:#fbe6e4;border-color:#c85a4f;color:#7a2a22;}
+.q-feedback{font-size:.85rem;margin:8px 0 0;font-weight:700;min-height:1.2em;}
+.reveal-btn{margin-top:8px;background:none;border:1px solid #2f6f4f;color:#2f6f4f;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:inherit;}
+.reveal-box{display:none;background:#fffbe9;border:1px dashed var(--gold);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:.88rem;}
+.reveal-box.show{display:block;}
+.check-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:.9rem;}
+.check-item input{margin-top:3px;}
+.rubrik-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0;}
+.rubrik-table th,.rubrik-table td{border:1px solid var(--line);padding:7px 9px;text-align:left;}
+.rubrik-table th{background:var(--m-soft);}
+details.guru-note{background:#f2ede0;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-top:16px;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:#2f6f4f;}
+details.guru-note ul{margin:10px 0 0;padding-left:20px;font-size:.9rem;}
+.nav-buttons{display:flex;justify-content:space-between;margin-top:20px;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;}
+.nav-buttons button{padding:11px 22px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-family:inherit;font-size:.95rem;}
+#btnPrev{background:#fff;border:1px solid var(--line);color:var(--ink);}
+#btnPrev:disabled{opacity:.4;cursor:default;}
+#btnNext{background:#2f6f4f;color:#fff;}
+.saved-label{font-size:.75rem;color:#8a8070;text-align:right;margin-top:6px;}
+.dependensi-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:.88rem;margin-bottom:14px;}
+.glosarium dt{font-weight:700;color:#2f6f4f;margin-top:8px;}
+.glosarium dd{margin:2px 0 0;}
+.reset-btn{background:none;border:1px solid #b0473f;color:#b0473f;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem;margin-top:12px;}
+</style>
+</head>
+<body>
+<div id="checking">Memeriksa akses…</div>
+<div id="app-detail" class="hidden">
+  <nav class="topnav">
+    <a href="../../../../index.html">🏠 Beranda</a>
+    <a href="../../../modul.html">📚 Daftar Modul</a>
+  </nav>
+  <div class="wrap">
+    <div class="modul-head">
+      <span class="badge badge-elemen">Matematika · Bilangan</span> 
+      <h1>Perkalian, Pembagian Pecahan, dan Bentuk Pecahan</h1>
+      <div class="sub">Modul Ajar Mandiri Interaktif · Kelas 5A · Matematika</div>
+    </div>
+    <div class="stepper"><div class="step-dot" data-page="0" title="Pengantar">▶</div><div class="step-dot" data-page="1" title="Tangga 1">1</div><div class="step-dot" data-page="2" title="Tangga 2">2</div><div class="step-dot inti" data-page="3" title="Pertemuan Inti">⭐</div><div class="step-dot" data-page="4" title="Penutup">✓</div></div>
+    <main>
+      <div class="page" data-page="0">
+    <div class="card">
+      <span class="tag">Bilangan · TP7</span>
+      <h2>Perkalian, Pembagian Pecahan dengan Bilangan Asli, dan Mengubah Bentuk Pecahan</h2>
+      <table class="info-table">
+        <tr><th>CP Rujukan</th><td>Melakukan operasi perkalian dan pembagian pecahan dengan bilangan asli; mengubah pecahan menjadi berbagai bentuk pecahan lain.</td></tr>
+        <tr><th>Kompetensi Inti</th><td>Siswa dapat melakukan operasi perkalian dan pembagian pecahan dengan bilangan asli, serta mengubah pecahan ke berbagai bentuk pecahan lain.</td></tr>
+        <tr><th>Jumlah Pertemuan</th><td>3 pertemuan (2 tangga + 1 Pertemuan Inti)</td></tr>
+      </table>
+      <h3>🎯 Garis Finis</h3>
+      <p>Kamu akan bisa mengalikan dan membagi pecahan dengan bilangan asli, serta mengubah pecahan ke berbagai bentuk pecahan lain (biasa-campuran-desimal sederhana satu angka di belakang koma), pada soal cerita kontekstual.</p>
+      <h3>🚦 Titik Berangkat</h3>
+      <p>TP ini dibangun langsung di atas kekuatan TP6 yang sudah kamu kuasai — tidak perlu tangga diagnostik ulang, tapi konsep perkalian/pembagian pecahan tetap dikenalkan lewat konteks konkret (resep makanan) sebelum notasi.</p>
+    </div>
+    </div>
+<div class="page" data-page="1">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">1</span><h3 style="margin:0">Perkalian Pecahan dengan Bilangan Asli</h3></div>
+      <span class="tag">Tangga 1</span>
+      <div class="materi-box">Perkalian pecahan dengan bilangan asli bisa dipikirkan sebagai <strong>penjumlahan berulang</strong>. Contoh: resep butuh ¾ gelas tepung. Kalau kamu melipatgandakan resep 3x, berarti 3 × ¾ = ¾+¾+¾ = 9/4 = 2¼ gelas.</div>
+      <label class="field-label">✏️ Latihan Melipatgandakan Resep</label>
+      <p style="font-size:.9rem;color:#6b6255;">Resep asli butuh ⅔ gelas gula. Jika kamu ingin membuat 4 kali lipat resep, berapa gelas gula yang dibutuhkan? Jelaskan alasanmu (penjumlahan berulang atau visualisasi area).</p>
+      <textarea class="ans" data-key="tp7-tangga1" placeholder="4 x 2/3 = ..."></textarea>
+    </div>
+    </div>
+<div class="page" data-page="2">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num">2</span><h3 style="margin:0">Pembagian Pecahan dengan Bilangan Asli</h3></div>
+      <span class="tag">Tangga 2</span>
+      <div class="materi-box">Pembagian pecahan dengan bilangan asli berarti membagi rata bagian pecahan itu ke beberapa wadah/kelompok. Contoh: ada ¾ kg tepung sisa, dibagi rata ke 3 wadah → ¾ ÷ 3 = ¼ kg per wadah.</div>
+      <label class="field-label">✏️ Latihan Membagi Rata Bahan</label>
+      <p style="font-size:.9rem;color:#6b6255;">Sisa 2/3 liter susu akan dibagi rata ke 2 gelas. Berapa liter susu di setiap gelas?</p>
+      <textarea class="ans" data-key="tp7-tangga2" placeholder="2/3 : 2 = ..."></textarea>
+    </div>
+    </div>
+<div class="page" data-page="3">
+    <div class="card">
+      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><h3 style="margin:0">Pertemuan Inti — Mengubah Bentuk Pecahan &amp; Soal Cerita Gabungan</h3></div>
+      <span class="tag inti">Pertemuan Inti</span>
+      <div class="materi-box">Sekarang gabungkan kemampuanmu: melipatgandakan resep (perkalian), membagi rata hasilnya (pembagian), lalu melaporkan hasil akhir dalam bentuk pecahan biasa, campuran, MAUPUN desimal.</div>
 
+      <label class="field-label">📝 Kuis Pemahaman</label>
+      <div id="tp7-quiz"></div><script>renderQuiz("tp7-quiz", [
+      {type:'mcq', text:'Sebuah resep butuh ¼ gelas minyak. Jika kamu membuat 5 kali lipat resep, berapa gelas minyak yang dibutuhkan?', options:['5/4 gelas (1¼ gelas)','5/1 gelas','1/5 gelas','4/5 gelas'], correct:0, explain:'5 x 1/4 = 5/4 = 1 1/4 gelas.'},
+      {type:'mcq', text:'Sisa 4/5 kg beras dibagi rata ke 4 kantong. Berapa kg beras di setiap kantong?', options:['1/5 kg','4/20 kg','5/4 kg','4/1 kg'], correct:0, explain:'4/5 : 4 = 4/(5x4) = 4/20 = 1/5 kg.'},
+      {type:'mcq', text:'Pecahan ¾ jika diubah menjadi desimal (satu angka di belakang koma) adalah…', options:['0,8','0,75','0,7','0,34'], correct:0, explain:'3/4 = 0,75, dan jika dibulatkan satu angka di belakang koma menjadi 0,8.'}
+    ]);</script>
+
+      <label class="field-label">📖 Soal Cerita Gabungan — Merancang Ulang Resep</label>
+      <div class="materi-box">Resep kue butuh ⅜ kg mentega untuk 1 porsi. Kamu ingin membuat 4 porsi sekaligus, lalu membagi rata seluruh mentega tersebut ke 3 wadah untuk memudahkan proses. (a) Berapa total mentega untuk 4 porsi? (b) Berapa mentega di setiap wadah? Laporkan hasil akhir dalam bentuk pecahan biasa, pecahan campuran, DAN desimal (satu angka di belakang koma).</div>
+      <textarea class="ans" data-key="tp7-inti-cerita" placeholder="(a) 4 x 3/8 = ... (b) hasil (a) : 3 = ... = pecahan biasa: ... = campuran: ... = desimal: ..."></textarea>
+
+      <label class="field-label">✍️ Uraian Reflektif</label>
+      <p style="font-size:.9rem;color:#6b6255;">Jelaskan: mengapa nilai ¾, 0,75, dan 6/8 sebenarnya SAMA meski bentuknya berbeda?</p>
+      <textarea class="ans" data-key="tp7-inti-uraian" placeholder="Karena..."></textarea>
+    <details class="guru-note"><summary>👩‍🏫 Catatan untuk Guru</summary><ul><li>Diturunkan dari <em>Dokumen2_TP_Kelas5_Matematika.docx</em> TP7 Bilangan dan <em>Scaffolding_Kelas5_Matematika_Bilangan.docx</em> — dibangun langsung di atas TP6, tidak butuh tangga diagnostik ulang, sesuai rancangan sumber (3 pertemuan: 2 tangga + 1 Pertemuan Inti).</li><li>Status akses materi: disusun langsung dari dokumen Scaffolding/Dokumen2 Matematika (docx); folder <code>pages/materi/matematika/</code> tidak dapat diakses sesi ini.</li><li>Yang tidak perlu sempurna: pemilihan bentuk pecahan 'paling efisien' secara matematis murni.</li><li>Yang WAJIB diwaspadai: siswa yang mampu mengonversi pecahan ke desimal namun ternyata tidak memahami bahwa nilainya tetap SAMA (memperlakukan sebagai dua angka berbeda) — ini menunjukkan TP6 (pemahaman pecahan sebagai bagian-dari-keseluruhan) sebenarnya belum tuntas dan perlu ditinjau ulang.</li><li>Ini adalah TP TERAKHIR elemen Bilangan (24 pertemuan total). Elemen berikutnya sesuai Peta Aktivitas: Aljabar (dimulai dari TP1 — remediasi simbol '=').</li></ul></details><table class="rubrik-table"><tr><th>Aspek yang Dinilai</th><th>✓ Sudah Memenuhi</th><th>△ Perlu Dikembangkan</th></tr><tr><td><strong>Perkalian pecahan dengan bilangan asli</strong></td><td>Benar dan dapat menjelaskan alasan (penjumlahan berulang/area)</td><td>Hasil benar namun tidak bisa menjelaskan alasan, atau hasil masih keliru</td></tr><tr><td><strong>Pembagian pecahan dengan bilangan asli</strong></td><td>Benar pada konteks pembagian rata</td><td>Masih keliru terutama saat hasil bagi tidak bulat</td></tr><tr><td><strong>Mengubah bentuk pecahan</strong></td><td>Mampu mengonversi antara pecahan biasa, campuran, dan desimal dengan tepat</td><td>Hanya mampu pada satu bentuk konversi</td></tr></table></div></div>
+<div class="page" data-page="4">
+    <div class="card">
+      <h2>📚 Glosarium</h2>
+      <dl class="glosarium">
+        <dt>Perkalian pecahan dengan bilangan asli</dt><dd>Dapat dipikirkan sebagai penjumlahan berulang pecahan tersebut sebanyak bilangan aslinya.</dd>
+        <dt>Konversi bentuk pecahan</dt><dd>Mengubah pecahan dari satu bentuk (biasa/campuran/desimal) ke bentuk lain tanpa mengubah nilainya.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h2>🎉 Penutup Elemen Bilangan</h2>
+      <p>Selamat! Kamu sudah menuntaskan SELURUH 7 TP Elemen Bilangan Kelas 5 (24 pertemuan): nilai tempat, pengurangan bersusun, pembagian bersusun, KPK-FPB, uang, dan pecahan (representasi + operasi lanjutan).</p>
+      <p>Semua kemampuan ini akan terus dipakai di elemen-elemen Matematika berikutnya: Aljabar, Pengukuran, Geometri, dan Analisis Data &amp; Peluang.</p>
+      <p><strong>Elemen berikutnya:</strong> Aljabar — dimulai dari TP1 (remediasi simbol "=" sebagai relasi kesetaraan).</p>
+      <button class="reset-btn" onclick="resetProgress()">🔄 Mulai ulang dari awal</button>
+    </div>
+    </div>
+
+    </main>
+    <div class="saved-label" id="savedLabel"></div>
+    <div class="nav-buttons">
+      <button id="btnPrev">← Sebelumnya</button>
+      <button id="btnNext">Lanjut →</button>
+    </div>
+  </div>
+</div>
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+<script>
+
+const STORAGE_KEY = 'modulProgress:matematika-pecahan-lanjutan-tp7';
+const TOTAL_PAGES = 5;
+let state = null;
+let isReplaying = false;
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    state = raw ? JSON.parse(raw) : {page:0, answers:{}, checks:{}, actions:[]};
+  }catch(e){ state = {page:0, answers:{}, checks:{}, actions:[]}; }
+  if(!state.answers) state.answers = {};
+  if(!state.checks) state.checks = {};
+  if(!state.actions) state.actions = [];
+}
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  updateSavedLabel();
+}
+
+function updateSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const d = new Date();
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.querySelector('.page[data-page="'+n+'"]');
+  if(target) target.classList.add('active');
+  state.page = n;
+  saveState();
+  updateStepper();
+  const prevBtn = document.getElementById('btnPrev');
+  const nextBtn = document.getElementById('btnNext');
+  if(prevBtn) prevBtn.disabled = (n===0);
+  if(nextBtn) nextBtn.textContent = (n===TOTAL_PAGES-1) ? 'Selesai ✓' : 'Lanjut →';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function updateStepper(){
+  document.querySelectorAll('.step-dot').forEach(d=>{
+    const p = parseInt(d.dataset.page,10);
+    d.classList.toggle('active', p===state.page);
+    d.classList.toggle('done', p<state.page);
+  });
+}
+
+function wireTextPersistence(){
+  document.querySelectorAll('textarea.ans, input.ans-input').forEach(el=>{
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.answers[key] !== undefined) el.value = state.answers[key];
+    el.addEventListener('input', ()=>{ state.answers[key] = el.value; saveState(); });
+  });
+}
+
+function wireCheckPersistence(){
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach(el=>{
+    const key = el.dataset.key;
+    if(!key) return;
+    if(state.checks[key]) el.checked = true;
+    el.addEventListener('change', ()=>{ state.checks[key] = el.checked; saveState(); });
+  });
+}
+
+function logAction(action){
+  if(isReplaying) return;
+  state.actions.push(action);
+  saveState();
+}
+
+function replayActions(){
+  isReplaying = true;
+  (state.actions||[]).forEach(a=>{
+    if(a.type==='mcq'){
+      const btn = document.querySelector('.opt-btn[data-group="'+a.group+'"][data-idx="'+a.chosen+'"]');
+      if(btn) btn.click();
+    } else if(a.type==='reveal'){
+      const el = document.getElementById(a.id);
+      if(el) el.classList.add('show');
+    }
+  });
+  isReplaying = false;
+}
+
+function toggleReveal(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('show');
+  logAction({type:'reveal', id:id});
+}
+
+function renderQuiz(containerId, items){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  items.forEach((item, idx)=>{
+    const groupId = containerId+'-q'+idx;
+    if(item.type==='mcq'){
+      let html = '<div class="quiz-item"><p class="q-text">'+(idx+1)+'. '+item.text+'</p><div class="q-options" data-group="'+groupId+'">';
+      item.options.forEach((opt,oi)=>{
+        html += '<button type="button" class="opt-btn" data-group="'+groupId+'" data-idx="'+oi+'" onclick="checkMCQ(\''+groupId+'\', this, '+oi+', '+item.correct+')">'+opt+'</button>';
+      });
+      html += '</div><p class="q-feedback" id="'+groupId+'-fb"></p>';
+      if(item.explain){
+        html += '<button type="button" class="reveal-btn" onclick="toggleReveal(\''+groupId+'-exp\')">Lihat penjelasan</button>';
+        html += '<div class="reveal-box" id="'+groupId+'-exp">'+item.explain+'</div>';
+      }
+      html += '</div>';
+      c.insertAdjacentHTML('beforeend', html);
+    }
+  });
+}
+
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.querySelector('.q-options[data-group="'+groupId+'"]');
+  if(!group) return;
+  group.querySelectorAll('.opt-btn').forEach(b=> b.classList.remove('correct','wrong'));
+  if(chosenIdx===correctIdx){
+    btn.classList.add('correct');
+  } else {
+    btn.classList.add('wrong');
+    group.querySelectorAll('[data-idx="'+correctIdx+'"]').forEach(b=>b.classList.add('correct'));
+  }
+  const fb = document.getElementById(groupId+'-fb');
+  if(fb) fb.textContent = (chosenIdx===correctIdx) ? '✓ Benar!' : '△ Belum tepat — lihat kunci di jawaban yang menyala hijau.';
+  logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+function resetProgress(){
+  if(confirm('Yakin mulai ulang dari awal? Semua jawaban tersimpan di perangkat ini akan dihapus.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadState();
+  wireTextPersistence();
+  wireCheckPersistence();
+  document.querySelectorAll('.q-options').forEach(()=>{});
+  replayActions();
+  goToPage(state.page || 0);
+  updateSavedLabel();
+  const prevBtn = document.getElementById('btnPrev');
+  const nextBtn = document.getElementById('btnNext');
+  if(prevBtn) prevBtn.addEventListener('click', ()=> goToPage(state.page-1));
+  if(nextBtn) nextBtn.addEventListener('click', ()=> goToPage(state.page+1));
+  document.querySelectorAll('.step-dot').forEach(d=> d.addEventListener('click', ()=> goToPage(parseInt(d.dataset.page,10))));
+});
+
+</script>
+</body>
+</html>
