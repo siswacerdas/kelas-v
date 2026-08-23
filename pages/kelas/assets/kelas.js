@@ -152,6 +152,10 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
     "Nama Panggilan": document.getElementById("f-panggilan").value.trim(),
     "Tempat Lahir": document.getElementById("f-tempat").value.trim(),
     "Tanggal Lahir": document.getElementById("f-tanggal").value,
+    // v1.1 (migrasi Firestore): NISN sekarang WAJIB diisi (jadi ID dokumen
+    // Firestore) — field ini "required" di HTML, jadi browser sudah menolak
+    // submit kalau kosong sebelum sampai sini.
+    "NISN": document.getElementById("f-nisn").value.trim(),
   };
   if (state.fotoResized) {
     payload.fotoBase64 = state.fotoResized.base64;
@@ -202,6 +206,7 @@ function fillFormFromSiswa(s) {
   document.getElementById("f-panggilan").value = s["Nama Panggilan"] || "";
   document.getElementById("f-tempat").value = s["Tempat Lahir"] || "";
   document.getElementById("f-tanggal").value = s["Tanggal Lahir"] || "";
+  document.getElementById("f-nisn").value = s["NISN"] || "";
   state.fotoResized = null;
   document.getElementById("foto-preview-wrap").classList.add("hidden");
   document.getElementById("f-foto-kamera").value = "";
@@ -238,6 +243,7 @@ function renderSiswaList(filterText) {
       <div class="siswa-item-info">
         <div class="siswa-item-name">${s["Nama Lengkap"] || "—"}</div>
         <div class="siswa-item-meta">${s["Nama Panggilan"] ? "Panggilan: " + s["Nama Panggilan"] + " · " : ""}${s["Tempat Lahir"] || "-"}, ${s["Tanggal Lahir"] || "-"}</div>
+        <div class="siswa-item-meta">${s["NISN"] ? "NISN: " + s["NISN"] : "—"}</div>
       </div>
     </div>`
   ).join("");
@@ -272,6 +278,62 @@ async function loadSiswaList() {
 }
 
 document.getElementById("search-siswa").addEventListener("input", (e) => renderSiswaList(e.target.value));
+
+/* ── IMPOR NISN MASSAL ──────────────────────────────────────────────
+ * Parsing baris demi baris, format "Nama Lengkap, NISN". Baris kosong/rusak
+ * dilewati di klien tanpa menghentikan yang lain; validasi format NISN (10
+ * digit) & pencocokan nama tetap dilakukan lagi di server (doPostSiswaNisnBulk_)
+ * sebagai sumber kebenaran, hasil di sini cuma pratinjau cepat sebelum kirim.
+ */
+document.getElementById("btn-impor-nisn").addEventListener("click", async () => {
+  const raw = document.getElementById("f-impor-nisn").value;
+  const hasilEl = document.getElementById("impor-nisn-hasil");
+  const rows = raw.split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const idx = line.indexOf(",");
+      if (idx === -1) return null;
+      return { nama: line.slice(0, idx).trim(), nisn: line.slice(idx + 1).trim() };
+    })
+    .filter(Boolean);
+
+  if (!rows.length) {
+    hasilEl.innerHTML = '<p class="warn-line">Tidak ada baris valid untuk diimpor — pastikan formatnya "Nama, NISN" per baris.</p>';
+    return;
+  }
+
+  const btn = document.getElementById("btn-impor-nisn");
+  btn.disabled = true;
+  hasilEl.textContent = "Mengimpor " + rows.length + " baris…";
+
+  try {
+    const idToken = await window.getFreshGuruIdToken();
+    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ type: "siswa_nisn_bulk", idToken: idToken, rows: rows }),
+    });
+    const json = await parseJsonAman_(res);
+    if (json.status !== "ok") throw new Error(json.message || "Gagal mengimpor");
+
+    let html = '<p class="ok-line">✓ ' + json.diperbarui.length + ' dari ' + rows.length + ' baris berhasil diperbarui.</p>';
+    if (json.diperbarui.length) {
+      html += "<ul>" + json.diperbarui.map((n) => "<li>" + n + "</li>").join("") + "</ul>";
+    }
+    if (json.tidakDitemukan && json.tidakDitemukan.length) {
+      html += '<p class="warn-line">⚠️ ' + json.tidakDitemukan.length + ' baris TIDAK berhasil (periksa manual):</p>';
+      html += "<ul>" + json.tidakDitemukan.map((r) =>
+        "<li>" + r.nama + " (" + r.nisn + ") — " + r.alasan + "</li>"
+      ).join("") + "</ul>";
+    }
+    hasilEl.innerHTML = html;
+    loadSiswaList();
+  } catch (err) {
+    hasilEl.innerHTML = '<p class="warn-line">⚠️ Gagal mengimpor: ' + err.message + "</p>";
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 /* ── INIT (setelah lolos guard guru) ────────────────────────────── */
 document.addEventListener("guru-verified", () => {

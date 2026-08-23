@@ -32,6 +32,19 @@ input[type="date"], input[type="file"] {
 #form-status { font-size: 12px; margin-top: 8px; min-height: 16px; color: var(--ink-3); }
 #form-status.err { color: var(--danger); }
 
+.field-hint { font-size: 11px; color: var(--ink-3); margin: 4px 0 0; }
+
+/* ── IMPOR NISN MASSAL ───────────────────── */
+#panel-impor-nisn textarea {
+  width: 100%; min-height: 140px; font-family: 'Courier New', monospace; font-size: 12.5px;
+  color: var(--ink); background: #fff; border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; resize: vertical;
+}
+#impor-nisn-hasil { font-size: 12px; margin-top: 10px; }
+#impor-nisn-hasil .ok-line { color: var(--accent-3); }
+#impor-nisn-hasil .warn-line { color: var(--danger); }
+#impor-nisn-hasil ul { margin: 4px 0 10px 18px; }
+
 /* ── DAFTAR SISWA ─────────────────────────── */
 .siswa-item {
   background: #fff; border: 1px solid var(--border); border-radius: var(--r);
