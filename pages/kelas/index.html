@@ -27,7 +27,9 @@
   <div class="info-box">
     Foto bisa diambil langsung dari kamera HP. Foto akan otomatis diperkecil ukurannya
     supaya cepat dimuat, lalu disimpan ke folder Google Drive yang sudah disiapkan.
-    Data nama & tanggal lahir disimpan di sheet <strong>"Data Siswa"</strong>.
+    Data nama & tanggal lahir disimpan di database <strong>Firestore</strong>
+    (koleksi "siswa"), bukan lagi di sheet "Data Siswa" — NISN dipakai sebagai
+    kunci penyimpanan, jadi wajib diisi.
   </div>
 
   <form id="form-siswa">
@@ -48,6 +50,11 @@
     <div class="field-group">
       <label for="f-tanggal">Tanggal Lahir</label>
       <input type="date" id="f-tanggal" />
+    </div>
+    <div class="field-group">
+      <label for="f-nisn">NISN <span style="color:var(--danger)">*wajib</span></label>
+      <input type="text" id="f-nisn" placeholder="10 digit, mis. 0169932726" inputmode="numeric" maxlength="10" pattern="\d{10}" required />
+      <p class="field-hint">Dipakai siswa untuk login (nama + NISN) — sekaligus jadi kunci penyimpanan data di database, jadi wajib diisi 10 digit. Kalau diawali angka 0, tetap ketik semuanya.</p>
     </div>
     <div class="field-group">
       <label>Foto Siswa</label>
@@ -73,6 +80,24 @@
     </div>
     <div id="form-status"></div>
   </form>
+
+  <p class="section-label" style="margin-top:2rem">Impor NISN Massal</p>
+  <div id="panel-impor-nisn">
+    <div class="info-box">
+      Untuk mengisi/mengoreksi NISN banyak siswa sekaligus. Tempel 1 baris per
+      siswa, format <strong>Nama Lengkap, NISN</strong> (dipisah koma) — nama
+      harus PERSIS SAMA dengan salah satu dari 25 nama resmi Kelas 5A. Data
+      lain (foto, tempat/tanggal lahir) yang sudah tersimpan tidak akan
+      berubah; kalau siswa itu belum punya profil sama sekali, akan dibuat
+      profil baru minimal (nama + NISN saja) yang bisa dilengkapi belakangan
+      lewat form di atas.
+    </div>
+    <textarea id="f-impor-nisn" placeholder="Abdurrahman Ar Ribery, 3153742941&#10;Arsyila Almahyira Azgefa, 0169932726&#10;..."></textarea>
+    <div class="field-group" style="display:flex; gap:10px; margin-top:10px">
+      <button type="button" class="btn-full" id="btn-impor-nisn">Impor NISN</button>
+    </div>
+    <div id="impor-nisn-hasil"></div>
+  </div>
 
   <p class="section-label" style="margin-top:2rem">Daftar Siswa Tersimpan</p>
   <input type="text" id="search-siswa" class="rekap-search" placeholder="Cari nama siswa…" />
