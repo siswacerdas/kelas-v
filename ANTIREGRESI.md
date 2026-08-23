@@ -814,6 +814,44 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
       untuk kombinasi siswa+materi itu (Timestamp yang berubah, bukan
       baris baru menumpuk)
 
+### 29. Kolom NISN & Impor Massal (`pages/kelas/`, `Code.gs`, RANCANGAN-LOGIN-BARU.md
+    Fase 1, belum dirilis — persiapan login siswa via NISN)
+- [ ] Sheet "Data Siswa" punya kolom header **PERSIS** `NISN` (bukan "Nisn"/
+      "N.I.S.N" dst.) DAN kolom itu diformat **Teks biasa** (Format > Angka >
+      Teks biasa) di Google Sheets — kalau tidak, NISN yang diawali "0" akan
+      kehilangan nolnya begitu tersimpan, dan siswa itu tidak akan pernah bisa
+      login (dibahas juga di §4.1 `RANCANGAN-LOGIN-BARU.md`)
+- [ ] **Uji regresi kritis**: edit 1 siswa yang SUDAH punya NISN lewat form
+      biasa (mis. ganti foto/tempat lahir saja, JANGAN sentuh field NISN) →
+      simpan → cek sheet: kolom NISN siswa itu **harus tetap ada**, TIDAK
+      boleh jadi kosong. Ini pola bug yang sama seperti §25/§27 (kolom sheet
+      diam-diam hilang) — kalau regresi ini muncul lagi, cek dulu apakah
+      `nisnLamaJikaAda()`/pengecekan `body["NISN"] !== undefined` di
+      `doPostSiswa_()` masih ada
+- [ ] Form "Tambah/Perbarui Data Siswa": isi NISN 10 digit yang diawali "0"
+      (mis. `0169932726`) → simpan → buka lagi (klik dari Daftar Siswa
+      Tersimpan) → nol di depan harus tetap tampil utuh di field NISN
+- [ ] Form NISN menolak/tidak memaksa format tertentu di klien (validasi utama
+      di server), tapi cek server: kirim NISN bukan 10 digit lewat "Impor NISN
+      Massal" → harus masuk ke daftar "tidak ditemukan" dengan alasan
+      "NISN bukan 10 digit angka", BUKAN tersimpan apa adanya
+- [ ] **Impor NISN Massal**: tempel beberapa baris valid + 1 baris nama yang
+      SENGAJA salah ketik (tidak ada di sheet) → submit → baris yang valid
+      masuk ke "berhasil diperbarui", baris nama salah masuk ke "tidak
+      ditemukan" dengan alasan "Nama tidak ditemukan di sheet Data Siswa" —
+      TIDAK ada baris baru yang dibuat untuk nama yang salah ketik itu
+      (cek langsung di sheet, jumlah baris harus tetap sama)
+- [ ] Setelah impor massal, cek sheet: kolom LAIN (Nama Panggilan, Tempat
+      Lahir, Tanggal Lahir, URL Foto) untuk baris yang diperbarui **tidak
+      berubah sama sekali** — impor massal cuma boleh menyentuh 1 sel (kolom
+      NISN) per baris
+- [ ] Daftar "Daftar Siswa Tersimpan" menampilkan peringatan
+      "⚠️ NISN belum diisi — siswa belum bisa login" untuk siswa yang kolom
+      NISN-nya masih kosong, dan "NISN: ..." untuk yang sudah terisi
+- [ ] `doPostSiswaNisnBulk_()` tetap digerbang `wajibGuru_()` — coba panggil
+      endpoint `type: "siswa_nisn_bulk"` tanpa idToken guru yang valid →
+      harus ditolak dengan pesan error, bukan diam-diam berhasil
+
 ---
 
 ## 🔁 Skenario Ujicoba Lengkap
