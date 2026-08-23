@@ -5,10 +5,12 @@
  *
  * Ringkasan endpoint:
  * - doPost(e)  : { type: "mpls" (default) }   -> upsert 1 baris nilai MPLS non-kognitif per siswa.
- *                { type: "siswa" }            -> upsert 1 baris profil siswa (+ opsional foto ke Drive).
- *                { type: "siswa_nisn_bulk" }  -> isi NISN utk banyak siswa sekaligus (lihat
- *                doPostSiswaNisnBulk_(); dipakai form impor massal, HANYA menulis kolom NISN,
- *                tidak menyentuh kolom lain).
+ *                { type: "siswa" }            -> simpan/perbarui 1 profil siswa (+ opsional foto ke
+ *                Drive) — SEJAK MIGRASI FIRESTORE (RANCANGAN-MIGRASI-FIRESTORE.md), disimpan di
+ *                koleksi Firestore "siswa/{nisn}" (NISN = ID dokumen), BUKAN sheet lagi. NISN wajib
+ *                diisi & 10 digit.
+ *                { type: "siswa_nisn_bulk" }  -> isi/perbaiki NISN utk banyak siswa sekaligus (lihat
+ *                doPostSiswaNisnBulk_()); nama divalidasi ke SISWA_NAMA_VALID_ (roster resmi).
  *                { type: "mpls_kognitif" }    -> upsert 1 baris nilai asesmen kognitif per siswa.
  *                { type: "jurnal" }           -> upsert 1 baris nilai asesmen menulis (jurnal aktivitas) per siswa.
  *                { type: "infografis" }       -> TAMBAH 1 baris baru media Galeri Visual (gambar ke Drive,
@@ -21,7 +23,8 @@
  *                TANPA gerbang (siswa mengirim sendiri saat baca materi, bukan lewat guru/orang tua).
  * - doGet(e)   : ?nama=...        -> 1 baris data MPLS non-kognitif siswa tsb (untuk input.html).
  *                ?all=1           -> SEMUA baris data MPLS non-kognitif (untuk rekap.html/laporan.html).
- *                ?siswa=1         -> SEMUA baris data profil siswa (untuk pages/kelas/).
+ *                ?siswa=1         -> SEMUA profil siswa (untuk pages/kelas/) — dari Firestore
+ *                koleksi "siswa" sejak migrasi (getAllSiswaFirestore_()), bukan sheet lagi.
  *                ?foto=<id atau URL Drive> -> PROXY: mengirim BYTE gambar foto siswa langsung
  *                (bukan JSON) — dipakai sebagai <img src> lewat assets/js/foto-fallback.js,
  *                supaya tidak bergantung pada hotlink Drive yang sering diblokir Google untuk
@@ -111,6 +114,187 @@ const ACCESS_CODE_MPLS = "mpls2026";
 // kerahasiaan apiKey ini).
 const FIREBASE_WEB_API_KEY = "AIzaSyBcpuD90Qk7z4Bdxkm5KhXrsKVzZWFc3_k";
 const FIREBASE_PROJECT_ID = "kelas-v-2026";
+const FIRESTORE_BASE_URL_ = "https://firestore.googleapis.com/v1/projects/" + FIREBASE_PROJECT_ID + "/databases/(default)/documents/";
+
+/* ══════════════════════════════════════════════════════════════════════
+ * MIGRASI FIRESTORE — "Data Siswa" (RANCANGAN-MIGRASI-FIRESTORE.md)
+ * Koleksi "siswa/{nisn}" DIBACA/DITULIS pakai kredensial Service Account
+ * (BUKAN idToken pengguna seperti verifikasiUser_() di atas), supaya cek
+ * NISN saat login siswa (SEBELUM ada sesi Firebase Auth sama sekali) tetap
+ * bisa jalan tanpa NISN pernah terekspos ke klien lewat Firestore Rules.
+ * Kredensialnya BUKAN di sini — diambil dari Script Properties
+ * (SERVICE_ACCOUNT_EMAIL, SERVICE_ACCOUNT_KEY), diisi manual oleh guru lewat
+ * Apps Script Editor > Project Settings, TIDAK PERNAH ikut ke GitHub.
+ *
+ * KARENA jalur ini melewati Firestore Security Rules sepenuhnya (diatur IAM,
+ * bukan Rules), SEMUA endpoint yang menulis/menghapus koleksi "siswa" WAJIB
+ * tetap digerbang wajibGuru_() di doPost() — kalau lupa dipasang di endpoint
+ * baru, siapa pun yang tahu URL Apps Script bisa baca/tulis SEMUA data siswa
+ * tanpa login sama sekali. Lihat ANTIREGRESI.md §30.
+ * ══════════════════════════════════════════════════════════════════════ */
+
+/** Ambil access token Service Account (di-cache 55 menit — token asli berlaku
+ * 1 jam — supaya tidak menandatangani JWT baru & memanggil oauth2.googleapis.com
+ * di SETIAP request, cukup sekali per ~55 menit per instance Apps Script). */
+function getServiceAccountToken_() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get("sa_access_token");
+  if (cached) return cached;
+
+  const props = PropertiesService.getScriptProperties();
+  const email = props.getProperty("SERVICE_ACCOUNT_EMAIL");
+  const rawKey = props.getProperty("SERVICE_ACCOUNT_KEY");
+  if (!email || !rawKey) {
+    throw new Error(
+      'Script Properties "SERVICE_ACCOUNT_EMAIL"/"SERVICE_ACCOUNT_KEY" belum diisi — ' +
+      "lihat RANCANGAN-MIGRASI-FIRESTORE.md §1."
+    );
+  }
+  // \n literal (2 karakter) dari isian Script Properties -> baris baru sungguhan,
+  // dibutuhkan Utilities.computeRsaSha256Signature() untuk membaca PEM key ini.
+  const privateKey = rawKey.replace(/\\n/g, "\n");
+
+  const now = Math.floor(Date.now() / 1000);
+  const header = { alg: "RS256", typ: "JWT" };
+  const claimSet = {
+    iss: email,
+    scope: "https://www.googleapis.com/auth/datastore",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600,
+  };
+  const base64url_ = (obj) => Utilities.base64EncodeWebSafe(JSON.stringify(obj)).replace(/=+$/, "");
+  const toSign = base64url_(header) + "." + base64url_(claimSet);
+  const signatureBytes = Utilities.computeRsaSha256Signature(toSign, privateKey);
+  const signature = Utilities.base64EncodeWebSafe(signatureBytes).replace(/=+$/, "");
+  const jwt = toSign + "." + signature;
+
+  const res = UrlFetchApp.fetch("https://oauth2.googleapis.com/token", {
+    method: "post",
+    contentType: "application/x-www-form-urlencoded",
+    payload: {
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: jwt,
+    },
+    muteHttpExceptions: true,
+  });
+  let json;
+  try { json = JSON.parse(res.getContentText() || "{}"); } catch (e) { json = {}; }
+  if (!json.access_token) {
+    throw new Error("Gagal mendapat token Service Account: " + res.getContentText());
+  }
+  cache.put("sa_access_token", json.access_token, 55 * 60);
+  return json.access_token;
+}
+
+/** Panggilan REST Firestore generik pakai token Service Account. `path`
+ * relatif terhadap koleksi dokumen (mis. "siswa/0169932726" atau "siswa"). */
+function firestoreFetch_(path, method, bodyObj) {
+  const token = getServiceAccountToken_();
+  const options = {
+    method: method || "get",
+    headers: { Authorization: "Bearer " + token },
+    muteHttpExceptions: true,
+  };
+  if (bodyObj !== undefined) {
+    options.contentType = "application/json";
+    options.payload = JSON.stringify(bodyObj);
+  }
+  const res = UrlFetchApp.fetch(FIRESTORE_BASE_URL_ + path, options);
+  const text = res.getContentText();
+  let json = null;
+  try { json = text ? JSON.parse(text) : null; } catch (e) { /* biarkan null, pemanggil cek code */ }
+  return { code: res.getResponseCode(), json: json, text: text };
+}
+
+function firestoreValue_(v) {
+  if (v instanceof Date) return { timestampValue: v.toISOString() };
+  return { stringValue: String(v === undefined || v === null ? "" : v) };
+}
+function firestoreFieldsFromObj_(obj) {
+  const fields = {};
+  Object.keys(obj).forEach((k) => { fields[k] = firestoreValue_(obj[k]); });
+  return fields;
+}
+function objFromFirestoreFields_(fields) {
+  const obj = {};
+  if (!fields) return obj;
+  Object.keys(fields).forEach((k) => {
+    const v = fields[k];
+    obj[k] = v.stringValue !== undefined ? v.stringValue
+      : v.timestampValue !== undefined ? v.timestampValue
+      : v.integerValue !== undefined ? Number(v.integerValue)
+      : v.booleanValue !== undefined ? v.booleanValue
+      : "";
+  });
+  return obj;
+}
+
+/** doc.name berbentuk ".../documents/siswa/{nisn}" -> ambil NISN dari situ
+ * (bukan dari field, karena NISN memang dipakai sebagai ID dokumen). */
+function nisnDariNamaDokumen_(docName) {
+  const parts = String(docName).split("/");
+  return parts[parts.length - 1];
+}
+
+function siswaObjDariDokumenFirestore_(doc) {
+  const f = objFromFirestoreFields_(doc.fields);
+  return {
+    "Nama Lengkap": f.nama || "",
+    "Nama Panggilan": f.namaPanggilan || "",
+    "Tempat Lahir": f.tempatLahir || "",
+    "Tanggal Lahir": f.tanggalLahir || "",
+    "URL Foto": f.urlFoto || "",
+    "NISN": nisnDariNamaDokumen_(doc.name),
+  };
+}
+
+/** SEMUA profil siswa tersimpan di Firestore (dipakai ?siswa=1 & pencarian nama
+ * saat login/pendaftaran — koleksi ini kecil, ~25-40 dokumen, jadi baca-semua-
+ * lalu-filter di Apps Script lebih sederhana & cukup murah dibanding menyusun
+ * structured query REST Firestore untuk tiap kebutuhan pencarian berbeda). */
+function getAllSiswaFirestore_() {
+  const hasil = [];
+  let pageToken = "";
+  do {
+    const qs = "pageSize=300" + (pageToken ? "&pageToken=" + encodeURIComponent(pageToken) : "");
+    const r = firestoreFetch_("siswa?" + qs, "get");
+    if (r.code !== 200) throw new Error("Gagal membaca daftar siswa dari Firestore: " + r.text);
+    (r.json.documents || []).forEach((doc) => hasil.push(siswaObjDariDokumenFirestore_(doc)));
+    pageToken = (r.json && r.json.nextPageToken) || "";
+  } while (pageToken);
+  return hasil;
+}
+
+function getSiswaByNisnFirestore_(nisn) {
+  const r = firestoreFetch_("siswa/" + encodeURIComponent(nisn), "get");
+  if (r.code === 404) return null;
+  if (r.code !== 200) throw new Error("Gagal membaca profil siswa dari Firestore: " + r.text);
+  return siswaObjDariDokumenFirestore_(r.json);
+}
+
+/** Sama seperti getSiswaByNisnFirestore_ tapi cari berdasarkan field "nama"
+ * (dipakai ?laporanSiswa=1 yang menerima nama, bukan NISN, dari klien). */
+function getSiswaByNamaFirestore_(nama) {
+  const doc = cariDokumenSiswaByNama_(nama);
+  return doc ? siswaObjDariDokumenFirestore_(doc) : null;
+}
+
+/** Simpan/perbarui 1 dokumen siswa. PATCH tanpa updateMask MENIMPA SELURUH
+ * dokumen (bukan merge sebagian) — sengaja begitu di sini karena pemanggil
+ * (doPostSiswa_) selalu menyusun objek record LENGKAP sebelum memanggil ini,
+ * persis prinsip yang sama dengan buildRowByHeaders_() di versi Sheets. */
+function setSiswaFirestore_(nisn, record) {
+  const r = firestoreFetch_("siswa/" + encodeURIComponent(nisn), "patch", {
+    fields: firestoreFieldsFromObj_(record),
+  });
+  if (r.code !== 200) throw new Error("Gagal menyimpan profil siswa ke Firestore: " + r.text);
+}
+
+function deleteSiswaFirestore_(nisn) {
+  const r = firestoreFetch_("siswa/" + encodeURIComponent(nisn), "delete");
+  if (r.code !== 200 && r.code !== 404) throw new Error("Gagal menghapus dokumen siswa lama: " + r.text);
+}
 
 /** Lempar Error kalau kode akses MPLS salah/tidak disertakan. Kalau
  * ACCESS_CODE_MPLS di-set jadi "" (kosong), gerbang ini otomatis nonaktif —
@@ -456,6 +640,12 @@ function setupSheetJurnal() {
   Logger.log("Sheet siap: " + sheet.getName());
 }
 
+/** ⚠️ LEGACY sejak migrasi Firestore (RANCANGAN-MIGRASI-FIRESTORE.md) — sheet
+ * "Data Siswa" TIDAK LAGI dipakai endpoint `?siswa=1`/`type:"siswa"`/dst.
+ * (semua sudah baca/tulis Firestore, lihat getAllSiswaFirestore_() dkk).
+ * Fungsi & sheet ini SENGAJA DIPERTAHANKAN (tidak dihapus) HANYA sebagai
+ * sumber data untuk migrasiSiswaKeFirestore_() dan cadangan manual sampai
+ * Arif yakin semua data sudah cocok di Firestore — boleh dihapus belakangan. */
 function getSiswaSheet_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(SISWA_SHEET_NAME);
@@ -467,7 +657,7 @@ function getSiswaSheet_() {
   return sheet;
 }
 
-/** Jalankan SEKALI dari editor Apps Script untuk inisialisasi sheet "Data Siswa" + header. */
+/** ⚠️ LEGACY — lihat catatan di getSiswaSheet_() di atas. */
 function setupSiswaSheet() {
   const sheet = getSiswaSheet_();
   sheet.getRange(1, 1, 1, SISWA_HEADERS.length).setValues([SISWA_HEADERS]);
@@ -821,7 +1011,12 @@ function doGet(e) {
 
     if (params.siswa) {
       wajibGuru_(params.idToken);
-      return jsonOut_({ data: sheetToObjects_(getSiswaSheet_()) });
+      // Sejak migrasi Firestore (RANCANGAN-MIGRASI-FIRESTORE.md): baca koleksi
+      // "siswa" via Service Account, BUKAN sheet lagi. Bentuk respons ke klien
+      // (array object dengan key "Nama Lengkap"/"NISN"/dst.) SENGAJA dijaga
+      // persis sama seperti versi Sheets, supaya pages/kelas/assets/kelas.js
+      // tidak perlu diubah.
+      return jsonOut_({ data: getAllSiswaFirestore_() });
     }
 
     if (params.laporanSiswa) {
@@ -836,13 +1031,15 @@ function doGet(e) {
 
       // Catatan kolom kunci TIDAK seragam antar-sheet (bukan hal baru, sudah begini sejak
       // awal proyek): "Data Siswa" pakai "Nama Lengkap", sheet lain pakai "Nama Siswa".
+      // "Data Siswa" sendiri sejak migrasi Firestore sudah tidak lagi di sheet — baca
+      // via getSiswaByNamaFirestore_ (helper baru, lihat definisinya).
       function ambilSatuBaris_(sheet, kolomKunci) {
         const row = findRowByColumn_(sheet, kolomKunci, namaLaporan);
         return row === -1 ? null : readRowAsObject_(sheet, row);
       }
 
       return jsonOut_({
-        profil: ambilSatuBaris_(getSiswaSheet_(), "Nama Lengkap"),
+        profil: getSiswaByNamaFirestore_(namaLaporan),
         mpls: ambilSatuBaris_(getSheet_(), "Nama Siswa"),
         mplsKognitif: ambilSatuBaris_(getSheetKognitif_(), "Nama Siswa"),
         jurnal: ambilSatuBaris_(getSheetJurnal_(), "Nama Siswa"),
@@ -990,52 +1187,70 @@ function doPost(e) {
   }
 }
 
-/** Simpan/perbarui profil siswa (nama, panggilan, TTL) + opsional foto baru ke Drive.
- * PENTING: kalau upload foto gagal (mis. izin Drive belum di-otorisasi ulang setelah
- * deploy baru), data teks (nama/panggilan/TTL) TETAP tersimpan — hanya foto yang gagal,
- * dan itu diberi tahu lewat field "fotoWarning" di respons (bukan bikin seluruh
- * penyimpanan gagal seperti sebelumnya). */
+/** Salinan daftar 25 nama siswa Kelas 5A — HARUS disinkronkan manual kalau
+ * `pages/mpls/assets/mpls-data.js` (MPLS_STUDENTS, sumber aslinya) berubah
+ * (mis. tahun ajaran baru). Dipakai di sini SEBAGAI VALIDASI SAJA (menolak
+ * nama salah ketik supaya tidak nyangkut jadi dokumen Firestore baru saat
+ * impor massal) — Code.gs (server) tidak bisa mengimpor file JS sisi klien
+ * secara langsung, makanya disalin, bukan dirujuk. */
+const SISWA_NAMA_VALID_ = [
+  "Abdurrahman Ar Ribery", "Abyan Nandana Khalif", "Adskhan Ibran Elfatih",
+  "Afiya Nur Ataya Sandi", "Aisyah Afqohunnisa", "Akhdan Ziyad",
+  "Alam Rayyan Fiyanto", "Arsyila Almahyira Azgefa", "Athifa Nur Pelangi",
+  "Fairel Atharizz Calief", "Fatih Pratama Basuki", "Flora Baby Queen",
+  "Gilang Aditya Ramadhan", "Ilham Ibrahim", "Inara Huwaida Ardhani",
+  "Kinara Adisti Salsabila", "Kirana Hafizah Iqra Nasution", "Latifa Rafanda",
+  "Meshya Belliza Utama", "Muhammad Ali Alfarizi", "Nayla Latifa",
+  "Quenzino Satria Hadika", "Reynand Pratama", "Shakila Qiyana Shadiqah",
+  "Shanum Meyra Rosadi",
+];
+
+/** Cari 1 dokumen siswa berdasarkan field "nama" (bukan ID dokumen — ID
+ * dokumen di koleksi "siswa" adalah NISN, lihat RANCANGAN-MIGRASI-FIRESTORE.md
+ * §2). Baca-semua-lalu-filter (koleksi kecil, murah) — kembalikan dokumen
+ * RAW Firestore (bukan bentuk sudah-diterjemahkan) supaya pemanggil bisa
+ * ambil field apa pun yang perlu dipertahankan (mis. createdAt, urlFoto). */
+function cariDokumenSiswaByNama_(nama) {
+  const target = String(nama).trim().toLowerCase();
+  let pageToken = "";
+  do {
+    const qs = "pageSize=300" + (pageToken ? "&pageToken=" + encodeURIComponent(pageToken) : "");
+    const r = firestoreFetch_("siswa?" + qs, "get");
+    if (r.code !== 200) throw new Error("Gagal mencari data siswa di Firestore: " + r.text);
+    const docs = r.json.documents || [];
+    for (let i = 0; i < docs.length; i++) {
+      const f = objFromFirestoreFields_(docs[i].fields);
+      if (String(f.nama || "").trim().toLowerCase() === target) return docs[i];
+    }
+    pageToken = (r.json && r.json.nextPageToken) || "";
+  } while (pageToken);
+  return null;
+}
+
+/** Simpan/perbarui profil siswa (nama, panggilan, TTL, NISN) + opsional foto baru
+ * ke Drive. Sejak migrasi Firestore (RANCANGAN-MIGRASI-FIRESTORE.md), NISN
+ * dipakai sebagai ID dokumen — jadi WAJIB diisi & valid 10 digit di sini
+ * (beda dari versi Sheets sebelumnya yang membolehkan NISN kosong sementara).
+ * PENTING: kalau upload foto gagal (mis. izin Drive belum di-otorisasi ulang
+ * setelah deploy baru), data teks TETAP tersimpan — hanya foto yang gagal,
+ * diberi tahu lewat field "fotoWarning" di respons. */
 function doPostSiswa_(body) {
-  const sheet = getSiswaSheet_();
   const namaLengkap = String(body["Nama Lengkap"] || "").trim();
   if (!namaLengkap) {
     return jsonOut_({ status: "error", message: "Nama Lengkap wajib diisi" });
   }
-
-  const existingRow = findRowByColumn_(sheet, "Nama Lengkap", namaLengkap);
-  const headerRow = readHeaderRow_(sheet);
-  const fotoColIdx = headerRow.indexOf("URL Foto") + 1;
-
-  // v0.5.4: deteksi dini kalau header "URL Foto" tidak ketemu PERSIS di baris 1 sheet
-  // "Data Siswa" (mis. ada spasi tambahan atau beda huruf besar/kecil karena pernah diedit
-  // manual). TANPA pengecekan ini, foto tetap berhasil terupload ke Drive (jadi tampak
-  // "berhasil"), tapi URL-nya diam-diam TIDAK PERNAH tersimpan ke kolom manapun — karena
-  // buildRowByHeaders_() hanya menulis nilai ke kolom yang namanya cocok PERSIS dengan
-  // "URL Foto". Ini gejala tepat yang dilaporkan: foto ada di folder Drive, tidak ada pesan
-  // error, tapi kolom "URL Foto" tetap kosong di spreadsheet.
-  const headerUrlFotoBermasalah = fotoColIdx <= 0;
-
-  function fotoLamaJikaAda() {
-    if (existingRow !== -1 && fotoColIdx > 0) {
-      return sheet.getRange(existingRow, fotoColIdx).getValue();
-    }
-    return "";
+  const nisn = String(body["NISN"] || "").trim();
+  if (!/^\d{10}$/.test(nisn)) {
+    return jsonOut_({ status: "error", message: "NISN wajib diisi, harus 10 digit angka." });
   }
 
-  // v1.0: NISN dipertahankan kalau body TIDAK mengirim field ini — sama prinsipnya
-  // dengan fotoLamaJikaAda() di atas. TANPA ini, setiap kali guru menyimpan
-  // perubahan lewat form biasa (yang tidak punya field NISN di UI utamanya, NISN
-  // hanya diisi lewat form edit yang menyertakannya atau alat impor massal),
-  // NISN yang sudah ada akan tertimpa "" oleh buildRowByHeaders_() — persis pola
-  // "kolom sheet diam-diam hilang" yang sudah pernah dicatat di ANTIREGRESI.md.
-  const nisnColIdx = headerRow.indexOf("NISN") + 1;
-  function nisnLamaJikaAda() {
-    if (existingRow !== -1 && nisnColIdx > 0) {
-      return String(sheet.getRange(existingRow, nisnColIdx).getValue() || "");
-    }
-    return "";
-  }
-  const nisn = body["NISN"] !== undefined ? String(body["NISN"]).trim() : nisnLamaJikaAda();
+  const existingDoc = cariDokumenSiswaByNama_(namaLengkap);
+  const existingFields = existingDoc ? objFromFirestoreFields_(existingDoc.fields) : null;
+  // Kalau guru mengoreksi NISN yang salah ketik sebelumnya (bukan pertama kali
+  // isi), dokumen LAMA (di bawah NISN lama) harus dihapus setelah dokumen BARU
+  // berhasil ditulis — supaya tidak ada 2 dokumen (1 salah, 1 benar) nyangkut
+  // untuk siswa yang sama.
+  const oldNisn = existingDoc ? nisnDariNamaDokumen_(existingDoc.name) : "";
 
   let urlFoto = body["URL Foto"] || "";
   let fotoWarning = "";
@@ -1045,36 +1260,26 @@ function doPostSiswa_(body) {
       urlFoto = simpanFotoKeDrive_(body.fotoBase64, body.fotoMime, namaFile);
     } catch (fotoErr) {
       fotoWarning = "Data siswa tersimpan, tapi foto GAGAL diunggah: " + String(fotoErr);
-      urlFoto = fotoLamaJikaAda();
+      urlFoto = existingFields ? (existingFields.urlFoto || "") : "";
     }
   } else if (!urlFoto) {
-    urlFoto = fotoLamaJikaAda();
-  }
-
-  if (headerUrlFotoBermasalah && (body.fotoBase64 || urlFoto)) {
-    fotoWarning = (fotoWarning ? fotoWarning + " " : "") +
-      'PERINGATAN: header kolom "URL Foto" tidak ditemukan PERSIS di baris 1 sheet "Data ' +
-      'Siswa" (cek kemungkinan beda spasi/huruf besar-kecil). Foto mungkin sudah diproses, ' +
-      "tapi URL-nya TIDAK akan tersimpan ke kolom manapun sampai nama header diperbaiki " +
-      'jadi persis "URL Foto".';
+    urlFoto = existingFields ? (existingFields.urlFoto || "") : "";
   }
 
   const record = {
-    "Timestamp": new Date(),
-    "Nama Lengkap": namaLengkap,
-    "Nama Panggilan": body["Nama Panggilan"] || "",
-    "Tempat Lahir": body["Tempat Lahir"] || "",
-    "Tanggal Lahir": body["Tanggal Lahir"] || "",
-    "URL Foto": urlFoto,
-    "NISN": nisn,
+    nama: namaLengkap,
+    namaPanggilan: body["Nama Panggilan"] || "",
+    tempatLahir: body["Tempat Lahir"] || "",
+    tanggalLahir: body["Tanggal Lahir"] || "",
+    urlFoto: urlFoto,
+    createdAt: existingFields && existingFields.createdAt ? new Date(existingFields.createdAt) : new Date(),
+    updatedAt: new Date(),
   };
-  const rowValues = buildRowByHeaders_(sheet, record);
-
-  if (existingRow === -1) {
-    sheet.appendRow(rowValues);
-  } else {
-    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
+  setSiswaFirestore_(nisn, record);
+  if (oldNisn && oldNisn !== nisn) {
+    deleteSiswaFirestore_(oldNisn);
   }
+
   return jsonOut_({ status: "ok", urlFoto: urlFoto, fotoWarning: fotoWarning });
 }
 
@@ -1082,29 +1287,16 @@ function doPostSiswa_(body) {
  * Impor NISN untuk banyak siswa sekaligus (dipakai form "Impor NISN Massal" di
  * pages/kelas/index.html). body.rows = [{ nama, nisn }, ...].
  *
- * SENGAJA hanya menulis SATU sel (kolom NISN) per baris yang cocok — TIDAK
- * memanggil buildRowByHeaders_()/menulis ulang seluruh baris seperti
- * doPostSiswa_() — supaya tidak mungkin menyentuh/menimpa kolom lain (foto,
- * TTL, dst.) siswa yang sudah tersimpan, walau body.rows cuma berisi nama+nisn.
+ * Sejak migrasi Firestore: kalau siswa itu SUDAH punya dokumen (dicari lewat
+ * field nama), field lain (foto, TTL, dst.) dipertahankan apa adanya, cuma
+ * ID dokumennya yang "pindah" ke NISN baru (dokumen lama dihapus). Kalau
+ * BELUM punya dokumen sama sekali, dibuat dokumen baru minimal (nama + NISN
+ * saja, field lain kosong, guru bisa lengkapi belakangan lewat form biasa).
  *
- * Pencocokan baris memakai "Nama Lengkap" PERSIS SAMA (di-trim) dengan yang ada
- * di sheet "Data Siswa" — TIDAK membuat baris baru kalau nama tidak ketemu,
- * supaya tidak ada baris siswa duplikat/salah ketik nyasar masuk. Nama yang
- * tidak cocok dikembalikan di "tidakDitemukan" supaya guru bisa periksa manual
- * (biasanya beda ejaan antara sheet & sumber NISN yang ditempel).
+ * Nama WAJIB cocok PERSIS (di-trim) dengan salah satu di SISWA_NAMA_VALID_
+ * (roster resmi 25 siswa) — mencegah salah ketik nyasar jadi dokumen baru.
  */
 function doPostSiswaNisnBulk_(body) {
-  const sheet = getSiswaSheet_();
-  const headerRow = readHeaderRow_(sheet);
-  const namaColIdx = headerRow.indexOf("Nama Lengkap") + 1;
-  const nisnColIdx = headerRow.indexOf("NISN") + 1;
-  if (namaColIdx < 1 || nisnColIdx < 1) {
-    return jsonOut_({
-      status: "error",
-      message: 'Header "Nama Lengkap" atau "NISN" tidak ditemukan PERSIS di baris 1 sheet "Data Siswa".',
-    });
-  }
-
   const rows = Array.isArray(body.rows) ? body.rows : [];
   const diperbarui = [];
   const tidakDitemukan = [];
@@ -1112,21 +1304,36 @@ function doPostSiswaNisnBulk_(body) {
 
   rows.forEach((r) => {
     const nama = String((r && r.nama) || "").trim();
-    const nisn = String((r && r.nisn) || "").trim();
-    if (!nama || !nisn) { dilewati.push(r); return; }
-    if (!/^\d{10}$/.test(nisn)) {
-      // Bukan digagalkan total — cuma dicatat, supaya 1 baris salah format tidak
-      // menghentikan impor baris lain yang benar. Guru bisa lihat & benarkan.
-      tidakDitemukan.push({ nama: nama, nisn: nisn, alasan: "NISN bukan 10 digit angka" });
+    const nisnBaru = String((r && r.nisn) || "").trim();
+    if (!nama || !nisnBaru) { dilewati.push(r); return; }
+    if (!/^\d{10}$/.test(nisnBaru)) {
+      tidakDitemukan.push({ nama: nama, nisn: nisnBaru, alasan: "NISN bukan 10 digit angka" });
       return;
     }
-    const row = findRowByColumn_(sheet, "Nama Lengkap", nama);
-    if (row === -1) {
-      tidakDitemukan.push({ nama: nama, nisn: nisn, alasan: "Nama tidak ditemukan di sheet Data Siswa" });
+    if (SISWA_NAMA_VALID_.indexOf(nama) === -1) {
+      tidakDitemukan.push({ nama: nama, nisn: nisnBaru, alasan: "Nama tidak ada di daftar 25 siswa Kelas 5A (cek salah ketik)" });
       return;
     }
-    sheet.getRange(row, nisnColIdx).setValue(nisn);
-    diperbarui.push(nama);
+    try {
+      const existingDoc = cariDokumenSiswaByNama_(nama);
+      const existingFields = existingDoc ? objFromFirestoreFields_(existingDoc.fields) : null;
+      const oldNisn = existingDoc ? nisnDariNamaDokumen_(existingDoc.name) : "";
+
+      const record = {
+        nama: nama,
+        namaPanggilan: existingFields ? (existingFields.namaPanggilan || "") : "",
+        tempatLahir: existingFields ? (existingFields.tempatLahir || "") : "",
+        tanggalLahir: existingFields ? (existingFields.tanggalLahir || "") : "",
+        urlFoto: existingFields ? (existingFields.urlFoto || "") : "",
+        createdAt: existingFields && existingFields.createdAt ? new Date(existingFields.createdAt) : new Date(),
+        updatedAt: new Date(),
+      };
+      setSiswaFirestore_(nisnBaru, record);
+      if (oldNisn && oldNisn !== nisnBaru) deleteSiswaFirestore_(oldNisn);
+      diperbarui.push(nama);
+    } catch (err) {
+      tidakDitemukan.push({ nama: nama, nisn: nisnBaru, alasan: String(err) });
+    }
   });
 
   return jsonOut_({
@@ -1136,6 +1343,62 @@ function doPostSiswaNisnBulk_(body) {
     dilewati: dilewati.length,
   });
 }
+
+/**
+ * MIGRASI 1x-JALAN — pindahkan seluruh isi sheet "Data Siswa" (Sheets lama)
+ * ke koleksi Firestore "siswa/{nisn}". Jalankan MANUAL dari Apps Script Editor
+ * (pilih fungsi ini di dropdown → tombol Run) — BUKAN dipanggil dari web app.
+ *
+ * Baris yang NISN-nya kosong/bukan 10 digit DILEWATI (dilaporkan di Logger),
+ * TIDAK menggagalkan baris lain — supaya migrasi bisa dijalankan ulang kapan
+ * saja setelah NISN dilengkapi (mis. lewat panel "Impor NISN Massal" versi
+ * Sheets yang lama), tanpa menduplikasi baris yang sudah berhasil pindah
+ * (upsert berdasarkan NISN — jalan 2x untuk baris yang sama = aman, cuma
+ * menimpa dengan data yang sama).
+ *
+ * Sheet "Data Siswa" TIDAK dihapus oleh fungsi ini — tetap ada sebagai
+ * cadangan sampai Arif verifikasi manual semua data cocok di Firebase
+ * Console, baru dihapus manual belakangan kalau sudah yakin.
+ */
+function migrasiSiswaKeFirestore_() {
+  const sheet = getSiswaSheet_();
+  const rows = sheetToObjects_(sheet);
+  let sukses = 0;
+  const dilewati = [];
+
+  rows.forEach((row) => {
+    const nama = String(row["Nama Lengkap"] || "").trim();
+    const nisn = String(row["NISN"] || "").trim();
+    if (!nama) return; // baris kosong, lewati diam-diam
+    if (!/^\d{10}$/.test(nisn)) {
+      dilewati.push(nama + " (NISN: \"" + nisn + "\")");
+      return;
+    }
+    const record = {
+      nama: nama,
+      namaPanggilan: row["Nama Panggilan"] || "",
+      tempatLahir: row["Tempat Lahir"] || "",
+      tanggalLahir: row["Tanggal Lahir"] || "",
+      urlFoto: row["URL Foto"] || "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    setSiswaFirestore_(nisn, record);
+    sukses++;
+  });
+
+  Logger.log("Migrasi selesai: " + sukses + " siswa berhasil dipindah ke Firestore.");
+  if (dilewati.length) {
+    Logger.log(
+      "DILEWATI (" + dilewati.length + ", NISN belum valid — jalankan migrasi ulang " +
+      "nanti setelah NISN dilengkapi):\n" + dilewati.join("\n")
+    );
+  } else {
+    Logger.log("Semua baris di sheet berhasil dipindah, tidak ada yang dilewati.");
+  }
+}
+
+
 
 /** Simpan ke "Data Infografis". Ada DUA MODE tergantung ada-tidaknya body["Materi Slug"]:
  *
