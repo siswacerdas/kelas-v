@@ -15,6 +15,6 @@
  *    sudah dipakai di halaman utama begitu sudah aktif.
  */
 const MPLS_CONFIG = {
-  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzOyXo43U2A4eAqcZgYEdIDoU0ukbGWT4PgtwQbSXVLv8Nyt35B_4lGYATP88VjgrHXUQ/exec",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxYINLswTr9hryOWyzoF2JWtlnxPZA4d6BuLXvgv498ZYCglSKQaelt_JPzVIe0O_8e5A/exec",
   ACCESS_CODE: "mpls2026",
 };
