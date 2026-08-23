@@ -6,6 +6,9 @@
  * Ringkasan endpoint:
  * - doPost(e)  : { type: "mpls" (default) }   -> upsert 1 baris nilai MPLS non-kognitif per siswa.
  *                { type: "siswa" }            -> upsert 1 baris profil siswa (+ opsional foto ke Drive).
+ *                { type: "siswa_nisn_bulk" }  -> isi NISN utk banyak siswa sekaligus (lihat
+ *                doPostSiswaNisnBulk_(); dipakai form impor massal, HANYA menulis kolom NISN,
+ *                tidak menyentuh kolom lain).
  *                { type: "mpls_kognitif" }    -> upsert 1 baris nilai asesmen kognitif per siswa.
  *                { type: "jurnal" }           -> upsert 1 baris nilai asesmen menulis (jurnal aktivitas) per siswa.
  *                { type: "infografis" }       -> TAMBAH 1 baris baru media Galeri Visual (gambar ke Drive,
@@ -225,6 +228,12 @@ const SISWA_HEADERS = [
   "Tempat Lahir",
   "Tanggal Lahir",
   "URL Foto",
+  // v1.0 (RANCANGAN-LOGIN-BARU.md): NISN dipakai sebagai "kata sandi" login siswa.
+  // WAJIB diformat "Teks biasa" di Google Sheets (Format > Angka > Teks biasa) —
+  // kalau dibiarkan format Angka, NISN yang diawali "0" akan kehilangan nol di
+  // depannya (mis. "0169932726" jadi 169932726) dan siswa itu tidak akan pernah
+  // bisa login karena tidak akan pernah cocok dengan yang dia ketik.
+  "NISN",
 ];
 
 // "ID" dipakai sebagai kunci hapus dari galeri.html/admin.html — TIDAK pakai "Judul" seperti
@@ -908,6 +917,13 @@ function doPost(e) {
       return doPostSiswa_(body);
     }
 
+    if (body.type === "siswa_nisn_bulk") {
+      // LAPIS GURU — impor NISN massal (dipakai sekali di awal, dan tiap ada
+      // siswa baru per tahun ajaran). Lihat doPostSiswaNisnBulk_() untuk detail.
+      wajibGuru_(body.idToken);
+      return doPostSiswaNisnBulk_(body);
+    }
+
     if (body.type === "infografis") {
       // LAPIS GURU — hanya guru yang boleh menambah materi ke Galeri Visual.
       wajibGuru_(body.idToken);
@@ -1006,6 +1022,21 @@ function doPostSiswa_(body) {
     return "";
   }
 
+  // v1.0: NISN dipertahankan kalau body TIDAK mengirim field ini — sama prinsipnya
+  // dengan fotoLamaJikaAda() di atas. TANPA ini, setiap kali guru menyimpan
+  // perubahan lewat form biasa (yang tidak punya field NISN di UI utamanya, NISN
+  // hanya diisi lewat form edit yang menyertakannya atau alat impor massal),
+  // NISN yang sudah ada akan tertimpa "" oleh buildRowByHeaders_() — persis pola
+  // "kolom sheet diam-diam hilang" yang sudah pernah dicatat di ANTIREGRESI.md.
+  const nisnColIdx = headerRow.indexOf("NISN") + 1;
+  function nisnLamaJikaAda() {
+    if (existingRow !== -1 && nisnColIdx > 0) {
+      return String(sheet.getRange(existingRow, nisnColIdx).getValue() || "");
+    }
+    return "";
+  }
+  const nisn = body["NISN"] !== undefined ? String(body["NISN"]).trim() : nisnLamaJikaAda();
+
   let urlFoto = body["URL Foto"] || "";
   let fotoWarning = "";
   if (body.fotoBase64) {
@@ -1035,6 +1066,7 @@ function doPostSiswa_(body) {
     "Tempat Lahir": body["Tempat Lahir"] || "",
     "Tanggal Lahir": body["Tanggal Lahir"] || "",
     "URL Foto": urlFoto,
+    "NISN": nisn,
   };
   const rowValues = buildRowByHeaders_(sheet, record);
 
@@ -1044,6 +1076,65 @@ function doPostSiswa_(body) {
     sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
   }
   return jsonOut_({ status: "ok", urlFoto: urlFoto, fotoWarning: fotoWarning });
+}
+
+/**
+ * Impor NISN untuk banyak siswa sekaligus (dipakai form "Impor NISN Massal" di
+ * pages/kelas/index.html). body.rows = [{ nama, nisn }, ...].
+ *
+ * SENGAJA hanya menulis SATU sel (kolom NISN) per baris yang cocok — TIDAK
+ * memanggil buildRowByHeaders_()/menulis ulang seluruh baris seperti
+ * doPostSiswa_() — supaya tidak mungkin menyentuh/menimpa kolom lain (foto,
+ * TTL, dst.) siswa yang sudah tersimpan, walau body.rows cuma berisi nama+nisn.
+ *
+ * Pencocokan baris memakai "Nama Lengkap" PERSIS SAMA (di-trim) dengan yang ada
+ * di sheet "Data Siswa" — TIDAK membuat baris baru kalau nama tidak ketemu,
+ * supaya tidak ada baris siswa duplikat/salah ketik nyasar masuk. Nama yang
+ * tidak cocok dikembalikan di "tidakDitemukan" supaya guru bisa periksa manual
+ * (biasanya beda ejaan antara sheet & sumber NISN yang ditempel).
+ */
+function doPostSiswaNisnBulk_(body) {
+  const sheet = getSiswaSheet_();
+  const headerRow = readHeaderRow_(sheet);
+  const namaColIdx = headerRow.indexOf("Nama Lengkap") + 1;
+  const nisnColIdx = headerRow.indexOf("NISN") + 1;
+  if (namaColIdx < 1 || nisnColIdx < 1) {
+    return jsonOut_({
+      status: "error",
+      message: 'Header "Nama Lengkap" atau "NISN" tidak ditemukan PERSIS di baris 1 sheet "Data Siswa".',
+    });
+  }
+
+  const rows = Array.isArray(body.rows) ? body.rows : [];
+  const diperbarui = [];
+  const tidakDitemukan = [];
+  const dilewati = [];
+
+  rows.forEach((r) => {
+    const nama = String((r && r.nama) || "").trim();
+    const nisn = String((r && r.nisn) || "").trim();
+    if (!nama || !nisn) { dilewati.push(r); return; }
+    if (!/^\d{10}$/.test(nisn)) {
+      // Bukan digagalkan total — cuma dicatat, supaya 1 baris salah format tidak
+      // menghentikan impor baris lain yang benar. Guru bisa lihat & benarkan.
+      tidakDitemukan.push({ nama: nama, nisn: nisn, alasan: "NISN bukan 10 digit angka" });
+      return;
+    }
+    const row = findRowByColumn_(sheet, "Nama Lengkap", nama);
+    if (row === -1) {
+      tidakDitemukan.push({ nama: nama, nisn: nisn, alasan: "Nama tidak ditemukan di sheet Data Siswa" });
+      return;
+    }
+    sheet.getRange(row, nisnColIdx).setValue(nisn);
+    diperbarui.push(nama);
+  });
+
+  return jsonOut_({
+    status: "ok",
+    diperbarui: diperbarui,
+    tidakDitemukan: tidakDitemukan,
+    dilewati: dilewati.length,
+  });
 }
 
 /** Simpan ke "Data Infografis". Ada DUA MODE tergantung ada-tidaknya body["Materi Slug"]:
