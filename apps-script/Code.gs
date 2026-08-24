@@ -11,6 +11,9 @@
  *                diisi & 10 digit.
  *                { type: "siswa_nisn_bulk" }  -> isi/perbaiki NISN utk banyak siswa sekaligus (lihat
  *                doPostSiswaNisnBulk_()); nama divalidasi ke SISWA_NAMA_VALID_ (roster resmi).
+ *                { type: "siswa_login" }      -> verifikasi nama+NISN utk login siswa (Fase 2 Login,
+ *                doPostSiswaLogin_()). TANPA gerbang wajibGuru_ (dipanggil sebelum ada sesi Auth
+ *                sama sekali) — respons cuma ok/gagal, tidak pernah membocorkan data profil.
  *                { type: "mpls_kognitif" }    -> upsert 1 baris nilai asesmen kognitif per siswa.
  *                { type: "jurnal" }           -> upsert 1 baris nilai asesmen menulis (jurnal aktivitas) per siswa.
  *                { type: "infografis" }       -> TAMBAH 1 baris baru media Galeri Visual (gambar ke Drive,
@@ -1121,6 +1124,18 @@ function doPost(e) {
       return doPostSiswaNisnBulk_(body);
     }
 
+    if (body.type === "siswa_login") {
+      // SENGAJA TANPA gerbang wajibGuru_ — dipanggil SISWA SENDIRI, SEBELUM
+      // ada sesi Firebase Auth apa pun (justru fungsi endpoint ini untuk
+      // MEMBUAT sesi itu, lewat signInAnonymously() di klien setelah dapat
+      // status "ok"). Keamanannya bukan dari gerbang login, tapi dari bentuk
+      // responsnya sendiri: lihat doPostSiswaLogin_() — cuma balas ok/gagal,
+      // TIDAK PERNAH mengembalikan data profil siswa apa pun, dan membaca
+      // Firestore langsung by NISN (bukan list/scan semua), jadi tidak bisa
+      // dipakai untuk "menebak-nebak" siapa saja yang terdaftar.
+      return doPostSiswaLogin_(body);
+    }
+
     if (body.type === "infografis") {
       // LAPIS GURU — hanya guru yang boleh menambah materi ke Galeri Visual.
       wajibGuru_(body.idToken);
@@ -1342,6 +1357,45 @@ function doPostSiswaNisnBulk_(body) {
     tidakDitemukan: tidakDitemukan,
     dilewati: dilewati.length,
   });
+}
+
+/**
+ * Verifikasi nama + NISN untuk login siswa (Fase 2, RANCANGAN-LOGIN-BARU.md
+ * §2.1). TIDAK menyertakan/mengembalikan data profil siswa apa pun di respons
+ * — cuma { status: "ok" } atau { status: "error", message }. Nama tampilan di
+ * sisi klien memang diambil dari input nama yang sudah dipilih siswa sendiri
+ * dari dropdown (bukan dari respons endpoint ini), lalu disimpan di
+ * sessionStorage — sesuai rancangan.
+ *
+ * SENGAJA baca `siswa/{nisn}` LANGSUNG by ID dokumen (getSiswaByNisnFirestore_),
+ * BUKAN scan semua siswa lalu filter nama+nisn — supaya seseorang yang cuma
+ * "coba-coba" banyak NISN acak tidak bisa dapat petunjuk apa pun dari pola
+ * respons (selalu 1 pembacaan dokumen yang sama biayanya, ada atau tidak).
+ */
+function doPostSiswaLogin_(body) {
+  const nama = String(body.nama || "").trim();
+  const nisn = String(body.nisn || "").trim();
+  if (!nama || !nisn) {
+    return jsonOut_({ status: "error", message: "Nama dan NISN wajib diisi." });
+  }
+  if (!/^\d{10}$/.test(nisn)) {
+    return jsonOut_({ status: "error", message: "NISN harus 10 digit angka." });
+  }
+
+  let profil;
+  try {
+    profil = getSiswaByNisnFirestore_(nisn);
+  } catch (err) {
+    return jsonOut_({ status: "error", message: "Gagal memverifikasi, coba beberapa saat lagi." });
+  }
+
+  const cocok = profil && String(profil["Nama Lengkap"]).trim().toLowerCase() === nama.toLowerCase();
+  if (!cocok) {
+    // Pesan generik SENGAJA sama baik nama salah, NISN salah, atau keduanya —
+    // supaya tidak membocorkan mana yang benar/salah ke orang yang coba-coba.
+    return jsonOut_({ status: "error", message: "Nama atau NISN tidak cocok. Periksa lagi ejaan nama & angka NISN." });
+  }
+  return jsonOut_({ status: "ok" });
 }
 
 /**
