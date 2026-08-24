@@ -240,9 +240,22 @@
       margin-bottom: 0.25rem;
     }
     #login-box p { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+
+    /* ── TAB LOGIN (Siswa / Guru & Orang Tua) ────────── */
+    .login-tabs {
+      display: flex; gap: 4px; margin-bottom: 1.25rem;
+      background: var(--paper-2); border-radius: 8px; padding: 3px;
+    }
+    .login-tab {
+      flex: 1; padding: 8px 4px; border: none; background: transparent;
+      border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--ink-3);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .login-tab.active { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(26,26,46,0.12); }
+
     .form-group { margin-bottom: 0.75rem; text-align: left; }
     .form-group label { font-size: 12px; font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
-    .form-group input {
+    .form-group input, .form-group select {
       width: 100%; padding: 9px 12px;
       border: 1px solid var(--paper-3);
       border-radius: 7px;
@@ -251,16 +264,17 @@
       outline: none;
       transition: border-color 0.2s;
     }
-    .form-group input:focus { border-color: var(--accent); }
-    #btn-login {
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    #btn-login, #btn-login-siswa {
       width: 100%; margin-top: 0.5rem;
       padding: 10px; border: none; border-radius: 7px;
       background: var(--accent); color: #fff;
       font-size: 14px; font-weight: 600;
       cursor: pointer; transition: background 0.2s;
     }
-    #btn-login:hover { background: #2460a8; }
-    #login-error { font-size: 12px; color: var(--danger); margin-top: 8px; min-height: 18px; }
+    #btn-login:hover, #btn-login-siswa:hover { background: #2460a8; }
+    #btn-login:disabled, #btn-login-siswa:disabled { opacity: 0.6; cursor: not-allowed; }
+    #login-error, #login-siswa-error { font-size: 12px; color: var(--danger); margin-top: 8px; min-height: 18px; }
 
     /* ── FOOTER ─────────────────────────────── */
     footer {
@@ -307,16 +321,41 @@
   <div id="login-box">
     <h2>Kelas <em style="color:var(--accent-2);font-style:normal">5</em></h2>
     <p>Tahun Pelajaran 2026–2027<br>Silakan masuk untuk melanjutkan</p>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="inp-email" placeholder="email@sekolah.sch.id" autocomplete="email" />
+
+    <div class="login-tabs">
+      <button type="button" class="login-tab active" id="tab-siswa">Siswa</button>
+      <button type="button" class="login-tab" id="tab-guru">Guru &amp; Orang Tua</button>
     </div>
-    <div class="form-group">
-      <label>Kata Sandi</label>
-      <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password" />
+
+    <!-- Login Siswa: pilih nama + NISN (Fase 3, RANCANGAN-LOGIN-BARU.md §2.1) -->
+    <div id="form-login-siswa">
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <select id="inp-siswa-nama" autocomplete="off">
+          <option value="">— Pilih namamu —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>NISN</label>
+        <input type="text" id="inp-siswa-nisn" placeholder="10 digit" inputmode="numeric" maxlength="10" autocomplete="off" />
+      </div>
+      <button id="btn-login-siswa">Masuk</button>
+      <div id="login-siswa-error"></div>
     </div>
-    <button id="btn-login" onclick="doLogin()">Masuk</button>
-    <div id="login-error"></div>
+
+    <!-- Login Guru & Orang Tua: email + kata sandi (tidak berubah) -->
+    <div id="form-login-guru" class="hidden">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="inp-email" placeholder="email@sekolah.sch.id" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Kata Sandi</label>
+        <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button id="btn-login">Masuk</button>
+      <div id="login-error"></div>
+    </div>
   </div>
 </div>
 
@@ -443,10 +482,16 @@
   </footer>
 </div>
 
+<!-- Sumber daftar nama siswa (MPLS_STUDENTS) & konfigurasi Apps Script (MPLS_CONFIG) —
+     dimuat sebagai script biasa (bukan module) supaya bisa dipakai lintas file,
+     sama seperti dipakai di pages/kelas/ & pages/mpls/. -->
+<script src="pages/mpls/assets/mpls-data.js"></script>
+<script src="pages/mpls/assets/config.js"></script>
+
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  import { getAuth, signInWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, limit }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -468,6 +513,34 @@
   const auth = getAuth(app);
   const db   = getFirestore(app);
 
+  const KEY_NAMA_SISWA = "kelas5_siswa_nama";
+
+  // ── Tab Login (Siswa / Guru & Orang Tua) ──────────────────
+  function pilihTabLogin(tab) {
+    const isSiswa = tab === "siswa";
+    document.getElementById("tab-siswa").classList.toggle("active", isSiswa);
+    document.getElementById("tab-guru").classList.toggle("active", !isSiswa);
+    document.getElementById("form-login-siswa").classList.toggle("hidden", !isSiswa);
+    document.getElementById("form-login-guru").classList.toggle("hidden", isSiswa);
+    document.getElementById("login-siswa-error").textContent = "";
+    document.getElementById("login-error").textContent = "";
+  }
+  document.getElementById("tab-siswa").addEventListener("click", () => pilihTabLogin("siswa"));
+  document.getElementById("tab-guru").addEventListener("click", () => pilihTabLogin("guru"));
+
+  // Isi dropdown nama dari MPLS_STUDENTS (pages/mpls/assets/mpls-data.js — sumber
+  // tunggal daftar 25 siswa, sudah dipakai di tempat lain juga, lihat
+  // RANCANGAN-LOGIN-BARU.md §0).
+  (function isiDropdownSiswa() {
+    const sel = document.getElementById("inp-siswa-nama");
+    (typeof MPLS_STUDENTS !== "undefined" ? MPLS_STUDENTS : []).forEach((nama) => {
+      const opt = document.createElement("option");
+      opt.value = nama;
+      opt.textContent = nama;
+      sel.appendChild(opt);
+    });
+  })();
+
   // ── Expose helpers ke window ──────────────────────────────
   window.doLogin = async () => {
     const email = document.getElementById('inp-email').value.trim();
@@ -487,17 +560,86 @@
     }
   };
 
-  window.doLogout = () => signOut(auth);
+  /** Login siswa: verifikasi nama+NISN ke Apps Script (type: "siswa_login"),
+   * kalau cocok baru buat sesi Firebase Anonymous + simpan nama tampilan ke
+   * sessionStorage (BUKAN localStorage — supaya tidak nyangkut ke sesi
+   * berikutnya kalau HP dipakai bergantian antar siswa, lihat
+   * RANCANGAN-LOGIN-BARU.md §2.1). onAuthStateChanged yang menangani sisanya
+   * (membuka aplikasi) setelah signInAnonymously berhasil. */
+  window.doLoginSiswa = async () => {
+    const nama = document.getElementById('inp-siswa-nama').value;
+    const nisn = document.getElementById('inp-siswa-nisn').value.trim();
+    const errEl = document.getElementById('login-siswa-error');
+    const btn = document.getElementById('btn-login-siswa');
+    errEl.textContent = '';
 
-  // Allow Enter key on password input
+    if (!nama) { errEl.textContent = 'Pilih namamu dulu dari daftar.'; return; }
+    if (!/^\d{10}$/.test(nisn)) { errEl.textContent = 'NISN harus 10 digit angka.'; return; }
+
+    btn.disabled = true;
+    errEl.textContent = 'Memeriksa…';
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ type: 'siswa_login', nama: nama, nisn: nisn }),
+      });
+      const json = await res.json();
+      if (json.status !== 'ok') {
+        errEl.textContent = json.message || 'Nama atau NISN tidak cocok.';
+        btn.disabled = false;
+        return;
+      }
+      sessionStorage.setItem(KEY_NAMA_SISWA, nama);
+      await signInAnonymously(auth);
+      // Sengaja TIDAK set btn.disabled = false di sini — onAuthStateChanged akan
+      // langsung menyembunyikan seluruh #login-screen begitu sesi anonim aktif.
+    } catch (err) {
+      errEl.textContent = 'Gagal memeriksa, coba lagi: ' + err.message;
+      btn.disabled = false;
+    }
+  };
+
+  window.doLogout = () => {
+    sessionStorage.removeItem(KEY_NAMA_SISWA);
+    return signOut(auth);
+  };
+
+  document.getElementById('btn-login').addEventListener('click', () => window.doLogin());
+  document.getElementById('btn-login-siswa').addEventListener('click', () => window.doLoginSiswa());
+
+  // Allow Enter key on password/NISN input
   document.getElementById('inp-pass').addEventListener('keydown', e => {
     if (e.key === 'Enter') window.doLogin();
+  });
+  document.getElementById('inp-siswa-nisn').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.doLoginSiswa();
   });
 
   // ── Auth state ─────────────────────────────────────────────
   onAuthStateChanged(auth, async (user) => {
     document.getElementById('loading').style.opacity = '0';
     setTimeout(() => document.getElementById('loading').style.display = 'none', 300);
+
+    if (user && user.isAnonymous) {
+      // Akun siswa (Firebase Anonymous Auth) — TIDAK punya dokumen Firestore
+      // users/{uid} sama sekali, nama tampilan datang dari sessionStorage yang
+      // diisi doLoginSiswa() tepat sebelum signInAnonymously() dipanggil.
+      const namaSiswa = sessionStorage.getItem(KEY_NAMA_SISWA);
+      if (!namaSiswa) {
+        // Sesi anonim "nyasar" tanpa nama tersimpan (mis. sessionStorage sudah
+        // kehapus tapi Firebase masih ingat sesi anonimnya dari tab lain) —
+        // paksa keluar, supaya tidak ada siswa "tanpa nama" tersasar masuk.
+        await signOut(auth);
+        return;
+      }
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('display-name').textContent = namaSiswa;
+      // role siswa: #admin-panel, #kelas-panel, #card-laporan-siswa TETAP
+      // hidden (default HTML-nya) — tidak disentuh di sini sama sekali.
+      loadPengumuman();
+      return;
+    }
 
     if (user) {
       document.getElementById('login-screen').classList.add('hidden');

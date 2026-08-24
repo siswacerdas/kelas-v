@@ -259,13 +259,17 @@ sheet-nya, atau Arif konfirmasi apakah 25 nama ini semua sudah ada di "Data Sisw
   Firestore `siswa/{nisn}` langsung by ID dokumen, balas cuma `status`/
   `message` generik (tidak pernah membocorkan data profil atau info mana
   yang salah), TANPA gerbang `wajibGuru_` (memang dipanggil sebelum siswa
-  py sesi Auth). **Menunggu Arif deploy ulang Apps Script sebelum bisa diuji
-  dari luar (mis. lewat Postman/curl) atau dipakai UI (Fase 3).**
+  py sesi Auth). **✅ Diuji Arif lewat Console browser — status ok/error
+  sesuai harapan, termasuk pesan error generik yang sama persis untuk nama
+  salah maupun NISN salah.**
   Sumber daftar nama: `MPLS_STUDENTS`, sudah ada, tidak perlu endpoint baru
   untuk itu (lihat §0).
-- [ ] **Fase 3 — UI login siswa**: ubah `index.html` (tab Siswa, anonymous auth,
-  sessionStorage nama), sesuaikan bagian yang baca `display-name`/role supaya jalan
-  untuk akun anonim.
+- [x] **Fase 3 — UI login siswa**: `index.html` sekarang punya 2 tab (Siswa /
+  Guru & Orang Tua). Tab Siswa: dropdown nama (dari `MPLS_STUDENTS`) + input
+  NISN → panggil `siswa_login` → kalau cocok, `signInAnonymously()` +
+  simpan nama ke `sessionStorage`. `onAuthStateChanged` disesuaikan: akun
+  anonim tanpa nama di sessionStorage otomatis di-signOut (jaga-jaga sesi
+  "nyasar"). **Menunggu Arif upload & uji end-to-end di browser sungguhan.**
 - [ ] **Fase 4 — Pendaftaran & approval orang tua**: `daftar-orangtua.html`
   (dengan field WhatsApp opsional — disetujui §0), aturan Firestore baru (§3.3),
   tab approval di `admin.html`, penanganan status `pending_orangtua`/`rejected`

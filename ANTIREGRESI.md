@@ -873,6 +873,27 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
 - [ ] Cek responsnya TIDAK PERNAH menyertakan field lain (Nama Panggilan,
       Tempat Lahir, dst.) — cuma `status`/`message`, walau login berhasil
 
+### 31. UI Login Siswa (`index.html`, Fase 3 login)
+- [ ] Tab "Siswa" aktif secara default saat halaman pertama dibuka; klik tab
+      "Guru & Orang Tua" pindah tampilan, klik lagi "Siswa" balik — pesan
+      error di kedua form ikut kekosongkan saat pindah tab
+- [ ] Dropdown nama berisi 25 nama (dari `MPLS_STUDENTS`), TIDAK kosong
+- [ ] Login siswa dengan nama+NISN BENAR → berhasil masuk, "Halo, ‹nama›"
+      tampil di topbar, TIDAK ada Panel Guru/Kelas/kartu Laporan Siswa yang
+      kelihatan (harus tetap tersembunyi persis seperti akun siswa biasa)
+- [ ] Login siswa dengan NISN SALAH → pesan error tampil di form Siswa
+      (bukan form Guru), TIDAK ikut membuka aplikasi
+- [ ] Setelah login siswa berhasil, klik "Keluar" → kembali ke layar login,
+      **coba login lagi** langsung tanpa refresh → harus tetap bisa (bukan
+      nyangkut di kondisi aneh dari sesi anonim sebelumnya)
+- [ ] Tutup tab browser (bukan cuma klik Keluar) lalu buka lagi situsnya di
+      tab baru → HARUS kembali ke layar login (sessionStorage kehapus saat
+      tab ditutup) — kalau malah otomatis "Halo, ‹nama lama›" tanpa nama
+      diisi ulang, berarti proteksi "sesi anonim nyasar" di
+      `onAuthStateChanged` tidak jalan, cek lagi bagian `!namaSiswa` di sana
+- [ ] Login guru/orang tua (tab satunya) masih berjalan normal seperti
+      sebelumnya — regresi paling penting untuk dicek di sini
+
 ---
 
 ## 🔁 Skenario Ujicoba Lengkap
