@@ -96,7 +96,7 @@
 </div>
 
 <script src="materi/assets/tp-kko-index.js"></script>
-<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module" src="../assets/js/role-guard.js"></script>
 <script type="module">
   import { getFirestore, collection, doc, getDoc, getDocs, query, where }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -205,7 +205,7 @@
     return list;
   }
 
-  document.addEventListener("user-verified", async (e) => {
+  document.addEventListener("role-verified", async (e) => {
     const user = e.detail.user;
     document.getElementById("checking").remove();
     document.getElementById("app-riwayat").classList.remove("hidden");
@@ -237,7 +237,7 @@
       document.getElementById("daftar-riwayat").innerHTML = `<div class="empty-state">Gagal memuat riwayat: ${escHtml(err.message)}</div>`;
     }
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['guru'], '../index.html'));
 </script>
 </body>
 </html>

@@ -36,7 +36,7 @@
   </div>
 </div>
 
-<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module" src="../assets/js/role-guard.js"></script>
 <script src="mpls/assets/config.js"></script>
 <script src="infografis/assets/infografis-data.js"></script>
 <script>
@@ -83,12 +83,12 @@
     }
   }
 
-  document.addEventListener("user-verified", () => {
+  document.addEventListener("role-verified", () => {
     document.getElementById("checking").remove();
     document.getElementById("app-infografis").classList.remove("ma-hidden");
     loadCounts();
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
 </script>
 </body>
 </html>

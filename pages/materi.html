@@ -35,7 +35,7 @@
   </div>
 </div>
 
-<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module" src="../assets/js/role-guard.js"></script>
 <script src="materi/assets/materi-index.js"></script>
 <script>
   const allItems = window.MATERI_INDEX || [];
@@ -129,13 +129,13 @@
     });
   }
 
-  document.addEventListener("user-verified", () => {
+  document.addEventListener("role-verified", () => {
     document.getElementById("checking").remove();
     document.getElementById("app-materi").classList.remove("ma-hidden");
     renderFilters();
     renderList();
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
 </script>
 </body>
 </html>

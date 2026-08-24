@@ -1409,13 +1409,13 @@
   </div>
 </div>
 
-<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module" src="../assets/js/role-guard.js"></script>
 <script>
-  document.addEventListener("user-verified", () => {
+  document.addEventListener("role-verified", () => {
     document.getElementById("checking").remove();
     document.getElementById("app-cptpatp").classList.remove("hidden");
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['guru'], '../index.html'));
 </script>
 </body>
 </html>

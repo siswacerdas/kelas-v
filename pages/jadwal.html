@@ -211,7 +211,7 @@
   </div>
 </div>
 
-<script type="module" src="../assets/js/auth-guard.js"></script>
+<script type="module" src="../assets/js/role-guard.js"></script>
 <script>
   // ═══════════════════════════════════════════════════════════
   // DATA — Jadwal Pelajaran Kelas 5A (sumber: jadwal resmi sekolah)
@@ -460,7 +460,7 @@
     document.getElementById("panel-" + tab).classList.add("active");
   }
 
-  document.addEventListener("user-verified", () => {
+  document.addEventListener("role-verified", () => {
     document.getElementById("checking").remove();
     document.getElementById("app-jadwal").classList.remove("hidden");
     renderJadwal();
@@ -468,7 +468,7 @@
     renderRekap();
     renderKalenderBulan();
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../index.html"));
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['guru'], '../index.html'));
 </script>
 </body>
 </html>
