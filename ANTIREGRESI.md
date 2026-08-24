@@ -856,6 +856,23 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
       terduplikasi) karena kunci dokumennya NISN, jalan ulang = menimpa
       dengan data yang sama
 
+### 30. Endpoint Login Siswa `siswa_login` (`Code.gs`, Fase 2 login — dipakai
+    dari UI login siswa yang akan dibangun di Fase 3, belum ada UI-nya)
+- [ ] Kirim `{type:"siswa_login", nama:"<nama benar>", nisn:"<nisn benar>"}` →
+      harus balas `{status:"ok"}`
+- [ ] Kirim nama benar + NISN salah (atau sebaliknya) → harus balas
+      `{status:"error", message:"Nama atau NISN tidak cocok..."}` — DAN pesan
+      error-nya HARUS SAMA PERSIS baik nama yang salah, NISN yang salah,
+      maupun keduanya (jangan sampai ada kebocoran info lewat beda pesan)
+- [ ] Kirim NISN bukan 10 digit (mis. "123") → balas error format, BUKAN ikut
+      dicoba dibaca ke Firestore
+- [ ] **Endpoint ini SENGAJA tidak digerbang `wajibGuru_`** — pastikan tidak
+      ada yang "memperbaikinya" jadi ikut menggerbang, karena itu justru akan
+      merusak alur login siswa (siswa belum punya idToken sama sekali di
+      titik ini)
+- [ ] Cek responsnya TIDAK PERNAH menyertakan field lain (Nama Panggilan,
+      Tempat Lahir, dst.) — cuma `status`/`message`, walau login berhasil
+
 ---
 
 ## 🔁 Skenario Ujicoba Lengkap

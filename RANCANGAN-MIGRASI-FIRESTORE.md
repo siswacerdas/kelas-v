@@ -134,6 +134,7 @@ ditambahkan bareng implementasi).
   pilih fungsi `migrasiSiswaKeFirestore_` dari dropdown → Run → cek Logger
   (View > Logs) untuk lihat berapa berhasil/dilewati → verifikasi manual di
   Firebase Console (Firestore Database → koleksi "siswa")
+  **✅ SELESAI — 25 siswa berhasil masuk ke Firestore.**
 - [x] Update `ANTIREGRESI.md` §29 (gerbang wajib utk koleksi `siswa`, uji
   baca/tulis Firestore, uji koreksi NISN salah ketik, uji migrasi idempoten)
 - [ ] Update `RANCANGAN-LOGIN-BARU.md` §4 (tandai Fase 1 final, lanjut Fase 2

@@ -1,7 +1,8 @@
 # Rancangan Upgrade Login — Kelas 5
 
-> Status: **Fase 1 (Data) SELESAI dikerjakan, menunggu Arif deploy & verifikasi
-> di sheet sungguhan sebelum lanjut Fase 2.**
+> Status: **Fase 1 (Data, sekarang berbasis Firestore) SELESAI & 25 siswa
+> sudah berhasil dimigrasi. Fase 2 (backend siswaLogin) SELESAI ditulis,
+> menunggu Arif deploy ulang & uji. Fase 3 (UI login siswa) berikutnya.**
 > Dokumen ini adalah pelacak progres. Setiap sesi kerja berikutnya, lanjutkan dari
 > checklist "Rencana Tahapan Kerja" di bagian bawah — tandai `[x]` yang sudah selesai
 > sebelum mengakhiri sesi, supaya sesi berikutnya tahu persis harus mulai dari mana.
@@ -249,15 +250,19 @@ sheet-nya, atau Arif konfirmasi apakah 25 nama ini semua sudah ada di "Data Sisw
 ## 6. Rencana Tahapan Kerja (checklist progres)
 
 - [x] **Fase 0 — Konfirmasi desain**: Arif konfirmasi 3 poin (lihat §0).
-- [x] **Fase 1 — Data**: kolom NISN ditambahkan di `SISWA_HEADERS`, `doPostSiswa_`
-  diperbaiki (tidak menghapus NISN saat field tak dikirim), endpoint
-  `siswa_nisn_bulk` + UI impor massal di `pages/kelas/index.html` sudah dibuat.
-  ⚠️ **Arif masih perlu jalankan 4 langkah manual di §4.5** (tambah kolom di
-  sheet + format Teks biasa + deploy ulang Apps Script + jalankan impor) sebelum
-  Fase 2 bisa diuji end-to-end.
-- [ ] **Fase 2 — Backend login siswa**: endpoint `siswaLogin` di `Code.gs`,
-  deploy versi baru. (Sumber daftar nama: `MPLS_STUDENTS`, sudah ada, tidak perlu
-  endpoint baru untuk itu — lihat §0.)
+- [x] **Fase 1 — Data**: kolom NISN ditambahkan, lalu (mengikuti keputusan
+  migrasi arsitektur di tengah jalan — lihat `RANCANGAN-MIGRASI-FIRESTORE.md`)
+  seluruh "Data Siswa" dipindah ke Firestore (koleksi `siswa/{nisn}`). 25
+  siswa sudah berhasil dimigrasi & diverifikasi Arif di Firebase Console.
+- [x] **Fase 2 — Backend login siswa**: endpoint `siswa_login` (fungsi
+  `doPostSiswaLogin_()`) sudah ditulis di `Code.gs` — cek nama+NISN ke
+  Firestore `siswa/{nisn}` langsung by ID dokumen, balas cuma `status`/
+  `message` generik (tidak pernah membocorkan data profil atau info mana
+  yang salah), TANPA gerbang `wajibGuru_` (memang dipanggil sebelum siswa
+  py sesi Auth). **Menunggu Arif deploy ulang Apps Script sebelum bisa diuji
+  dari luar (mis. lewat Postman/curl) atau dipakai UI (Fase 3).**
+  Sumber daftar nama: `MPLS_STUDENTS`, sudah ada, tidak perlu endpoint baru
+  untuk itu (lihat §0).
 - [ ] **Fase 3 — UI login siswa**: ubah `index.html` (tab Siswa, anonymous auth,
   sessionStorage nama), sesuaikan bagian yang baca `display-name`/role supaya jalan
   untuk akun anonim.
