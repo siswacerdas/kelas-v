@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Merujuk Ulang dan Merevisi Kesepakatan Kelas · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .jurnal-box { border: 2px dashed var(--m-color); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; margin: 1.1rem 0; background: #faf2f2; }
+  .jurnal-label { font-weight: 700; font-size: calc(var(--content-fs) - 2px); color: var(--m-color); margin-bottom: 0.6rem; }
+  .jurnal-baris { border-bottom: 1.5px solid var(--m-color); opacity: 0.4; height: 22px; margin-bottom: 8px; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+  .penutup-box { border: 2px solid var(--m-color); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; margin: 1.4rem 0 0.6rem; background: #faf2f2; text-align: center; }
+  .penutup-box .judul { font-weight: 700; font-size: calc(var(--content-fs) + 1px); color: var(--m-color); margin-bottom: 0.5rem; }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📜</span>
+      <div class="ma-cover-eyebrow">UUD 1945 · Musyawarah dan Kesepakatan Kelas · Materi 5 dari 5 · Berjalan Sepanjang Semester 🔁</div>
+      <div class="ma-cover-title">Merujuk Ulang dan Merevisi Kesepakatan Kelas</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p><strong>Catatan penting sebelum mulai:</strong> materi ini BERBEDA dari materi-materi sebelumnya. Ini bukan "pertemuan terakhir yang menandai topik ini selesai" — ini adalah AWAL dari kebiasaan yang akan terus berjalan SEPANJANG SEMESTER, setiap kali ada situasi yang berkaitan dengan Kesepakatan Kelas.</p>
+
+      <div class="cerita-box">
+        Bukti sejati bahwa Kesepakatan Kelas benar-benar BERGUNA bukan terletak pada hari ia ditempel — melainkan pada apakah kelasmu benar-benar MERUJUK KEMBALI dokumen itu bulan demi bulan, terutama saat ada situasi nyata yang berkaitan dengannya.
+      </div>
+
+      <p>Kapan Kesepakatan Kelas perlu dirujuk kembali? Berikut beberapa contoh situasinya:</p>
+
+      <ol class="langkah">
+        <li>Ada pelanggaran terhadap salah satu poin Kesepakatan Kelas — kelas bisa membahas kembali: "ingat lagi, apa yang sudah kita sepakati soal ini?"</li>
+        <li>Muncul situasi baru yang belum tercakup dalam Kesepakatan Kelas — kelas bisa bermusyawarah lagi untuk menambahkan poin baru.</li>
+        <li>Setelah beberapa waktu berjalan, ada poin yang ternyata sulit dijalankan atau kurang cocok — kelas bisa bermusyawarah untuk merevisinya.</li>
+        <li>Menjelang akhir semester, kelas bisa meninjau ulang seluruh Kesepakatan Kelas: bagian mana yang berhasil dijalankan dengan baik, bagian mana yang masih perlu diperbaiki.</li>
+      </ol>
+
+      <div class="jurnal-box">
+        <div class="jurnal-label">📓 Catatan Refleksi — Sesi Pertama</div>
+        <p style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-2); margin:0 0 0.7rem;">Sudah berapa lama Kesepakatan Kelas kita ditempel?</p>
+        <div class="jurnal-baris"></div>
+        <p style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-2); margin:0.9rem 0 0.7rem;">Ceritakan SATU momen ketika Kesepakatan Kelas benar-benar dirujuk atau dipakai (baik oleh dirimu sendiri, teman, atau guru):</p>
+        <div class="jurnal-baris"></div>
+        <div class="jurnal-baris"></div>
+        <p style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-2); margin:0.9rem 0 0.7rem;">Apakah ada poin yang menurutmu perlu direvisi atau ditambahkan?</p>
+        <div class="jurnal-baris"></div>
+      </div>
+
+      <p>Catatan seperti ini akan terus kamu isi dari waktu ke waktu, dipicu oleh peristiwa nyata — bukan dijadwalkan kaku setiap minggu. Guru akan mencatat berapa kali dan dalam situasi apa Kesepakatan Kelas benar-benar dirujuk kembali sepanjang semester.</p>
+
+      <div class="contoh-box">
+        Kompetensi ini TIDAK BISA dinilai tuntas dalam satu pertemuan — sama seperti sikap meneladani tokoh perumus Pancasila yang sudah kamu pelajari, ini adalah kompetensi PEMBIASAAN yang butuh waktu dan diamati sepanjang tahun.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan keluargamu membuat "aturan rumah" tertulis dan menempelnya di kulkas. Kalau aturan itu cuma ditempel lalu tidak pernah disebut-sebut lagi, lama-lama semua orang lupa dan aturan itu jadi tidak berguna.</span></p>
+        <p>Tapi kalau setiap kali ada masalah, seseorang di rumah bilang "coba kita lihat lagi aturan yang sudah kita sepakati" — aturan itu jadi benar-benar HIDUP dan berguna. Kesepakatan Kelas perlu diperlakukan seperti itu: terus dirujuk dan digunakan, bukan sekadar hiasan dinding yang dilupakan.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kesepakatan Kelas BOLEH direvisi kalau memang diperlukan — ini BUKAN tanda kegagalan. Yang penting, revisi itu juga dilakukan lewat MUSYAWARAH bersama, bukan diubah sepihak oleh satu orang saja (termasuk guru).
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Tiga bulan setelah Kesepakatan Kelas ditempel, ternyata dokumen itu tidak pernah disebut-sebut lagi oleh siapa pun di kelas. Menurut materi ini, apakah kondisi tersebut menunjukkan keberhasilan atau justru masalah?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini menunjukkan MASALAH. Bukti sejati keberhasilan Kesepakatan Kelas adalah dokumen itu benar-benar DIRUJUK dan DIPAKAI dari waktu ke waktu, bukan sekadar ditempel lalu dilupakan. Kalau tidak pernah dirujuk sama sekali, itu tandanya dokumen tersebut belum benar-benar menjadi bagian hidup dari keseharian kelas.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Made mengusulkan untuk menambah satu poin baru ke Kesepakatan Kelas karena muncul situasi yang belum tercakup. Bagaimana seharusnya poin baru itu ditambahkan, sesuai prinsip yang sudah dipelajari?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Poin baru itu harus ditambahkan lewat MUSYAWARAH bersama seluruh kelas, sama seperti proses menyusun Kesepakatan Kelas yang pertama kali. Tidak boleh ditambahkan sepihak oleh Made sendiri atau bahkan oleh guru saja — harus tetap melalui usulan, pendengaran bersama, dan kesepakatan seluruh kelas.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Rani berpendapat, "kalau ada poin di Kesepakatan Kelas yang dilanggar sekali saja, berarti Kesepakatan Kelas kita sudah gagal total." Apakah pendapat Rani tepat?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Rani TIDAK tepat. Satu pelanggaran BUKAN berarti kegagalan total — justru itu adalah momen yang TEPAT untuk merujuk kembali Kesepakatan Kelas ("ingat lagi, apa yang sudah kita sepakati?") dan mengingatkan satu sama lain. Kesepakatan Kelas yang hidup justru ditandai dengan seringnya dirujuk kembali saat ada situasi seperti ini, bukan dengan tidak pernah adanya pelanggaran sama sekali.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Isi Catatan Refleksi Sesi Pertama di atas dengan jujur. Simpan catatan ini baik-baik — kamu akan terus menambahkan refleksi baru setiap kali ada situasi yang berkaitan dengan Kesepakatan Kelas, sepanjang semester ini.
+      </div>
+
+      <div class="penutup-box">
+        <div class="judul">🎉 Kamu Telah Menyelesaikan UUD 1945 #3!</div>
+        <p>Kamu sekarang tahu cara bermusyawarah dengan tertib, dan kelasmu sudah punya Kesepakatan Kelas hasil kerja sama kalian sendiri. Ingat — bagian "merujuk ulang" ini akan terus berjalan sepanjang semester, jadi jangan lupa mengisi catatanmu setiap ada kesempatan. Materi Pendidikan Pancasila berikutnya akan mengajakmu menambahkan poin BARU ke Kesepakatan Kelas ini, tentang sikap menghormati dan menjaga keberagaman teman-temanmu.</p>
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

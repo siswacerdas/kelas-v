@@ -1,1 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengenal Aturan Dasar Bermusyawarah · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .aturan-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 1.1rem 0 1.3rem; }
+  .aturan-kartu { border: 2px solid var(--m-color); border-radius: var(--r-lg); padding: 0.85rem 0.9rem; background: #faf2f2; text-align: center; }
+  .aturan-no { display: inline-flex; align-items: center; justify-content: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--m-color); color: #fff; font-weight: 700; font-size: 13px; margin-bottom: 0.4rem; }
+  .aturan-nama { font-weight: 700; font-size: calc(var(--content-fs) - 2px); color: var(--m-color); margin-bottom: 0.25rem; }
+  .aturan-arti { font-size: calc(var(--content-fs) - 4px); color: var(--ink); line-height: 1.5; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+  @media (max-width: 480px) { .aturan-wrap { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📜</span>
+      <div class="ma-cover-eyebrow">UUD 1945 · Musyawarah dan Kesepakatan Kelas · Materi 1 dari 5</div>
+      <div class="ma-cover-title">Mengenal Aturan Dasar Bermusyawarah</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Ingat lagi materi sebelumnya tentang <strong>norma</strong> — aturan atau kesepakatan bersama yang melahirkan hak dan kewajiban. Sekarang saatnya kamu tahu CARA membuat norma itu bersama-sama: lewat <strong>musyawarah</strong>.</p>
+
+      <div class="cerita-box">
+        <strong>Musyawarah</strong> adalah cara membuat keputusan bersama, di mana setiap orang boleh menyampaikan pendapatnya, semua pendapat didengarkan, sampai akhirnya tercapai kesepakatan yang diterima bersama.
+      </div>
+
+      <p>Tapi musyawarah yang baik tidak terjadi begitu saja — ada ATURAN DASAR yang perlu dipegang supaya musyawarah berjalan tertib dan adil untuk semua orang. Kenali empat aturan dasarnya:</p>
+
+      <div class="aturan-wrap">
+        <div class="aturan-kartu">
+          <div class="aturan-no">1</div>
+          <div class="aturan-nama">Bicara Satu-Satu</div>
+          <div class="aturan-arti">Tidak berebut atau memotong pembicaraan teman yang sedang menyampaikan pendapat.</div>
+        </div>
+        <div class="aturan-kartu">
+          <div class="aturan-no">2</div>
+          <div class="aturan-nama">Angkat Tangan</div>
+          <div class="aturan-arti">Memberi tanda dulu sebelum bicara, supaya giliran bicara tertib dan tidak berebutan.</div>
+        </div>
+        <div class="aturan-kartu">
+          <div class="aturan-no">3</div>
+          <div class="aturan-nama">Dengarkan</div>
+          <div class="aturan-arti">Benar-benar menyimak pendapat teman, bukan hanya menunggu giliran sendiri untuk bicara.</div>
+        </div>
+        <div class="aturan-kartu">
+          <div class="aturan-no">4</div>
+          <div class="aturan-nama">Terima Hasil Akhir</div>
+          <div class="aturan-arti">Menerima keputusan bersama, meskipun berbeda dari usulan pribadimu sendiri.</div>
+        </div>
+      </div>
+
+      <p>Sekarang saatnya BERLATIH keempat aturan ini lewat simulasi musyawarah untuk keputusan yang RINGAN dulu — supaya kamu bisa fokus belajar CARA bermusyawarah, tanpa tekanan keputusan besar.</p>
+
+      <ol class="langkah">
+        <li>Berkumpul dalam kelompok kecil bersama teman-temanmu.</li>
+        <li>Musyawarahkan satu keputusan ringan — misalnya warna poster kelompok, atau nama kelompok kalian.</li>
+        <li>Praktikkan keempat aturan dasar: bicara satu-satu, angkat tangan, dengarkan, dan terima hasil akhir.</li>
+        <li>Setelah selesai, diskusikan bersama kelompok: aturan mana yang paling SULIT dipraktikkan? Kenapa?</li>
+      </ol>
+
+      <div class="contoh-box">
+        Tujuan simulasi ini BUKAN hasil keputusannya (warna atau nama apa yang dipilih) — tujuannya adalah membiasakan CARA bermusyawarah yang tertib, supaya kamu siap untuk musyawarah yang lebih besar dan lebih penting di pertemuan-pertemuan berikutnya.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu dan teman-teman bermain permainan yang butuh giliran, seperti congklak atau ular tangga. Kalau semua orang berebut jalan sendiri-sendiri tanpa menunggu giliran, permainan jadi kacau dan tidak seru.</span></p>
+        <p>Musyawarah bekerja dengan cara yang sama — butuh GILIRAN yang tertib (angkat tangan, bicara satu-satu) supaya semua orang punya kesempatan yang sama untuk didengar, dan hasil akhirnya benar-benar mewakili semua orang, bukan cuma yang paling keras suaranya atau paling cepat bicara.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Aturan "Terima Hasil Akhir" adalah yang paling sering terasa SULIT — apalagi kalau usulanmu sendiri tidak dipilih. Ingat lagi materi Pancasila tentang <strong>kerendahan hati</strong>: bersedia menerima hasil yang berbeda dari usulan sendiri, demi kesepakatan bersama. Sikap itu akan sangat berguna di sini.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Made ingin bicara di tengah musyawarah kelompok, tapi temannya sedang menyampaikan pendapat. Apa yang sebaiknya Made lakukan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Made sebaiknya MENUNGGU temannya selesai bicara, lalu mengangkat tangan untuk menunjukkan bahwa ia ingin bicara berikutnya — sesuai aturan "bicara satu-satu" dan "angkat tangan". Memotong pembicaraan orang lain melanggar aturan dasar bermusyawarah.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Setelah musyawarah kelompok, usulan warna poster milik Rani TIDAK dipilih — kelompok memilih warna lain. Rani merasa kesal dan tidak mau ikut membuat poster. Apakah sikap Rani sesuai dengan aturan dasar bermusyawarah?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sikap Rani BELUM sesuai dengan aturan "terima hasil akhir". Meskipun wajar merasa sedikit kecewa, aturan musyawarah mengharapkan Rani tetap MENERIMA keputusan bersama dan tetap berpartisipasi, meski usulannya tidak dipilih — bukan menarik diri dari kegiatan kelompok.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Wayan berpendapat, "musyawarah itu cuma soal siapa yang paling keras suaranya, yang menang dialah yang benar." Apakah pendapat Wayan tepat?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Wayan TIDAK tepat. Musyawarah yang baik justru memberi kesempatan SAMA RATA untuk semua orang bicara secara bergiliran (bukan siapa paling keras/cepat), dan keputusan diambil lewat mendengarkan semua pendapat, bukan lewat siapa yang paling dominan.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bersama kelompok kecilmu, lakukan simulasi musyawarah untuk memilih warna ATAU nama kelompok. Praktikkan keempat aturan dasar. Setelah selesai, tuliskan: aturan mana yang menurutmu paling sulit dipraktikkan, dan kenapa?
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu bermusyawarah lagi dalam kelompok kecil — tapi kali ini untuk keputusan yang sedikit lebih berarti: menentukan aturan main sebuah permainan atau proyek kelas.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

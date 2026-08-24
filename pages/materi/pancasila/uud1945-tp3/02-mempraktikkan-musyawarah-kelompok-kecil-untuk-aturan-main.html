@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mempraktikkan Musyawarah Kelompok Kecil untuk Aturan Main · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .jurnal-box { border: 2px dashed var(--m-color); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; margin: 1.1rem 0; background: #faf2f2; }
+  .jurnal-label { font-weight: 700; font-size: calc(var(--content-fs) - 2px); color: var(--m-color); margin-bottom: 0.6rem; }
+  .jurnal-baris { border-bottom: 1.5px solid var(--m-color); opacity: 0.4; height: 22px; margin-bottom: 8px; }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">📜</span>
+      <div class="ma-cover-eyebrow">UUD 1945 · Musyawarah dan Kesepakatan Kelas · Materi 2 dari 5</div>
+      <div class="ma-cover-title">Mempraktikkan Musyawarah Kelompok Kecil untuk Aturan Main</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah berlatih empat aturan dasar bermusyawarah untuk keputusan RINGAN (warna/nama kelompok). Sekarang, saatnya naik satu tingkat: bermusyawarah untuk keputusan yang sedikit lebih BERARTI — menentukan <strong>aturan main</strong> sebuah permainan atau proyek kelompok kecil.</p>
+
+      <div class="cerita-box">
+        Bedanya dengan materi sebelumnya: hasil musyawarah kali ini akan benar-benar DIPAKAI — bukan cuma latihan. Aturan main yang disepakati kelompokmu akan langsung dijalankan dalam permainan/proyek yang sesungguhnya.
+      </div>
+
+      <ol class="langkah">
+        <li>Berkumpul dalam kelompok kecil (sama seperti sebelumnya, atau kelompok baru sesuai arahan guru).</li>
+        <li>Pilih satu permainan atau proyek kelas kecil yang akan kalian kerjakan bersama.</li>
+        <li>Musyawarahkan ATURAN MAINNYA — misalnya giliran siapa dulu, bagaimana cara menentukan pemenang, atau siapa mengerjakan bagian apa dalam proyek.</li>
+        <li>Praktikkan lagi keempat aturan dasar bermusyawarah: bicara satu-satu, angkat tangan, dengarkan, terima hasil akhir.</li>
+        <li>Setelah aturan main disepakati, langsung JALANKAN permainan/proyeknya sesuai aturan yang sudah disepakati bersama.</li>
+      </ol>
+
+      <div class="contoh-box">
+        Kalau ada anggota kelompok yang melanggar aturan main yang sudah disepakati bersama, itu artinya kelompok tersebut mengingkari hasil musyawarahnya sendiri — inilah pentingnya benar-benar MENERIMA dan MENJALANKAN hasil kesepakatan, bukan cuma menyepakatinya di atas kertas.
+      </div>
+
+      <p>Ingat lagi sikap yang sudah kamu pilih untuk dipraktikkan di materi Pancasila (musyawarah / kerendahan hati / semangat persatuan)? Momen musyawarah kelompok ini adalah salah satu KESEMPATAN NYATA untuk melatihnya. Kalau kamu ingin, kamu boleh mencatatnya di jurnal refleksi sikapmu.</p>
+
+      <div class="jurnal-box">
+        <div class="jurnal-label">📓 Catatan Singkat (opsional, untuk jurnal sikap pilihanmu)</div>
+        <p style="font-size:calc(var(--content-fs) - 3px); color:var(--ink-2); margin:0 0 0.7rem;">Apa yang terjadi saat kelompokmu bermusyawarah menentukan aturan main hari ini?</p>
+        <div class="jurnal-baris"></div>
+        <div class="jurnal-baris"></div>
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kelompokmu ingin bermain kartu, tapi belum menyepakati aturan mainnya — bisa saja satu orang mengira boleh curang, sementara yang lain mengira tidak boleh. Ini akan menimbulkan kebingungan atau bahkan pertengkaran saat permainan berlangsung.</span></p>
+        <p>Musyawarah menentukan aturan main SEBELUM bermain memastikan semua orang punya PEMAHAMAN YANG SAMA sejak awal — jadi tidak ada kebingungan atau ketidakadilan di tengah jalan, karena semua sudah disepakati bersama sejak sebelum dimulai.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Bedanya musyawarah kali ini dengan materi sebelumnya: hasilnya BENAR-BENAR DIPAKAI, bukan cuma latihan simulasi. Ini melatihmu bahwa musyawarah bukan basa-basi — hasilnya punya konsekuensi nyata yang akan kalian jalani bersama.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Kelompok Made sudah bermusyawarah dan sepakat: "yang menang undian dapat giliran pertama." Di tengah permainan, Made kalah undian tapi tetap memaksa main duluan. Apakah tindakan Made sesuai dengan hasil musyawarah kelompoknya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Tindakan Made TIDAK sesuai. Made melanggar aturan main yang sudah disepakati BERSAMA lewat musyawarah kelompoknya sendiri. Ini bertentangan dengan aturan dasar "terima hasil akhir" — kesepakatan yang sudah dibuat bersama harus dijalankan, bukan diingkari sendiri saat tidak menguntungkan.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Rani berpendapat, "kalau sudah bermusyawarah dan sepakat, berarti aturan itu tidak boleh diubah lagi selamanya." Apakah pendapat Rani ini tepat dalam konteks proyek kelompok kecil ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Rani KURANG tepat untuk konteks ini. Kalau di tengah jalan ternyata aturan itu tidak berjalan baik, kelompok BOLEH bermusyawarah lagi untuk menyesuaikannya — asal perubahan itu juga disepakati bersama, bukan diubah sepihak oleh satu orang saja.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Wayan mengusulkan aturan main yang menguntungkan dirinya sendiri, dan langsung memaksakan usulan itu tanpa mendengarkan usulan teman lain. Aturan dasar bermusyawarah mana yang dilanggar Wayan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Wayan melanggar aturan "dengarkan" — ia tidak menyimak usulan teman lain dan langsung memaksakan usulannya sendiri. Musyawarah yang sehat membutuhkan semua pihak MENDENGARKAN dan mempertimbangkan usulan satu sama lain, bukan memaksakan kehendak satu orang saja.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bersama kelompokmu, musyawarahkan aturan main untuk satu permainan/proyek kelas kecil, lalu jalankan sesuai kesepakatan itu. Setelah selesai, ceritakan ke teman sebangkumu: bagaimana kelompokmu mencapai kesepakatan itu?
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu bermusyawarah dalam skala yang LEBIH BESAR — musyawarah SATU KELAS PENUH untuk topik yang nyata, sebagai persiapan sebelum Pertemuan Inti nanti.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
