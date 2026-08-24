@@ -894,6 +894,53 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
 - [ ] Login guru/orang tua (tab satunya) masih berjalan normal seperti
       sebelumnya — regresi paling penting untuk dicek di sini
 
+### 32. Pembatasan Akses per Role (`index.html`, `role-guard.js`, 9 halaman
+    induk, RANCANGAN-LOGIN-BARU.md §7 — siswa hanya Modul/Materi/Galeri/Uji
+    Kemampuan, orang tua hanya Laporan Siswa/Pengumuman, guru semuanya)
+- [ ] Login sebagai **siswa** → di beranda HANYA kelihatan 4 kartu: Modul
+      Pembelajaran, Materi Ajar, Galeri Visual, Uji Kemampuan (+ tetap tidak
+      ada Panel Guru/Kelas/Laporan Siswa seperti biasa). Kartu lain (MPLS,
+      CP/TP/ATP, Riwayat Latihan, Pengumuman, Jadwal) **harus hilang**, dan
+      bagian "Pengumuman Terbaru" di bawah kartu juga ikut hilang
+- [ ] Login sebagai **orang tua** → HANYA kelihatan kartu Laporan Siswa &
+      Pengumuman (+ bagian "Pengumuman Terbaru"). Kartu lain (MPLS, CP/TP/ATP,
+      Modul, Materi, Galeri, Uji Kemampuan, Riwayat Latihan, Jadwal) hilang
+- [ ] Login sebagai **guru** → SEMUA kartu tetap kelihatan seperti sebelumnya,
+      tidak ada yang hilang (guru tidak pernah dibatasi `terapkanAksesMenu_`)
+- [ ] **Uji penegakan sungguhan (bukan cuma kartu disembunyikan)**: sebagai
+      siswa, coba buka LANGSUNG lewat URL (ketik manual di address bar, bukan
+      klik kartu) salah satu dari: `pages/jadwal.html`, `pages/cp-tp-atp.html`,
+      `pages/mpls/index.html` (via `pages/mpls/input.html`), `pages/info.html`,
+      `pages/riwayat-latihan.html` → harus otomatis dilempar balik ke beranda
+      dengan pesan "Kamu tidak punya akses ke halaman ini." — TIDAK boleh
+      halaman aslinya sempat kelihatan
+- [ ] Sebagai **orang tua**, coba buka langsung `pages/materi.html`,
+      `pages/modul.html`, `pages/infografis.html`, `pages/uji-kemampuan.html`
+      lewat URL → sama, harus ditolak & dilempar balik
+- [ ] **Uji regresi kritis Uji Kemampuan**: login sebagai siswa → kerjakan 1
+      set soal Uji Kemampuan sampai selesai → cek hasilnya BENAR-BENAR
+      tersimpan dengan nama siswa yang benar (bukan "undefined"/kosong) — ini
+      sempat jadi bug nyata karena kode lama baca ulang Firestore
+      `users/{uid}` yang tidak ada untuk akun anonim, sudah diperbaiki pakai
+      `e.detail.nama` dari `role-guard.js`, tapi WAJIB diuji ulang tiap ada
+      perubahan di `uji-kemampuan.html`
+- [ ] **Uji regresi kritis pelacak progres Materi**: login sebagai siswa →
+      buka 1 materi ajar sampai selesai (scroll ke bawah / accordion sesuai
+      materinya) → cek di Laporan Siswa Pintu 2 (atau langsung sheet/Firestore
+      progres materi) progres siswa itu **benar-benar tercatat**. Ini juga
+      sempat jadi bug nyata (fungsi lama diam-diam TIDAK PERNAH mengirim
+      progres untuk akun anonim), sudah diperbaiki di
+      `materi-progress-tracker.js` (cabang `user.isAnonymous` baca
+      sessionStorage duluan sebelum coba Firestore)
+- [ ] **Uji sesi per-tab siswa**: login sebagai siswa di 1 tab → **tanpa
+      logout**, buka situs yang sama di TAB BARU pada browser yang sama →
+      tab baru itu harus tampil layar login kosong (BUKAN otomatis ikut
+      login sebagai siswa tadi) — DAN tab pertama harus TETAP dalam keadaan
+      login (tidak ikut ter-logout gara-gara tab kedua). Ini menguji
+      `setPersistence(auth, browserSessionPersistence)` di `doLoginSiswa()`
+      — kalau regresi ini muncul lagi (tab kedua "mewarisi" sesi / tab
+      pertama ikut ter-logout), berarti persistence session ini hilang/rusak
+
 ---
 
 ## 🔁 Skenario Ujicoba Lengkap

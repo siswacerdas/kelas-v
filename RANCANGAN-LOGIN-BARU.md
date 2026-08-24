@@ -269,7 +269,9 @@ sheet-nya, atau Arif konfirmasi apakah 25 nama ini semua sudah ada di "Data Sisw
   NISN → panggil `siswa_login` → kalau cocok, `signInAnonymously()` +
   simpan nama ke `sessionStorage`. `onAuthStateChanged` disesuaikan: akun
   anonim tanpa nama di sessionStorage otomatis di-signOut (jaga-jaga sesi
-  "nyasar"). **Menunggu Arif upload & uji end-to-end di browser sungguhan.**
+  "nyasar"). **✅ Diuji Arif di browser sungguhan — berhasil** (sempat perlu
+  aktifkan provider "Anonymous" dulu di Firebase Console → Authentication →
+  Sign-in method, baru bisa jalan).
 - [ ] **Fase 4 — Pendaftaran & approval orang tua**: `daftar-orangtua.html`
   (dengan field WhatsApp opsional — disetujui §0), aturan Firestore baru (§3.3),
   tab approval di `admin.html`, penanganan status `pending_orangtua`/`rejected`
@@ -280,3 +282,75 @@ sheet-nya, atau Arif konfirmasi apakah 25 nama ini semua sudah ada di "Data Sisw
 - [ ] **Fase 6 — Dokumentasi & uji**: lengkapi `ANTIREGRESI.md` (skenario login
   siswa/orangtua/lupa-password — §29 utk NISN sudah ada), `CHANGELOG.md`,
   `README.md` (aturan Firestore terbaru), uji end-to-end tiap alur.
+
+## 7. Pembatasan Akses per Role (di luar 6 fase semula — permintaan tambahan)
+
+> Ditambahkan setelah Fase 3 selesai & terverifikasi. Siswa: hanya Modul
+> Pembelajaran, Materi Ajar, Galeri Visual, Uji Kemampuan. Orang tua: hanya
+> Laporan Siswa & Pengumuman. Guru: tidak dibatasi sama sekali (semua menu).
+
+**Lingkup yang dikerjakan:**
+- Kartu menu di beranda (`index.html`) disembunyikan per role lewat atribut
+  `data-akses` + fungsi `terapkanAksesMenu_()`.
+- Penegakan SUNGGUHAN (bukan cuma kartu disembunyikan) di 9 halaman induk,
+  lewat guard baru `assets/js/role-guard.js` (varian `auth-guard.js` yang
+  ADA cek role, menangani akun siswa anonim & guru/orangtua Firestore
+  dalam 1 fungsi): `materi.html`/`modul.html`/`infografis.html`/
+  `uji-kemampuan.html` (siswa+guru), `riwayat-latihan.html`/`cp-tp-atp.html`/
+  `jadwal.html`/`bank-soal.html` (guru saja), `info.html` (orangtua+guru).
+
+**Lingkup yang SENGAJA TIDAK dikerjakan:**
+- 150+ file konten individual (`pages/materi/.../*.html`,
+  `pages/modul/.../*.html`) — TETAP cuma `auth-guard.js` (login apa saja),
+  TIDAK ditambah cek role. Kalau tahu URL persisnya, siswa/orangtua/siapa pun
+  yang login tetap bisa buka langsung — beda ancaman dengan "kelihatan di
+  menu beranda". Bisa dikerjakan sebagai proyek terpisah kalau Arif mau
+  penegakan sekeras itu juga.
+- `pages/mpls/index.html` (halaman menu MPLS) — TIDAK ditambah guard sendiri
+  (strukturnya beda dari 9 halaman lain, butuh restrukturisasi tampilan
+  "tunggu-lalu-tampil" yang belum ada). Kartu beranda ke sana sudah
+  disembunyikan dari siswa/orangtua, dan 2 sub-halamannya
+  (`input.html`/`rekap.html`) sudah punya proteksinya sendiri (kode akses
+  sederhana / kemungkinan `guru-guard.js`) — jadi datanya tetap aman, cuma
+  halaman menu perantaranya sendiri belum ikut ditolak kalau URL-nya diketik
+  langsung.
+
+**2 bug regresi nyata yang ketemu & diperbaiki saat mengerjakan ini** (bukan
+disengaja — ditemukan waktu memeriksa semua tempat yang baca Firestore
+`users/{uid}` untuk siswa; SEMUA tempat itu ternyata rusak untuk akun anonim,
+karena akun anonim tidak pernah punya dokumen itu):
+1. `pages/uji-kemampuan.html` — nama siswa buat simpan hasil diambil ulang
+   dari Firestore (`snap.data().nama || currentUser.email`), keduanya
+   bakal kosong/undefined untuk akun anonim. Diperbaiki: pakai `e.detail.nama`
+   dari `role-verified` (`role-guard.js`), sudah benar dari sananya.
+2. `pages/materi/assets/materi-progress-tracker.js` — pelacak progres materi
+   (dipakai fitur Laporan Siswa Pintu 2) BERHENTI TOTAL mengirim progres
+   untuk siswa, karena syaratnya `data.role === "siswa"` dari Firestore yang
+   tidak akan pernah cocok untuk akun anonim. Diperbaiki: cabang khusus
+   `user.isAnonymous` baca `sessionStorage` duluan.
+
+**1 perbaikan desain terkait, ditemukan saat menganalisis dampak akun
+anonim** (bukan bug yang sudah terjadi, tapi celah yang baru muncul kalau
+tidak diantisipasi): sesi Firebase secara default tersimpan LINTAS TAB
+(`browserLocalPersistence`). Kalau siswa login di 1 tab lalu ada tab lain
+situs ini kebuka di browser yang sama, tab kedua akan "mewarisi" sesi
+anonim itu tanpa nama di `sessionStorage`-nya (sessionStorage tidak ikut
+lintas tab) — proteksi "sesi nyasar" yang sudah ada di Fase 3 malah akan
+ikut mengeluarkan sesi tab PERTAMA juga (satu sesi Firebase yang sama).
+Diperbaiki: sesi siswa sekarang pakai `setPersistence(auth,
+browserSessionPersistence)` sebelum `signInAnonymously()` — jadi
+benar-benar per-tab, tidak lagi ikut lintas tab seperti guru/orangtua
+(yang tetap `browserLocalPersistence` seperti semula).
+
+## 8. Checklist Progres — Pembatasan Akses
+
+- [x] `data-akses` + `terapkanAksesMenu_()` di `index.html`
+- [x] `assets/js/role-guard.js` dibuat
+- [x] Diterapkan ke 9 halaman induk (lihat daftar di §7)
+- [x] Bug `uji-kemampuan.html` (nama siswa) diperbaiki
+- [x] Bug `materi-progress-tracker.js` (progres berhenti total) diperbaiki
+- [x] Perbaikan `setPersistence` per-tab untuk sesi siswa
+- [ ] **Arif upload & uji end-to-end** (checklist lengkap di `ANTIREGRESI.md`
+  §32) — termasuk uji penegakan URL langsung, uji hasil Uji Kemampuan &
+  progres materi benar-benar tersimpan untuk siswa, dan uji sesi per-tab
+  (buka tab baru saat masih login siswa di tab lain)

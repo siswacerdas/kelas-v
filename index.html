@@ -403,43 +403,51 @@
     <!-- Menu Utama -->
     <p class="section-label">Menu Utama</p>
     <div class="card-grid">
-      <a href="pages/mpls/index.html" class="card" style="--card-accent: #c76b98">
+      <!-- data-akses: daftar role yang boleh lihat kartu ini (dipisah spasi).
+           Diterapkan lewat terapkanAksesMenu_() di skrip bawah — guru SELALU
+           lihat semua kartu (tidak dibatasi sama sekali), jadi kartu guru-only
+           di bawah ini TIDAK butuh data-akses="guru" secara eksplisit. -->
+      <a href="pages/mpls/index.html" class="card" data-akses="guru" style="--card-accent: #c76b98">
         <div class="card-icon">🧭</div>
         <div class="card-title">MPLS — Penilaian Non-Kognitif</div>
         <div class="card-desc">Input observasi emosi, kemandirian, minat & kondisi fisik siswa selama MPLS</div>
         <div class="card-badge">Aktif</div>
       </a>
-      <a href="pages/cp-tp-atp.html" class="card" style="--card-accent: #2e6fbc">
+      <a href="pages/cp-tp-atp.html" class="card" data-akses="guru" style="--card-accent: #2e6fbc">
         <div class="card-icon">📋</div>
         <div class="card-title">CP, TP & ATP</div>
         <div class="card-desc">Capaian Pembelajaran, Tujuan Pembelajaran, dan Alur Tujuan Pembelajaran</div>
         <div class="card-badge">Kurikulum</div>
       </a>
-      <a href="pages/modul.html" class="card" style="--card-accent: #2a9d6f">
+      <a href="pages/modul.html" class="card" data-akses="siswa guru" style="--card-accent: #2a9d6f">
         <div class="card-icon">📚</div>
         <div class="card-title">Modul Pembelajaran</div>
         <div class="card-desc">Modul scaffolding per tema dan mata pelajaran</div>
         <div class="card-badge">Pembelajaran</div>
       </a>
-      <a href="pages/materi.html" class="card" style="--card-accent: #e8a020">
+      <a href="pages/materi.html" class="card" data-akses="siswa guru" style="--card-accent: #e8a020">
         <div class="card-icon">📖</div>
         <div class="card-title">Materi Ajar</div>
         <div class="card-desc">Buku Belajar Mandiri untuk siswa, bisa dibaca langsung</div>
         <div class="card-badge">Siswa</div>
       </a>
-      <a href="pages/infografis.html" class="card" style="--card-accent: #16a086">
+      <a href="pages/infografis.html" class="card" data-akses="siswa guru" style="--card-accent: #16a086">
         <div class="card-icon">🖼️</div>
         <div class="card-title">Galeri Visual</div>
         <div class="card-desc">Gambar, poster, infografis & video singkat pendukung belajar per mata pelajaran</div>
         <div class="card-badge">Siswa</div>
       </a>
-      <a href="pages/uji-kemampuan.html" class="card" style="--card-accent: #9b59b6">
+      <a href="pages/uji-kemampuan.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
         <div class="card-icon">💪</div>
         <div class="card-title">Uji Kemampuan</div>
         <div class="card-desc">Latihan soal mandiri untuk menguji pemahamanmu per Tujuan Pembelajaran</div>
         <div class="card-badge">Latihan</div>
       </a>
-      <a href="pages/riwayat-latihan.html" class="card" style="--card-accent: #6b4fa0">
+      <!-- Riwayat Latihan: TIDAK termasuk 4 akses siswa yang diminta Arif
+           (Modul/Materi/Galeri/Uji Kemampuan saja) — jadi guru-only untuk saat
+           ini. Kalau ini tidak sengaja (siswa biasanya wajar melihat riwayat
+           latihannya sendiri), tinggal ganti data-akses jadi "siswa guru". -->
+      <a href="pages/riwayat-latihan.html" class="card" data-akses="guru" style="--card-accent: #6b4fa0">
         <div class="card-icon">📈</div>
         <div class="card-title">Riwayat Latihan</div>
         <div class="card-desc">Lihat semua hasil Uji Kemampuan yang pernah dikerjakan — tersimpan permanen</div>
@@ -455,13 +463,13 @@
         <div class="card-desc">Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas</div>
         <div class="card-badge">Guru & Orang Tua</div>
       </a>
-      <a href="pages/info.html" class="card" style="--card-accent: #c94040">
+      <a href="pages/info.html" class="card" data-akses="orangtua guru" style="--card-accent: #c94040">
         <div class="card-icon">📢</div>
         <div class="card-title">Pengumuman</div>
         <div class="card-desc">Informasi penting, jadwal, dan pengumuman dari guru</div>
         <div class="card-badge">Info</div>
       </a>
-      <a href="pages/jadwal.html" class="card" style="--card-accent: #1a7a8a">
+      <a href="pages/jadwal.html" class="card" data-akses="guru" style="--card-accent: #1a7a8a">
         <div class="card-icon">🗓️</div>
         <div class="card-title">Jadwal Pelajaran</div>
         <div class="card-desc">Jadwal mingguan dan kalender akademik</div>
@@ -469,11 +477,14 @@
       </a>
     </div>
 
-    <!-- Pengumuman Terbaru -->
-    <p class="section-label">Pengumuman Terbaru</p>
-    <ul id="pengumuman-list">
-      <li class="empty-state">Memuat pengumuman…</li>
-    </ul>
+    <!-- Pengumuman Terbaru: sejajarkan dengan akses kartu "Pengumuman" di atas
+         (orang tua & guru — TIDAK untuk siswa, sesuai permintaan Arif). -->
+    <div data-akses="orangtua guru">
+      <p class="section-label">Pengumuman Terbaru</p>
+      <ul id="pengumuman-list">
+        <li class="empty-state">Memuat pengumuman…</li>
+      </ul>
+    </div>
 
   </div>
 
@@ -491,7 +502,7 @@
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged }
+  import { getAuth, signInWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, limit }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -514,6 +525,18 @@
   const db   = getFirestore(app);
 
   const KEY_NAMA_SISWA = "kelas5_siswa_nama";
+
+  /** Terapkan pembatasan kartu menu & bagian "Pengumuman Terbaru" per role
+   * (RANCANGAN-LOGIN-BARU.md §7). Guru SENGAJA tidak pernah dibatasi apa pun
+   * di sini (selalu lihat semua menu) — cukup langsung return tanpa
+   * menyentuh elemen [data-akses] sama sekali. */
+  function terapkanAksesMenu_(role) {
+    if (role === "guru") return;
+    document.querySelectorAll("[data-akses]").forEach((el) => {
+      const daftar = el.getAttribute("data-akses").split(/\s+/);
+      if (daftar.indexOf(role) === -1) el.classList.add("hidden");
+    });
+  }
 
   // ── Tab Login (Siswa / Guru & Orang Tua) ──────────────────
   function pilihTabLogin(tab) {
@@ -548,6 +571,9 @@
     const errEl = document.getElementById('login-error');
     errEl.textContent = '';
     try {
+      // Guru/orang tua: sesi tersimpan lintas tab & lintas buka-tutup browser
+      // (perilaku default, tidak berubah) — beda dari siswa di bawah.
+      await setPersistence(auth, browserLocalPersistence);
       await signInWithEmailAndPassword(auth, email, pass);
     } catch (e) {
       const map = {
@@ -590,6 +616,14 @@
         return;
       }
       sessionStorage.setItem(KEY_NAMA_SISWA, nama);
+      // v1.1: sesi siswa SENGAJA per-tab (browserSessionPersistence), BUKAN
+      // ikut tersimpan lintas tab seperti guru/orangtua di atas — supaya kalau
+      // ada tab lain situs ini terbuka di browser yang sama (mis. dibuka
+      // penasaran), tab itu TIDAK ikut "mewarisi" sesi siswa yang sedang aktif
+      // di tab ini, dan proteksi "sesi nyasar" di bawah tidak sampai ikut
+      // mengeluarkan sesi tab ini juga (sebelum perbaikan ini, keduanya
+      // berbagi 1 sesi Firebase yang sama karena persistence default global).
+      await setPersistence(auth, browserSessionPersistence);
       await signInAnonymously(auth);
       // Sengaja TIDAK set btn.disabled = false di sini — onAuthStateChanged akan
       // langsung menyembunyikan seluruh #login-screen begitu sesi anonim aktif.
@@ -637,6 +671,7 @@
       document.getElementById('display-name').textContent = namaSiswa;
       // role siswa: #admin-panel, #kelas-panel, #card-laporan-siswa TETAP
       // hidden (default HTML-nya) — tidak disentuh di sini sama sekali.
+      terapkanAksesMenu_('siswa');
       loadPengumuman();
       return;
     }
@@ -664,6 +699,8 @@
       if (role === 'guru' || role === 'orangtua') {
         document.getElementById('card-laporan-siswa').classList.remove('hidden');
       }
+
+      terapkanAksesMenu_(role);
 
       // Muat pengumuman
       loadPengumuman();
