@@ -3,182 +3,520 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nilai Tempat dan Perbandingan Bilangan Cacah — Modul Ajar Mandiri</title>
+<title>Nilai Tempat dan Perbandingan Bilangan — Matematika Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --nav:#1e4d3b; --bg:#f7f1e3; --ink:#2a2620; --paper:#fffdf8;
-  --line:#e4d9c2; --gold:#c99a2e;
-  --m:#2f6f4f;
-  --m-soft: color-mix(in srgb, #2f6f4f 12%, white);
-  --m-mid: color-mix(in srgb, #2f6f4f 35%, white);
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
 }
-*{box-sizing:border-box;}
-body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);}
-h1,h2,h3,.serif{font-family:'Fraunces',serif;}
-.hidden{display:none;}
-#checking{padding:40px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;color:var(--nav);}
-nav.topnav{background:var(--nav);color:#fff;padding:14px 20px;display:flex;gap:14px;align-items:center;font-size:.92rem;flex-wrap:wrap;}
-nav.topnav a{color:#fff;text-decoration:none;opacity:.85;}
-nav.topnav a:hover{opacity:1;text-decoration:underline;}
-.wrap{max-width:840px;margin:0 auto;padding:0 18px 60px;}
-.modul-head{padding:26px 0 10px;border-bottom:3px solid var(--m-mid);margin-bottom:6px;}
-.modul-head .eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#2f6f4f;font-weight:700;}
-.modul-head h1{font-size:1.6rem;margin:.25em 0 .1em;color:var(--ink);}
-.modul-head .sub{color:#6b6255;font-size:.95rem;}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;margin-right:6px;}
-.badge-elemen{background:var(--m-soft);color:#2f6f4f;border:1px solid var(--m-mid);}
-.badge-lanjutan{background:#fdf0d5;color:#a86b12;border:1px solid #e8c27a;}
-.stepper{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px;}
-.step-dot{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#8a8070;cursor:pointer;}
-.step-dot.active{border-color:#2f6f4f;color:#2f6f4f;background:var(--m-soft);}
-.step-dot.done{background:#2f6f4f;border-color:#2f6f4f;color:#fff;}
-.step-dot.inti{border-color:var(--gold);}
-.step-dot.inti.done{background:var(--gold);border-color:var(--gold);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+input.ans-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);background:#fffef9;}
+input.ans-input:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.field-row{margin-bottom:14px;}
+.field-row label{display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field-hint{font-size:12px;color:var(--ink-faint);margin-top:4px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
 .page{display:none;}
-.page.active{display:block;animation:fadein .25s ease;}
-@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
-.card h2{font-size:1.25rem;margin-top:0;color:#2f6f4f;}
-.card h3{font-size:1.05rem;margin-bottom:.4em;}
-.subunit-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-.badge-num{width:34px;height:34px;border-radius:50%;background:#2f6f4f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto;}
-.badge-inti{background:var(--gold);}
-.badge-diagnostik{background:#8a8070;}
-.tag{display:inline-block;font-size:.72rem;background:var(--m-soft);color:#2f6f4f;padding:2px 9px;border-radius:12px;margin-bottom:8px;font-weight:700;}
-.tag.inti{background:#fdf0d5;color:#a86b12;}
-.info-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;}
-.info-table td,.info-table th{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
-.info-table th{background:var(--m-soft);width:32%;}
-.materi-box{background:var(--m-soft);border-left:4px solid #2f6f4f;padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;font-size:.93rem;}
-label.field-label{display:block;font-weight:700;margin:14px 0 6px;font-size:.9rem;}
-textarea.ans, input.ans-input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:inherit;font-size:.93rem;background:#fffef9;}
-textarea.ans{min-height:80px;resize:vertical;}
-.quiz-item{background:#fffef9;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
-.q-text{font-weight:600;margin:0 0 8px;}
-.q-options{display:flex;flex-direction:column;gap:6px;}
-.opt-btn{text-align:left;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;font-size:.9rem;}
-.opt-btn:hover{background:var(--m-soft);}
-.opt-btn.correct{background:#e3f3e6;border-color:#4c9a5b;color:#215c2b;font-weight:700;}
-.opt-btn.wrong{background:#fbe6e4;border-color:#c85a4f;color:#7a2a22;}
-.q-feedback{font-size:.85rem;margin:8px 0 0;font-weight:700;min-height:1.2em;}
-.reveal-btn{margin-top:8px;background:none;border:1px solid #2f6f4f;color:#2f6f4f;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:inherit;}
-.reveal-box{display:none;background:#fffbe9;border:1px dashed var(--gold);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:.88rem;}
-.reveal-box.show{display:block;}
-.check-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:.9rem;}
-.check-item input{margin-top:3px;}
-.rubrik-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0;}
-.rubrik-table th,.rubrik-table td{border:1px solid var(--line);padding:7px 9px;text-align:left;}
-.rubrik-table th{background:var(--m-soft);}
-details.guru-note{background:#f2ede0;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-top:16px;}
-details.guru-note summary{cursor:pointer;font-weight:700;color:#2f6f4f;}
-details.guru-note ul{margin:10px 0 0;padding-left:20px;font-size:.9rem;}
-.nav-buttons{display:flex;justify-content:space-between;margin-top:20px;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;}
-.nav-buttons button{padding:11px 22px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-family:inherit;font-size:.95rem;}
-#btnPrev{background:#fff;border:1px solid var(--line);color:var(--ink);}
-#btnPrev:disabled{opacity:.4;cursor:default;}
-#btnNext{background:#2f6f4f;color:#fff;}
-.saved-label{font-size:.75rem;color:#8a8070;text-align:right;margin-top:6px;}
-.dependensi-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:.88rem;margin-bottom:14px;}
-.glosarium dt{font-weight:700;color:#2f6f4f;margin-top:8px;}
-.glosarium dd{margin:2px 0 0;}
-.reset-btn{background:none;border:1px solid #b0473f;color:#b0473f;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem;margin-top:12px;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+.card-preview{
+  background:#fffefb; border:2px dashed var(--gold); border-radius:12px; padding:22px 24px;
+  position:relative; transform:rotate(-0.6deg); box-shadow:0 6px 18px rgba(43,32,19,.10); margin-top:16px;
+}
+.card-preview::before{content:'📔';position:absolute;top:-14px;left:22px;font-size:22px;transform:rotate(12deg);}
+.card-preview h4{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--gold-d);margin-bottom:10px;}
+.card-preview .cp-section{margin-bottom:12px;font-size:13.5px;line-height:1.7;}
+.card-preview .cp-section b{color:var(--nav);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.card-preview .cp-empty{color:var(--ink-faint);font-style:italic;}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.tip-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12.5px;}
+.tip-card .ti{font-size:18px;margin-bottom:4px;}
+@media (max-width:560px){.tip-grid{grid-template-columns:1fr;}}
+.check-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13.5px;}
+.check-item input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
+.contoh-soal{background:#fff;border-left:4px solid var(--nav-l);border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:13.5px;}
 </style>
 </head>
 <body>
+
 <div id="checking">Memeriksa akses…</div>
+
 <div id="app-detail" class="hidden">
-  <nav class="topnav">
-    <a href="../../../../index.html">🏠 Beranda</a>
-    <a href="../../../modul.html">📚 Daftar Modul</a>
-  </nav>
-  <div class="wrap">
-    <div class="modul-head">
-      <span class="badge badge-elemen">Matematika · Bilangan</span> 
-      <h1>Nilai Tempat dan Perbandingan Bilangan Cacah</h1>
-      <div class="sub">Modul Ajar Mandiri Interaktif · Kelas 5A · Matematika</div>
-    </div>
-    <div class="stepper"><div class="step-dot" data-page="0" title="Pengantar">▶</div><div class="step-dot inti" data-page="1" title="Pertemuan Inti">⭐</div><div class="step-dot" data-page="2" title="Penutup">✓</div></div>
-    <main>
-      <div class="page" data-page="0">
-    <div class="card">
-      <span class="tag">Bilangan · TP1</span>
-      <h2>Nilai Tempat dan Perbandingan Bilangan Cacah sampai 100.000</h2>
-      <table class="info-table">
-        <tr><th>CP Rujukan</th><td>Menunjukkan pemahaman dan intuisi bilangan (number sense)… membaca, menulis, menentukan nilai tempat, membandingkan, mengurutkan, melakukan komposisi dan dekomposisi bilangan.</td></tr>
-        <tr><th>Kompetensi Inti</th><td>Siswa dapat membaca, menulis, menentukan nilai tempat, serta membandingkan/mengurutkan bilangan cacah sampai 100.000.</td></tr>
-        <tr><th>Jumlah Pertemuan</th><td>1 pertemuan (langsung Pertemuan Inti — tidak ada gap berarti antar sub-kompetensi)</td></tr>
-      </table>
-      <h3>🎯 Garis Finis</h3>
-      <p>Siswa membaca, menulis, dan menentukan nilai tempat bilangan cacah sampai 100.000 dengan benar, serta membandingkan dan mengurutkan sekelompok bilangan tanpa ragu-ragu pada bilangan dengan jumlah digit berbeda.</p>
-      <h3>🚦 Titik Berangkat</h3>
-      <p>Tidak diasumsikan kamu otomatis lancar pada bilangan di atas 10.000 — kita akan pemanasan sebentar dulu di bagian Inti, karena ini perluasan langsung dari kompetensi yang sudah kamu kuasai sebelumnya.</p>
-      <div class="dependensi-box"><strong>Urutan Elemen Bilangan:</strong> TP1 (nilai tempat) → TP2 (pengurangan bersusun) → TP3 (pembagian bersusun) → TP4 (KPK-FPB) → TP5 (uang) → TP6 (pecahan) → TP7 (operasi pecahan lanjutan). TP1 ini adalah pembuka.</div>
-    </div>
-    </div>
-<div class="page" data-page="1">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><h3 style="margin:0">Pertemuan Inti — Nilai Tempat & Perbandingan Bilangan</h3></div>
-      <span class="tag inti">Pertemuan Inti</span>
-      <div class="materi-box">
-        <strong>Pemanasan:</strong> Sebelum mulai, coba ingat kembali nilai tempat bilangan sampai puluh ribuan.
-        Contoh: pada bilangan <strong>47.253</strong> — 4 = puluh ribuan, 7 = ribuan, 2 = ratusan, 5 = puluhan, 3 = satuan.
-      </div>
-      <h3>📊 Studi Kasus Angka Nyata</h3>
-      <table class="info-table">
-        <tr><th>Konteks</th><th>Data</th></tr>
-        <tr><td>Populasi kota</td><td>Kota Depok: ± 2.406.500 jiwa (contoh skala besar); Kecamatan Beji: ± 92.400 jiwa</td></tr>
-        <tr><td>Jarak antarkota</td><td>Jakarta–Bandung ± 150 km; Jakarta–Surabaya ± 796 km</td></tr>
-        <tr><td>Harga barang elektronik</td><td>Kipas angin Rp185.000; Setrika Rp215.000; Rice cooker Rp345.000</td></tr>
-      </table>
-      <p>Perhatikan bagaimana nilai tempat membantu kita membaca angka besar dengan cepat dan membandingkannya tanpa bingung.</p>
 
-      <label class="field-label">✏️ Latihan Menulis Bentuk Panjang</label>
-      <p style="font-size:.9rem;color:#6b6255;">Tuliskan bentuk panjang (nilai tempat) dari bilangan berikut: 47.253, 90.008, 68.140, 100.000 (batas atas), 8.075.</p>
-      <textarea class="ans" data-key="tp1-bentuk-panjang" placeholder="Contoh: 47.253 = 4 puluh ribuan + 7 ribuan + 2 ratusan + 5 puluhan + 3 satuan..."></textarea>
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Nilai Tempat dan Perbandingan Bilangan</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
 
-      <label class="field-label">📝 Kuis Pemahaman</label>
-      <div id="tp1-quiz"></div><script>renderQuiz("tp1-quiz", [
-      {type:'mcq', text:'Nilai tempat angka 7 pada bilangan 47.253 adalah…', options:['puluhan','ribuan','ratusan','puluh ribuan'], correct:1, explain:'Angka 7 berada di posisi ribuan, sehingga nilainya 7.000.'},
-      {type:'mcq', text:'Bilangan yang dibaca "lima puluh ribu enam puluh" ditulis…', options:['50.060','50.600','56.000','5.060'], correct:0, explain:'Lima puluh ribu = 50.000, ditambah enam puluh = 60, jadi 50.060. Perhatikan digit 0 di ratusan dan ribuan!'},
-      {type:'mcq', text:'Urutan dari yang TERKECIL ke TERBESAR untuk 8.750; 78.500; 8.075 adalah…', options:['8.075; 8.750; 78.500','8.750; 8.075; 78.500','78.500; 8.750; 8.075','8.075; 78.500; 8.750'], correct:0, explain:'Bandingkan jumlah digit dulu (8.075 dan 8.750 sama-sama 4 digit, 78.500 punya 5 digit jadi paling besar), lalu bandingkan digit terbesar dari kiri: 8.075 < 8.750.'},
-      {type:'mcq', text:'Kota A berpenduduk 92.400 jiwa dan Kota B berpenduduk 92.040 jiwa. Kota mana yang penduduknya lebih banyak?', options:['Kota A','Kota B','Sama banyak','Tidak bisa ditentukan'], correct:0, explain:'Bandingkan digit demi digit dari kiri: 9-2-4 vs 9-2-0. Pada posisi ratusan, 4 > 0, jadi Kota A lebih banyak.'}
-    ]);</script>
+<div id="stepper" class="stepper"></div>
 
-      <label class="field-label">💬 Jelaskan ke Teman Sebangku</label>
-      <p style="font-size:.9rem;color:#6b6255;">Urutkan bilangan berikut dari terkecil ke terbesar, lalu tuliskan ALASANMU (bukan cuma jawabannya): 15.300 — 15.030 — 51.300 — 5.130.</p>
-      <textarea class="ans" data-key="tp1-urutkan-alasan" placeholder="Urutan saya: ... Alasan: saya bandingkan dari digit paling kiri dulu karena..."></textarea>
+<div class="wrap">
 
-      <label class="field-label">📖 Soal Cerita Penerapan</label>
-      <div class="materi-box">Toko elektronik menjual 3 barang dengan harga: kipas angin Rp185.000, setrika Rp215.000, dan rice cooker Rp345.000. Urutkan barang dari yang <strong>termurah</strong> ke <strong>termahal</strong>, lalu jelaskan cara kamu membandingkan harga-harga tersebut menggunakan nilai tempat.</div>
-      <textarea class="ans" data-key="tp1-soal-cerita" placeholder="Urutan: ... Cara saya membandingkan: ..."></textarea>
-    <details class="guru-note"><summary>👩‍🏫 Catatan untuk Guru</summary><ul><li>TP ini diturunkan dari <em>Dokumen2_TP_Kelas5_Matematika.docx</em> (TP1 Elemen Bilangan) dan <em>Scaffolding_Kelas5_Matematika_Bilangan.docx</em>. Karena kompetensi ini adalah perluasan langsung Fase B (jaraknya tidak jauh), sumber scaffolding TIDAK memberi tangga tambahan — 1 pertemuan langsung Pertemuan Inti.</li><li>Status akses materi resmi: modul ini disusun LANGSUNG dari dokumen Scaffolding/Dokumen2/Peta Aktivitas Matematika (docx) yang diunggah guru — sesi ini tidak memiliki akses ke folder <code>pages/materi/matematika/</code>. Mohon dicek ulang kalau folder itu ternyata sudah berisi materi resmi, supaya istilah/urutan tetap konsisten.</li><li>Yang tidak perlu sempurna: kecepatan membaca bilangan sangat besar tanpa jeda.</li><li>Yang WAJIB diwaspadai: siswa yang bisa mengurutkan dengan benar tapi ternyata membandingkan berdasarkan 'angka pertama yang dilihat' bukan nilai tempat sesungguhnya (terutama saat jumlah digit sama tapi digit tengah beda, mis. 50.060 vs 50.006) — telusuri secara lisan, jangan diasumsikan benar hanya karena hasil akhir tepat.</li></ul></details><table class="rubrik-table"><tr><th>Aspek yang Dinilai</th><th>✓ Sudah Memenuhi</th><th>△ Perlu Dikembangkan</th></tr><tr><td><strong>Membaca &amp; menulis bilangan</strong></td><td>Seluruh bilangan ditulis/dibaca tepat termasuk bilangan dengan angka nol di tengah (mis. 50.060)</td><td>Masih tertukar penyebutan/penulisan bilangan dengan angka nol di tengah</td></tr><tr><td><strong>Menentukan nilai tempat</strong></td><td>Tepat menyebut nilai tempat untuk seluruh digit termasuk puluh ribuan</td><td>Masih keliru pada nilai tempat ribuan ke atas</td></tr><tr><td><strong>Membandingkan &amp; mengurutkan</strong></td><td>Urutan tepat dan mampu menjelaskan alasan berbasis digit terbesar lebih dulu</td><td>Urutan tepat namun tidak bisa menjelaskan alasan, atau urutan masih keliru pada bilangan berjumlah digit sama</td></tr></table></div></div>
-<div class="page" data-page="2">
-    <div class="card">
-      <h2>📚 Glosarium</h2>
-      <dl class="glosarium">
-        <dt>Nilai tempat</dt><dd>Nilai suatu digit berdasarkan posisinya dalam sebuah bilangan (satuan, puluhan, ratusan, ribuan, puluh ribuan, dst).</dd>
-        <dt>Komposisi bilangan</dt><dd>Menyusun bilangan dari nilai-nilai tempatnya (mis. 4 puluh ribuan + 7 ribuan = 47.000).</dd>
-        <dt>Dekomposisi bilangan</dt><dd>Menguraikan bilangan menjadi nilai-nilai tempat penyusunnya.</dd>
-      </dl>
-    </div>
-    <div class="card">
-      <h2>✅ Penutup TP1</h2>
-      <p>Selamat! Kamu sudah menuntaskan TP1 Elemen Bilangan. Kompetensi nilai tempat ini akan terus dipakai di seluruh TP Bilangan berikutnya, terutama saat mengurangkan dan membagi bilangan besar.</p>
-      <p><strong>Selanjutnya:</strong> TP2 — Operasi Pengurangan Bersusun dengan Peminjaman Berganda.</p>
-      <button class="reset-btn" onclick="resetProgress()">🔄 Mulai ulang dari awal</button>
-    </div>
-    </div>
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> Bilangan TP1 — Nilai Tempat dan Perbandingan Bilangan Cacah sampai 100.000 (Matematika Kelas 5, TP pembuka seluruh mapel). Diambil dari <code>Dokumen2_TP_Kelas5_Matematika.docx</code> dan <code>Scaffolding_Kelas5_Matematika_Bilangan.docx</code> — sesi ini tidak memiliki akses ke <code>pages/materi/matematika/</code>, mohon dicek konsistensi bila folder materi resmi sudah tersedia.</li>
+<li><b>Catatan struktur khusus:</b> Scaffolding sumber menandai TP ini "1 pertemuan, langsung Pertemuan Inti — tidak ada gap berarti antar sub-kompetensi", jadi TIDAK ada tangga formal di sumbernya. Modul ini tetap dipecah jadi 2 subunit — BUKAN mengarang tangga baru, melainkan mengikuti pemisahan yang SUDAH tersirat di rubrik penilaian sumber sendiri (3 aspek dinilai: membaca-menulis-nilai tempat vs membandingkan-mengurutkan). Kedua subunit sama-sama level "Materi Pintu Masuk" karena TP ini memang pembuka seluruh mapel Matematika Kelas 5.</li>
+<li><b>RPM v3 belum tersedia</b> — Aktivitas Inti Siswa diterjemahkan langsung dari kolom "Pilihan Materi" Scaffolding (kartu nilai tempat, papan bilangan, studi kasus angka nyata) ke bahasa siswa. Elemen PAK tidak dimasukkan karena RPM belum mengisi elemen tersebut.</li>
+<li><b>Produk Belajar:</b> "Buku Angka Besar di Sekitarku" — siswa mengumpulkan 3 angka besar nyata dari sekitarnya (populasi kota, jarak, harga barang), menguraikannya per nilai tempat di Subunit 1, lalu membandingkan & mengurutkannya di Subunit 2 (Inti) sampai jadi satu "buku mini" pribadi.</li>
+<li><b>Dimensi Profil Lulusan:</b> Penalaran Kritis (menjelaskan alasan urutan, bukan hanya menjawab benar/salah), Kemandirian (memilih sendiri angka nyata dari sekitarnya), Kolaborasi ringan (ajakan bertanya ke orang di rumah untuk sumber angka).</li>
+<li>Asesmen Awal bersifat diagnostik murni (tidak dinilai), mengecek prasyarat nilai tempat dari Fase B. Latihan tiap subunit sudah divariasikan (PG/BS ≤50%, minimal 1 uraian, minimal 1 penerapan), sesuai Buku Saku Bagian E.4e.</li>
+<li>Profil kelas: kemampuan akademik beragam (default), karakter kelas belum diketahui guru → pemantik dan instruksi dibuat lebih eksplisit.</li>
+</ul>
+</details>
 
-    </main>
-    <div class="saved-label" id="savedLabel"></div>
-    <div class="nav-buttons">
-      <button id="btnPrev">← Sebelumnya</button>
-      <button id="btnNext">Lanjut →</button>
-    </div>
+<div class="cover">
+  <span class="kicker">✦ Matematika · Kelas 5 · Modul Pembuka</span>
+  <h1>Nilai Tempat dan Perbandingan Bilangan</h1>
+  <p class="lede">Bismillah, selamat datang di modul Matematika pertamamu di Kelas 5! Kita akan mulai dari sesuatu yang mungkin sudah pernah kamu lihat: angka-angka besar di sekitarmu — jumlah penduduk kota, jarak antarkota, sampai harga barang.</p>
+  <div class="cover-meta">
+    <span>🔢 2 bagian belajar</span>
+    <span>📔 1 Buku Angka Besar untuk dibuat</span>
+    <span>🏙️ Angka nyata dari sekitarmu</span>
   </div>
 </div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Coba lihat angka 47.253. Kelihatannya rumit, ya? Tapi sebenarnya angka besar seperti ini tersusun rapi dari angka-angka satuan, puluhan, ratusan, ribuan, dan puluh ribuan — seperti balok-balok yang disusun bertingkat. Kalau kamu paham susunannya, angka sebesar apa pun akan terasa lebih mudah dibaca dan dibandingkan.</p>
+  <p>Di modul ini kamu akan berlatih membaca, menulis, dan membandingkan bilangan sampai 100.000 — lalu memakainya untuk membuat buku catatan kecil berisi angka-angka besar dari duniamu sendiri.</p>
+  <div class="produk-banner">
+    <div class="icon">📔</div>
+    <div>
+      <strong>Karya yang akan kamu buat</strong>
+      Kamu akan menyusun <b>Buku Angka Besar di Sekitarku</b> — kumpulan 3 angka besar nyata (misalnya jumlah penduduk kotamu, jarak ke suatu tempat, atau harga barang favoritmu) yang kamu uraikan nilai tempatnya, lalu urutkan dari yang terkecil ke terbesar.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SUBUNIT 1 — MATERI PINTU MASUK: baca-tulis-nilai tempat -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Bagian 1 dari 2 · Materi Pintu Masuk</div><h2 style="margin-bottom:0;">Membaca, Menulis, dan Nilai Tempat</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Ini modul Matematika pertamamu di Kelas 5 — tidak apa-apa kalau butuh waktu untuk mengingat kembali cara membaca angka besar. Kita mulai pelan-pelan.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Pernahkah kamu melihat angka yang sangat besar — di berita, kemasan produk, atau papan pengumuman? Coba ceritakan salah satu contoh yang kamu ingat.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Susunan di Balik Angka Besar</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Setiap angka dalam sebuah bilangan punya "alamat" atau nilai tempatnya sendiri. Pada bilangan 47.253: angka 4 menempati puluh ribuan, 7 menempati ribuan, 2 menempati ratusan, 5 menempati puluhan, dan 3 menempati satuan.</p>
+    <div class="contoh-soal">47.253 = 4 puluh ribuan + 7 ribuan + 2 ratusan + 5 puluhan + 3 satuan.</div>
+    <p style="font-size:13.5px;">Subhanallah, coba bayangkan — dengan hanya 10 angka (0 sampai 9), kita bisa menuliskan bilangan sebesar apa pun, bahkan sampai jutaan. Ini karena sistem nilai tempat yang rapi seperti ini.</p>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Kerjakan latihan ini, lalu coba jelaskan ke orang di rumahmu bagaimana caramu membacanya.</div>
+    <div class="field-row"><label>Tuliskan bentuk panjang dari 90.008</label><input class="ans-input" type="text" placeholder="90.008 = ... puluh ribuan + ... satuan"></div>
+    <div class="field-row"><label>Tuliskan bentuk panjang dari 68.140</label><input class="ans-input" type="text" placeholder="68.140 = ..."></div>
+    <div class="field-hint">Perhatikan baik-baik kalau ada angka 0 di tengah — jangan sampai terlewat!</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📔 Entri Pertama Buku Angka Besarku</div>
+    <div class="act-desc">Sekarang carilah SATU angka besar nyata dari sekitarmu (populasi kota, jarak antarkota, atau harga barang). Tuliskan angkanya dan uraikan nilai tempatnya. Kalau tidak tahu, coba tanyakan ke orang di rumahmu.</div>
+    <div class="field-row"><label>Angka Besar Pertamaku</label><input class="ans-input" type="text" id="angka1" placeholder="Contoh: Jumlah penduduk kecamatanku sekitar 92.400 jiwa"></div>
+    <div class="field-row"><label>Uraian Nilai Tempatnya</label><textarea class="ans" id="uraian1" placeholder="92.400 = 9 puluh ribuan + 2 ribuan + 4 ratusan + 0 puluhan + 0 satuan"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Adakah bagian yang masih membingungkan?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SUBUNIT 2 — INTI: membandingkan & mengurutkan + produk belajar -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num badge-inti">2</span>
+    <div><div class="block-eyebrow">Bagian 2 dari 2 · Pertemuan Inti</div><h2 style="margin-bottom:0;">Membandingkan dan Mengurutkan</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang giliran membandingkan angka-angka besar itu, lalu menuntaskan Buku Angka Besarmu.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau ada dua kota dan kamu ingin tahu mana yang penduduknya lebih banyak, bagaimana caramu membandingkannya tanpa menghitung satu per satu?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Cara Cepat Membandingkan Angka Besar</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Kalau jumlah digitnya beda, bilangan dengan digit lebih banyak pasti lebih besar (78.500 lebih besar dari 8.750). Kalau jumlah digitnya SAMA, bandingkan dari digit paling kiri dulu, baru bergeser ke kanan kalau masih sama.</p>
+    <div class="contoh-soal">92.400 vs 92.040 — sama-sama 5 digit, sama-sama mulai "92", lalu di posisi ratusan: 4 &gt; 0. Jadi 92.400 lebih besar.</div>
+    <p style="font-size:13.5px;">Hati-hati! Jangan tertipu dengan hanya melihat angka pertama — kamu harus benar-benar memeriksa tiap posisi, seperti sikap teliti dan tidak buru-buru mengambil kesimpulan.</p>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Urutkan bilangan berikut dari terkecil ke terbesar, lalu jelaskan alasanmu (bukan cuma jawabannya).</div>
+    <div class="field-row"><label>Urutkan: 15.300, 15.030, 51.300, 5.130</label><textarea class="ans" placeholder="Urutan saya: ... Alasan saya membandingkan: ..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📔 Tuntaskan Buku Angka Besarku</div>
+    <div class="act-desc">Tambahkan 2 angka besar nyata lagi (total jadi 3), lalu urutkan ketiganya dari yang terkecil ke terbesar.</div>
+    <div class="field-row"><label>Angka Besar Kedua</label><input class="ans-input" type="text" id="angka2" placeholder="Contoh: Jarak rumahku ke sekolah sekitar 3.500 meter"></div>
+    <div class="field-row"><label>Angka Besar Ketiga</label><input class="ans-input" type="text" id="angka3" placeholder="Contoh: Harga sepeda favoritku sekitar 850.000 rupiah"></div>
+    <div class="field-row"><label>Urutan Ketiga Angka (dari terkecil ke terbesar)</label><textarea class="ans" id="urutanAkhir" placeholder="Urutan saya: ..."></textarea></div>
+    <button class="mini-btn" onclick="showBuku()">Susun Buku Angka Besarku</button>
+    <div class="card-preview hidden" id="bukuPreview"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">💡 Tips Supaya Tidak Mudah Tertukar</div>
+    <div class="tip-grid">
+      <div class="tip-card"><div class="ti">🔢</div>Hitung dulu jumlah digitnya sebelum membandingkan angka satu-satu.</div>
+      <div class="tip-card"><div class="ti">👀</div>Bandingkan dari digit paling KIRI dulu, jangan dari kanan.</div>
+      <div class="tip-card"><div class="ti">⚠️</div>Waspada angka 0 di tengah — jangan sampai terlewat saat membaca atau membandingkan.</div>
+      <div class="tip-card"><div class="ti">🗣️</div>Coba jelaskan urutanmu ke teman/orang rumah — kalau kamu bisa menjelaskannya, berarti kamu benar-benar paham.</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✅ Kesiapanku</div>
+    <div class="check-item"><input type="checkbox" id="chk1"><label for="chk1">Aku bisa membaca dan menulis bentuk panjang bilangan sampai 100.000</label></div>
+    <div class="check-item"><input type="checkbox" id="chk2"><label for="chk2">Aku bisa menentukan nilai tempat tiap digit</label></div>
+    <div class="check-item"><input type="checkbox" id="chk3"><label for="chk3">Aku bisa membandingkan dan mengurutkan bilangan dengan digit berbeda maupun sama</label></div>
+    <div class="check-item"><input type="checkbox" id="chk4"><label for="chk4">Buku Angka Besarku sudah selesai kususun</label></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Latihan Akhir Unit</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Unit</h3>
+  <div class="reflect-q"><label>Melihat kembali modul ini, bagian mana yang paling kamu kuasai?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Angka besar mana dari Buku Angka Besarmu yang paling menarik? Kenapa?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, modul pertamamu di Kelas 5 selesai! Tuliskan satu hal yang kamu syukuri hari ini.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Nilai tempat</dt><dd>Nilai suatu digit berdasarkan posisinya dalam sebuah bilangan (satuan, puluhan, ratusan, ribuan, puluh ribuan, dst).</dd>
+    <dt>Bentuk panjang</dt><dd>Cara menuliskan bilangan sebagai jumlah nilai tempatnya (mis. 47.253 = 4 puluh ribuan + 7 ribuan + 2 ratusan + 5 puluhan + 3 satuan).</dd>
+  </dl>
+</section>
+<div class="closing">Selamat! Kamu sudah menyelesaikan modul Matematika pertamamu di Kelas 5. Kemampuan nilai tempat ini akan terus kamu pakai di hampir semua modul Bilangan berikutnya. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 4 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+const STORAGE_KEY = 'modulProgress:mtk-nilai-tempat-tp1';
+const TOTAL_PAGES = 5;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, input.ans-input');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+function wireCheckPersistence(){
+  const state = loadState();
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(state.check && state.check[el.id] !== undefined){ el.checked = state.check[el.id]; }
+    el.addEventListener('change', ()=>{
+      saveState(s=>{ s.check = s.check || {}; s.check[el.id] = el.checked; });
+    });
+  });
+}
+
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')" style="margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;">Lihat contoh jawaban</button><div class="key-box" style="display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SUBUNIT 2: rangkum Buku Angka Besar ============ */
+function showBuku(){
+  const a1 = document.getElementById('angka1').value;
+  const u1 = document.getElementById('uraian1').value;
+  const a2 = document.getElementById('angka2').value;
+  const a3 = document.getElementById('angka3').value;
+  const urut = document.getElementById('urutanAkhir').value;
+
+  const box = document.getElementById('bukuPreview');
+  box.innerHTML = `
+    <h4>Buku Angka Besar di Sekitarku</h4>
+    <div class="cp-section"><b>Angka Pertama (Bagian 1)</b>${a1 || '<span class="cp-empty">(belum diisi)</span>'}${u1 ? '<br><i>Nilai tempat: '+u1+'</i>' : ''}</div>
+    <div class="cp-section"><b>Angka Kedua</b>${a2 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Angka Ketiga</b>${a3 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Urutan dari Terkecil ke Terbesar</b>${urut || '<span class="cp-empty">(belum diisi)</span>'}</div>
+  `;
+  box.classList.remove('hidden');
+  updateProgress();
+}
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Pada bilangan 356, angka 5 menempati posisi...', options:['puluhan','satuan','ratusan'], correct:0},
+  {type:'bs', text:'Bilangan 3.240 lebih besar dari 890 karena jumlah digitnya lebih banyak.', correct:0},
+  {type:'mcq', text:'8.500 dibaca sebagai...', options:['delapan ribu lima ratus','delapan ratus lima puluh','delapan puluh lima ratus'], correct:0},
+  {type:'essay', text:'Coba tuliskan satu bilangan besar (lebih dari 1.000) yang pernah kamu lihat, di mana kamu melihatnya?'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'mcq', text:'Nilai tempat angka 7 pada bilangan 47.253 adalah...', options:['ribuan','ratusan','puluh ribuan'], correct:0},
+  {type:'bs', text:'Bilangan "lima puluh ribu enam puluh" ditulis sebagai 50.600.', correct:1},
+  {type:'essay', text:'Tuliskan bentuk panjang dari 8.075.', tag:'isian'},
+  {type:'essay', text:'Jelaskan dengan kata-katamu: kenapa penting memperhatikan angka 0 di tengah suatu bilangan saat menuliskan bentuk panjangnya?', tag:'uraian', key:'Contoh: karena angka 0 tetap menempati suatu nilai tempat (misalnya puluhan atau ratusan) meski nilainya nol — kalau dilewati, bentuk panjangnya jadi salah dan bilangan bisa dibaca keliru.'},
+  {type:'essay', text:'Sebuah toko elektronik menjual kipas angin seharga Rp185.000. Tuliskan bentuk panjang dari harga tersebut.', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Manakah urutan yang BENAR dari terkecil ke terbesar: 8.750, 78.500, 8.075?', options:['8.075, 8.750, 78.500','8.750, 8.075, 78.500','78.500, 8.750, 8.075'], correct:0},
+  {type:'bs', text:'Untuk membandingkan dua bilangan dengan jumlah digit yang sama, cukup melihat angka pertama (paling kiri) saja tanpa memeriksa digit lainnya.', correct:1},
+  {type:'essay', text:'Kota A berpenduduk 92.400 jiwa dan Kota B berpenduduk 92.040 jiwa. Kota mana yang penduduknya lebih banyak? Jelaskan caramu membandingkan.', tag:'penerapan'},
+  {type:'essay', text:'Kalau kamu harus mengajari adik kelas cara membandingkan dua bilangan besar, apa langkah pertama yang akan kamu ajarkan?', tag:'uraian'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 10;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  if(!document.getElementById('bukuPreview').classList.contains('hidden')) done++;
+  document.querySelectorAll('.check-item input:checked').forEach(()=>done++);
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+wireCheckPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+wireCheckPersistence();
+updateProgress();
+</script>
+
 <script type="module" src="../../../../assets/js/auth-guard.js"></script>
 <script>
   document.addEventListener("user-verified", () => {
@@ -186,164 +524,6 @@ details.guru-note ul{margin:10px 0 0;padding-left:20px;font-size:.9rem;}
     document.getElementById("app-detail").classList.remove("hidden");
   });
   document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
-</script>
-<script>
-
-const STORAGE_KEY = 'modulProgress:matematika-nilai-tempat-tp1';
-const TOTAL_PAGES = 3;
-let state = null;
-let isReplaying = false;
-
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    state = raw ? JSON.parse(raw) : {page:0, answers:{}, checks:{}, actions:[]};
-  }catch(e){ state = {page:0, answers:{}, checks:{}, actions:[]}; }
-  if(!state.answers) state.answers = {};
-  if(!state.checks) state.checks = {};
-  if(!state.actions) state.actions = [];
-}
-
-function saveState(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
-  updateSavedLabel();
-}
-
-function updateSavedLabel(){
-  const el = document.getElementById('savedLabel');
-  if(!el) return;
-  const d = new Date();
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
-}
-
-function goToPage(n){
-  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const target = document.querySelector('.page[data-page="'+n+'"]');
-  if(target) target.classList.add('active');
-  state.page = n;
-  saveState();
-  updateStepper();
-  const prevBtn = document.getElementById('btnPrev');
-  const nextBtn = document.getElementById('btnNext');
-  if(prevBtn) prevBtn.disabled = (n===0);
-  if(nextBtn) nextBtn.textContent = (n===TOTAL_PAGES-1) ? 'Selesai ✓' : 'Lanjut →';
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-function updateStepper(){
-  document.querySelectorAll('.step-dot').forEach(d=>{
-    const p = parseInt(d.dataset.page,10);
-    d.classList.toggle('active', p===state.page);
-    d.classList.toggle('done', p<state.page);
-  });
-}
-
-function wireTextPersistence(){
-  document.querySelectorAll('textarea.ans, input.ans-input').forEach(el=>{
-    const key = el.dataset.key;
-    if(!key) return;
-    if(state.answers[key] !== undefined) el.value = state.answers[key];
-    el.addEventListener('input', ()=>{ state.answers[key] = el.value; saveState(); });
-  });
-}
-
-function wireCheckPersistence(){
-  document.querySelectorAll('.check-item input[type=checkbox]').forEach(el=>{
-    const key = el.dataset.key;
-    if(!key) return;
-    if(state.checks[key]) el.checked = true;
-    el.addEventListener('change', ()=>{ state.checks[key] = el.checked; saveState(); });
-  });
-}
-
-function logAction(action){
-  if(isReplaying) return;
-  state.actions.push(action);
-  saveState();
-}
-
-function replayActions(){
-  isReplaying = true;
-  (state.actions||[]).forEach(a=>{
-    if(a.type==='mcq'){
-      const btn = document.querySelector('.opt-btn[data-group="'+a.group+'"][data-idx="'+a.chosen+'"]');
-      if(btn) btn.click();
-    } else if(a.type==='reveal'){
-      const el = document.getElementById(a.id);
-      if(el) el.classList.add('show');
-    }
-  });
-  isReplaying = false;
-}
-
-function toggleReveal(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.classList.toggle('show');
-  logAction({type:'reveal', id:id});
-}
-
-function renderQuiz(containerId, items){
-  const c = document.getElementById(containerId);
-  if(!c) return;
-  items.forEach((item, idx)=>{
-    const groupId = containerId+'-q'+idx;
-    if(item.type==='mcq'){
-      let html = '<div class="quiz-item"><p class="q-text">'+(idx+1)+'. '+item.text+'</p><div class="q-options" data-group="'+groupId+'">';
-      item.options.forEach((opt,oi)=>{
-        html += '<button type="button" class="opt-btn" data-group="'+groupId+'" data-idx="'+oi+'" onclick="checkMCQ(\''+groupId+'\', this, '+oi+', '+item.correct+')">'+opt+'</button>';
-      });
-      html += '</div><p class="q-feedback" id="'+groupId+'-fb"></p>';
-      if(item.explain){
-        html += '<button type="button" class="reveal-btn" onclick="toggleReveal(\''+groupId+'-exp\')">Lihat penjelasan</button>';
-        html += '<div class="reveal-box" id="'+groupId+'-exp">'+item.explain+'</div>';
-      }
-      html += '</div>';
-      c.insertAdjacentHTML('beforeend', html);
-    }
-  });
-}
-
-function checkMCQ(groupId, btn, chosenIdx, correctIdx){
-  const group = document.querySelector('.q-options[data-group="'+groupId+'"]');
-  if(!group) return;
-  group.querySelectorAll('.opt-btn').forEach(b=> b.classList.remove('correct','wrong'));
-  if(chosenIdx===correctIdx){
-    btn.classList.add('correct');
-  } else {
-    btn.classList.add('wrong');
-    group.querySelectorAll('[data-idx="'+correctIdx+'"]').forEach(b=>b.classList.add('correct'));
-  }
-  const fb = document.getElementById(groupId+'-fb');
-  if(fb) fb.textContent = (chosenIdx===correctIdx) ? '✓ Benar!' : '△ Belum tepat — lihat kunci di jawaban yang menyala hijau.';
-  logAction({type:'mcq', group:groupId, chosen:chosenIdx});
-}
-
-function resetProgress(){
-  if(confirm('Yakin mulai ulang dari awal? Semua jawaban tersimpan di perangkat ini akan dihapus.')){
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
-  }
-}
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  loadState();
-  wireTextPersistence();
-  wireCheckPersistence();
-  document.querySelectorAll('.q-options').forEach(()=>{});
-  replayActions();
-  goToPage(state.page || 0);
-  updateSavedLabel();
-  const prevBtn = document.getElementById('btnPrev');
-  const nextBtn = document.getElementById('btnNext');
-  if(prevBtn) prevBtn.addEventListener('click', ()=> goToPage(state.page-1));
-  if(nextBtn) nextBtn.addEventListener('click', ()=> goToPage(state.page+1));
-  document.querySelectorAll('.step-dot').forEach(d=> d.addEventListener('click', ()=> goToPage(parseInt(d.dataset.page,10))));
-});
-
 </script>
 </body>
 </html>
