@@ -69,6 +69,25 @@
 
       onAuthStateChanged(auth, async function (user) {
         if (!user) return; // auth-guard.js yang mengurus redirect kalau belum login, bukan tugas file ini
+
+        // v1.1 (RANCANGAN-LOGIN-BARU.md Fase 3): siswa login pakai Firebase
+        // Anonymous Auth, TIDAK PERNAH punya dokumen Firestore users/{uid} —
+        // jadi cek Firestore role==="siswa" di bawah TIDAK PERNAH cocok untuk
+        // mereka lagi (snap.exists() selalu false utk akun anonim). SEBELUM
+        // baca Firestore sama sekali, cek dulu apakah ini akun anonim + ada
+        // nama tersimpan di sessionStorage (diisi index.html saat login siswa)
+        // — kalau iya, itu sudah cukup jadi bukti "ini siswa", langsung lacak.
+        if (user.isAnonymous) {
+          var namaSiswaAnon = sessionStorage.getItem("kelas5_siswa_nama");
+          if (!namaSiswaAnon) return; // sesi anonim nyasar tanpa nama, jangan lacak apa pun
+          var materiSlugAnon = entry.file.replace(/\.html$/i, "");
+          kirimProgres(namaSiswaAnon, materiSlugAnon);
+          return;
+        }
+
+        // Akun guru/orangtua (email+password) — jalur LAMA tetap dipakai persis
+        // seperti sebelumnya, TIDAK diubah (guru kadang buka materi untuk cek isi,
+        // itu sengaja TIDAK dilacak sebagai "sudah dibaca siswa").
         var snap = await getDoc(doc(db, "users", user.uid));
         var data = snap.exists() ? snap.data() : {};
         if (data.role !== "siswa" || !data.nama) return; // cuma lacak siswa, bukan guru yang sedang mengecek materi
