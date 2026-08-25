@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memperluas dan Melengkapi Data Keberagaman Kelas · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .opsi-wrap { display: flex; gap: 0.9rem; margin: 1.1rem 0 1.3rem; flex-wrap: wrap; }
+  .opsi-kartu { flex: 1; min-width: 200px; border: 2px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1rem; background: #faf2f2; }
+  .opsi-nama { font-weight: 700; font-size: calc(var(--content-fs) - 2px); color: var(--m-color); margin-bottom: 0.4rem; }
+  .opsi-arti { font-size: calc(var(--content-fs) - 3px); color: var(--ink); line-height: 1.55; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+  .penutup-box { border: 2px solid var(--m-color); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; margin: 1.4rem 0 0.6rem; background: #faf2f2; text-align: center; }
+  .penutup-box .judul { font-weight: 700; font-size: calc(var(--content-fs) + 1px); color: var(--m-color); margin-bottom: 0.5rem; }
+  @media (max-width: 480px) { .opsi-wrap { flex-direction: column; } }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌏</span>
+      <div class="ma-cover-eyebrow">Bhinneka Tunggal Ika · Keberagaman Asal Keluarga · Materi 5 dari 5</div>
+      <div class="ma-cover-title">Memperluas dan Melengkapi Data Keberagaman Kelas</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Hari ini adalah pertemuan pelengkap — untuk memastikan SELURUH siswa di kelas punya data yang cukup untuk proyek "Peta Asal Keluarga Kelas Kami", sebelum data itu dipakai lebih lanjut di mata pelajaran lain.</p>
+
+      <div class="cerita-box">
+        Tidak semua orang menyelesaikan pengumpulan data dengan kecepatan yang sama — dan itu WAJAR. Hari ini adalah kesempatan tambahan untuk melengkapi apa yang masih kurang, tanpa terburu-buru.
+      </div>
+
+      <p>Kamu termasuk yang mana hari ini?</p>
+
+      <div class="opsi-wrap">
+        <div class="opsi-kartu">
+          <div class="opsi-nama">📋 Datanya Masih Sedikit</div>
+          <div class="opsi-arti">Gunakan waktu tambahan hari ini untuk mengobrol dengan lebih banyak teman, melengkapi data yang masih kurang dari 2-3 orang.</div>
+        </div>
+        <div class="opsi-kartu">
+          <div class="opsi-nama">🤔 Situasi Keluarga Sensitif</div>
+          <div class="opsi-arti">Kalau kamu merasa kurang nyaman membagikan detail tertentu tentang keluargamu, kamu bisa memilih data ALTERNATIF yang tetap nyaman untuk dibagikan — misalnya makanan favorit, bukan detail asal-usul yang lebih personal.</div>
+        </div>
+      </div>
+
+      <ol class="langkah">
+        <li>Kalau datamu sudah cukup lengkap, kamu bisa membantu temanmu yang masih membutuhkan waktu tambahan.</li>
+        <li>Kalau datamu masih kurang, gunakan waktu ini untuk mengobrol dengan teman-teman tambahan.</li>
+        <li>Kalau kamu punya situasi keluarga yang lebih sensitif, bicarakan dengan guru untuk menemukan cara membagikan data yang tetap nyaman bagimu — tidak ada paksaan untuk membuka semua hal.</li>
+        <li>Pastikan di akhir pertemuan ini, SEMUA siswa punya data minimal dari 2-3 teman dengan latar belakang berbeda.</li>
+      </ol>
+
+      <div class="contoh-box">
+        Tujuan hari ini BUKAN mengejar kelengkapan sempurna untuk semua orang — tujuannya adalah memastikan SETIAP siswa punya cukup bahan untuk berpartisipasi dalam proyek lintas mata pelajaran berikutnya, dengan cara yang tetap nyaman bagi masing-masing.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kelasmu sedang menyusun sebuah mozaik besar bersama-sama, dan beberapa siswa masih perlu waktu tambahan untuk menyelesaikan potongan mereka. Daripada memaksakan semua orang selesai di waktu yang sama, lebih baik memberi waktu tambahan supaya hasil akhirnya benar-benar lengkap dan tidak ada yang terlewat.</span></p>
+        <p>Pertemuan hari ini adalah waktu tambahan itu — memastikan tidak ada satu pun "potongan mozaik" yang hilang dari gambar besar keberagaman kelasmu, sekaligus menghormati siapa pun yang butuh cara berbeda untuk berkontribusi.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kalau kamu punya situasi keluarga yang sensitif (misalnya keluarga campuran atau situasi personal lainnya), kamu TIDAK WAJIB membagikan detail yang membuatmu tidak nyaman. Ada banyak cara lain untuk tetap berkontribusi — bicarakan dengan gurumu kalau kamu butuh bantuan menemukan caranya.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Made merasa tidak nyaman membicarakan detail asal-usul keluarganya karena situasinya cukup rumit, tapi dia tetap ingin berpartisipasi dalam proyek kelas. Apa yang bisa Made lakukan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Made bisa memilih data ALTERNATIF yang tetap nyaman baginya — misalnya membagikan makanan favorit keluarga atau kebiasaan sehari-hari yang lebih ringan, tanpa harus membuka detail asal-usul yang membuatnya tidak nyaman. Made juga bisa berbicara dengan guru untuk mencari cara berpartisipasi yang sesuai untuknya.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Rani sudah punya data lengkap dari materi sebelumnya. Apa yang sebaiknya Rani lakukan di pertemuan pelengkap ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Rani bisa membantu teman-teman yang datanya masih kurang lengkap, misalnya dengan berbagi tips cara bertanya yang sopan, atau membantu memfasilitasi obrolan antarteman. Ini juga kesempatan bagi Rani untuk mempraktikkan sikap gotong royong yang sudah dipelajari sebelumnya.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Wayan berpendapat, "harusnya semua siswa dipaksa punya data lengkap yang sama, biar adil." Apakah pendapat Wayan ini sesuai dengan prinsip materi ini?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Wayan TIDAK sesuai. Materi ini secara khusus menekankan bahwa kenyamanan setiap siswa harus dihormati — memaksakan kelengkapan yang sama untuk semua orang justru bisa membuat siswa dengan situasi sensitif merasa tertekan. "Adil" di sini berarti semua siswa punya KESEMPATAN yang sama untuk berkontribusi dengan caranya masing-masing, bukan dipaksa memberikan jenis data yang persis sama.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Lengkapi datamu jika masih kurang, atau bantu temanmu yang masih membutuhkan waktu tambahan. Pastikan penyajian akhirmu sudah siap dipakai untuk proyek "Peta Asal Keluarga Kelas Kami".
+      </div>
+
+      <div class="penutup-box">
+        <div class="judul">🎉 Kamu Telah Menyelesaikan Bhinneka Tunggal Ika #1!</div>
+        <p>Kamu sudah belajar mengumpulkan dan menyajikan keberagaman budaya keluarga dengan cara yang sopan dan setara. Data yang kamu kumpulkan akan menjadi bahan untuk proyek "Peta Asal Keluarga Kelas Kami" di mata pelajaran lain. Materi Pendidikan Pancasila berikutnya akan mengajakmu menelusuri rasa ingin tahu tentang sejarah lingkungan tempat tinggalmu sendiri — dibangun dari tema keberagaman yang sudah kamu pelajari ini.</p>
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

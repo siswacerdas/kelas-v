@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyajikan Keberagaman dengan Framing yang Setara · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .bandingkan-wrap { display: flex; gap: 1rem; margin: 1rem 0 1.3rem; flex-wrap: wrap; }
+  .bandingkan-kotak { flex: 1; min-width: 220px; border: 2px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1rem; }
+  .bandingkan-kotak.salah { border-color: #c76b3f; background: #fdf3ec; }
+  .bandingkan-kotak.benar { border-color: var(--m-color); background: #faf2f2; }
+  .bandingkan-label { font-weight: 700; font-size: calc(var(--content-fs) - 3px); margin-bottom: 0.5rem; }
+  .bandingkan-kotak.salah .bandingkan-label { color: #c76b3f; }
+  .bandingkan-kotak.benar .bandingkan-label { color: var(--m-color); }
+  .bandingkan-teks { font-size: calc(var(--content-fs) - 1px); font-style: italic; line-height: 1.6; color: var(--ink); }
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌏</span>
+      <div class="ma-cover-eyebrow">Bhinneka Tunggal Ika · Keberagaman Asal Keluarga · Materi 3 dari 5</div>
+      <div class="ma-cover-title">Menyajikan Keberagaman dengan Framing yang Setara</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah mengumpulkan informasi keberagaman dari teman-temanmu. Sekarang, ini bagian yang PENTING: bagaimana cara MENYAJIKAN informasi itu, supaya benar-benar bermakna Bhinneka Tunggal Ika — bukan sekadar pameran fakta lepas.</p>
+
+      <p>Perhatikan dua cara menyajikan informasi yang SAMA, tapi dengan framing (cara membingkai) yang BERBEDA:</p>
+
+      <div class="bandingkan-wrap">
+        <div class="bandingkan-kotak salah">
+          <div class="bandingkan-label">❌ FRAMING HIERARKIS (Menghakimi)</div>
+          <div class="bandingkan-teks">"Keluarga Made punya makanan yang paling enak di antara semua teman sekelas."</div>
+        </div>
+        <div class="bandingkan-kotak benar">
+          <div class="bandingkan-label">✔️ FRAMING SETARA (Menghargai)</div>
+          <div class="bandingkan-teks">"Keluarga Made punya makanan khas yang unik — sama uniknya dengan makanan khas keluarga teman-teman lain."</div>
+        </div>
+      </div>
+
+      <div class="cerita-box">
+        Perhatikan bedanya: framing pertama membuat SATU keluarga terlihat "lebih baik" dari yang lain — ini menciptakan HIERARKI (tingkatan lebih tinggi-rendah). Framing kedua menunjukkan bahwa SEMUA keluarga punya keunikannya masing-masing, tanpa satu pun dianggap "lebih baik" dari yang lain.
+      </div>
+
+      <p>Inilah inti dari Bhinneka Tunggal Ika: berbeda-beda, tapi SETARA — bukan berbeda-beda lalu diurutkan mana yang "terbaik".</p>
+
+      <div class="contoh-box">
+        Latihan mengubah framing: ambil satu informasi yang sudah kamu kumpulkan (misalnya makanan favorit atau bahasa daerah temanmu), lalu coba tuliskan dengan framing yang SETARA — bukan "paling enak/menarik", tapi "unik dan berharga, sama seperti yang lain".
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan sebuah pameran karya seni di kelas, di mana setiap siswa memajang satu karya. Kalau gurumu bilang "karya Made yang paling bagus di sini", teman-teman lain mungkin merasa karyanya kurang berharga.</span></p>
+        <p>Tapi kalau gurumu bilang "setiap karya di sini punya keunikannya masing-masing, dan itulah yang membuat pameran ini menarik" — semua siswa merasa dihargai secara SETARA. Menyajikan keberagaman keluarga bekerja dengan prinsip yang sama: rayakan keunikan masing-masing, tanpa mengurutkan mana yang "terbaik".</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Waspadai framing hierarkis yang DIAM-DIAM muncul — kadang tanpa disadari, seperti "makanan ini lebih enak" atau "budaya ini lebih menarik". Meskipun terdengar seperti pujian, kalimat itu tetap menciptakan perbandingan tingkatan yang bertentangan dengan makna Bhinneka Tunggal Ika.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Made menulis, "bahasa daerah temanku itu lebih keren dibanding bahasa daerah lainnya." Apakah framing Made ini sesuai dengan prinsip Bhinneka Tunggal Ika?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Framing Made TIDAK sesuai, meskipun terdengar seperti pujian. Kata "lebih keren dibanding" tetap menciptakan HIERARKI — seolah ada bahasa daerah yang "kurang keren". Framing yang lebih sesuai: "bahasa daerah temanku itu unik dan menarik, sama seperti bahasa daerah lainnya."</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Rani menyajikan informasi dengan kalimat, "setiap keluarga di kelas kita punya kebiasaan yang berbeda-beda, dan semuanya menarik dengan caranya masing-masing." Apakah framing Rani ini sesuai?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ya, framing Rani SUDAH sesuai. Kalimat itu mengakui perbedaan (berbeda-beda) TANPA menciptakan hierarki — setiap kebiasaan dianggap menarik dengan caranya masing-masing, bukan diurutkan mana yang paling menarik dari yang lain.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Wayan berpendapat, "kalau begitu, kita tidak boleh sama sekali memuji sesuatu yang unik dari budaya teman, karena nanti dianggap hierarkis." Apakah pendapat Wayan ini tepat?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Wayan TIDAK sepenuhnya tepat. Memuji sesuatu yang unik itu BOLEH dan BAIK — yang perlu dihindari adalah PERBANDINGAN yang membuat satu budaya terlihat "lebih baik" dari budaya lain. Kamu tetap boleh bilang "ini menarik", asalkan tidak menambahkan "...dibanding yang lain" atau "...paling enak dari semuanya".</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Ambil satu informasi yang sudah kamu kumpulkan dari temanmu di materi sebelumnya. Tuliskan dua versi kalimat penyajian: satu versi yang (secara sengaja) hierarkis, dan satu versi yang setara. Bandingkan bedanya.
+      </div>
+
+      <p>Materi berikutnya (Pertemuan Inti) akan mengajakmu benar-benar MENGUMPULKAN dan MENYAJIKAN informasi keberagaman ini secara utuh, sebagai hasil yang akan dipakai untuk proyek "Peta Asal Keluarga Kelas Kami".</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
