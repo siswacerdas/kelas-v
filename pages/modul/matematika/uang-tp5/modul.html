@@ -3,177 +3,521 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Masalah Sehari-hari Berkaitan dengan Uang — Modul Ajar Mandiri</title>
+<title>Masalah Sehari-hari Berkaitan dengan Uang — Matematika Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --nav:#1e4d3b; --bg:#f7f1e3; --ink:#2a2620; --paper:#fffdf8;
-  --line:#e4d9c2; --gold:#c99a2e;
-  --m:#2f6f4f;
-  --m-soft: color-mix(in srgb, #2f6f4f 12%, white);
-  --m-mid: color-mix(in srgb, #2f6f4f 35%, white);
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
 }
-*{box-sizing:border-box;}
-body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);}
-h1,h2,h3,.serif{font-family:'Fraunces',serif;}
-.hidden{display:none;}
-#checking{padding:40px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;color:var(--nav);}
-nav.topnav{background:var(--nav);color:#fff;padding:14px 20px;display:flex;gap:14px;align-items:center;font-size:.92rem;flex-wrap:wrap;}
-nav.topnav a{color:#fff;text-decoration:none;opacity:.85;}
-nav.topnav a:hover{opacity:1;text-decoration:underline;}
-.wrap{max-width:840px;margin:0 auto;padding:0 18px 60px;}
-.modul-head{padding:26px 0 10px;border-bottom:3px solid var(--m-mid);margin-bottom:6px;}
-.modul-head .eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#2f6f4f;font-weight:700;}
-.modul-head h1{font-size:1.6rem;margin:.25em 0 .1em;color:var(--ink);}
-.modul-head .sub{color:#6b6255;font-size:.95rem;}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;margin-right:6px;}
-.badge-elemen{background:var(--m-soft);color:#2f6f4f;border:1px solid var(--m-mid);}
-.badge-lanjutan{background:#fdf0d5;color:#a86b12;border:1px solid #e8c27a;}
-.stepper{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px;}
-.step-dot{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#8a8070;cursor:pointer;}
-.step-dot.active{border-color:#2f6f4f;color:#2f6f4f;background:var(--m-soft);}
-.step-dot.done{background:#2f6f4f;border-color:#2f6f4f;color:#fff;}
-.step-dot.inti{border-color:var(--gold);}
-.step-dot.inti.done{background:var(--gold);border-color:var(--gold);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+input.ans-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);background:#fffef9;}
+input.ans-input:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.field-row{margin-bottom:14px;}
+.field-row label{display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field-hint{font-size:12px;color:var(--ink-faint);margin-top:4px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
 .page{display:none;}
-.page.active{display:block;animation:fadein .25s ease;}
-@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
-.card h2{font-size:1.25rem;margin-top:0;color:#2f6f4f;}
-.card h3{font-size:1.05rem;margin-bottom:.4em;}
-.subunit-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-.badge-num{width:34px;height:34px;border-radius:50%;background:#2f6f4f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto;}
-.badge-inti{background:var(--gold);}
-.badge-diagnostik{background:#8a8070;}
-.tag{display:inline-block;font-size:.72rem;background:var(--m-soft);color:#2f6f4f;padding:2px 9px;border-radius:12px;margin-bottom:8px;font-weight:700;}
-.tag.inti{background:#fdf0d5;color:#a86b12;}
-.info-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;}
-.info-table td,.info-table th{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
-.info-table th{background:var(--m-soft);width:32%;}
-.materi-box{background:var(--m-soft);border-left:4px solid #2f6f4f;padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;font-size:.93rem;}
-label.field-label{display:block;font-weight:700;margin:14px 0 6px;font-size:.9rem;}
-textarea.ans, input.ans-input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:inherit;font-size:.93rem;background:#fffef9;}
-textarea.ans{min-height:80px;resize:vertical;}
-.quiz-item{background:#fffef9;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
-.q-text{font-weight:600;margin:0 0 8px;}
-.q-options{display:flex;flex-direction:column;gap:6px;}
-.opt-btn{text-align:left;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;font-size:.9rem;}
-.opt-btn:hover{background:var(--m-soft);}
-.opt-btn.correct{background:#e3f3e6;border-color:#4c9a5b;color:#215c2b;font-weight:700;}
-.opt-btn.wrong{background:#fbe6e4;border-color:#c85a4f;color:#7a2a22;}
-.q-feedback{font-size:.85rem;margin:8px 0 0;font-weight:700;min-height:1.2em;}
-.reveal-btn{margin-top:8px;background:none;border:1px solid #2f6f4f;color:#2f6f4f;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:inherit;}
-.reveal-box{display:none;background:#fffbe9;border:1px dashed var(--gold);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:.88rem;}
-.reveal-box.show{display:block;}
-.check-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:.9rem;}
-.check-item input{margin-top:3px;}
-.rubrik-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0;}
-.rubrik-table th,.rubrik-table td{border:1px solid var(--line);padding:7px 9px;text-align:left;}
-.rubrik-table th{background:var(--m-soft);}
-details.guru-note{background:#f2ede0;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-top:16px;}
-details.guru-note summary{cursor:pointer;font-weight:700;color:#2f6f4f;}
-details.guru-note ul{margin:10px 0 0;padding-left:20px;font-size:.9rem;}
-.nav-buttons{display:flex;justify-content:space-between;margin-top:20px;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;}
-.nav-buttons button{padding:11px 22px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-family:inherit;font-size:.95rem;}
-#btnPrev{background:#fff;border:1px solid var(--line);color:var(--ink);}
-#btnPrev:disabled{opacity:.4;cursor:default;}
-#btnNext{background:#2f6f4f;color:#fff;}
-.saved-label{font-size:.75rem;color:#8a8070;text-align:right;margin-top:6px;}
-.dependensi-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:.88rem;margin-bottom:14px;}
-.glosarium dt{font-weight:700;color:#2f6f4f;margin-top:8px;}
-.glosarium dd{margin:2px 0 0;}
-.reset-btn{background:none;border:1px solid #b0473f;color:#b0473f;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem;margin-top:12px;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+.card-preview{
+  background:#fffefb; border:2px dashed var(--gold); border-radius:12px; padding:22px 24px;
+  position:relative; transform:rotate(-0.6deg); box-shadow:0 6px 18px rgba(43,32,19,.10); margin-top:16px;
+}
+.card-preview::before{content:'💰';position:absolute;top:-14px;left:22px;font-size:22px;transform:rotate(12deg);}
+.card-preview h4{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--gold-d);margin-bottom:10px;}
+.card-preview .cp-section{margin-bottom:12px;font-size:13.5px;line-height:1.7;}
+.card-preview .cp-section b{color:var(--nav);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.card-preview .cp-empty{color:var(--ink-faint);font-style:italic;}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.tip-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12.5px;}
+.tip-card .ti{font-size:18px;margin-bottom:4px;}
+@media (max-width:560px){.tip-grid{grid-template-columns:1fr;}}
+.check-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13.5px;}
+.check-item input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
+.contoh-soal{background:#fff;border-left:4px solid var(--nav-l);border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:13.5px;}
 </style>
 </head>
 <body>
+
 <div id="checking">Memeriksa akses…</div>
+
 <div id="app-detail" class="hidden">
-  <nav class="topnav">
-    <a href="../../../../index.html">🏠 Beranda</a>
-    <a href="../../../modul.html">📚 Daftar Modul</a>
-  </nav>
-  <div class="wrap">
-    <div class="modul-head">
-      <span class="badge badge-elemen">Matematika · Bilangan</span> 
-      <h1>Masalah Sehari-hari Berkaitan dengan Uang</h1>
-      <div class="sub">Modul Ajar Mandiri Interaktif · Kelas 5A · Matematika</div>
-    </div>
-    <div class="stepper"><div class="step-dot" data-page="0" title="Pengantar">▶</div><div class="step-dot inti" data-page="1" title="Pertemuan Inti">⭐</div><div class="step-dot" data-page="2" title="Penutup">✓</div></div>
-    <main>
-      <div class="page" data-page="0">
-    <div class="card">
-      <span class="tag">Bilangan · TP5</span>
-      <h2>Masalah Sehari-hari Berkaitan dengan Uang</h2>
-      <table class="info-table">
-        <tr><th>CP Rujukan</th><td>Menyelesaikan masalah yang berkaitan dengan uang.</td></tr>
-        <tr><th>Kompetensi Inti</th><td>Siswa dapat menyelesaikan masalah sehari-hari berkaitan dengan uang (transaksi, kembalian, perbandingan harga) menggunakan operasi hitung bilangan cacah.</td></tr>
-        <tr><th>Jumlah Pertemuan</th><td>1 pertemuan (langsung Pertemuan Inti)</td></tr>
-      </table>
-      <h3>🎯 Garis Finis</h3>
-      <p>Kamu akan bisa menyelesaikan masalah transaksi, kembalian, dan perbandingan harga menggunakan operasi hitung bilangan cacah yang sudah kamu kuasai dari TP1–TP4.</p>
-      <h3>🚦 Titik Berangkat</h3>
-      <p>TP ini bersifat INTEGRATIF — tidak ada kompetensi prosedural baru, hanya menerapkan kemampuan nilai tempat, pengurangan, dan pembagian yang sudah kamu kuasai pada konteks jual-beli.</p>
-    </div>
-    </div>
-<div class="page" data-page="1">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><h3 style="margin:0">Pertemuan Inti — Transaksi, Kembalian, dan Perbandingan Harga</h3></div>
-      <span class="tag inti">Pertemuan Inti</span>
-      <div class="materi-box">Di kelas, kamu akan melakukan simulasi jual-beli dengan uang mainan bersama kelompokmu — bergantian menjadi pembeli dan penjual. Bagian di bawah ini menyiapkan/melengkapi latihan tertulisnya.</div>
 
-      <h3>💰 Daftar Harga Contoh</h3>
-      <table class="info-table">
-        <tr><th>Barang</th><th>Harga</th></tr>
-        <tr><td>Buku tulis</td><td>Rp3.500</td></tr>
-        <tr><td>Pensil</td><td>Rp2.000</td></tr>
-        <tr><td>Penghapus</td><td>Rp1.500</td></tr>
-        <tr><td>Kotak pensil</td><td>Rp15.000</td></tr>
-      </table>
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Masalah Sehari-hari Berkaitan dengan Uang</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
 
-      <label class="field-label">📝 Kuis Pemahaman</label>
-      <div id="tp5-quiz"></div><script>renderQuiz("tp5-quiz", [
-      {type:'mcq', text:'Kamu membeli barang seharga Rp23.500 dan membayar dengan Rp50.000. Berapa kembalianmu?', options:['Rp26.500','Rp27.500','Rp26.000','Rp23.500'], correct:0, explain:'50.000 - 23.500 = 26.500.'},
-      {type:'mcq', text:'Toko A menjual gula Rp14.000/kg, Toko B menjual gula Rp13.500/kg untuk kemasan yang sama beratnya. Mana yang lebih hemat?', options:['Toko B','Toko A','Sama saja','Tidak bisa dibandingkan'], correct:0, explain:'Rp13.500 < Rp14.000 untuk berat yang sama, jadi Toko B lebih hemat.'},
-      {type:'mcq', text:'Kamu membeli 3 buku seharga Rp8.500 per buku. Berapa total yang harus dibayar?', options:['Rp25.500','Rp24.500','Rp26.500','Rp17.000'], correct:0, explain:'3 x 8.500 = 25.500.'}
-    ]);</script>
+<div id="stepper" class="stepper"></div>
 
-      <label class="field-label">📖 Soal Transaksi 1 — Kembalian</label>
-      <div class="materi-box">Kamu membeli 2 buku tulis dan 1 pensil dari daftar harga di atas. Kamu membayar dengan uang Rp20.000. Berapa kembalianmu?</div>
-      <textarea class="ans" data-key="tp5-transaksi1" placeholder="Total belanja = ... Kembalian = ..."></textarea>
+<div class="wrap">
 
-      <label class="field-label">📖 Soal Transaksi 2 — Perbandingan Harga</label>
-      <div class="materi-box">Warung X menjual kotak pensil Rp15.000, sedangkan Warung Y menjual kotak pensil serupa Rp13.800. Kamu berencana membeli 4 kotak pensil untuk seluruh anggota kelompokmu. Berapa selisih total harga jika membeli di Warung X dibanding Warung Y? Warung mana yang lebih hemat?</div>
-      <textarea class="ans" data-key="tp5-transaksi2" placeholder="Total di Warung X = ... Total di Warung Y = ... Selisih = ..."></textarea>
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> Bilangan TP5 — Masalah Sehari-hari Berkaitan dengan Uang (Matematika Kelas 5). Diambil dari <code>Dokumen2_TP_Kelas5_Matematika.docx</code> dan <code>Scaffolding_Kelas5_Matematika_Bilangan.docx</code> — sesi ini tidak memiliki akses ke <code>pages/materi/matematika/</code>, mohon dicek konsistensi bila folder materi resmi sudah tersedia.</li>
+<li><b>Catatan struktur khusus:</b> Sumber menandai TP ini "1 pertemuan, langsung Pertemuan Inti — integratif dan aplikatif murni dari TP1-TP4, tidak ada kompetensi prosedural baru". Modul ini dipecah jadi 2 subunit mengikuti dua aspek yang SUDAH tersirat di rubrik sumber sendiri: transaksi/kembalian vs perbandingan harga.</li>
+<li><b>Bagian PALING PENTING dari TP ini adalah simulasi jual-beli LANGSUNG di kelas dengan uang mainan</b> (disebutkan eksplisit di sumber) — modul digital ini melengkapi latihan tertulisnya, TIDAK menggantikan simulasi fisik tersebut. Mohon simulasi tetap dilaksanakan di kelas.</li>
+<li><b>RPM v3 belum tersedia</b> — Aktivitas Inti Siswa diterjemahkan dari kolom "Pilihan Materi" Scaffolding. Elemen PAK tidak dimasukkan karena belum ada RPM yang mengisinya.</li>
+<li><b>Produk Belajar:</b> "Buku Belanja Cerdasku" — catatan transaksi dan kembalian (Subunit 1), lalu perbandingan harga dua toko untuk memutuskan mana yang lebih hemat (Subunit 2/Inti), dirangkum jadi satu buku kecil.</li>
+<li><b>Dimensi Profil Lulusan:</b> Penalaran Kritis (memutuskan pilihan hemat berdasarkan alasan, bukan tebakan), Kemandirian (mengerjakan simulasi transaksi tertulis sendiri), Keimanan &amp; Ketaqwaan (kejujuran dalam bertransaksi dan sikap tidak boros/mubazir — 1-2 titik saja, tidak berlebihan).</li>
+<li>Asesmen Awal bersifat diagnostik murni (tidak dinilai), mengecek prasyarat operasi hitung dasar dalam konteks uang. Latihan tiap subunit sudah divariasikan (PG/BS ≤50%, minimal 1 uraian, minimal 1 penerapan), sesuai Buku Saku Bagian E.4e.</li>
+<li>Profil kelas: kemampuan akademik beragam (default), karakter kelas belum diketahui guru → pemantik dan instruksi dibuat lebih eksplisit.</li>
+</ul>
+</details>
 
-      <label class="field-label">✍️ Simulasi Jual-Beli (catatan hasil praktik kelas)</label>
-      <p style="font-size:.9rem;color:#6b6255;">Setelah simulasi jual-beli berkelompok di kelas, tuliskan satu transaksi yang kamu lakukan (sebagai pembeli atau penjual) dan bagaimana kamu menghitung kembaliannya.</p>
-      <textarea class="ans" data-key="tp5-simulasi" placeholder="Saat menjadi pembeli/penjual, saya bertransaksi... caranya menghitung..."></textarea>
-    <details class="guru-note"><summary>👩‍🏫 Catatan untuk Guru</summary><ul><li>Diturunkan dari <em>Dokumen2_TP_Kelas5_Matematika.docx</em> TP5 Bilangan dan <em>Scaffolding_Kelas5_Matematika_Bilangan.docx</em> — TP integratif-aplikatif murni dari TP1–TP4, sehingga TIDAK diberi tangga tambahan (1 pertemuan, langsung Pertemuan Inti), sesuai rancangan sumber.</li><li>Status akses materi: disusun langsung dari dokumen Scaffolding/Dokumen2 Matematika (docx); folder <code>pages/materi/matematika/</code> tidak dapat diakses sesi ini.</li><li>Bagian PALING PENTING dari TP ini adalah <strong>simulasi jual-beli langsung di kelas</strong> dengan uang mainan — bagian tertulis di modul ini hanya melengkapi/menyiapkan, bukan pengganti. Kolom 'catatan hasil praktik' di atas TIDAK auto-graded, mohon nilai lewat observasi langsung saat simulasi.</li><li>Yang tidak perlu sempurna: kecepatan setara kasir sungguhan.</li><li>Yang WAJIB diwaspadai: siswa yang lancar dalam simulasi (terbantu konteks sosial kelompok) namun gagal pada soal tertulis individual — sinyal kembalian masih dikerjakan lewat hafalan pola transaksi umum, bukan pemahaman operasi hitung yang fleksibel.</li></ul></details><table class="rubrik-table"><tr><th>Aspek yang Dinilai</th><th>✓ Sudah Memenuhi</th><th>△ Perlu Dikembangkan</th></tr><tr><td><strong>Ketepatan hitung kembalian saat simulasi</strong></td><td>Kembalian tepat dan cepat tanpa bantuan alat hitung</td><td>Masih lambat atau sering salah hitung kembalian</td></tr><tr><td><strong>Perbandingan harga tertulis</strong></td><td>Mampu membandingkan harga per satuan/total dengan benar</td><td>Keliru saat membandingkan harga dengan satuan berbeda</td></tr><tr><td><strong>Penerapan operasi yang tepat</strong></td><td>Memilih operasi (tambah/kurang/kali/bagi) sesuai konteks soal</td><td>Salah memilih operasi meski perhitungan mekanis benar</td></tr></table></div></div>
-<div class="page" data-page="2">
-    <div class="card">
-      <h2>📚 Glosarium</h2>
-      <dl class="glosarium">
-        <dt>Kembalian</dt><dd>Selisih antara uang yang dibayarkan dengan harga barang yang dibeli.</dd>
-        <dt>Perbandingan harga per satuan</dt><dd>Membandingkan harga dua barang dengan memperhitungkan berat/ukuran/jumlahnya, bukan hanya harga totalnya.</dd>
-      </dl>
-    </div>
-    <div class="card">
-      <h2>✅ Penutup TP5</h2>
-      <p>Bagus! TP ini menunjukkan bahwa matematika yang sudah kamu pelajari benar-benar berguna di kehidupan sehari-hari, terutama saat berbelanja.</p>
-      <p><strong>Selanjutnya:</strong> TP6 — Pecahan: Representasi, Perbandingan, dan Operasi Penjumlahan-Pengurangan (elemen terbesar di Bilangan!).</p>
-      <button class="reset-btn" onclick="resetProgress()">🔄 Mulai ulang dari awal</button>
-    </div>
-    </div>
-
-    </main>
-    <div class="saved-label" id="savedLabel"></div>
-    <div class="nav-buttons">
-      <button id="btnPrev">← Sebelumnya</button>
-      <button id="btnNext">Lanjut →</button>
-    </div>
+<div class="cover">
+  <span class="kicker">✦ Matematika · Kelas 5</span>
+  <h1>Masalah Sehari-hari Berkaitan dengan Uang</h1>
+  <p class="lede">Bismillah, mari kita mulai! Semua kemampuan berhitungmu selama ini akan kamu pakai untuk hal yang sangat nyata: berbelanja, menghitung kembalian, dan memilih mana yang lebih hemat.</p>
+  <div class="cover-meta">
+    <span>💰 2 bagian belajar</span>
+    <span>📗 1 Buku Belanja Cerdas untuk dibuat</span>
+    <span>🛒 Simulasi jual-beli di kelas</span>
   </div>
 </div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Di unit ini, kamu tidak akan belajar cara berhitung yang baru — kamu akan memakai SEMUA kemampuan berhitung yang sudah kamu kuasai (nilai tempat, pengurangan, pembagian) untuk hal yang sangat nyata: berbelanja!</p>
+  <p>Di kelas, kamu akan bermain simulasi jual-beli dengan uang mainan bersama teman-temanmu. Modul ini akan melengkapi latihan tertulisnya.</p>
+  <div class="produk-banner">
+    <div class="icon">📗</div>
+    <div>
+      <strong>Karya yang akan kamu buat</strong>
+      Kamu akan menyusun <b>Buku Belanja Cerdasku</b> — catatan transaksi, kembalian, dan perbandingan harga dua toko, supaya kamu terbiasa berbelanja dengan cerdas dan tidak boros.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SUBUNIT 1 — MATERI PINTU MASUK: transaksi & kembalian -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Bagian 1 dari 2 · Materi Pintu Masuk</div><h2 style="margin-bottom:0;">Transaksi dan Kembalian</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Ini penerapan langsung dari kemampuan pengurangan yang sudah kamu kuasai — tidak apa-apa kalau butuh waktu mengingat kembali caranya.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Pernahkah kamu berbelanja sendiri dan menghitung kembalianmu? Ceritakan pengalamanmu.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Menghitung Kembalian</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Kembalian = uang yang kamu bayarkan DIKURANGI harga barang. Contoh: kamu membeli barang seharga Rp23.500 dan membayar dengan Rp50.000. Kembalianmu = 50.000 − 23.500 = Rp26.500.</p>
+    <div class="contoh-soal">Kejujuran dalam bertransaksi itu penting — baik sebagai pembeli yang membayar dengan benar, maupun sebagai penjual yang memberi kembalian yang tepat, tidak kurang maupun lebih.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📊 Daftar Harga Contoh</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;">
+      <tr style="background:var(--gold-l);"><th style="padding:6px 8px;text-align:left;border:1px solid var(--border);">Barang</th><th style="padding:6px 8px;text-align:left;border:1px solid var(--border);">Harga</th></tr>
+      <tr><td style="padding:6px 8px;border:1px solid var(--border);">Buku tulis</td><td style="padding:6px 8px;border:1px solid var(--border);">Rp3.500</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid var(--border);">Pensil</td><td style="padding:6px 8px;border:1px solid var(--border);">Rp2.000</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid var(--border);">Penghapus</td><td style="padding:6px 8px;border:1px solid var(--border);">Rp1.500</td></tr>
+      <tr><td style="padding:6px 8px;border:1px solid var(--border);">Kotak pensil</td><td style="padding:6px 8px;border:1px solid var(--border);">Rp15.000</td></tr>
+    </table>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Pakai daftar harga di atas untuk mengerjakan soal ini.</div>
+    <div class="field-row"><label>Kamu membeli 2 buku tulis dan 1 pensil, membayar Rp20.000. Berapa kembalianmu?</label><textarea class="ans" placeholder="Total belanja = ... Kembalian = ..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📗 Entri Pertama Buku Belanja Cerdasku</div>
+    <div class="act-desc">Catat satu transaksi (nyata atau buatan sendiri): apa yang kamu beli, berapa uang yang kamu bayarkan, dan berapa kembaliannya.</div>
+    <div class="field-row"><label>Catatan Transaksiku</label><textarea class="ans" id="transaksi1" placeholder="Aku membeli ... seharga Rp..., membayar Rp..., kembaliannya Rp..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apakah kamu sudah lancar menghitung kembalian tanpa alat bantu?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SUBUNIT 2 — INTI: perbandingan harga + produk belajar -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num badge-inti">2</span>
+    <div><div class="block-eyebrow">Bagian 2 dari 2 · Pertemuan Inti</div><h2 style="margin-bottom:0;">Berbelanja dengan Cerdas</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang belajar membandingkan harga supaya kamu bisa memilih yang paling hemat.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau ada dua toko menjual barang yang sama tapi harganya beda, bagaimana caramu memutuskan mana yang lebih hemat?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Membandingkan dengan Cermat</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Kalau kamu ingin membeli beberapa barang sekaligus, bandingkan harga TOTAL-nya, bukan cuma harga satuannya saja — bisa jadi berbeda kesimpulan!</p>
+    <div class="contoh-soal">Warung X: kotak pensil Rp15.000. Warung Y: kotak pensil serupa Rp13.800. Untuk 4 kotak pensil: Warung X = 4×15.000=Rp60.000, Warung Y = 4×13.800=Rp55.200. Warung Y lebih hemat Rp4.800.</div>
+    <p style="font-size:13.5px;">Berbelanja dengan cermat dan tidak boros (mubazir) adalah sikap yang baik — membeli secukupnya dan memilih yang hemat, bukan sekadar yang murah tapi tidak dibutuhkan.</p>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Warung X menjual kotak pensil Rp15.000, Warung Y Rp13.800. Kamu berencana membeli 4 kotak pensil untuk kelompokmu.</div>
+    <textarea class="ans" placeholder="Total di Warung X = ... Total di Warung Y = ... Selisih = ... Warung yang lebih hemat: ..."></textarea>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📗 Tuntaskan Buku Belanja Cerdasku</div>
+    <div class="act-desc">Setelah simulasi jual-beli di kelas, catat hasil perbandingan hargamu di sini.</div>
+    <div class="field-row"><label>Perbandingan Harga yang Kutemukan</label><textarea class="ans" id="perbandingan1" placeholder="Aku membandingkan harga ... antara toko/warung ... Kesimpulanku: ..."></textarea></div>
+    <button class="mini-btn" onclick="showBuku()">Susun Buku Belanja Cerdasku</button>
+    <div class="card-preview hidden" id="bukuPreview"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">💡 Tips Berbelanja Cerdas</div>
+    <div class="tip-grid">
+      <div class="tip-card"><div class="ti">🧮</div>Hitung dulu total belanjaanmu sebelum membayar, supaya tahu kembalian yang seharusnya.</div>
+      <div class="tip-card"><div class="ti">⚖️</div>Bandingkan harga TOTAL untuk jumlah barang yang sama, bukan cuma satu barang saja.</div>
+      <div class="tip-card"><div class="ti">🙏</div>Beli secukupnya sesuai kebutuhan, jangan berlebihan.</div>
+      <div class="tip-card"><div class="ti">🤝</div>Selalu jujur saat bertransaksi, baik sebagai pembeli maupun penjual.</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✅ Kesiapanku</div>
+    <div class="check-item"><input type="checkbox" id="chk1"><label for="chk1">Aku bisa menghitung kembalian dengan tepat</label></div>
+    <div class="check-item"><input type="checkbox" id="chk2"><label for="chk2">Aku bisa membandingkan harga total dua tempat berbeda</label></div>
+    <div class="check-item"><input type="checkbox" id="chk3"><label for="chk3">Aku sudah ikut simulasi jual-beli di kelas</label></div>
+    <div class="check-item"><input type="checkbox" id="chk4"><label for="chk4">Buku Belanja Cerdasku sudah selesai kususun</label></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Latihan Akhir Unit</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Unit</h3>
+  <div class="reflect-q"><label>Melihat kembali modul ini, bagian mana yang paling kamu kuasai?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apa satu kebiasaan belanja cerdas yang ingin kamu terapkan setelah ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, unit ini selesai! Tuliskan satu hal yang kamu syukuri dari belajar hari ini.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Kembalian</dt><dd>Selisih antara uang yang dibayarkan dengan harga barang yang dibeli.</dd>
+    <dt>Perbandingan harga total</dt><dd>Membandingkan harga dua tempat untuk jumlah barang yang sama, bukan hanya satu barang saja.</dd>
+  </dl>
+</section>
+<div class="closing">Selamat! Kamu sudah menyelesaikan unit ini. Kemampuan berbelanja cerdas ini akan terus berguna sepanjang hidupmu. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 4 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+const STORAGE_KEY = 'modulProgress:mtk-uang-tp5';
+const TOTAL_PAGES = 5;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, input.ans-input');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+function wireCheckPersistence(){
+  const state = loadState();
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(state.check && state.check[el.id] !== undefined){ el.checked = state.check[el.id]; }
+    el.addEventListener('change', ()=>{
+      saveState(s=>{ s.check = s.check || {}; s.check[el.id] = el.checked; });
+    });
+  });
+}
+
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')" style="margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;">Lihat contoh jawaban</button><div class="key-box" style="display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SUBUNIT 2: rangkum Buku Belanja ============ */
+function showBuku(){
+  const t1 = document.getElementById('transaksi1').value;
+  const p1 = document.getElementById('perbandingan1').value;
+
+  const box = document.getElementById('bukuPreview');
+  box.innerHTML = `
+    <h4>Buku Belanja Cerdasku</h4>
+    <div class="cp-section"><b>Catatan Transaksi (Bagian 1)</b>${t1 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Perbandingan Harga (Bagian 2)</b>${p1 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+  `;
+  box.classList.remove('hidden');
+  updateProgress();
+}
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Jika kamu membeli barang seharga Rp5.000 dan membayar Rp10.000, berapa kembalianmu?', options:['Rp5.000','Rp15.000','Rp10.000'], correct:0},
+  {type:'bs', text:'Kembalian dihitung dengan cara harga barang dikurangi uang yang dibayarkan.', correct:1},
+  {type:'mcq', text:'3 x Rp2.000 = ...', options:['Rp6.000','Rp5.000','Rp8.000'], correct:0},
+  {type:'essay', text:'Ceritakan pengalamanmu terakhir kali membeli sesuatu — apa yang kamu beli?'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'mcq', text:'Kamu membeli barang seharga Rp23.500 dan membayar Rp50.000. Kembalianmu adalah...', options:['Rp26.500','Rp27.500','Rp23.500'], correct:0},
+  {type:'bs', text:'Kembalian selalu dihitung dengan cara: uang yang dibayarkan dikurangi harga barang.', correct:0},
+  {type:'essay', text:'Kamu membeli 1 kotak pensil dan 2 penghapus dari daftar harga di atas, membayar Rp20.000. Berapa kembalianmu?', tag:'isian'},
+  {type:'essay', text:'Jelaskan dengan kata-katamu: kenapa penting menghitung total belanja dulu sebelum menghitung kembalian?', tag:'uraian', key:'Contoh: karena kembalian dihitung dari selisih uang yang dibayar dengan TOTAL harga seluruh barang, bukan harga satu barang saja — kalau kita lupa menjumlahkan semua barang dulu, kembaliannya jadi salah.'},
+  {type:'essay', text:'Ibu membeli 3 buku tulis dan 2 pensil dari daftar harga di atas, membayar dengan selembar uang Rp15.000. Cukupkah uang Ibu? Kalau tidak cukup, berapa kekurangannya?', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Cara paling tepat membandingkan dua toko untuk membeli beberapa barang sekaligus adalah...', options:['Membandingkan harga TOTAL untuk jumlah barang yang sama','Membandingkan harga satu barang saja','Memilih toko yang paling dekat','Memilih toko dengan nama paling terkenal'], correct:0},
+  {type:'bs', text:'Toko dengan harga satuan lebih murah SELALU lebih hemat untuk semua jumlah pembelian, tanpa perlu dihitung ulang.', correct:1},
+  {type:'essay', text:'Toko A menjual buku gambar Rp8.500/buah. Toko B menjual buku gambar sama Rp7.900/buah tapi kamu harus membeli minimal 5 buah. Kalau kamu butuh 5 buku gambar, toko mana yang lebih hemat? Berapa selisihnya?', tag:'penerapan'},
+  {type:'essay', text:'Bagaimana perasaanmu setelah menyelesaikan unit ini? Apakah kamu merasa lebih siap berbelanja sendiri sekarang?', tag:'uraian'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 9;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  if(!document.getElementById('bukuPreview').classList.contains('hidden')) done++;
+  document.querySelectorAll('.check-item input:checked').forEach(()=>done++);
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+wireCheckPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+wireCheckPersistence();
+updateProgress();
+</script>
+
 <script type="module" src="../../../../assets/js/auth-guard.js"></script>
 <script>
   document.addEventListener("user-verified", () => {
@@ -181,164 +525,6 @@ details.guru-note ul{margin:10px 0 0;padding-left:20px;font-size:.9rem;}
     document.getElementById("app-detail").classList.remove("hidden");
   });
   document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
-</script>
-<script>
-
-const STORAGE_KEY = 'modulProgress:matematika-uang-tp5';
-const TOTAL_PAGES = 3;
-let state = null;
-let isReplaying = false;
-
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    state = raw ? JSON.parse(raw) : {page:0, answers:{}, checks:{}, actions:[]};
-  }catch(e){ state = {page:0, answers:{}, checks:{}, actions:[]}; }
-  if(!state.answers) state.answers = {};
-  if(!state.checks) state.checks = {};
-  if(!state.actions) state.actions = [];
-}
-
-function saveState(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
-  updateSavedLabel();
-}
-
-function updateSavedLabel(){
-  const el = document.getElementById('savedLabel');
-  if(!el) return;
-  const d = new Date();
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
-}
-
-function goToPage(n){
-  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const target = document.querySelector('.page[data-page="'+n+'"]');
-  if(target) target.classList.add('active');
-  state.page = n;
-  saveState();
-  updateStepper();
-  const prevBtn = document.getElementById('btnPrev');
-  const nextBtn = document.getElementById('btnNext');
-  if(prevBtn) prevBtn.disabled = (n===0);
-  if(nextBtn) nextBtn.textContent = (n===TOTAL_PAGES-1) ? 'Selesai ✓' : 'Lanjut →';
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-function updateStepper(){
-  document.querySelectorAll('.step-dot').forEach(d=>{
-    const p = parseInt(d.dataset.page,10);
-    d.classList.toggle('active', p===state.page);
-    d.classList.toggle('done', p<state.page);
-  });
-}
-
-function wireTextPersistence(){
-  document.querySelectorAll('textarea.ans, input.ans-input').forEach(el=>{
-    const key = el.dataset.key;
-    if(!key) return;
-    if(state.answers[key] !== undefined) el.value = state.answers[key];
-    el.addEventListener('input', ()=>{ state.answers[key] = el.value; saveState(); });
-  });
-}
-
-function wireCheckPersistence(){
-  document.querySelectorAll('.check-item input[type=checkbox]').forEach(el=>{
-    const key = el.dataset.key;
-    if(!key) return;
-    if(state.checks[key]) el.checked = true;
-    el.addEventListener('change', ()=>{ state.checks[key] = el.checked; saveState(); });
-  });
-}
-
-function logAction(action){
-  if(isReplaying) return;
-  state.actions.push(action);
-  saveState();
-}
-
-function replayActions(){
-  isReplaying = true;
-  (state.actions||[]).forEach(a=>{
-    if(a.type==='mcq'){
-      const btn = document.querySelector('.opt-btn[data-group="'+a.group+'"][data-idx="'+a.chosen+'"]');
-      if(btn) btn.click();
-    } else if(a.type==='reveal'){
-      const el = document.getElementById(a.id);
-      if(el) el.classList.add('show');
-    }
-  });
-  isReplaying = false;
-}
-
-function toggleReveal(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.classList.toggle('show');
-  logAction({type:'reveal', id:id});
-}
-
-function renderQuiz(containerId, items){
-  const c = document.getElementById(containerId);
-  if(!c) return;
-  items.forEach((item, idx)=>{
-    const groupId = containerId+'-q'+idx;
-    if(item.type==='mcq'){
-      let html = '<div class="quiz-item"><p class="q-text">'+(idx+1)+'. '+item.text+'</p><div class="q-options" data-group="'+groupId+'">';
-      item.options.forEach((opt,oi)=>{
-        html += '<button type="button" class="opt-btn" data-group="'+groupId+'" data-idx="'+oi+'" onclick="checkMCQ(\''+groupId+'\', this, '+oi+', '+item.correct+')">'+opt+'</button>';
-      });
-      html += '</div><p class="q-feedback" id="'+groupId+'-fb"></p>';
-      if(item.explain){
-        html += '<button type="button" class="reveal-btn" onclick="toggleReveal(\''+groupId+'-exp\')">Lihat penjelasan</button>';
-        html += '<div class="reveal-box" id="'+groupId+'-exp">'+item.explain+'</div>';
-      }
-      html += '</div>';
-      c.insertAdjacentHTML('beforeend', html);
-    }
-  });
-}
-
-function checkMCQ(groupId, btn, chosenIdx, correctIdx){
-  const group = document.querySelector('.q-options[data-group="'+groupId+'"]');
-  if(!group) return;
-  group.querySelectorAll('.opt-btn').forEach(b=> b.classList.remove('correct','wrong'));
-  if(chosenIdx===correctIdx){
-    btn.classList.add('correct');
-  } else {
-    btn.classList.add('wrong');
-    group.querySelectorAll('[data-idx="'+correctIdx+'"]').forEach(b=>b.classList.add('correct'));
-  }
-  const fb = document.getElementById(groupId+'-fb');
-  if(fb) fb.textContent = (chosenIdx===correctIdx) ? '✓ Benar!' : '△ Belum tepat — lihat kunci di jawaban yang menyala hijau.';
-  logAction({type:'mcq', group:groupId, chosen:chosenIdx});
-}
-
-function resetProgress(){
-  if(confirm('Yakin mulai ulang dari awal? Semua jawaban tersimpan di perangkat ini akan dihapus.')){
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
-  }
-}
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  loadState();
-  wireTextPersistence();
-  wireCheckPersistence();
-  document.querySelectorAll('.q-options').forEach(()=>{});
-  replayActions();
-  goToPage(state.page || 0);
-  updateSavedLabel();
-  const prevBtn = document.getElementById('btnPrev');
-  const nextBtn = document.getElementById('btnNext');
-  if(prevBtn) prevBtn.addEventListener('click', ()=> goToPage(state.page-1));
-  if(nextBtn) nextBtn.addEventListener('click', ()=> goToPage(state.page+1));
-  document.querySelectorAll('.step-dot').forEach(d=> d.addEventListener('click', ()=> goToPage(parseInt(d.dataset.page,10))));
-});
-
 </script>
 </body>
 </html>
