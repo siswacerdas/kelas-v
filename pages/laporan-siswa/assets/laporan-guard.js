@@ -52,13 +52,20 @@ onAuthStateChanged(auth, async (user) => {
   document.getElementById("checking").remove();
   document.getElementById("app-laporan").classList.remove("ma-hidden");
 
-  if (role === "siswa") {
+  // v1.2 (Fase 4, RANCANGAN-LOGIN-BARU.md): SEBELUM ada role "pending_orangtua"/
+  // "rejected", cek "role === 'siswa'" di bawah cukup karena cuma ada 3 role
+  // (siswa/guru/orangtua) — role apa pun SELAIN siswa otomatis dianggap boleh
+  // akses. Sejak Fase 4 itu jadi SALAH: pendaftar yang belum/tidak disetujui
+  // guru juga akan lolos cek itu (karena role mereka bukan "siswa"), padahal
+  // jelas belum boleh lihat data siswa mana pun. Diperbaiki jadi whitelist
+  // eksplisit (cuma "guru"/"orangtua" yang boleh lanjut), bukan blacklist.
+  if (role !== "guru" && role !== "orangtua") {
     const blocked = document.getElementById("lap-blocked");
     if (blocked) {
       blocked.classList.remove("ma-hidden");
     } else {
       // Fallback aman kalau halaman lupa menyediakan elemen #lap-blocked — jangan biarkan
-      // siswa tetap berdiri di halaman ini tanpa pesan apa pun.
+      // pengguna tetap berdiri di halaman ini tanpa pesan apa pun.
       window.location.href = "../index.html";
     }
     return;
