@@ -273,9 +273,22 @@ sheet-nya, atau Arif konfirmasi apakah 25 nama ini semua sudah ada di "Data Sisw
   aktifkan provider "Anonymous" dulu di Firebase Console → Authentication →
   Sign-in method, baru bisa jalan).
 - [ ] **Fase 4 — Pendaftaran & approval orang tua**: `daftar-orangtua.html`
-  (dengan field WhatsApp opsional — disetujui §0), aturan Firestore baru (§3.3),
-  tab approval di `admin.html`, penanganan status `pending_orangtua`/`rejected`
-  di `index.html`.
+  dibuat (form nama ortu + pilih anak + email/password + WhatsApp opsional →
+  `createUserWithEmailAndPassword` + `setDoc` role `pending_orangtua` →
+  signOut). `index.html`: layar status "Menunggu Persetujuan"/"Pendaftaran
+  Ditolak" ditambahkan (`#status-screen`), ditampilkan mengganti `#app`
+  sepenuhnya untuk role `pending_orangtua`/`rejected`. `pages/admin.html`:
+  tab baru "Persetujuan Orang Tua" (3 daftar: menunggu/disetujui/ditolak,
+  tombol Setujui/Tolak/Cabut Akses). Aturan Firestore `users` diperbarui
+  di `README.md` (izinkan `create` role `pending_orangtua` oleh diri sendiri
+  + izinkan guru **membaca** — bukan cuma menulis — dokumen siapa saja, yang
+  ternyata belum ada sebelumnya dan akan membuat query daftar "menunggu"
+  gagal total kalau tidak ditambahkan). Perbaikan tambahan: `laporan-guard.js`
+  diperketat dari blacklist (`role !== "siswa"`) jadi whitelist eksplisit
+  (`role === "guru" || role === "orangtua"`), supaya `pending_orangtua`/
+  `rejected` tidak ikut lolos ke Laporan Siswa seperti sebelum diperbaiki.
+  **Menunggu Arif: tempel aturan Firestore baru ke Firebase Console (WAJIB,
+  tanpa ini fitur ini tidak akan berfungsi), lalu uji end-to-end.**
 - [ ] **Fase 5 — Lupa kata sandi**: tombol + alur `sendPasswordResetEmail` di
   `index.html` (disetujui §0), kustomisasi template email di Firebase Console
   (manual, didokumentasi).

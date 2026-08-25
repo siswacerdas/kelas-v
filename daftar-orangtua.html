@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar Orang Tua · Kelas 5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+      --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+      --accent: #2e6fbc; --danger: #c94040; --accent-3: #2a9d6f;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--ink); color: var(--ink);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+    }
+    #box {
+      background: var(--paper); border-radius: 16px; padding: 2.5rem 2rem;
+      width: 100%; max-width: 400px;
+    }
+    #box h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.4rem;
+      margin-bottom: 0.25rem; text-align: center;
+    }
+    #box > p.subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; text-align: center; }
+    .form-group { margin-bottom: 0.85rem; text-align: left; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 7px;
+      font-size: 14px; color: var(--ink); background: #fff; outline: none; transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    .form-hint { font-size: 11px; color: var(--ink-3); margin-top: 4px; }
+    #btn-daftar {
+      width: 100%; margin-top: 0.5rem; padding: 10px; border: none; border-radius: 7px;
+      background: var(--accent); color: #fff; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    #btn-daftar:hover { background: #2460a8; }
+    #btn-daftar:disabled { opacity: 0.6; cursor: not-allowed; }
+    #form-error { font-size: 12px; color: var(--danger); margin-top: 10px; min-height: 16px; }
+    #back-link { display: block; text-align: center; font-size: 12px; color: var(--ink-3); margin-top: 1.25rem; }
+    #back-link a { color: var(--accent); font-weight: 600; }
+
+    /* Layar sukses (setelah submit, sebelum di-signOut) */
+    #sukses-box { display: none; text-align: center; }
+    #sukses-box .icon { font-size: 40px; margin-bottom: 0.75rem; }
+    #sukses-box p { font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-bottom: 1.5rem; }
+    #sukses-box a {
+      display: inline-block; padding: 10px 20px; border-radius: 7px;
+      background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="box">
+  <div id="form-box">
+    <h2>Daftar Akun Orang Tua</h2>
+    <p class="subtitle">Kelas 5 · Tahun Pelajaran 2026–2027</p>
+
+    <div class="form-group">
+      <label for="f-nama-ortu">Nama Orang Tua/Wali</label>
+      <input type="text" id="f-nama-ortu" placeholder="Nama lengkap" autocomplete="name" />
+    </div>
+    <div class="form-group">
+      <label for="f-nama-anak">Nama Anak</label>
+      <select id="f-nama-anak" autocomplete="off">
+        <option value="">— Pilih nama anak —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="f-email">Email</label>
+      <input type="email" id="f-email" placeholder="email@contoh.com" autocomplete="email" />
+    </div>
+    <div class="form-group">
+      <label for="f-password">Kata Sandi</label>
+      <input type="password" id="f-password" placeholder="Minimal 6 karakter" autocomplete="new-password" />
+    </div>
+    <div class="form-group">
+      <label for="f-wa">Nomor WhatsApp <span style="font-weight:400;color:var(--ink-3)">(opsional)</span></label>
+      <input type="text" id="f-wa" placeholder="08xxxxxxxxxx" inputmode="tel" autocomplete="tel" />
+      <p class="form-hint">Membantu guru memverifikasi identitas sebelum menyetujui pendaftaran — tidak wajib, tapi disarankan.</p>
+    </div>
+
+    <button id="btn-daftar">Daftar</button>
+    <div id="form-error"></div>
+    <p id="back-link">Sudah punya akun? <a href="index.html">Masuk di sini</a></p>
+  </div>
+
+  <div id="sukses-box">
+    <div class="icon">✅</div>
+    <h2>Pendaftaran Terkirim</h2>
+    <p>
+      Pendaftaranmu sudah kami terima dan sedang menunggu persetujuan guru.
+      Kamu bisa coba masuk lagi setelah disetujui — atau hubungi wali kelas
+      kalau sudah menunggu lebih dari 1-2 hari.
+    </p>
+    <a href="index.html">Kembali ke Halaman Masuk</a>
+  </div>
+</div>
+
+<!-- Sumber daftar nama siswa (sama seperti index.html, satu sumber kebenaran) -->
+<script src="pages/mpls/assets/mpls-data.js"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signOut, setPersistence, browserSessionPersistence }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBcpuD90Qk7z4Bdxkm5KhXrsKVzZWFc3_k",
+    authDomain:        "kelas-v-2026.firebaseapp.com",
+    projectId:         "kelas-v-2026",
+    storageBucket:     "kelas-v-2026.firebasestorage.app",
+    messagingSenderId: "918314271457",
+    appId:             "1:918314271457:web:04df91f8cd856be49dada0"
+  };
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // Isi dropdown nama anak dari MPLS_STUDENTS (sumber tunggal, sama seperti index.html)
+  (function isiDropdownAnak() {
+    const sel = document.getElementById("f-nama-anak");
+    (typeof MPLS_STUDENTS !== "undefined" ? MPLS_STUDENTS : []).forEach((nama) => {
+      const opt = document.createElement("option");
+      opt.value = nama;
+      opt.textContent = nama;
+      sel.appendChild(opt);
+    });
+  })();
+
+  const mapKodeError = {
+    "auth/email-already-in-use": "Email ini sudah terdaftar — coba masuk lewat halaman login, atau pakai email lain.",
+    "auth/invalid-email": "Format email tidak valid.",
+    "auth/weak-password": "Kata sandi terlalu pendek, minimal 6 karakter.",
+  };
+
+  window.doDaftarOrangTua = async function () {
+    const namaOrtu = document.getElementById("f-nama-ortu").value.trim();
+    const namaAnak = document.getElementById("f-nama-anak").value;
+    const email = document.getElementById("f-email").value.trim();
+    const password = document.getElementById("f-password").value;
+    const wa = document.getElementById("f-wa").value.trim();
+    const errEl = document.getElementById("form-error");
+    errEl.textContent = "";
+
+    if (!namaOrtu) { errEl.textContent = "Nama orang tua/wali wajib diisi."; return; }
+    if (!namaAnak) { errEl.textContent = "Pilih nama anak dari daftar."; return; }
+    if (!email) { errEl.textContent = "Email wajib diisi."; return; }
+    if (password.length < 6) { errEl.textContent = "Kata sandi minimal 6 karakter."; return; }
+
+    const btn = document.getElementById("btn-daftar");
+    btn.disabled = true;
+    errEl.textContent = "Mendaftarkan…";
+
+    try {
+      // Sesi pendaftar SENGAJA per-tab (sama seperti sesi siswa) — begitu
+      // pendaftaran ini selesai kita signOut() langsung di bawah, tapi kalau
+      // proses ini gagal di tengah jalan (mis. koneksi putus SETELAH akun
+      // Auth terbuat tapi SEBELUM signOut sempat jalan), sesi yang nyasar itu
+      // tidak akan ikut tersimpan lintas tab/lintas buka-tutup browser.
+      await setPersistence(auth, browserSessionPersistence);
+
+      // createUserWithEmailAndPassword LANGSUNG membuat akun Firebase Auth +
+      // otomatis sign-in sebagai akun itu (perilaku bawaan SDK) — makanya
+      // langkah setDoc() + signOut() di bawah WAJIB berurutan seperti ini.
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      // role "pending_orangtua" — BUKAN "orangtua" langsung. Aturan Firestore
+      // (lihat RANCANGAN-LOGIN-BARU.md §3.3) sengaja HANYA mengizinkan
+      // pendaftar menulis dokumennya sendiri dengan role ini persis, supaya
+      // tidak bisa self-approve jadi "orangtua" langsung dari sisi klien.
+      await setDoc(doc(db, "users", cred.user.uid), {
+        role: "pending_orangtua",
+        nama: namaOrtu,
+        anak: [namaAnak],
+        email: email,
+        wa: wa,
+        createdAt: serverTimestamp(),
+      });
+
+      await signOut(auth);
+
+      document.getElementById("form-box").style.display = "none";
+      document.getElementById("sukses-box").style.display = "block";
+    } catch (err) {
+      errEl.textContent = mapKodeError[err.code] || ("Gagal mendaftar: " + err.message);
+      btn.disabled = false;
+    }
+  };
+
+  document.getElementById("btn-daftar").addEventListener("click", () => window.doDaftarOrangTua());
+</script>
+
+</body>
+</html>

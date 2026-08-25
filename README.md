@@ -289,10 +289,47 @@ service cloud.firestore {
 
     // Data user: hanya bisa dibaca/ditulis oleh pemilik atau guru
     match /users/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
+      // v1.0 (Fase 4 — Persetujuan Orang Tua di admin.html): guru BUTUH baca
+      // (query) dokumen SIAPA SAJA di koleksi ini (bukan cuma dokumen sendiri)
+      // untuk menampilkan daftar pendaftaran yang menunggu persetujuan.
+      // SEBELUM baris "|| get(...).data.role == 'guru'" ini ditambahkan, guru
+      // TIDAK BISA melihat daftar itu sama sekali — Firestore menolak query
+      // "list" kalau aturan read tidak bisa dipastikan berlaku utk SEMUA hasil
+      // yang mungkin cocok, dan "request.auth.uid == uid" saja cuma pernah
+      // benar untuk 1 dokumen (milik sendiri), sehingga query manapun ke
+      // koleksi ini oleh siapa pun kembali kosong sebelum perbaikan ini.
+      allow read: if request.auth != null && (
+        request.auth.uid == uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru'
+      );
+
+      // v1.0 (Fase 4 login — pendaftaran mandiri orang tua): pendaftar HANYA
+      // boleh membuat dokumennya SENDIRI dengan role PERSIS "pending_orangtua"
+      // — tidak bisa langsung set role "guru"/"orangtua" sendiri (mencegah
+      // eskalasi privilese dari sisi klien). Field lain (nama/anak/email/wa)
+      // boleh apa saja, hanya "role" yang dikunci.
+      allow create: if request.auth != null && request.auth.uid == uid &&
+        request.resource.data.role == "pending_orangtua";
+
+      // Guru tetap bisa tulis/ubah dokumen SIAPA SAJA (approve/reject
+      // pendaftaran orang tua, atau buat akun guru/orangtua manual).
       allow write: if request.auth != null &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
     }
+
+    // Koleksi "siswa/{nisn}" (profil siswa + NISN, sejak migrasi Firestore —
+    // lihat RANCANGAN-MIGRASI-FIRESTORE.md) SENGAJA TIDAK PUNYA blok match di
+    // sini sama sekali. Koleksi ini HANYA pernah dibaca/ditulis lewat Apps
+    // Script pakai kredensial Service Account (IAM), yang MELEWATI Firestore
+    // Rules sepenuhnya (diatur oleh izin IAM, bukan Rules) — jadi Rules di
+    // file ini tidak relevan untuknya. TIDAK menambahkan blok match untuk
+    // "siswa" adalah PILIHAN YANG BENAR di sini (bukan lupa) — default
+    // Firestore Rules adalah TOLAK SEMUA untuk path tanpa match block, yang
+    // artinya TIDAK ADA client (browser siapa pun, termasuk yang sudah login)
+    // yang bisa baca koleksi ini langsung. Ini justru pelindung utama supaya
+    // NISN 25 siswa tidak pernah bisa dibaca borongan dari luar. JANGAN
+    // menambahkan blok match /siswa/{nisn} di sini kecuali benar-benar paham
+    // konsekuensinya — itu akan MEMBUKA celah baca borongan NISN semua siswa.
 
     // Pengumuman, modul, soal: semua login bisa baca; hanya guru yang bisa tulis.
     // PENTING: ditulis per-koleksi secara EKSPLISIT (bukan wildcard /{koleksi}/{id})

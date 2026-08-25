@@ -894,6 +894,46 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
 - [ ] Login guru/orang tua (tab satunya) masih berjalan normal seperti
       sebelumnya — regresi paling penting untuk dicek di sini
 
+### 33. Pendaftaran & Persetujuan Orang Tua (Fase 4 — `daftar-orangtua.html`,
+    `pages/admin.html` tab Persetujuan Orang Tua, aturan Firestore `users`)
+- [ ] **WAJIB dulu**: aturan Firestore di Firebase Console SUDAH ditempel versi
+      terbaru dari `README.md` (§🔒 Keamanan) — kalau belum, SEMUA uji di bawah
+      ini akan gagal dengan error izin ditolak
+- [ ] Buka `daftar-orangtua.html` → isi semua field wajib (nama ortu, pilih
+      anak, email, password) TANPA WhatsApp → submit → harus tampil layar
+      "Pendaftaran Terkirim"
+- [ ] Coba login pakai email+password yang baru saja didaftarkan → HARUS
+      tampil layar "Menunggu Persetujuan" (⏳), BUKAN masuk ke aplikasi
+- [ ] Buka `pages/admin.html` sebagai guru → tab "Persetujuan Orang Tua" →
+      pendaftaran tadi harus muncul di bagian "Menunggu Persetujuan" dengan
+      nama, nama anak, email benar, dan "WhatsApp: (tidak diisi)"
+- [ ] Klik "✓ Setujui" → pendaftaran pindah dari daftar "Menunggu" ke daftar
+      "Sudah Disetujui"
+- [ ] Login ulang pakai akun yang baru disetujui tadi → HARUS berhasil masuk
+      ke aplikasi seperti orang tua biasa (cuma lihat kartu Laporan Siswa &
+      Pengumuman, sesuai §32) — cek juga Laporan Siswa-nya menampilkan anak
+      yang benar (field `anak` di dokumen)
+- [ ] Daftar akun BARU LAGI (email lain) → di admin, klik "✕ Tolak" →
+      pendaftaran pindah ke daftar "Ditolak"
+- [ ] Coba login pakai akun yang ditolak tadi → harus tampil layar "Pendaftaran
+      Ditolak" (✕), BUKAN masuk aplikasi maupun layar "Menunggu"
+- [ ] **Uji regresi kritis eskalasi privilese**: buka DevTools Console di
+      halaman `daftar-orangtua.html` SEBELUM klik Daftar, coba modifikasi
+      request secara manual (atau baca kode) untuk mencoba kirim
+      `role: "guru"` atau `role: "orangtua"` langsung alih-alih
+      `"pending_orangtua"` → HARUS ditolak Firestore Rules (error permission-
+      denied), BUKAN berhasil membuat akun guru/orangtua langsung tanpa
+      persetujuan
+- [ ] **Uji regresi Laporan Siswa**: sebelum akun disetujui (masih
+      `pending_orangtua`), coba buka `pages/laporan-siswa.html` langsung lewat
+      URL (kalau ada cara login sebentar sebelum status-screen redirect
+      sempurna) → harus tetap ditolak, TIDAK boleh ikut lolos seperti bug lama
+      (lihat catatan perbaikan di `laporan-guard.js`)
+- [ ] Cabut akses orang tua yang sudah disetujui (tombol "Cabut Akses" di
+      daftar "Sudah Disetujui") → coba login lagi dengan akun itu → harus
+      tertolak (layar "Pendaftaran Ditolak"), TIDAK bisa masuk lagi sampai
+      disetujui ulang
+
 ### 32. Pembatasan Akses per Role (`index.html`, `role-guard.js`, 9 halaman
     induk, RANCANGAN-LOGIN-BARU.md §7 — siswa hanya Modul/Materi/Galeri/Uji
     Kemampuan, orang tua hanya Laporan Siswa/Pengumuman, guru semuanya)

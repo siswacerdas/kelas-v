@@ -220,19 +220,26 @@
     .btn-secondary:hover { background: var(--paper-3); }
 
     /* ── LOGIN SCREEN ───────────────────────── */
-    #login-screen {
+    #login-screen, #status-screen {
       position: fixed; inset: 0;
       background: var(--ink);
       display: flex; align-items: center; justify-content: center;
       z-index: 999;
       padding: 1.5rem;
     }
-    #login-box {
+    #login-box, .status-box {
       background: var(--paper);
       border-radius: 16px;
       padding: 2.5rem 2rem;
       width: 100%; max-width: 360px;
       text-align: center;
+    }
+    .status-box .status-icon { font-size: 40px; margin-bottom: 0.75rem; }
+    .status-box h2 { font-size: 20px; margin-bottom: 0.5rem; }
+    .status-box p { font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-bottom: 1.5rem; }
+    .status-box button {
+      width: 100%; padding: 10px; border: none; border-radius: 7px;
+      background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
     }
     #login-box h2 {
       font-family: 'Playfair Display', serif;
@@ -355,7 +362,28 @@
       </div>
       <button id="btn-login">Masuk</button>
       <div id="login-error"></div>
+      <p style="font-size:12px;margin-top:14px;color:var(--ink-3)">
+        Orang tua/wali belum punya akun?
+        <a href="daftar-orangtua.html" style="color:var(--accent);font-weight:600">Daftar di sini</a>
+      </p>
     </div>
+  </div>
+</div>
+
+<!-- Layar status akun orang tua yang BELUM/TIDAK bisa masuk (Fase 4,
+     RANCANGAN-LOGIN-BARU.md §2.3) — ditampilkan MENGGANTI #app sepenuhnya,
+     bukan cuma menyembunyikan sebagian menu, supaya tidak ada celah orang tua
+     yang belum disetujui melihat apa pun dari isi aplikasi. -->
+<div id="status-screen" class="hidden">
+  <div class="status-box">
+    <div id="status-icon" class="status-icon">⏳</div>
+    <h2 id="status-title">Menunggu Persetujuan</h2>
+    <p id="status-desc">
+      Pendaftaran akunmu sudah kami terima dan sedang menunggu persetujuan
+      guru. Silakan coba masuk lagi beberapa saat lagi, atau hubungi wali
+      kelas kalau sudah menunggu lebih dari 1-2 hari.
+    </p>
+    <button onclick="doLogout()">Keluar</button>
   </div>
 </div>
 
@@ -386,6 +414,7 @@
         <a href="pages/admin.html#pengumuman" class="btn btn-primary">+ Tambah Pengumuman</a>
         <a href="pages/admin.html#modul" class="btn btn-secondary">Upload Modul</a>
         <a href="pages/admin.html#soal" class="btn btn-secondary">Tambah Soal</a>
+        <a href="pages/admin.html#ortu" class="btn btn-secondary">👪 Persetujuan Orang Tua</a>
         <a href="pages/admin.html" class="btn btn-secondary">Kelola Konten</a>
       </div>
     </div>
@@ -667,6 +696,7 @@
         return;
       }
       document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('status-screen').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
       document.getElementById('display-name').textContent = namaSiswa;
       // role siswa: #admin-panel, #kelas-panel, #card-laporan-siswa TETAP
@@ -677,14 +707,36 @@
     }
 
     if (user) {
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('app').classList.remove('hidden');
-
       // Ambil data user dari Firestore
       const userSnap = await getDoc(doc(db, 'users', user.uid));
       const userData = userSnap.exists() ? userSnap.data() : {};
       const namaUser = userData.nama || user.email;
       const role     = userData.role || 'siswa';
+
+      // Akun orang tua yang BELUM/TIDAK disetujui guru — tampilkan layar status,
+      // JANGAN buka #app sama sekali (lihat komentar di elemen #status-screen).
+      if (role === 'pending_orangtua' || role === 'rejected') {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app').classList.add('hidden');
+        const statusScreen = document.getElementById('status-screen');
+        statusScreen.classList.remove('hidden');
+        if (role === 'rejected') {
+          document.getElementById('status-icon').textContent = '✕';
+          document.getElementById('status-title').textContent = 'Pendaftaran Ditolak';
+          document.getElementById('status-desc').textContent =
+            'Pendaftaran akun orang tua/wali ini belum bisa disetujui. Silakan hubungi wali kelas untuk info lebih lanjut, atau daftar ulang lewat halaman pendaftaran dengan data yang benar.';
+        } else {
+          document.getElementById('status-icon').textContent = '⏳';
+          document.getElementById('status-title').textContent = 'Menunggu Persetujuan';
+          document.getElementById('status-desc').textContent =
+            'Pendaftaran akunmu sudah kami terima dan sedang menunggu persetujuan guru. Silakan coba masuk lagi beberapa saat lagi, atau hubungi wali kelas kalau sudah menunggu lebih dari 1-2 hari.';
+        }
+        return;
+      }
+
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('status-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
 
       document.getElementById('display-name').textContent = namaUser;
 
@@ -706,6 +758,7 @@
       loadPengumuman();
     } else {
       document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('status-screen').classList.add('hidden');
       document.getElementById('app').classList.add('hidden');
     }
   });
