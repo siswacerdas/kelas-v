@@ -149,6 +149,7 @@
       <button class="tab-btn" data-tab="modul" onclick="switchTab('modul')">📚 Modul</button>
       <button class="tab-btn" data-tab="materi" onclick="switchTab('materi')">📖 Materi Ajar</button>
       <button class="tab-btn" data-tab="soal" onclick="switchTab('soal')">💪 Uji Kemampuan</button>
+      <button class="tab-btn" data-tab="ortu" onclick="switchTab('ortu')">👪 Persetujuan Orang Tua</button>
       <button class="tab-btn" data-tab="impor" onclick="switchTab('impor')">📥 Impor Massal</button>
     </div>
 
@@ -384,6 +385,27 @@
       <div id="list-soal"><div class="empty-state">Memuat…</div></div>
     </div>
 
+    <!-- ══════════════ TAB: PERSETUJUAN ORANG TUA (Fase 4, RANCANGAN-LOGIN-BARU.md §2.3) ══════════════ -->
+    <div id="tab-ortu" class="tab-panel">
+      <div class="panel-card">
+        <h2>Pendaftaran Menunggu Persetujuan</h2>
+        <p class="hint" style="margin-bottom:1rem">
+          Periksa nama anak & nomor WhatsApp (kalau diisi) sebelum menyetujui —
+          form pendaftaran cuma minta pilih nama anak dari daftar, jadi
+          verifikasi identitas sesungguhnya ada di keputusan menyetujui ini.
+        </p>
+        <div id="list-ortu-pending"><div class="empty-state">Memuat…</div></div>
+      </div>
+      <div class="panel-card">
+        <h2>Sudah Disetujui</h2>
+        <div id="list-ortu-disetujui"><div class="empty-state">Memuat…</div></div>
+      </div>
+      <div class="panel-card">
+        <h2>Ditolak</h2>
+        <div id="list-ortu-ditolak"><div class="empty-state">Memuat…</div></div>
+      </div>
+    </div>
+
     <!-- ══════════════ TAB: IMPOR MASSAL ══════════════ -->
     <div id="tab-impor" class="tab-panel">
       <div class="panel-card">
@@ -429,7 +451,7 @@
 <script src="materi/assets/tp-kko-index.js"></script>
 <script type="module" src="../assets/js/guru-guard.js"></script>
 <script type="module">
-  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, orderBy, serverTimestamp, writeBatch }
+  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, serverTimestamp, writeBatch }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
@@ -1203,6 +1225,97 @@
     }
   };
 
+  // ═══════════════════════ PERSETUJUAN ORANG TUA (Fase 4) ═══════════════════════
+  // Koleksi "users" dibaca LANGSUNG lewat Firestore client SDK (bukan lewat Apps
+  // Script) — konsisten dengan cara admin.html sudah membaca pengumuman/modul/dst,
+  // dan diizinkan aturan Firestore karena yang membaca di sini akun guru (lihat
+  // README.md aturan "users": guru boleh baca/tulis dokumen siapa saja).
+  async function loadOrtuPending() {
+    const wrap = document.getElementById("list-ortu-pending");
+    try {
+      const snap = await getDocs(query(collection(db, "users"), where("role", "==", "pending_orangtua")));
+      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Tidak ada pendaftaran yang menunggu.</div>'; return; }
+      wrap.innerHTML = "";
+      snap.forEach((d) => {
+        const data = d.data();
+        const tgl = data.createdAt?.toDate?.()?.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }) || "";
+        const anak = (data.anak || []).join(", ");
+        const item = document.createElement("div");
+        item.className = "list-item";
+        item.innerHTML = `
+          <div class="li-body">
+            <div class="li-meta">Daftar: ${tgl}</div>
+            <div class="li-title">${escHtml(data.nama || "-")} <span style="font-weight:400;color:var(--ink-3)">(orang tua/wali dari ${escHtml(anak || "-")})</span></div>
+            <div class="li-desc">
+              Email: ${escHtml(data.email || "-")}${data.wa ? " · WhatsApp: " + escHtml(data.wa) : " · WhatsApp: (tidak diisi)"}
+            </div>
+          </div>
+          <div class="li-actions">
+            <button class="btn btn-primary btn-sm" onclick="setujuiOrtu('${d.id}')">✓ Setujui</button>
+            <button class="btn btn-danger btn-sm" onclick="tolakOrtu('${d.id}')">✕ Tolak</button>
+          </div>`;
+        wrap.appendChild(item);
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  async function loadOrtuByRole(role, wrapId, emptyMsg) {
+    const wrap = document.getElementById(wrapId);
+    try {
+      const snap = await getDocs(query(collection(db, "users"), where("role", "==", role)));
+      if (snap.empty) { wrap.innerHTML = `<div class="empty-state">${emptyMsg}</div>`; return; }
+      wrap.innerHTML = "";
+      snap.forEach((d) => {
+        const data = d.data();
+        const anak = (data.anak || []).join(", ");
+        const item = document.createElement("div");
+        item.className = "list-item";
+        item.innerHTML = `
+          <div class="li-body">
+            <div class="li-title">${escHtml(data.nama || "-")} <span style="font-weight:400;color:var(--ink-3)">(orang tua/wali dari ${escHtml(anak || "-")})</span></div>
+            <div class="li-desc">Email: ${escHtml(data.email || "-")}</div>
+          </div>
+          <div class="li-actions">
+            ${role === "orangtua" ? `<button class="btn btn-danger btn-sm" onclick="tolakOrtu('${d.id}')">Cabut Akses</button>` : `<button class="btn btn-secondary btn-sm" onclick="setujuiOrtu('${d.id}')">Setujui Ulang</button>`}
+          </div>`;
+        wrap.appendChild(item);
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  function loadOrtuDisetujui() { return loadOrtuByRole("orangtua", "list-ortu-disetujui", "Belum ada yang disetujui."); }
+  function loadOrtuDitolak()   { return loadOrtuByRole("rejected", "list-ortu-ditolak", "Belum ada yang ditolak."); }
+
+  function loadSemuaOrtu() {
+    loadOrtuPending();
+    loadOrtuDisetujui();
+    loadOrtuDitolak();
+  }
+
+  window.setujuiOrtu = async function (uid) {
+    if (!confirm("Setujui pendaftaran ini? Orang tua akan langsung bisa login setelah ini.")) return;
+    try {
+      await updateDoc(doc(db, "users", uid), { role: "orangtua" });
+      loadSemuaOrtu();
+    } catch (err) {
+      alert("Gagal menyetujui: " + err.message);
+    }
+  };
+
+  window.tolakOrtu = async function (uid) {
+    if (!confirm("Tolak/cabut akses pendaftaran ini? Orang tua tidak akan bisa masuk sampai didaftarkan ulang & disetujui lagi.")) return;
+    try {
+      await updateDoc(doc(db, "users", uid), { role: "rejected" });
+      loadSemuaOrtu();
+    } catch (err) {
+      alert("Gagal menolak: " + err.message);
+    }
+  };
+
   // ═══════════════════════ TABS & UTIL ═══════════════════════
   window.switchTab = function (name) {
     document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
@@ -1221,13 +1334,14 @@
     loadModul();
     loadMateri();
     loadSoal();
+    loadSemuaOrtu();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../index.html"));
 
-  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #materi / #soal
+  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #materi / #soal / #ortu
   window.addEventListener("load", () => {
     const hash = window.location.hash.replace("#", "");
-    if (["pengumuman", "modul", "materi", "soal", "impor"].includes(hash)) switchTab(hash);
+    if (["pengumuman", "modul", "materi", "soal", "ortu", "impor"].includes(hash)) switchTab(hash);
   });
 </script>
 </body>
