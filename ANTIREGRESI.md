@@ -933,6 +933,16 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
       daftar "Sudah Disetujui") → coba login lagi dengan akun itu → harus
       tertolak (layar "Pendaftaran Ditolak"), TIDAK bisa masuk lagi sampai
       disetujui ulang
+- [ ] **Uji regresi kritis — akun nyangkut** (bug nyata yang pernah terjadi):
+      matikan sementara aturan Firestore (atau uji di kondisi rules belum ter-
+      publish) supaya `setDoc()` gagal SETELAH `createUserWithEmailAndPassword`
+      berhasil → harus muncul pesan error yang jelas (bukan pesan mentah) → coba
+      daftar LAGI dengan email yang SAMA PERSIS → HARUS BISA (bukan muncul
+      "email sudah terdaftar"), karena `deleteUser(cred.user)` di blok rollback
+      harus sudah membersihkan akun Auth yang nyangkut dari percobaan pertama.
+      Kalau regresi ini muncul lagi (percobaan kedua selalu gagal "email sudah
+      terdaftar" walau percobaan pertama gagal), cek lagi apakah blok
+      `try/catch` rollback di `daftar-orangtua.html` masih ada
 
 ### 32. Pembatasan Akses per Role (`index.html`, `role-guard.js`, 9 halaman
     induk, RANCANGAN-LOGIN-BARU.md §7 — siswa hanya Modul/Materi/Galeri/Uji

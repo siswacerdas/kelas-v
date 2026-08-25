@@ -111,7 +111,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signOut, setPersistence, browserSessionPersistence }
+  import { getAuth, createUserWithEmailAndPassword, deleteUser, signOut, setPersistence, browserSessionPersistence }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -143,6 +143,7 @@
     "auth/email-already-in-use": "Email ini sudah terdaftar — coba masuk lewat halaman login, atau pakai email lain.",
     "auth/invalid-email": "Format email tidak valid.",
     "auth/weak-password": "Kata sandi terlalu pendek, minimal 6 karakter.",
+    "permission-denied": "Pendaftaran ditolak sistem (izin database belum siap) — coba lagi sebentar lagi, atau hubungi wali kelas kalau terus terjadi.",
   };
 
   window.doDaftarOrangTua = async function () {
@@ -176,18 +177,34 @@
       // langkah setDoc() + signOut() di bawah WAJIB berurutan seperti ini.
       const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-      // role "pending_orangtua" — BUKAN "orangtua" langsung. Aturan Firestore
-      // (lihat RANCANGAN-LOGIN-BARU.md §3.3) sengaja HANYA mengizinkan
-      // pendaftar menulis dokumennya sendiri dengan role ini persis, supaya
-      // tidak bisa self-approve jadi "orangtua" langsung dari sisi klien.
-      await setDoc(doc(db, "users", cred.user.uid), {
-        role: "pending_orangtua",
-        nama: namaOrtu,
-        anak: [namaAnak],
-        email: email,
-        wa: wa,
-        createdAt: serverTimestamp(),
-      });
+      try {
+        // role "pending_orangtua" — BUKAN "orangtua" langsung. Aturan Firestore
+        // (lihat RANCANGAN-LOGIN-BARU.md §3.3) sengaja HANYA mengizinkan
+        // pendaftar menulis dokumennya sendiri dengan role ini persis, supaya
+        // tidak bisa self-approve jadi "orangtua" langsung dari sisi klien.
+        await setDoc(doc(db, "users", cred.user.uid), {
+          role: "pending_orangtua",
+          nama: namaOrtu,
+          anak: [namaAnak],
+          email: email,
+          wa: wa,
+          createdAt: serverTimestamp(),
+        });
+      } catch (docErr) {
+        // v1.1: kalau setDoc GAGAL (mis. aturan Firestore belum ter-publish),
+        // akun Auth di atas SUDAH TERLANJUR terbuat — tanpa langkah ini, akun
+        // itu akan "nyangkut" tanpa data sama sekali (tidak bisa login normal,
+        // TIDAK BISA didaftar ulang pakai email yang sama karena Firebase
+        // sudah menganggap email itu terpakai). Ini persis bug yang dilaporkan
+        // Arif: percobaan pertama gagal karena izin Firestore, percobaan kedua
+        // gagal lagi dengan "email sudah terdaftar" karena akun nyangkut dari
+        // percobaan pertama. Perbaikannya: begitu setDoc gagal, HAPUS LAGI akun
+        // Auth yang baru saja dibuat (masih valid dihapus sendiri karena baru
+        // saja sign-in sebagai akun itu), supaya pendaftar bisa coba lagi
+        // dengan email yang sama tanpa harus dibersihkan manual oleh guru.
+        try { await deleteUser(cred.user); } catch (rollbackErr) { /* usaha terbaik saja, tetap lempar error asli di bawah */ }
+        throw docErr;
+      }
 
       await signOut(auth);
 
