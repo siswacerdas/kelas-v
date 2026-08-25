@@ -1,1 +1,573 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simbol "=" sebagai Relasi Kesetaraan — Matematika Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+.important-banner{background:#fdf0d5;border:2px solid #e8c27a;border-radius:14px;padding:16px 20px;margin:20px auto 0;max-width:540px;font-size:13.5px;color:#7a5a12;text-align:left;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+input.ans-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);background:#fffef9;}
+input.ans-input:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.field-row{margin-bottom:14px;}
+.field-row label{display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field-hint{font-size:12px;color:var(--ink-faint);margin-top:4px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
+.page{display:none;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+.card-preview{
+  background:#fffefb; border:2px dashed var(--gold); border-radius:12px; padding:22px 24px;
+  position:relative; transform:rotate(-0.6deg); box-shadow:0 6px 18px rgba(43,32,19,.10); margin-top:16px;
+}
+.card-preview::before{content:'⚖️';position:absolute;top:-14px;left:22px;font-size:22px;transform:rotate(12deg);}
+.card-preview h4{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--gold-d);margin-bottom:10px;}
+.card-preview .cp-section{margin-bottom:12px;font-size:13.5px;line-height:1.7;}
+.card-preview .cp-section b{color:var(--nav);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.card-preview .cp-empty{color:var(--ink-faint);font-style:italic;}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.tip-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12.5px;}
+.tip-card .ti{font-size:18px;margin-bottom:4px;}
+@media (max-width:560px){.tip-grid{grid-template-columns:1fr;}}
+.check-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13.5px;}
+.check-item input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
+.contoh-soal{background:#fff;border-left:4px solid var(--nav-l);border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:13.5px;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Simbol "=" sebagai Relasi Kesetaraan</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
+
+<div id="stepper" class="stepper"></div>
+
+<div class="wrap">
+
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> Aljabar TP1 — Simbol "=" sebagai Relasi Kesetaraan (Remediasi dengan Alat Peraga Timbangan). Diambil dari <code>Dokumen2_TP_Kelas5_Matematika.docx</code> dan <code>Scaffolding_Kelas5_Matematika_Aljabar.docx</code> — sesi ini tidak memiliki akses ke <code>pages/materi/matematika/</code>, mohon dicek konsistensi bila folder materi resmi sudah tersedia.</li>
+<li><b>⚠ Status khusus:</b> TP ini berstatus REMEDIASI WAJIB di sumber (bukan pengayaan opsional) — Dokumen 1 menandai miskonsepsi "=" sebagai penanda hasil (bukan relasi dua arah) sebagai sesuatu yang diwariskan antargenerasi guru, bukan kesalahan siswa individual. Framing ke siswa TIDAK memakai istilah "remediasi" (istilah teknis), melainkan disampaikan sebagai "bagian yang penting untuk dikuasai benar-benar sebelum lanjut".</li>
+<li><b>RPM v3 belum tersedia</b> — Aktivitas Inti Siswa diterjemahkan dari kolom "Aktivitas" Scaffolding (timbangan/balance fisik). Elemen PAK tidak dimasukkan karena belum ada RPM yang mengisinya.</li>
+<li><b>Dokumen 1 merekomendasikan sesi penyegaran konsep "=" bagi GURU PENGAMPU sendiri</b>, di luar cakupan modul siswa ini — dicatat sebagai tindak lanjut administratif terpisah, mohon dipertimbangkan sebagai agenda internal.</li>
+<li><b>Produk Belajar:</b> "Kartu Kesetaraanku" — kumpulan contoh kalimat seimbang buatan siswa sendiri, dibangun bertahap dari Tangga 1 (angka penuh tanpa unknown) sampai Inti (posisi kotak kosong bervariasi).</li>
+<li><b>Dimensi Profil Lulusan:</b> Penalaran Kritis (menjelaskan alasan kesetaraan, bukan hafalan posisi), Kemandirian (membuat contoh sendiri), Keimanan &amp; Ketaqwaan (konsep keseimbangan/mizan yang juga diajarkan dalam Islam — 1-2 titik saja, tidak berlebihan).</li>
+<li><b>WAJIB diwaspadai</b> (sesuai catatan sumber): siswa yang tampak "lulus" karena kebetulan seluruh soal latihan menaruh kotak kosong di kanan — pastikan asesmen benar-benar mencampur posisi. Jika siswa masih gagal pada posisi kiri/tengah, TP2 (Notasi Simbolik) sebaiknya ditunda. Beberapa soal kuis dirancang khusus mencampur posisi untuk mengecek ini.</li>
+<li>Asesmen Awal bersifat diagnostik murni (tidak dinilai). Latihan tiap subunit sudah divariasikan (PG/BS ≤50%, minimal 1 uraian, minimal 1 penerapan), sesuai Buku Saku Bagian E.4e. Profil kelas: kemampuan akademik beragam (default), karakter kelas belum diketahui guru → pemantik dan instruksi dibuat lebih eksplisit.</li>
+</ul>
+</details>
+
+<div class="cover">
+  <span class="kicker">✦ Matematika · Kelas 5 · Elemen Aljabar</span>
+  <h1>Simbol "=" sebagai Relasi Kesetaraan</h1>
+  <p class="lede">Bismillah, mari kita mulai elemen baru: Aljabar! Sebelum masuk ke soal yang lebih rumit, kita akan benar-benar memahami dulu apa arti sesungguhnya dari tanda "=" — sesuatu yang mungkin selama ini kamu pahami berbeda dari makna aslinya.</p>
+  <div class="cover-meta">
+    <span>⚖️ 3 bagian belajar</span>
+    <span>🗂️ 1 Kartu Kesetaraan untuk dibuat</span>
+    <span>🔑 Fondasi penting untuk Aljabar</span>
+  </div>
+  <div class="important-banner">💡 <strong>Penting:</strong> Bagian ini adalah fondasi yang akan terus dipakai di hampir seluruh Elemen Aljabar. Luangkan waktu ekstra untuk benar-benar memahaminya, jangan buru-buru — tidak apa-apa kalau butuh waktu lebih lama dari biasanya.</div>
+</div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Selama ini, mungkin kamu terbiasa melihat tanda "=" sebagai tanda "jawabannya adalah..." — misalnya 3+4=7, dan jawabannya selalu ditulis di sebelah kanan. Ini WAJAR, banyak orang berpikir begitu.</p>
+  <p>Tapi sebenarnya, tanda "=" berarti KEDUA SISI memiliki nilai yang SAMA — seperti timbangan yang seimbang. Ini pemahaman yang lebih dalam dan akan sangat membantu di bagian Aljabar berikutnya.</p>
+  <div class="produk-banner">
+    <div class="icon">⚖️</div>
+    <div>
+      <strong>Karya yang akan kamu buat</strong>
+      Kamu akan menyusun <b>Kartu Kesetaraanku</b> — kumpulan contoh kalimat matematika seimbang buatanmu sendiri, sebagai bukti kamu benar-benar memahami tanda "=" sebagai kesetaraan dua sisi.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu dan sejujurnya. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SUBUNIT 1 — menyeimbangkan beban tanpa unknown -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Bagian 1 dari 3 · Materi Pintu Masuk</div><h2 style="margin-bottom:0;">Menyeimbangkan Timbangan</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Bayangkan timbangan dua lengan. Kita mulai dari sini — belum ada kotak kosong sama sekali.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Pernahkah kamu bermain jungkat-jungkit, atau melihat timbangan buah di pasar? Apa yang terjadi kalau berat di kedua sisi sama?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Seimbang Berarti Sama Nilai</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Kalau kamu taruh 3 kelereng di sisi kiri timbangan dan 3 kelereng di sisi kanan, timbangan akan SEIMBANG — kedua sisi punya nilai yang SAMA. Ini inti dari makna tanda "=".</p>
+    <div class="contoh-soal">Islam mengajarkan pentingnya keseimbangan (mizan) dalam segala hal — timbangan yang adil di kedua sisi adalah contoh nyata dari nilai keseimbangan itu.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Bayangkan (atau coba dengan benda nyata di rumahmu) timbangan dua sisi.</div>
+    <div class="field-row"><label>Sisi kiri berisi 5+2 kelereng. Berapa kelereng yang harus ada di sisi kanan agar seimbang?</label><input class="ans-input" type="text" placeholder="..."></div>
+    <div class="field-row"><label>Buat contoh sendiri: dua kumpulan angka berbeda yang jika dijumlahkan hasilnya SAMA</label><textarea class="ans" placeholder="Contoh: sisi kiri 4+3, sisi kanan 5+2, karena keduanya = 7"></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🗂️ Entri Pertama Kartu Kesetaraanku</div>
+    <div class="field-row"><label>Contoh Kalimat Seimbang Buatanku</label><textarea class="ans" id="kesetaraan1" placeholder="Contoh saya: 4+3 seimbang dengan 5+2, karena keduanya bernilai 7"></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apakah pemahamanmu tentang tanda "=" berubah setelah ini? Ceritakan.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SUBUNIT 2 — menerjemahkan ke kalimat matematika -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num">2</span>
+    <div><div class="block-eyebrow">Bagian 2 dari 3</div><h2 style="margin-bottom:0;">Menuliskan Kesetaraan sebagai Kalimat Matematika</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang ubah situasi timbangan seimbang menjadi kalimat matematika, masih TANPA kotak kosong.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau timbangan sudah seimbang, bagaimana caramu menuliskan situasi itu dalam bentuk angka?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Operasi Bisa Ada di Kedua Sisi</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Timbangan seimbang antara 3+2 di kiri dan 4+1 di kanan ditulis: <strong>3+2 = 4+1</strong>. Perhatikan: operasi bisa ada di KEDUA sisi, bukan cuma satu sisi — ini yang membedakan pemahaman kesetaraan dari sekadar "menghasilkan".</p>
+    <div class="contoh-soal">Cek: 3+2=5 dan 4+1=5. Karena keduanya bernilai 5, kalimat ini benar dan seimbang.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Tuliskan 2 kalimat matematika seimbang dengan operasi di KEDUA sisi.</div>
+    <div class="field-row"><label>Kalimat Seimbang 1</label><input class="ans-input" type="text" placeholder="Contoh: 6-2 = 3+1"></div>
+    <div class="field-row"><label>Kalimat Seimbang 2</label><input class="ans-input" type="text" placeholder="..."></div>
+    <div class="field-row"><label>Jelaskan mengapa kedua kalimatmu benar-benar seimbang</label><textarea class="ans" placeholder="Karena..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🗂️ Tambahan untuk Kartu Kesetaraanku</div>
+    <div class="field-row"><label>Cara Menulis Kalimat Seimbang</label><textarea class="ans" id="kesetaraan2" placeholder="Untuk membuat kalimat matematika yang seimbang, aku akan..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz2"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang berubah dari pemahamanmu setelah Bagian 2 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apakah kamu sudah percaya diri membuat kalimat seimbang sendiri?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<!-- SUBUNIT 3 — PERTEMUAN INTI: posisi bervariasi -->
+<section class="block" id="subunit3">
+  <div class="subunit-head"><span class="badge-num badge-inti">3</span>
+    <div><div class="block-eyebrow">Bagian 3 dari 3 · Pertemuan Inti — Saatnya Menerapkan!</div><h2 style="margin-bottom:0;">Kotak Kosong di Posisi Manapun</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang saatnya masuk ke kalimat dengan SATU kotak kosong, di posisi yang BERBEDA-BEDA (kiri, kanan, tengah).</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Selama ini, mungkin kamu terbiasa melihat tanda "=" di akhir soal, sebelum jawaban. Menurutmu, apakah tanda "=" SELALU berarti "jawabannya adalah..."?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Bayangkan Lagi Timbangannya</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Kalau kamu masih ragu, bayangkan lagi timbangannya! Kotak kosong bisa berada di sisi KIRI, KANAN, atau TENGAH — caranya tetap sama: cari angka yang membuat kedua sisi seimbang.</p>
+    <div class="contoh-soal">4+__=7 → __=3. __+3=8 → __=5. 6=__+2 → __=4 (perhatikan, kotak di sini ada di sisi KANAN dari tanda "=").</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Selesaikan lima kalimat berikut. Untuk dua soal, jelaskan mengapa jawabanmu membuat kedua sisi seimbang.</div>
+    <div class="field-row"><label>Selesaikan: 5+__=9; __+6=10; 8=__+3; 12=7+__; __-4=5</label><textarea class="ans" placeholder="5+__=9 -> __=4, karena..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">🗂️ Tuntaskan Kartu Kesetaraanku</div>
+    <div class="act-desc">Tuliskan satu contoh kalimat dengan kotak kosong di posisi KIRI atau TENGAH (bukan kanan), lalu rangkum kartumu.</div>
+    <div class="field-row"><label>Contoh Kalimat dengan Kotak Kosong di Posisi Kiri/Tengah</label><textarea class="ans" id="kesetaraan3" placeholder="Contoh saya: __+5=12, jawabannya __=7, karena..."></textarea></div>
+    <button class="mini-btn" onclick="showKartu()">Susun Kartu Kesetaraanku</button>
+    <div class="card-preview hidden" id="kartuPreview"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">💡 Tips Supaya Tidak Terjebak Kebiasaan Lama</div>
+    <div class="tip-grid">
+      <div class="tip-card"><div class="ti">⚖️</div>Bayangkan timbangan kalau masih ragu — kedua sisi harus SAMA nilainya.</div>
+      <div class="tip-card"><div class="ti">🔄</div>Kotak kosong bisa di mana saja — kiri, kanan, atau tengah. Caranya tetap sama.</div>
+      <div class="tip-card"><div class="ti">✅</div>Setelah dapat jawaban, cek lagi: apakah kedua sisi benar-benar sama nilainya?</div>
+      <div class="tip-card"><div class="ti">😌</div>Wajar kalau perlu waktu lebih lama untuk posisi yang tidak biasa — pelan-pelan saja.</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✅ Kesiapanku</div>
+    <div class="check-item"><input type="checkbox" id="chk1"><label for="chk1">Aku memahami tanda "=" sebagai kesetaraan dua sisi, bukan sekadar "menghasilkan"</label></div>
+    <div class="check-item"><input type="checkbox" id="chk2"><label for="chk2">Aku bisa menyelesaikan kotak kosong di posisi kiri, kanan, maupun tengah</label></div>
+    <div class="check-item"><input type="checkbox" id="chk3"><label for="chk3">Kartu Kesetaraanku sudah selesai kususun</label></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Latihan Akhir Unit</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Unit</h3>
+  <div class="reflect-q"><label>Melihat kembali perjalananmu di unit ini, apa yang paling berubah dari pemahamanmu?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apakah kamu sudah siap lanjut ke bagian berikutnya (mencari nilai yang belum diketahui)?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, unit ini selesai! Tuliskan satu hal yang kamu syukuri dari belajar hari ini.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(5)">Lanjut →</button></div>
+</div><!-- /page 4 -->
+
+<div class="page" data-page="5">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Relasi kesetaraan</dt><dd>Hubungan dua arah yang menunjukkan bahwa dua hal memiliki nilai yang sama, bukan hasil yang mengalir dari satu arah.</dd>
+    <dt>Kotak kosong (simbol belum-diketahui)</dt><dd>Tanda dalam kalimat matematika yang mewakili nilai yang harus dicari.</dd>
+  </dl>
+</section>
+<div class="closing">Selamat! Kamu sudah menuntaskan fondasi penting Elemen Aljabar. Pemahaman ini akan terus dipakai di unit-unit Aljabar berikutnya. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(4)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 5 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+const STORAGE_KEY = 'modulProgress:mtk-kesetaraan-tp1';
+const TOTAL_PAGES = 6;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Inti','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, input.ans-input');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+function wireCheckPersistence(){
+  const state = loadState();
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(state.check && state.check[el.id] !== undefined){ el.checked = state.check[el.id]; }
+    el.addEventListener('change', ()=>{
+      saveState(s=>{ s.check = s.check || {}; s.check[el.id] = el.checked; });
+    });
+  });
+}
+
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')" style="margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;">Lihat contoh jawaban</button><div class="key-box" style="display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SUBUNIT 3: rangkum Kartu Kesetaraan ============ */
+function showKartu(){
+  const k1 = document.getElementById('kesetaraan1').value;
+  const k2 = document.getElementById('kesetaraan2').value;
+  const k3 = document.getElementById('kesetaraan3').value;
+
+  const box = document.getElementById('kartuPreview');
+  box.innerHTML = `
+    <h4>Kartu Kesetaraanku</h4>
+    <div class="cp-section"><b>Kalimat Seimbang Angka Penuh (Bagian 1)</b>${k1 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Kalimat Seimbang dengan Operasi Dua Sisi (Bagian 2)</b>${k2 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Kalimat dengan Kotak Kosong Posisi Kiri/Tengah (Bagian 3)</b>${k3 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+  `;
+  box.classList.remove('hidden');
+  updateProgress();
+}
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'5 + 3 = ...', options:['8','7','9'], correct:0},
+  {type:'bs', text:'Tanda "=" berarti "menghasilkan", jadi jawabannya harus selalu ditulis di sebelah kanan tanda itu.', correct:1},
+  {type:'essay', text:'Menurutmu, apa arti tanda "=" dalam sebuah kalimat matematika? Jawab sejujurnya, tidak akan dinilai.'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'mcq', text:'Kalau sisi kiri timbangan berisi 4 kelereng, berapa kelereng di sisi kanan supaya seimbang?', options:['4','lebih dari 4','kurang dari 4'], correct:0},
+  {type:'bs', text:'Timbangan dikatakan seimbang kalau berat di kedua sisi SAMA, bukan cuma terlihat simetris bentuknya.', correct:0},
+  {type:'essay', text:'Kalau sisi kiri timbangan berisi 6+1 kelereng, berapa total kelereng di sisi kanan supaya seimbang?', tag:'isian'},
+  {type:'essay', text:'Jelaskan dengan kata-katamu: apa artinya "seimbang" pada sebuah timbangan?', tag:'uraian', key:'Contoh: seimbang berarti kedua sisi timbangan memiliki BERAT (nilai) yang SAMA, meskipun jumlah benda di tiap sisi bisa berbeda-beda susunannya.'},
+  {type:'essay', text:'Ibu punya 8 apel di keranjang kiri. Berapa apel yang harus ada di keranjang kanan supaya timbangan seimbang, jika keranjang kanan berisi apel dan 3 jeruk yang totalnya harus 8?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz2', [
+  {type:'mcq', text:'Manakah kalimat matematika yang BENAR (seimbang)?', options:['6-2 = 3+1','6-2 = 5+1','6-2 = 2+1'], correct:0},
+  {type:'bs', text:'Kalimat matematika seimbang hanya boleh punya operasi di satu sisi saja, tidak boleh di kedua sisi sekaligus.', correct:1},
+  {type:'essay', text:'Tuliskan kalimat matematika seimbang dari situasi: sisi kiri 5+4, sisi kanan harus bernilai sama.', tag:'isian'},
+  {type:'essay', text:'Jelaskan kenapa 3+2=4+1 dianggap kalimat yang "benar" atau "seimbang".', tag:'uraian', key:'Contoh: karena 3+2=5 dan 4+1=5, kedua sisi memiliki nilai yang sama persis, sehingga tanda "=" di antara keduanya benar menunjukkan kesetaraan.'},
+  {type:'essay', text:'Buatlah kalimat matematika seimbang sendiri yang melibatkan pengurangan di kedua sisi.', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Nilai __ pada kalimat __+3=8 adalah...', options:['5','11','3'], correct:0},
+  {type:'bs', text:'Kotak kosong dalam kalimat matematika HARUS selalu berada di sisi kanan tanda "=", tidak bisa di posisi lain.', correct:1},
+  {type:'essay', text:'Selesaikan tiga kalimat berikut, posisi kotak kosongnya bervariasi: 7=__+2; __-5=6; 9+__=15.', tag:'penerapan'},
+  {type:'essay', text:'Ceritakan: apa perbedaan pemahamanmu tentang tanda "=" SEBELUM dan SESUDAH mempelajari unit ini?', tag:'uraian'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 12;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  if(!document.getElementById('kartuPreview').classList.contains('hidden')) done++;
+  document.querySelectorAll('.check-item input:checked').forEach(()=>done++);
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+wireCheckPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+wireCheckPersistence();
+updateProgress();
+</script>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
