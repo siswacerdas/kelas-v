@@ -2602,5 +2602,35 @@ window.MATERI_INDEX = [
     ringkasan: "Memperluas penyajian dan memastikan seluruh siswa memiliki data yang cukup untuk mini proyek lintas mata pelajaran.",
     status: "selesai",
     file: "pancasila/bti-tp1/05-memperluas-dan-melengkapi-data-keberagaman-kelas.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🔍",
+    elemen: "Bhinneka Tunggal Ika",
+    tp: "bti-tp3",
+    tema: "Bhinneka Tunggal Ika · Rasa Ingin Tahu Sejarah Lokal",
+    urutan: 1,
+    judul: "Menyadari Bahwa Setiap Tempat Punya Sejarahnya Sendiri",
+    ringkasan: "Mengenali bahwa setiap tempat, termasuk tempat tinggal sendiri, punya sejarah/cerita masa lalu, sebagai gagasan umum yang netral.",
+    status: "selesai",
+    file: "pancasila/bti-tp3/01-menyadari-bahwa-setiap-tempat-punya-sejarahnya-sendiri.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🔍",
+    elemen: "Bhinneka Tunggal Ika",
+    tp: "bti-tp3",
+    tema: "Bhinneka Tunggal Ika · Rasa Ingin Tahu Sejarah Lokal",
+    urutan: 2,
+    judul: "Mengenal Cerita Ringan tentang Asal-Usul Nama Daerah Kita",
+    ringkasan: "Menunjukkan rasa ingin tahu terhadap satu fakta/pemantik ringan tentang sejarah Depok, tanpa detail kekerasan/konflik. Pertemuan Inti, bukan bahan ujian.",
+    status: "selesai",
+    file: "pancasila/bti-tp3/02-mengenal-cerita-ringan-tentang-asal-usul-nama-daerah-kita-inti.html"
   }
 ];
