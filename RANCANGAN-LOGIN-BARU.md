@@ -1,10 +1,9 @@
 # Rancangan Upgrade Login — Kelas 5
 
-> Status: **Fase 1–5 SELESAI ditulis & (kecuali Fase 5 yang baru saja selesai)
-> sudah diuji & berfungsi di lingkungan Arif. Pembatasan akses per role (§7,
-> di luar 6 fase semula) juga sudah selesai & terverifikasi. Tersisa: Arif
-> uji Fase 5 end-to-end (checklist `ANTIREGRESI.md` §34), lalu Fase 6
-> (dokumentasi penutup — sebagian besar sudah berjalan otomatis tiap fase).**
+> Status: **✅ SELURUH PROYEK SELESAI (Fase 1–6 + Pembatasan Akses §7).**
+> Sudah dicatat di `CHANGELOG.md` (v0.11.0). Dokumen ini tetap disimpan di
+> repo sebagai riwayat desain & keputusan, untuk dirujuk kalau ada perubahan/
+> perluasan sistem login di masa depan.
 > Dokumen ini adalah pelacak progres. Setiap sesi kerja berikutnya, lanjutkan dari
 > checklist "Rencana Tahapan Kerja" di bagian bawah — tandai `[x]` yang sudah selesai
 > sebelum mengakhiri sesi, supaya sesi berikutnya tahu persis harus mulai dari mana.

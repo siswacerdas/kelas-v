@@ -20,10 +20,95 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   — rencana penyimpanannya sudah dipetakan sebagai bagian dari laporan
   "Latihan Mandiri Siswa" (lihat `RANCANGAN-LAPORAN-SISWA.md`), belum
   dikerjakan
+- Migrasi Firestore untuk data MPLS/Kognitif/Jurnal Aktivitas/metadata Galeri
+  Visual — SENGAJA ditunda sebagai proyek terpisah setelah Sistem Login Baru
+  (lihat `RANCANGAN-MIGRASI-FIRESTORE.md`), supaya tidak merombak semua fitur
+  sekaligus dalam 1 gelombang perubahan. Cuma "Data Siswa" yang sudah pindah.
+- Penegakan akses per-role belum menjangkau 150+ file materi/modul individual
+  (`pages/materi/.../*.html`, `pages/modul/.../*.html`) — sengaja dibatasi ke
+  halaman induk saja untuk saat ini (lihat `RANCANGAN-LOGIN-BARU.md` §7)
 - Progres Modul (separuh laporan "Perkembangan Belajar Mandiri") — modul
   contoh yang pernah diberikan belum punya jembatan pengiriman progres ke
   server sama sekali; ditunda sampai ada modul sungguhan yang mau dipakai
   (lihat `RANCANGAN-LAPORAN-SISWA.md` §7.2)
+
+### Ditambahkan (v0.11.0, sesi ini — Sistem Login Baru)
+Perombakan penuh mekanisme login, dari 1 jenis akun (email+password untuk
+semua orang) menjadi 3 peran terpisah dengan cara masuk & hak akses
+masing-masing. Rancangan & progres lengkap ada di `RANCANGAN-LOGIN-BARU.md`
+dan `RANCANGAN-MIGRASI-FIRESTORE.md`.
+
+- **Login Siswa (nama + NISN)** — siswa tidak lagi pakai email/password,
+  cukup pilih namanya dari daftar (sumber: `MPLS_STUDENTS` di
+  `pages/mpls/assets/mpls-data.js`, satu sumber kebenaran yang sudah dipakai
+  di tempat lain juga) + masukkan NISN 10 digit. Diverifikasi ke Apps Script
+  (`type: "siswa_login"`, `Code.gs`) yang membaca Firestore `siswa/{nisn}`
+  langsung by ID dokumen — responsnya cuma `status`/`message` generik, tidak
+  pernah membocorkan data profil atau info mana yang salah (nama/NISN).
+  Kalau cocok, sesi dibuat lewat Firebase Anonymous Auth + nama tampilan
+  disimpan `sessionStorage` (bukan `localStorage`), dan sesi ini SENGAJA
+  diset `browserSessionPersistence` (per-tab, tidak lintas tab/lintas
+  buka-tutup browser) — beda dari guru/orangtua yang tetap
+  `browserLocalPersistence` seperti semula.
+- **Migrasi "Data Siswa" ke Firestore** (koleksi `siswa/{nisn}`, NISN = ID
+  dokumen) — sebelumnya di sheet Google Sheets, rawan hilang kalau ada yang
+  tidak sengaja menghapus data langsung di spreadsheet. Dibaca/ditulis Apps
+  Script pakai kredensial Service Account (JWT ditandatangani manual pakai
+  `Utilities.computeRsaSha256Signature`, ditukar ke access token OAuth2) yang
+  MELEWATI Firestore Security Rules (diatur IAM, bukan Rules) — sengaja
+  begitu supaya cek NISN saat login (sebelum ada sesi Auth sama sekali)
+  tetap bisa jalan tanpa NISN pernah terekspos ke klien. 25 siswa berhasil
+  dimigrasi & diverifikasi. `pages/kelas/index.html` (form kelola data
+  siswa) ikut disesuaikan: field NISN jadi wajib (karena jadi ID dokumen),
+  ditambah panel "Impor NISN Massal" (tempel banyak `Nama, NISN` sekaligus,
+  divalidasi ke roster resmi 25 siswa supaya salah ketik tidak nyasar jadi
+  dokumen baru).
+- **Pendaftaran & Persetujuan Orang Tua** — orang tua/wali yang belum punya
+  akun bisa daftar mandiri lewat `daftar-orangtua.html` (pilih nama anak +
+  email + kata sandi + WhatsApp opsional), status awal `pending_orangtua`
+  sampai disetujui guru. Guru menyetujui/menolak lewat tab baru **"👪
+  Persetujuan Orang Tua"** di `pages/admin.html`. Selama belum/tidak
+  disetujui, `index.html` menampilkan layar status ("Menunggu Persetujuan"/
+  "Pendaftaran Ditolak") yang mengganti SELURUH aplikasi, bukan cuma
+  menyembunyikan sebagian menu. Aturan Firestore koleksi `users` diperbarui
+  (lihat `README.md` §🔒 Keamanan): pendaftar cuma boleh membuat dokumennya
+  sendiri dengan role persis `"pending_orangtua"` (mencegah eskalasi
+  privilese jadi guru/orangtua langsung dari sisi klien), dan guru sekarang
+  bisa **membaca** (query, bukan cuma menulis) dokumen siapa saja.
+- **Lupa Kata Sandi** (guru/orangtua) — tombol "Lupa kata sandi?" di halaman
+  login, pakai `sendPasswordResetEmail` bawaan Firebase. Pesan hasil SENGAJA
+  sama persis baik email terdaftar maupun tidak, supaya fitur ini tidak bisa
+  dipakai mengecek email siapa saja yang punya akun.
+- **Pembatasan Akses per Role** (di luar 6 fase login semula, permintaan
+  tambahan pertengahan proyek) — siswa cuma bisa akses Modul Pembelajaran,
+  Materi Ajar, Galeri Visual, Uji Kemampuan; orang tua cuma Laporan Siswa &
+  Pengumuman; guru tidak dibatasi. Ditegakkan 2 lapis: kartu menu di beranda
+  disembunyikan per role (`data-akses` + `terapkanAksesMenu_()`), DAN
+  penegakan sungguhan di 9 halaman induk lewat guard baru
+  `assets/js/role-guard.js` (bukan cuma kartunya yang hilang — buka
+  langsung lewat URL pun ditolak).
+
+**Bug regresi nyata yang ditemukan & diperbaiki di sepanjang pengerjaan ini**
+(kebanyakan karena akun siswa sekarang anonim, tidak punya dokumen Firestore
+`users/{uid}` seperti sebelumnya — beberapa tempat lain di kode masih
+mengasumsikan itu selalu ada):
+- `pages/uji-kemampuan.html` — hasil latihan siswa bisa tersimpan dengan nama
+  kosong/undefined (baca ulang Firestore yang tidak ada untuk akun anonim).
+- `pages/materi/assets/materi-progress-tracker.js` — pelacak progres Materi
+  Ajar (dasar Laporan Siswa Pintu 2) berhenti total mencatat progres siswa.
+- `pages/laporan-siswa/assets/laporan-guard.js` — logikanya tadinya
+  blacklist ("kalau bukan siswa, boleh masuk"), diperketat jadi whitelist
+  eksplisit (guru/orangtua saja) — kalau tidak, role baru `pending_orangtua`/
+  `rejected` akan ikut lolos ke Laporan Siswa.
+- `index.html` — Panel Guru/Panel Kelas/kartu Laporan Siswa cuma pernah
+  ditampilkan, tidak pernah disembunyikan balik; kalau di 1 tab yang sama
+  ada pergantian akun tanpa reload halaman (mis. guru logout lalu orang tua
+  login), panel-panel itu "nyangkut" tampil dari sesi sebelumnya.
+- `daftar-orangtua.html` — kalau penyimpanan Firestore gagal SETELAH akun
+  Firebase Auth-nya sempat terbuka (mis. aturan Firestore belum ter-publish),
+  akun itu "nyangkut" tanpa data & tidak bisa didaftar ulang pakai email yang
+  sama ("email sudah terdaftar"). Diperbaiki: akun yang nyangkut itu otomatis
+  dihapus lagi (`deleteUser`) begitu penyimpanan gagal.
 
 ### Diperbaiki (v0.10.x, sesi ini)
 - **IPAS tidak bisa diakses dari situs sama sekali padahal filenya sudah ada di
