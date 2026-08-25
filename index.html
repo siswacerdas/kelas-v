@@ -557,14 +557,35 @@
 
   /** Terapkan pembatasan kartu menu & bagian "Pengumuman Terbaru" per role
    * (RANCANGAN-LOGIN-BARU.md §7). Guru SENGAJA tidak pernah dibatasi apa pun
-   * di sini (selalu lihat semua menu) — cukup langsung return tanpa
-   * menyentuh elemen [data-akses] sama sekali. */
+   * di sini (selalu lihat semua menu) — TAPI TETAP wajib reset dulu semua ke
+   * kondisi terlihat sebelum return, lihat catatan di bawah kenapa. */
   function terapkanAksesMenu_(role) {
+    // v1.2 (bug dilaporkan Arif): SEBELUM baris reset ini ada, fungsi ini cuma
+    // pernah MENAMBAH class "hidden", tidak pernah MELEPASNYA balik. Akibatnya
+    // kalau di TAB YANG SAMA ada pergantian akun tanpa reload halaman penuh
+    // (mis. guru login → lihat semua kartu → logout → orang tua login), kartu
+    // yang sempat disembunyikan dari sesi SEBELUMNYA (atau, kebalikannya,
+    // panel guru yang sempat ditampilkan) akan "nyangkut" dalam kondisi lama
+    // itu, tidak ikut menyesuaikan ke role akun yang baru login. Perbaikannya:
+    // SELALU reset ke kondisi default (semua terlihat) dulu di awal, baru
+    // terapkan pembatasan sesuai role SAAT INI — jadi fungsi ini idempotent,
+    // hasilnya selalu benar terlepas dari kondisi sebelumnya.
+    document.querySelectorAll("[data-akses]").forEach((el) => el.classList.remove("hidden"));
     if (role === "guru") return;
     document.querySelectorAll("[data-akses]").forEach((el) => {
       const daftar = el.getAttribute("data-akses").split(/\s+/);
       if (daftar.indexOf(role) === -1) el.classList.add("hidden");
     });
+  }
+
+  /** Sama seperti masalah di terapkanAksesMenu_() di atas, tapi untuk 3 elemen
+   * yang diatur manual (admin-panel/kelas-panel/card-laporan-siswa) — SELALU
+   * dipanggil di awal alur onAuthStateChanged (termasuk cabang siswa anonim),
+   * SEBELUM menentukan mana yang boleh ditampilkan untuk role saat ini. */
+  function sembunyikanPanelKondisional_() {
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('kelas-panel').classList.add('hidden');
+    document.getElementById('card-laporan-siswa').classList.add('hidden');
   }
 
   // ── Tab Login (Siswa / Guru & Orang Tua) ──────────────────
@@ -682,6 +703,10 @@
   onAuthStateChanged(auth, async (user) => {
     document.getElementById('loading').style.opacity = '0';
     setTimeout(() => document.getElementById('loading').style.display = 'none', 300);
+
+    // v1.2: reset dulu SEBELUM cabang mana pun di bawah — lihat catatan lengkap
+    // di sembunyikanPanelKondisional_() kenapa ini wajib ada di sini.
+    sembunyikanPanelKondisional_();
 
     if (user && user.isAnonymous) {
       // Akun siswa (Firebase Anonymous Auth) — TIDAK punya dokumen Firestore

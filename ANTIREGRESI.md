@@ -957,6 +957,15 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
       Modul, Materi, Galeri, Uji Kemampuan, Riwayat Latihan, Jadwal) hilang
 - [ ] Login sebagai **guru** → SEMUA kartu tetap kelihatan seperti sebelumnya,
       tidak ada yang hilang (guru tidak pernah dibatasi `terapkanAksesMenu_`)
+- [ ] **Uji regresi kritis — panel "nyangkut" antar akun** (bug nyata yang
+      pernah dilaporkan): di TAB YANG SAMA (jangan reload/tutup tab), login
+      sebagai guru → pastikan Panel Guru & Panel Kelas kelihatan → klik Keluar
+      → login sebagai orang tua (akun berbeda) → Panel Guru & Panel Kelas
+      **HARUS TIDAK kelihatan** untuk orang tua ini. Coba juga urutan
+      sebaliknya (orang tua/siswa dulu → logout → login guru) → panel guru
+      harus tetap muncul normal untuk guru. Kalau regresi ini muncul lagi,
+      cek apakah `sembunyikanPanelKondisional_()` masih dipanggil di paling
+      awal `onAuthStateChanged` (sebelum kedua percabangan siswa/guru-orangtua)
 - [ ] **Uji penegakan sungguhan (bukan cuma kartu disembunyikan)**: sebagai
       siswa, coba buka LANGSUNG lewat URL (ketik manual di address bar, bukan
       klik kartu) salah satu dari: `pages/jadwal.html`, `pages/cp-tp-atp.html`,
