@@ -1,8 +1,10 @@
 # Rancangan Upgrade Login — Kelas 5
 
-> Status: **Fase 1 (Data, sekarang berbasis Firestore) SELESAI & 25 siswa
-> sudah berhasil dimigrasi. Fase 2 (backend siswaLogin) SELESAI ditulis,
-> menunggu Arif deploy ulang & uji. Fase 3 (UI login siswa) berikutnya.**
+> Status: **Fase 1–5 SELESAI ditulis & (kecuali Fase 5 yang baru saja selesai)
+> sudah diuji & berfungsi di lingkungan Arif. Pembatasan akses per role (§7,
+> di luar 6 fase semula) juga sudah selesai & terverifikasi. Tersisa: Arif
+> uji Fase 5 end-to-end (checklist `ANTIREGRESI.md` §34), lalu Fase 6
+> (dokumentasi penutup — sebagian besar sudah berjalan otomatis tiap fase).**
 > Dokumen ini adalah pelacak progres. Setiap sesi kerja berikutnya, lanjutkan dari
 > checklist "Rencana Tahapan Kerja" di bagian bawah — tandai `[x]` yang sudah selesai
 > sebelum mengakhiri sesi, supaya sesi berikutnya tahu persis harus mulai dari mana.
@@ -289,9 +291,18 @@ sheet-nya, atau Arif konfirmasi apakah 25 nama ini semua sudah ada di "Data Sisw
   `rejected` tidak ikut lolos ke Laporan Siswa seperti sebelum diperbaiki.
   **Menunggu Arif: tempel aturan Firestore baru ke Firebase Console (WAJIB,
   tanpa ini fitur ini tidak akan berfungsi), lalu uji end-to-end.**
-- [ ] **Fase 5 — Lupa kata sandi**: tombol + alur `sendPasswordResetEmail` di
-  `index.html` (disetujui §0), kustomisasi template email di Firebase Console
-  (manual, didokumentasi).
+- [x] **Fase 5 — Lupa kata sandi**: tombol "Lupa kata sandi?" di tab Guru &
+  Orang Tua sekarang menggantikan form login dengan form kirim tautan reset
+  (`sendPasswordResetEmail`). Pesan hasil SENGAJA sama persis baik email
+  terdaftar maupun tidak (privasi — tidak membocorkan siapa yang punya akun).
+  **Langkah manual yang disarankan (opsional tapi bagus dilakukan) untuk
+  Arif**: buka Firebase Console → Authentication → Templates → Password
+  reset → kustomisasi ke Bahasa Indonesia + nama sekolah, supaya orang tua
+  tidak curiga itu email asing/spam (defaultnya bahasa Inggris & branding
+  generik Firebase). Ini konfigurasi Console, tidak ada kode yang perlu
+  diubah untuk ini.
+  **Menunggu Arif upload & uji end-to-end** (checklist di `ANTIREGRESI.md`
+  §34) — termasuk benar-benar klik tautan di email & set kata sandi baru.
 - [ ] **Fase 6 — Dokumentasi & uji**: lengkapi `ANTIREGRESI.md` (skenario login
   siswa/orangtua/lupa-password — §29 utk NISN sudah ada), `CHANGELOG.md`,
   `README.md` (aturan Firestore terbaru), uji end-to-end tiap alur.

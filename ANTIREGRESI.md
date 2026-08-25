@@ -966,6 +966,25 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
       harus tetap muncul normal untuk guru. Kalau regresi ini muncul lagi,
       cek apakah `sembunyikanPanelKondisional_()` masih dipanggil di paling
       awal `onAuthStateChanged` (sebelum kedua percabangan siswa/guru-orangtua)
+
+### 34. Lupa Kata Sandi (Fase 5 — `index.html`, `sendPasswordResetEmail`)
+- [ ] Dari tab "Guru & Orang Tua", klik "Lupa kata sandi?" → tab & form login
+      hilang, muncul form khusus kirim tautan reset — klik "← Kembali ke
+      halaman masuk" → balik ke tampilan login normal (tab-tab muncul lagi)
+- [ ] Isi email akun guru/orangtua yang BENAR-BENAR terdaftar → klik "Kirim
+      Tautan Reset" → pesan sukses generik muncul → cek inbox email itu (&
+      folder Spam) → HARUS ada email reset password dari Firebase
+- [ ] Isi email yang **TIDAK terdaftar sama sekali** → klik kirim → pesan yang
+      muncul **HARUS SAMA PERSIS** dengan skenario email benar di atas (jangan
+      sampai ada beda pesan yang membocorkan mana email yang terdaftar/tidak)
+- [ ] Isi format email yang jelas tidak valid (mis. "asdf" tanpa @) → boleh
+      muncul pesan beda ("Format email tidak valid") — ini bukan kebocoran
+      privasi, cuma validasi format
+- [ ] Klik tautan reset dari email yang diterima → ikuti alur bawaan Firebase
+      (halaman ganti kata sandi) → set kata sandi baru → coba login pakai
+      kata sandi baru itu di `index.html` → harus berhasil masuk normal
+- [ ] Login guru/orang tua biasa (tanpa lewat "Lupa kata sandi?") masih normal
+      seperti sebelumnya — regresi paling penting untuk dicek di sini juga
 - [ ] **Uji penegakan sungguhan (bukan cuma kartu disembunyikan)**: sebagai
       siswa, coba buka LANGSUNG lewat URL (ketik manual di address bar, bukan
       klik kartu) salah satu dari: `pages/jadwal.html`, `pages/cp-tp-atp.html`,
