@@ -3,234 +3,728 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pecahan: Representasi, Perbandingan, dan Operasi — Modul Ajar Mandiri</title>
+<title>Pecahan: Representasi, Perbandingan, dan Operasi — Matematika Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --nav:#1e4d3b; --bg:#f7f1e3; --ink:#2a2620; --paper:#fffdf8;
-  --line:#e4d9c2; --gold:#c99a2e;
-  --m:#2f6f4f;
-  --m-soft: color-mix(in srgb, #2f6f4f 12%, white);
-  --m-mid: color-mix(in srgb, #2f6f4f 35%, white);
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
 }
-*{box-sizing:border-box;}
-body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);}
-h1,h2,h3,.serif{font-family:'Fraunces',serif;}
-.hidden{display:none;}
-#checking{padding:40px;text-align:center;font-family:'Plus Jakarta Sans',sans-serif;color:var(--nav);}
-nav.topnav{background:var(--nav);color:#fff;padding:14px 20px;display:flex;gap:14px;align-items:center;font-size:.92rem;flex-wrap:wrap;}
-nav.topnav a{color:#fff;text-decoration:none;opacity:.85;}
-nav.topnav a:hover{opacity:1;text-decoration:underline;}
-.wrap{max-width:840px;margin:0 auto;padding:0 18px 60px;}
-.modul-head{padding:26px 0 10px;border-bottom:3px solid var(--m-mid);margin-bottom:6px;}
-.modul-head .eyebrow{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:#2f6f4f;font-weight:700;}
-.modul-head h1{font-size:1.6rem;margin:.25em 0 .1em;color:var(--ink);}
-.modul-head .sub{color:#6b6255;font-size:.95rem;}
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;margin-right:6px;}
-.badge-elemen{background:var(--m-soft);color:#2f6f4f;border:1px solid var(--m-mid);}
-.badge-lanjutan{background:#fdf0d5;color:#a86b12;border:1px solid #e8c27a;}
-.stepper{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:18px;}
-.step-dot{flex:0 0 auto;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;color:#8a8070;cursor:pointer;}
-.step-dot.active{border-color:#2f6f4f;color:#2f6f4f;background:var(--m-soft);}
-.step-dot.done{background:#2f6f4f;border-color:#2f6f4f;color:#fff;}
-.step-dot.inti{border-color:var(--gold);}
-.step-dot.inti.done{background:var(--gold);border-color:var(--gold);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+input.ans-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);background:#fffef9;}
+input.ans-input:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.field-row{margin-bottom:14px;}
+.field-row label{display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field-hint{font-size:12px;color:var(--ink-faint);margin-top:4px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
 .page{display:none;}
-.page.active{display:block;animation:fadein .25s ease;}
-@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:16px;}
-.card h2{font-size:1.25rem;margin-top:0;color:#2f6f4f;}
-.card h3{font-size:1.05rem;margin-bottom:.4em;}
-.subunit-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
-.badge-num{width:34px;height:34px;border-radius:50%;background:#2f6f4f;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto;}
-.badge-inti{background:var(--gold);}
-.badge-diagnostik{background:#8a8070;}
-.tag{display:inline-block;font-size:.72rem;background:var(--m-soft);color:#2f6f4f;padding:2px 9px;border-radius:12px;margin-bottom:8px;font-weight:700;}
-.tag.inti{background:#fdf0d5;color:#a86b12;}
-.info-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;}
-.info-table td,.info-table th{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top;}
-.info-table th{background:var(--m-soft);width:32%;}
-.materi-box{background:var(--m-soft);border-left:4px solid #2f6f4f;padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;font-size:.93rem;}
-label.field-label{display:block;font-weight:700;margin:14px 0 6px;font-size:.9rem;}
-textarea.ans, input.ans-input{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:inherit;font-size:.93rem;background:#fffef9;}
-textarea.ans{min-height:80px;resize:vertical;}
-.quiz-item{background:#fffef9;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
-.q-text{font-weight:600;margin:0 0 8px;}
-.q-options{display:flex;flex-direction:column;gap:6px;}
-.opt-btn{text-align:left;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;font-size:.9rem;}
-.opt-btn:hover{background:var(--m-soft);}
-.opt-btn.correct{background:#e3f3e6;border-color:#4c9a5b;color:#215c2b;font-weight:700;}
-.opt-btn.wrong{background:#fbe6e4;border-color:#c85a4f;color:#7a2a22;}
-.q-feedback{font-size:.85rem;margin:8px 0 0;font-weight:700;min-height:1.2em;}
-.reveal-btn{margin-top:8px;background:none;border:1px solid #2f6f4f;color:#2f6f4f;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:.85rem;font-family:inherit;}
-.reveal-box{display:none;background:#fffbe9;border:1px dashed var(--gold);border-radius:8px;padding:10px 14px;margin-top:8px;font-size:.88rem;}
-.reveal-box.show{display:block;}
-.check-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:.9rem;}
-.check-item input{margin-top:3px;}
-.rubrik-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0;}
-.rubrik-table th,.rubrik-table td{border:1px solid var(--line);padding:7px 9px;text-align:left;}
-.rubrik-table th{background:var(--m-soft);}
-details.guru-note{background:#f2ede0;border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-top:16px;}
-details.guru-note summary{cursor:pointer;font-weight:700;color:#2f6f4f;}
-details.guru-note ul{margin:10px 0 0;padding-left:20px;font-size:.9rem;}
-.nav-buttons{display:flex;justify-content:space-between;margin-top:20px;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:14px 0 6px;}
-.nav-buttons button{padding:11px 22px;border-radius:10px;border:none;font-weight:700;cursor:pointer;font-family:inherit;font-size:.95rem;}
-#btnPrev{background:#fff;border:1px solid var(--line);color:var(--ink);}
-#btnPrev:disabled{opacity:.4;cursor:default;}
-#btnNext{background:#2f6f4f;color:#fff;}
-.saved-label{font-size:.75rem;color:#8a8070;text-align:right;margin-top:6px;}
-.dependensi-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:.88rem;margin-bottom:14px;}
-.glosarium dt{font-weight:700;color:#2f6f4f;margin-top:8px;}
-.glosarium dd{margin:2px 0 0;}
-.reset-btn{background:none;border:1px solid #b0473f;color:#b0473f;padding:8px 14px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:.85rem;margin-top:12px;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+.card-preview{
+  background:#fffefb; border:2px dashed var(--gold); border-radius:12px; padding:22px 24px;
+  position:relative; transform:rotate(-0.6deg); box-shadow:0 6px 18px rgba(43,32,19,.10); margin-top:16px;
+}
+.card-preview::before{content:'🍰';position:absolute;top:-14px;left:22px;font-size:22px;transform:rotate(12deg);}
+.card-preview h4{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--gold-d);margin-bottom:10px;}
+.card-preview .cp-section{margin-bottom:12px;font-size:13.5px;line-height:1.7;}
+.card-preview .cp-section b{color:var(--nav);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.card-preview .cp-empty{color:var(--ink-faint);font-style:italic;}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.tip-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12.5px;}
+.tip-card .ti{font-size:18px;margin-bottom:4px;}
+@media (max-width:560px){.tip-grid{grid-template-columns:1fr;}}
+.check-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13.5px;}
+.check-item input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
+.contoh-soal{background:#fff;border-left:4px solid var(--nav-l);border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:13.5px;}
 </style>
 </head>
 <body>
+
 <div id="checking">Memeriksa akses…</div>
+
 <div id="app-detail" class="hidden">
-  <nav class="topnav">
-    <a href="../../../../index.html">🏠 Beranda</a>
-    <a href="../../../modul.html">📚 Daftar Modul</a>
-  </nav>
-  <div class="wrap">
-    <div class="modul-head">
-      <span class="badge badge-elemen">Matematika · Bilangan</span> 
-      <h1>Pecahan: Representasi, Perbandingan, dan Operasi</h1>
-      <div class="sub">Modul Ajar Mandiri Interaktif · Kelas 5A · Matematika</div>
-    </div>
-    <div class="stepper"><div class="step-dot" data-page="0" title="Pengantar">▶</div><div class="step-dot" data-page="1" title="Diagnostik">0</div><div class="step-dot" data-page="2" title="Tangga 1">1</div><div class="step-dot" data-page="3" title="Tangga 2">2</div><div class="step-dot" data-page="4" title="Tangga 3">3</div><div class="step-dot" data-page="5" title="Tangga 4">4</div><div class="step-dot" data-page="6" title="Tangga 5">5</div><div class="step-dot inti" data-page="7" title="Pertemuan Inti">⭐</div><div class="step-dot" data-page="8" title="Penutup">✓</div></div>
-    <main>
-      <div class="page" data-page="0">
-    <div class="card">
-      <span class="tag">Bilangan · TP6</span>
-      <h2>Pecahan: Representasi, Perbandingan, dan Operasi Penjumlahan-Pengurangan</h2>
-      <table class="info-table">
-        <tr><th>CP Rujukan</th><td>Membandingkan dan mengurutkan berbagai pecahan termasuk pecahan campuran, melakukan operasi penjumlahan dan pengurangan pecahan.</td></tr>
-        <tr><th>Kompetensi Inti</th><td>Siswa dapat membandingkan, mengurutkan, dan mengoperasikan (penjumlahan-pengurangan) pecahan termasuk pecahan campuran.</td></tr>
-        <tr><th>Jumlah Pertemuan</th><td>7 pertemuan (1 diagnostik + 5 tangga + 1 Pertemuan Inti) — proporsi TERBESAR di elemen Bilangan</td></tr>
-      </table>
-      <h3>🎯 Garis Finis</h3>
-      <p>Kamu akan bisa membandingkan, mengurutkan, dan menjumlahkan/mengurangkan pecahan termasuk pecahan campuran — baik berpenyebut sama maupun berbeda — dengan pemahaman pecahan sebagai <strong>bagian-dari-keseluruhan</strong>, bukan sekadar manipulasi angka di atas-bawah garis pecahan.</p>
-      <h3>🚦 Titik Berangkat</h3>
-      <p>Kita akan cek dulu pemahaman dasarmu tentang pecahan (Tangga 0 — diagnostik) sebelum lanjut, karena pecahan adalah representasi bilangan yang BERBEDA secara konseptual dari bilangan cacah — bukan sekadar perluasan notasi.</p>
-      <div class="dependensi-box"><strong>Keterkaitan:</strong> Tangga 3 dan 5 di TP ini akan memakai ulang kompetensi KPK dari TP4 untuk menyamakan penyebut. Ingat baik-baik cara mencari KPK!</div>
-    </div>
-    </div>
-<div class="page" data-page="1">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num badge-diagnostik">0</span><h3 style="margin:0">Diagnostik — Pecahan sebagai Bagian-dari-Keseluruhan</h3></div>
-      <span class="tag">Tangga 0 · Diagnostik</span>
-      <div class="materi-box">Ini BUKAN tes formal — hanya untuk mengecek pemahaman dasarmu. Pecahan bukan "dua bilangan terpisah yang dipisah garis", melainkan bagian dari satu keseluruhan. Contoh: ¾ berarti 3 bagian dari total 4 bagian yang sama besar.</div>
-      <label class="field-label">🔎 Cek Pemahaman</label>
-      <p style="font-size:.9rem;color:#6b6255;">Bayangkan sebuah kue dibagi menjadi 8 potong sama besar, kamu makan 3 potong. Pecahan berapa yang menunjukkan bagian yang kamu makan? Gambarkan/jelaskan dengan kata-katamu sendiri.</p>
-      <textarea class="ans" data-key="tp6-diagnostik" placeholder="Pecahan yang menunjukkan bagian saya makan adalah... karena..."></textarea>
-      <div class="materi-box" style="margin-top:14px;"><strong>Catatan:</strong> Ini bukan penilaian formal. Kalau kamu masih ragu, tidak masalah — Tangga 1 akan membantumu memantapkan konsep ini lewat potongan kertas/kue fisik.</div>
-    </div>
-    </div>
-<div class="page" data-page="2">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num">1</span><h3 style="margin:0">Representasi Fisik &amp; Pecahan Senilai</h3></div>
-      <span class="tag">Tangga 1</span>
-      <div class="materi-box">Dengan potongan kertas lipat (½, ¼, ⅛) atau kue/roti tiruan, kamu akan menemukan <strong>pecahan senilai</strong> — potongan yang sama besar walau jumlah potongannya berbeda. Contoh: ½ sama besar dengan 2/4 dan juga 4/8.</div>
-      <label class="field-label">✏️ Latihan Pecahan Senilai</label>
-      <p style="font-size:.9rem;color:#6b6255;">Tuliskan 2 pecahan senilai untuk masing-masing: ½, ⅓, ¾. Jelaskan mengapa keduanya "sama besar" walau angkanya beda.</p>
-      <textarea class="ans" data-key="tp6-tangga1" placeholder="1/2 = 2/4 = 4/8, karena..."></textarea>
-    </div>
-    </div>
-<div class="page" data-page="3">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num">2</span><h3 style="margin:0">Membandingkan Pecahan Berpenyebut Sama</h3></div>
-      <span class="tag">Tangga 2</span>
-      <div class="materi-box">Kalau penyebutnya sama, cukup bandingkan pembilangnya saja. Contoh: 3/7 lebih besar dari 2/7, karena 3 &gt; 2 (bagian yang diambil lebih banyak dari keseluruhan yang sama).</div>
-      <label class="field-label">✏️ Latihan Urutan Pecahan Sepenyebut</label>
-      <p style="font-size:.9rem;color:#6b6255;">Urutkan dari terkecil ke terbesar: 5/9, 2/9, 7/9, 4/9.</p>
-      <textarea class="ans" data-key="tp6-tangga2" placeholder="Urutan: ..."></textarea>
-    </div>
-    </div>
-<div class="page" data-page="4">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num">3</span><h3 style="margin:0">Membandingkan Pecahan Berpenyebut Berbeda (Memakai Ulang KPK dari TP4)</h3></div>
-      <span class="tag">Tangga 3</span>
-      <div class="materi-box"><strong>🔗 Ingat TP4:</strong> untuk membandingkan pecahan berpenyebut beda, kita samakan dulu penyebutnya memakai KPK. Contoh: bandingkan 2/3 dan 3/4 → KPK(3,4)=12 → 2/3=8/12 dan 3/4=9/12 → jadi 3/4 lebih besar.</div>
-      <label class="field-label">✏️ Latihan Menyamakan Penyebut</label>
-      <p style="font-size:.9rem;color:#6b6255;">Bandingkan pasangan berikut, tuliskan langkah mencari KPK penyebut terlebih dulu: 2/5 vs 3/8, 3/4 vs 5/6.</p>
-      <textarea class="ans" data-key="tp6-tangga3" placeholder="KPK(5,8) = ... jadi 2/5 = .../40 dan 3/8 = .../40 ..."></textarea>
-    </div>
-    </div>
-<div class="page" data-page="5">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num">4</span><h3 style="margin:0">Menjumlahkan dan Mengurangkan Pecahan Berpenyebut Sama</h3></div>
-      <span class="tag">Tangga 4</span>
-      <div class="materi-box">Kalau penyebutnya sama, cukup jumlahkan/kurangkan pembilangnya saja, penyebut tetap. Contoh: 3/8 + 2/8 = 5/8.</div>
-      <label class="field-label">✏️ Latihan Operasi Sepenyebut</label>
-      <p style="font-size:.9rem;color:#6b6255;">Kerjakan: 3/8 + 2/8, 7/9 - 4/9, 2/5 + 1/5, 5/6 - 2/6.</p>
-      <textarea class="ans" data-key="tp6-tangga4" placeholder="3/8 + 2/8 = ..."></textarea>
-    </div>
-    </div>
-<div class="page" data-page="6">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num">5</span><h3 style="margin:0">Menjumlahkan dan Mengurangkan Pecahan Berpenyebut Berbeda</h3></div>
-      <span class="tag">Tangga 5</span>
-      <div class="materi-box"><strong>🔗 Sekali lagi memakai KPK dari TP4:</strong> samakan penyebut dulu dengan KPK, baru jumlahkan/kurangkan pembilangnya. Contoh: 1/4 + 1/6 → KPK(4,6)=12 → 3/12 + 2/12 = 5/12.</div>
-      <label class="field-label">⚠️ Awas Miskonsepsi Umum!</label>
-      <div class="materi-box">Miskonsepsi yang sering terjadi: menjumlahkan pembilang DAN penyebut sekaligus (mis. 1/4 + 1/6 = 2/10 — INI SALAH). Penyebut TIDAK dijumlahkan langsung, harus disamakan dulu dengan KPK!</div>
-      <label class="field-label">✏️ Latihan Operasi Beda Penyebut</label>
-      <p style="font-size:.9rem;color:#6b6255;">Kerjakan dengan menyamakan penyebut terlebih dulu: 1/4 + 1/6, 3/5 - 1/4, 2/3 + 1/9.</p>
-      <textarea class="ans" data-key="tp6-tangga5" placeholder="KPK(4,6) = 12, jadi 1/4 = 3/12, 1/6 = 2/12, hasil = 5/12"></textarea>
-    </div>
-    </div>
-<div class="page" data-page="7">
-    <div class="card">
-      <div class="subunit-head"><span class="badge-num badge-inti">⭐</span><h3 style="margin:0">Pertemuan Inti — Pecahan Campuran dalam Soal Cerita</h3></div>
-      <span class="tag inti">Pertemuan Inti</span>
-      <div class="materi-box">Sekarang gabungkan semua kemampuanmu: membandingkan, mengurutkan, dan mengoperasikan pecahan campuran (konversi pecahan biasa ↔ campuran, lalu operasi) dalam konteks memasak/membagi bahan.</div>
 
-      <label class="field-label">📝 Kuis Pemahaman</label>
-      <div id="tp6-quiz"></div><script>renderQuiz("tp6-quiz", [
-      {type:'mcq', text:'Pecahan mana yang senilai dengan 3/4?', options:['6/8','4/5','5/6','3/5'], correct:0, explain:'3/4 = 6/8 karena pembilang dan penyebut sama-sama dikali 2.'},
-      {type:'mcq', text:'Hasil dari 2/3 + 1/6 adalah…', options:['5/6','3/9','1/2','4/9'], correct:0, explain:'KPK(3,6)=6. 2/3=4/6, jadi 4/6+1/6=5/6.'},
-      {type:'mcq', text:'Manakah yang BENAR tentang penjumlahan pecahan berbeda penyebut?', options:['Penyebut harus disamakan dulu (misal pakai KPK) sebelum pembilang dijumlahkan','Pembilang dan penyebut dijumlahkan langsung','Cukup jumlahkan pembilangnya saja, penyebut diambil yang terbesar','Pecahan berbeda penyebut tidak bisa dijumlahkan'], correct:0, explain:'Ini poin miskonsepsi paling penting di TP6 — penyebut WAJIB disamakan dulu (biasanya dengan KPK) sebelum pembilang dijumlahkan/dikurangkan.'},
-      {type:'mcq', text:'1¾ paling tepat digambarkan sebagai…', options:['1 utuh ditambah ¾ bagian lagi','1 dibagi ¾','¾ dibagi 1','1 dikurangi ¾'], correct:0, explain:'Pecahan campuran 1¾ berarti 1 bagian utuh ditambah ¾ bagian tambahan.'}
-    ]);</script>
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Pecahan</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
 
-      <label class="field-label">📖 Soal Cerita — Memasak</label>
-      <div class="materi-box">Ibu memiliki 1¾ kg gula. Untuk membuat kue, ia memakai ⅝ kg. Berapa sisa gula Ibu sekarang? (Ubah dulu 1¾ ke pecahan biasa sebelum menghitung.)</div>
-      <textarea class="ans" data-key="tp6-inti-cerita1" placeholder="1 3/4 = 7/4 kg. 7/4 - 5/8 = ..."></textarea>
+<div id="stepper" class="stepper"></div>
 
-      <label class="field-label">📖 Soal Cerita — Urutkan Pecahan Campuran</label>
-      <div class="materi-box">Urutkan dari terkecil ke terbesar: 1½, 1¼, 2, 1¾.</div>
-      <textarea class="ans" data-key="tp6-inti-cerita2" placeholder="Urutan: ..."></textarea>
+<div class="wrap">
 
-      <label class="field-label">✍️ Uraian — Gambarkan Pemahamanmu</label>
-      <p style="font-size:.9rem;color:#6b6255;">Gambarkan (dengan kata-kata) dua pecahan berbeda dan tunjukkan mana yang lebih besar, seperti sedang menjelaskan ke teman yang belum paham.</p>
-      <textarea class="ans" data-key="tp6-inti-uraian" placeholder="Misalnya saya bandingkan 3/5 dan 2/3..."></textarea>
-    <details class="guru-note"><summary>👩‍🏫 Catatan untuk Guru</summary><ul><li>Diturunkan dari <em>Dokumen2_TP_Kelas5_Matematika.docx</em> TP6 Bilangan dan <em>Scaffolding_Kelas5_Matematika_Bilangan.docx</em> — TP ini mendapat proporsi pertemuan TERBESAR di elemen Bilangan (7 dari 24 pertemuan) sesuai arahan eksplisit sumber, karena pecahan dinilai representasi bilangan yang konseptual berbeda dari bilangan cacah.</li><li>Status akses materi: disusun langsung dari dokumen Scaffolding/Dokumen2 Matematika (docx); folder <code>pages/materi/matematika/</code> tidak dapat diakses sesi ini.</li><li>Tangga 0 bersifat DIAGNOSTIK (bukan tes formal) — tujuannya menentukan siapa yang perlu pendampingan ekstra di Tangga 1, bukan untuk dinilai skornya.</li><li>Tangga 3 dan 5 memakai ulang kompetensi KPK dari TP4 — tegaskan keterkaitan ini secara eksplisit kepada siswa, jangan diajarkan ulang dari nol seolah topik baru.</li><li>Yang tidak perlu sempurna: kecepatan menyamakan penyebut untuk pecahan dengan KPK besar.</li><li>Yang WAJIB diwaspadai: siswa yang lancar menjumlah/mengurangkan pecahan sepenyebut namun ternyata menjumlahkan pembilang DAN penyebut sekaligus pada pecahan beda penyebut tanpa menyamakan dulu — miskonsepsi umum yang harus ditelusuri eksplisit (lihat kuis soal ke-3 di atas yang secara khusus menyasar miskonsepsi ini).</li></ul></details><table class="rubrik-table"><tr><th>Aspek yang Dinilai</th><th>✓ Sudah Memenuhi</th><th>△ Perlu Dikembangkan</th></tr><tr><td><strong>Pemahaman pecahan sebagai bagian-dari-keseluruhan</strong></td><td>Mampu menggambarkan/menjelaskan pecahan secara visual dengan tepat</td><td>Hanya bisa memanipulasi angka tanpa bisa menjelaskan/menggambarkan maknanya</td></tr><tr><td><strong>Perbandingan &amp; pengurutan (sepenyebut &amp; beda penyebut)</strong></td><td>Tepat pada kedua jenis, termasuk menyamakan penyebut dengan benar</td><td>Tepat hanya pada pecahan sepenyebut</td></tr><tr><td><strong>Operasi &amp; pecahan campuran</strong></td><td>Mampu mengonversi dan mengoperasikan pecahan campuran dengan benar pada soal cerita</td><td>Mampu pada pecahan biasa namun masih keliru pada pecahan campuran</td></tr></table></div></div>
-<div class="page" data-page="8">
-    <div class="card">
-      <h2>📚 Glosarium</h2>
-      <dl class="glosarium">
-        <dt>Pecahan senilai</dt><dd>Pecahan berbeda bentuk yang mewakili bagian sama besar (mis. ½ = 2/4 = 4/8).</dd>
-        <dt>Pecahan campuran</dt><dd>Gabungan bilangan bulat dan pecahan biasa (mis. 1¾).</dd>
-        <dt>Menyamakan penyebut</dt><dd>Mengubah dua pecahan berbeda penyebut agar penyebutnya sama (biasanya dengan KPK) sebelum dibandingkan/dioperasikan.</dd>
-      </dl>
-    </div>
-    <div class="card">
-      <h2>✅ Penutup TP6</h2>
-      <p>Kamu sudah menuntaskan TP terbesar di elemen Bilangan! Pemahaman pecahan sebagai bagian-dari-keseluruhan ini adalah fondasi penting yang akan terus dipakai, termasuk di TP7 dan di Kelas 6 nanti.</p>
-      <p><strong>Selanjutnya:</strong> TP7 — Perkalian, Pembagian Pecahan dengan Bilangan Asli, dan Mengubah Bentuk Pecahan.</p>
-      <button class="reset-btn" onclick="resetProgress()">🔄 Mulai ulang dari awal</button>
-    </div>
-    </div>
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> Bilangan TP6 — Pecahan: Representasi, Perbandingan, dan Operasi Penjumlahan-Pengurangan. TP terbesar di Elemen Bilangan (7 dari 24 pertemuan sumber). Diambil dari <code>Dokumen2_TP_Kelas5_Matematika.docx</code> dan <code>Scaffolding_Kelas5_Matematika_Bilangan.docx</code> — sesi ini tidak memiliki akses ke <code>pages/materi/matematika/</code>, mohon dicek konsistensi bila folder materi resmi sudah tersedia.</li>
+<li><b>Keputusan struktur:</b> Tangga 0 diagnostik dari Scaffolding sumber (mengecek pemahaman pecahan sebagai bagian-dari-keseluruhan, kompetensi Fase B) DIGABUNG dengan komponen "Asesmen Awal Unit" Buku Saku — keduanya bertujuan sama (mengecek prasyarat, tidak dinilai formal), jadi tidak dibuat dua kali. Modul ini punya 6 subunit konten (5 tangga + Inti) — sedikit di atas rentang wajar 3-6 subunit Buku Saku, namun ini SESUAI proporsi sumber yang eksplisit menyatakan TP ini "mendapat proporsi pertemuan terbesar" karena pecahan dinilai representasi bilangan yang konseptual berbeda dari bilangan cacah.</li>
+<li><b>RPM v3 belum tersedia</b> — Aktivitas Inti Siswa diterjemahkan dari kolom "Ide Aktivitas" Scaffolding (potongan kertas/kue, kartu pecahan senilai, konteks memasak). Elemen PAK tidak dimasukkan karena belum ada RPM yang mengisinya.</li>
+<li><b>Produk Belajar:</b> "Buku Resep Pecahanku" — dibangun bertahap di tiap subunit (catatan pecahan senilai, tips membandingkan sepenyebut/beda penyebut, tips operasi sepenyebut/beda penyebut), dirangkum di Inti menjadi satu buku kecil, ditutup dengan soal cerita resep memasak sungguhan.</li>
+<li><b>🔗 Keterkaitan penting:</b> Subunit 3 dan 5 memakai ulang kompetensi KPK dari TP4 (Kartu Detektif KPK-FPB) untuk menyamakan penyebut — ditegaskan eksplisit di modul, bukan diajarkan ulang dari nol.</li>
+<li><b>⚠ Miskonsepsi paling penting yang diwaspadai TP ini:</b> siswa menjumlahkan PEMBILANG DAN PENYEBUT sekaligus pada pecahan beda penyebut (mis. 1/4+1/6=2/10, SALAH) — ditandai eksplisit di Subunit 5 dengan blok peringatan dan soal jebakan benar-salah khusus.</li>
+<li><b>Dimensi Profil Lulusan:</b> Penalaran Kritis (menjelaskan asal-usul pecahan senilai, mendeteksi miskonsepsi sendiri), Kemandirian (refleksi mandiri tiap subunit), Kolaborasi ringan (ajakan berlatih dengan potongan kertas/kue bersama orang rumah).</li>
+<li>Latihan tiap subunit sudah divariasikan (PG/BS ≤50%, minimal 1 uraian, minimal 1 penerapan), sesuai Buku Saku Bagian E.4e. Profil kelas: kemampuan akademik beragam (default), karakter kelas belum diketahui guru → pemantik dan instruksi dibuat lebih eksplisit.</li>
+</ul>
+</details>
 
-    </main>
-    <div class="saved-label" id="savedLabel"></div>
-    <div class="nav-buttons">
-      <button id="btnPrev">← Sebelumnya</button>
-      <button id="btnNext">Lanjut →</button>
-    </div>
+<div class="cover">
+  <span class="kicker">✦ Matematika · Kelas 5</span>
+  <h1>Pecahan: Representasi, Perbandingan, dan Operasi</h1>
+  <p class="lede">Bismillah, mari kita mulai unit terbesar di Elemen Bilangan ini! Kita akan menjelajahi pecahan dari yang paling dasar — potongan kue yang sama besar — sampai menjumlahkan dan mengurangkan pecahan campuran dalam resep masakan sungguhan.</p>
+  <div class="cover-meta">
+    <span>🍰 6 bagian belajar</span>
+    <span>📕 1 Buku Resep Pecahan untuk dibuat</span>
+    <span>🔗 Memakai ulang kemampuan KPK-mu</span>
   </div>
 </div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Pecahan itu berbeda dari bilangan yang selama ini kamu pelajari — ia bukan sekadar dua angka yang dipisah garis, melainkan cara kita menggambarkan BAGIAN dari sesuatu yang utuh. Bayangkan sepotong kue, sepotong roti, atau sepotong waktu.</p>
+  <p>Unit ini adalah unit terbesar di Elemen Bilangan — jangan khawatir, kita akan berjalan pelan-pelan, bagian demi bagian, sampai kamu benar-benar paham, bukan cuma bisa memanipulasi angka di atas-bawah garis pecahan.</p>
+  <div class="produk-banner">
+    <div class="icon">📕</div>
+    <div>
+      <strong>Karya yang akan kamu buat</strong>
+      Kamu akan menyusun <b>Buku Resep Pecahanku</b> — kumpulan catatan dan tips tentang pecahan yang kamu temukan sendiri di tiap bagian, ditutup dengan menyelesaikan soal resep memasak sungguhan memakai pecahan campuran.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama! Sebelum lanjut ke pecahan yang lebih rumit, mari pastikan dulu kamu paham bahwa pecahan itu BAGIAN dari suatu keseluruhan.</p>
+  <div class="pemantik">
+    <div class="lbl">🤔 Coba Bayangkan</div>
+    <ol><li>Bayangkan sebuah kue dibagi menjadi 8 potong sama besar, kamu makan 3 potong. Pecahan berapa yang menunjukkan bagian yang kamu makan? Gambarkan dengan kata-katamu sendiri.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SUBUNIT 1 — representasi fisik & pecahan senilai -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Bagian 1 dari 6</div><h2 style="margin-bottom:0;">Pecahan Senilai</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Kita mulai dengan sesuatu yang menarik: dua pecahan yang terlihat berbeda tapi sebenarnya sama besar!</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Pernahkah kamu berbagi kue/pizza dengan teman, dan memperhatikan bahwa potongan yang dipotong dengan cara berbeda bisa tetap sama besar? Coba ceritakan.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Sama Besar, Beda Angka</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Bayangkan selembar kertas dilipat jadi 2 bagian — kamu ambil 1 bagian (½). Kalau kertas yang SAMA dilipat jadi 4 bagian, kamu perlu ambil 2 bagian (2/4) untuk mendapat luas yang sama. Jadi ½ = 2/4 = 4/8 — ini disebut <strong>pecahan senilai</strong>.</p>
+    <div class="contoh-soal">Cara mudah: kalikan pembilang DAN penyebut dengan angka yang sama. ½ × (2/2) = 2/4.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Kalau ada kertas atau roti di rumahmu, coba lipat jadi beberapa bagian untuk membuktikan jawabanmu.</div>
+    <div class="field-row"><label>Tuliskan 2 pecahan senilai untuk 1/3</label><input class="ans-input" type="text" placeholder="1/3 = ... = ..."></div>
+    <div class="field-row"><label>Tuliskan 2 pecahan senilai untuk 3/4</label><input class="ans-input" type="text" placeholder="3/4 = ... = ..."></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📕 Entri Pertama Buku Resep Pecahanku</div>
+    <div class="act-desc">Tuliskan dengan kata-katamu sendiri, apa itu pecahan senilai dan kenapa dua pecahan berbeda bisa "sama besar".</div>
+    <div class="field-row"><label>Catatan tentang Pecahan Senilai</label><textarea class="ans" id="senilai1" placeholder="Pecahan senilai itu..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Adakah bagian yang masih membingungkan?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SUBUNIT 2 — membandingkan sepenyebut -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num">2</span>
+    <div><div class="block-eyebrow">Bagian 2 dari 6</div><h2 style="margin-bottom:0;">Membandingkan Pecahan Sepenyebut</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Kalau dua pecahan penyebutnya SAMA, membandingkannya jadi mudah sekali.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau dua potong kue dipotong dengan cara yang SAMA (jumlah potongan sama), bagaimana kamu tahu potongan mana yang lebih banyak?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Penyebut Sama, Tinggal Lihat Pembilangnya</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Kalau penyebutnya sama, kita cukup bandingkan pembilangnya saja. Contoh: 5/9 lebih besar dari 2/9, karena 5 &gt; 2 — sederhana!</p>
+    <div class="contoh-soal">Bayangkan dua kue dipotong jadi 9 bagian sama besar masing-masing. Yang mengambil 5 potong pasti dapat lebih banyak dari yang mengambil 2 potong.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Urutkan pecahan berikut dari terkecil ke terbesar.</div>
+    <div class="field-row"><label>Urutkan: 5/9, 2/9, 7/9, 4/9</label><textarea class="ans" placeholder="Urutan: ..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📕 Tambahan untuk Buku Resep Pecahanku</div>
+    <div class="field-row"><label>Tips Membandingkan Pecahan Sepenyebut</label><textarea class="ans" id="tipsBanding1" placeholder="Kalau penyebutnya sama, aku akan..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz2"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apakah bagian ini terasa lebih mudah dari Bagian 1? Kenapa?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apa yang ingin kamu pelajari lebih lanjut tentang pecahan?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<!-- SUBUNIT 3 — membandingkan beda penyebut, pakai KPK -->
+<section class="block" id="subunit3">
+  <div class="subunit-head"><span class="badge-num">3</span>
+    <div><div class="block-eyebrow">Bagian 3 dari 6</div><h2 style="margin-bottom:0;">Membandingkan Pecahan Beda Penyebut</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang penyebutnya BEDA — di sinilah kemampuan detektif KPK-mu dari unit sebelumnya terpakai lagi!</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Ingat Kartu Detektif KPK-mu dari unit sebelumnya? Menurutmu, bagaimana KPK bisa membantu membandingkan dua pecahan yang penyebutnya beda?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Samakan Penyebut Dulu dengan KPK</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Untuk membandingkan pecahan berpenyebut beda, kita samakan dulu penyebutnya memakai KPK — persis seperti yang kamu pelajari sebelumnya! Contoh: bandingkan 2/3 dan 3/4. KPK(3,4)=12, jadi 2/3=8/12 dan 3/4=9/12. Karena 9&gt;8, maka 3/4 lebih besar.</p>
+    <div class="contoh-soal">🔗 Ini BUKAN materi baru — kamu hanya memakai ulang kemampuan mencari KPK dari Kartu Detektifmu di unit sebelumnya.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Tuliskan langkah mencari KPK penyebut terlebih dulu.</div>
+    <div class="field-row"><label>Bandingkan: 2/5 vs 3/8</label><textarea class="ans" placeholder="KPK(5,8) = ... jadi 2/5 = .../40 dan 3/8 = .../40 ..."></textarea></div>
+    <div class="field-row"><label>Bandingkan: 3/4 vs 5/6</label><textarea class="ans" placeholder="KPK(4,6) = ..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📕 Tambahan untuk Buku Resep Pecahanku</div>
+    <div class="field-row"><label>Tips Membandingkan Pecahan Beda Penyebut</label><textarea class="ans" id="tipsBanding2" placeholder="Kalau penyebutnya beda, aku akan..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz3"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apakah kemampuan KPK-mu dari unit sebelumnya benar-benar membantu? Ceritakan.</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Bagian mana yang masih perlu kamu latih lagi?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(5)">Lanjut →</button></div>
+</div><!-- /page 4 -->
+
+<div class="page" data-page="5">
+<!-- SUBUNIT 4 — operasi sepenyebut -->
+<section class="block" id="subunit4">
+  <div class="subunit-head"><span class="badge-num">4</span>
+    <div><div class="block-eyebrow">Bagian 4 dari 6</div><h2 style="margin-bottom:0;">Menjumlahkan dan Mengurangkan Pecahan Sepenyebut</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang kita mulai berhitung dengan pecahan — masih dengan penyebut yang sama dulu, supaya lebih mudah.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau kamu punya 3 potong kue dari total 8 potong, lalu dapat tambahan 2 potong lagi dari kue yang SAMA (8 potong juga), berapa total potongan yang kamu punya sekarang?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Penyebut Sama, Penyebut Tetap</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Kalau penyebutnya sama, cukup jumlahkan atau kurangkan pembilangnya saja — penyebutnya TETAP tidak berubah. Contoh: 3/8 + 2/8 = 5/8.</p>
+    <div class="contoh-soal">Bayangkan: 3 potong kue (dari 8 potong) ditambah 2 potong kue lagi (dari 8 potong yang sama) = 5 potong kue (dari 8 potong).</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Kerjakan latihan berikut.</div>
+    <div class="field-row"><label>3/8 + 2/8 = ...</label><input class="ans-input" type="text" placeholder="..."></div>
+    <div class="field-row"><label>7/9 − 4/9 = ...</label><input class="ans-input" type="text" placeholder="..."></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📕 Tambahan untuk Buku Resep Pecahanku</div>
+    <div class="field-row"><label>Tips Operasi Pecahan Sepenyebut</label><textarea class="ans" id="tipsOperasi1" placeholder="Kalau penyebutnya sama, cara menjumlahkan/mengurangkan pecahan adalah..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz4"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 4 ini?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Apakah kamu sudah lancar menjumlahkan/mengurangkan pecahan sepenyebut?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(4)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(6)">Lanjut →</button></div>
+</div><!-- /page 5 -->
+
+<div class="page" data-page="6">
+<!-- SUBUNIT 5 — operasi beda penyebut, awas miskonsepsi -->
+<section class="block" id="subunit5">
+  <div class="subunit-head"><span class="badge-num">5</span>
+    <div><div class="block-eyebrow">Bagian 5 dari 6</div><h2 style="margin-bottom:0;">Menjumlahkan dan Mengurangkan Pecahan Beda Penyebut</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Ini bagian yang paling sering membuat orang tertukar — perhatikan baik-baik peringatan di bawah ini!</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Menurutmu, kalau penyebut dua pecahan berbeda, apakah kita bisa langsung menjumlahkan pembilang dan penyebutnya sekaligus? Coba jelaskan alasanmu.
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Samakan Dulu dengan KPK, Baru Operasikan</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Sama seperti membandingkan, kita samakan dulu penyebut dengan KPK, baru jumlahkan/kurangkan pembilangnya. Contoh: 1/4 + 1/6 → KPK(4,6)=12 → 3/12 + 2/12 = 5/12.</p>
+    <div class="contoh-soal">⚠️ AWAS MISKONSEPSI! Banyak yang keliru menjumlahkan pembilang DAN penyebut sekaligus (1/4 + 1/6 = 2/10 — INI SALAH!). Penyebut TIDAK BOLEH dijumlahkan langsung, harus disamakan dulu dengan KPK.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Kerjakan dengan menyamakan penyebut terlebih dulu.</div>
+    <div class="field-row"><label>1/4 + 1/6 = ...</label><textarea class="ans" placeholder="KPK(4,6)=12, jadi 1/4=3/12, 1/6=2/12, hasil = ..."></textarea></div>
+    <div class="field-row"><label>3/5 − 1/4 = ...</label><textarea class="ans" placeholder="KPK(5,4)=20..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📕 Tambahan untuk Buku Resep Pecahanku</div>
+    <div class="field-row"><label>Tips Menghindari Miskonsepsi Ini</label><textarea class="ans" id="tipsOperasi2" placeholder="Supaya tidak salah menjumlahkan penyebut, aku akan..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz5"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apakah kamu pernah hampir membuat kesalahan ini? Ceritakan.</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Bagaimana caramu mengingat supaya tidak salah lagi?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(5)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(7)">Lanjut →</button></div>
+</div><!-- /page 6 -->
+
+<div class="page" data-page="7">
+<!-- SUBUNIT 6 — PERTEMUAN INTI -->
+<section class="block" id="subunit6">
+  <div class="subunit-head"><span class="badge-num badge-inti">6</span>
+    <div><div class="block-eyebrow">Bagian 6 dari 6 · Pertemuan Inti — Saatnya Menerapkan!</div><h2 style="margin-bottom:0;">Pecahan Campuran dalam Resep Nyata</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang gabungkan semua kemampuanmu untuk soal cerita memasak dengan pecahan campuran, lalu rangkum jadi Buku Resep Pecahanmu.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Bayangkan kamu sedang membantu memasak di dapur dan resepnya memakai pecahan seperti "1¾ kg gula". Apa yang akan kamu lakukan pertama kali untuk memahami takarannya?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Pecahan Campuran</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;"><strong>Pecahan campuran</strong> adalah gabungan bilangan bulat dan pecahan biasa, misalnya 1¾ (artinya 1 utuh ditambah ¾ bagian lagi). Untuk mengoperasikannya, kamu bisa mengubahnya dulu ke pecahan biasa: 1¾ = 7/4.</p>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Soal Cerita — Resep Memasak</div>
+    <div class="act-desc">Ibu memiliki 1¾ kg gula. Untuk membuat kue, ia memakai ⅝ kg. Berapa sisa gula Ibu sekarang? (Ubah dulu 1¾ ke pecahan biasa sebelum menghitung.)</div>
+    <textarea class="ans" placeholder="1 3/4 = 7/4 kg. 7/4 - 5/8 = ..."></textarea>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📕 Tuntaskan Buku Resep Pecahanku</div>
+    <div class="act-desc">Tekan tombol di bawah untuk merangkum semua catatanmu dari Bagian 1-5.</div>
+    <button class="mini-btn" onclick="showBuku()">Susun Buku Resep Pecahanku</button>
+    <div class="card-preview hidden" id="bukuPreview"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">💡 Tips Supaya Tidak Mudah Salah</div>
+    <div class="tip-grid">
+      <div class="tip-card"><div class="ti">🔢</div>Penyebut beda? Samakan dulu dengan KPK sebelum menjumlahkan/mengurangkan.</div>
+      <div class="tip-card"><div class="ti">🚫</div>Jangan pernah menjumlahkan penyebut langsung!</div>
+      <div class="tip-card"><div class="ti">🍕</div>Bayangkan potongan kue kalau masih bingung — pecahan itu tentang bagian, bukan cuma angka.</div>
+      <div class="tip-card"><div class="ti">📐</div>Pecahan campuran? Ubah dulu ke pecahan biasa sebelum menghitung.</div>
+    </div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✅ Kesiapanku</div>
+    <div class="check-item"><input type="checkbox" id="chk1"><label for="chk1">Aku bisa menemukan pecahan senilai</label></div>
+    <div class="check-item"><input type="checkbox" id="chk2"><label for="chk2">Aku bisa membandingkan pecahan sepenyebut maupun beda penyebut</label></div>
+    <div class="check-item"><input type="checkbox" id="chk3"><label for="chk3">Aku bisa menjumlahkan dan mengurangkan pecahan sepenyebut maupun beda penyebut</label></div>
+    <div class="check-item"><input type="checkbox" id="chk4"><label for="chk4">Buku Resep Pecahanku sudah selesai kususun</label></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Latihan Akhir Unit</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Unit</h3>
+  <div class="reflect-q"><label>Melihat kembali perjalananmu di unit terbesar ini, bagian mana yang paling kamu kuasai?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Bagaimana kamu akan memakai Buku Resep Pecahanmu nanti?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, unit terbesar ini selesai! Tuliskan satu hal yang kamu syukuri dari belajar hari ini.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(6)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(8)">Lanjut →</button></div>
+</div><!-- /page 7 -->
+
+<div class="page" data-page="8">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Pecahan senilai</dt><dd>Pecahan berbeda bentuk yang mewakili bagian sama besar (mis. ½ = 2/4 = 4/8).</dd>
+    <dt>Pecahan campuran</dt><dd>Gabungan bilangan bulat dan pecahan biasa (mis. 1¾).</dd>
+    <dt>Menyamakan penyebut</dt><dd>Mengubah dua pecahan berbeda penyebut agar penyebutnya sama (biasanya dengan KPK) sebelum dibandingkan/dioperasikan.</dd>
+  </dl>
+</section>
+<div class="closing">Selamat, kamu sudah menyelesaikan unit TERBESAR di Elemen Bilangan! Pemahaman pecahan ini adalah fondasi penting yang akan terus kamu pakai, termasuk di unit berikutnya dan sampai kelas 6 nanti. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(7)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 8 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+const STORAGE_KEY = 'modulProgress:mtk-pecahan-tp6';
+const TOTAL_PAGES = 9;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Bag.3','Bag.4','Bag.5','Inti','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, input.ans-input');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+function wireCheckPersistence(){
+  const state = loadState();
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(state.check && state.check[el.id] !== undefined){ el.checked = state.check[el.id]; }
+    el.addEventListener('change', ()=>{
+      saveState(s=>{ s.check = s.check || {}; s.check[el.id] = el.checked; });
+    });
+  });
+}
+
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')" style="margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;">Lihat contoh jawaban</button><div class="key-box" style="display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SUBUNIT 6: rangkum Buku Resep Pecahan ============ */
+function showBuku(){
+  const s1 = document.getElementById('senilai1').value;
+  const b1 = document.getElementById('tipsBanding1').value;
+  const b2 = document.getElementById('tipsBanding2').value;
+  const o1 = document.getElementById('tipsOperasi1').value;
+  const o2 = document.getElementById('tipsOperasi2').value;
+
+  const box = document.getElementById('bukuPreview');
+  box.innerHTML = `
+    <h4>Buku Resep Pecahanku</h4>
+    <div class="cp-section"><b>Pecahan Senilai (Bagian 1)</b>${s1 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Membandingkan Sepenyebut (Bagian 2)</b>${b1 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Membandingkan Beda Penyebut (Bagian 3)</b>${b2 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Operasi Sepenyebut (Bagian 4)</b>${o1 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Menghindari Miskonsepsi Operasi Beda Penyebut (Bagian 5)</b>${o2 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+  `;
+  box.classList.remove('hidden');
+  updateProgress();
+}
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Pecahan 3/4 berarti kita mengambil...', options:['3 bagian dari total 4 bagian yang sama besar','4 bagian dari total 3 bagian yang sama besar','3 dibagi 4 sebagai bilangan biasa saja'], correct:0},
+  {type:'bs', text:'Pecahan 3/4 berarti kita mengambil 3 bagian dari total 4 bagian yang sama besar.', correct:0},
+  {type:'mcq', text:'Mana yang lebih besar, 3/5 atau 2/5?', options:['3/5','2/5','sama besar'], correct:0},
+  {type:'essay', text:'Bayangkan kue dibagi 8 potong sama besar, kamu makan 3 potong. Pecahan apa yang menunjukkan bagian yang kamu makan?'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'mcq', text:'Pecahan mana yang senilai dengan 1/2?', options:['2/4','1/3','3/5'], correct:0},
+  {type:'bs', text:'Pecahan senilai adalah pecahan berbeda angka tapi mewakili bagian yang sama besarnya.', correct:0},
+  {type:'essay', text:'Tuliskan 2 pecahan senilai untuk 2/3.', tag:'isian'},
+  {type:'essay', text:'Jelaskan kenapa 1/2 dan 2/4 dianggap "sama besar" walau angkanya beda.', tag:'uraian', key:'Contoh: karena kalau pembilang dan penyebut sama-sama dikalikan angka yang sama, bagian yang diwakili tetap sama besar meski jumlah potongannya beda — 1 dari 2 bagian sama luasnya dengan 2 dari 4 bagian.'},
+  {type:'essay', text:'Ibu membagi kue jadi 4 potong sama besar dan memberimu 2 potong. Tuliskan pecahan bagianmu dalam bentuk paling sederhana.', tag:'penerapan'}
+]);
+
+renderQuiz('quiz2', [
+  {type:'mcq', text:'Manakah yang lebih besar: 6/11 atau 4/11?', options:['6/11','4/11','sama besar'], correct:0},
+  {type:'bs', text:'Untuk membandingkan pecahan sepenyebut, kita cukup membandingkan pembilangnya saja.', correct:0},
+  {type:'essay', text:'Urutkan dari terkecil ke terbesar: 3/7, 6/7, 1/7, 4/7.', tag:'isian'},
+  {type:'essay', text:'Jelaskan kenapa membandingkan pecahan sepenyebut lebih mudah daripada beda penyebut.', tag:'uraian', key:'Contoh: karena keduanya dibagi menjadi jumlah bagian yang sama (penyebut sama), jadi kita tinggal melihat berapa banyak bagian yang diambil (pembilang) tanpa perlu menyamakan apa pun lagi.'},
+  {type:'essay', text:'Dua anak membagi kue yang sama menjadi 10 potong sama besar. Andi mengambil 4/10, Budi mengambil 6/10. Siapa yang mengambil lebih banyak?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz3', [
+  {type:'mcq', text:'Untuk membandingkan 1/3 dan 1/4, penyebut yang tepat digunakan (KPK dari 3 dan 4) adalah...', options:['12','7','1'], correct:0},
+  {type:'bs', text:'Untuk membandingkan pecahan beda penyebut, kita perlu menyamakan penyebutnya terlebih dahulu.', correct:0},
+  {type:'essay', text:'Bandingkan 2/5 dan 3/8, tuliskan langkah mencari KPK-nya.', tag:'isian'},
+  {type:'essay', text:'Jelaskan mengapa kita perlu memakai KPK saat membandingkan pecahan beda penyebut.', tag:'uraian', key:'Contoh: karena kita hanya bisa membandingkan pembilang secara langsung kalau penyebutnya sudah sama — KPK membantu kita menemukan penyebut baru yang sama untuk kedua pecahan tanpa mengubah nilainya.'},
+  {type:'essay', text:'Dua toko menjual minyak: Toko A tersisa 3/4 botol, Toko B tersisa 5/6 botol (botol ukuran sama). Toko mana yang minyaknya lebih banyak?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz4', [
+  {type:'mcq', text:'2/7 + 3/7 = ...', options:['5/7','5/14','6/7'], correct:0},
+  {type:'bs', text:'Saat menjumlahkan pecahan sepenyebut, penyebutnya ikut dijumlahkan juga.', correct:1},
+  {type:'essay', text:'Kerjakan: 6/10 − 3/10 = ...', tag:'isian'},
+  {type:'essay', text:'Jelaskan langkahmu menjumlahkan dua pecahan yang penyebutnya sama.', tag:'uraian', key:'Contoh: karena penyebutnya sudah sama, aku hanya perlu menjumlahkan pembilangnya saja, sedangkan penyebutnya tetap sama seperti semula.'},
+  {type:'essay', text:'Andi minum 2/6 liter jus, lalu minum lagi 3/6 liter jus yang sama. Berapa total jus yang diminum Andi?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz5', [
+  {type:'bs', text:'Untuk menjumlahkan 1/4 + 1/6, kita bisa langsung menjumlahkan pembilang dan penyebutnya sekaligus menjadi 2/10.', correct:1},
+  {type:'mcq', text:'2/3 + 1/6 = ...', options:['5/6','3/9','1/2'], correct:0},
+  {type:'essay', text:'Kerjakan: 3/4 − 1/6 = ..., tuliskan langkah menyamakan penyebutnya.', tag:'isian'},
+  {type:'essay', text:'Jelaskan kenapa menjumlahkan penyebut secara langsung itu SALAH, walau terlihat masuk akal.', tag:'uraian', key:'Contoh: karena penyebut menunjukkan jumlah bagian yang sama besar dalam satu keseluruhan — kalau penyebutnya beda, kedua pecahan sedang mengukur "potongan" yang ukurannya berbeda, jadi tidak bisa dijumlahkan langsung tanpa disamakan dulu.'},
+  {type:'essay', text:'Sebuah wadah berisi 5/6 liter air, lalu dipakai 1/4 liter untuk menyiram tanaman. Berapa sisa air di wadah?', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Urutan dari TERKECIL ke TERBESAR untuk 1½, 1¼, 2, 1¾ adalah...', options:['1¼, 1½, 1¾, 2','1½, 1¼, 1¾, 2','2, 1¾, 1½, 1¼','1¼, 1¾, 1½, 2'], correct:0},
+  {type:'bs', text:'Pecahan campuran seperti 1¾ perlu diubah dulu ke pecahan biasa sebelum dioperasikan (dijumlah/dikurang).', correct:0},
+  {type:'essay', text:'Sebuah resep butuh 2¼ kg tepung. Kamu sudah punya 1⅗ kg tepung di rumah — eh, tunggu, coba ganti jadi: kamu sudah punya 1⅖ kg tepung di rumah. Berapa kekurangan tepung yang harus kamu beli?', tag:'penerapan'},
+  {type:'essay', text:'Bagaimana perasaanmu setelah menyelesaikan unit terbesar ini? Bagian mana yang tadinya paling menakutkan tapi ternyata bisa kamu kuasai?', tag:'uraian'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 22;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  if(!document.getElementById('bukuPreview').classList.contains('hidden')) done++;
+  document.querySelectorAll('.check-item input:checked').forEach(()=>done++);
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+wireCheckPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+wireCheckPersistence();
+updateProgress();
+</script>
+
 <script type="module" src="../../../../assets/js/auth-guard.js"></script>
 <script>
   document.addEventListener("user-verified", () => {
@@ -238,164 +732,6 @@ details.guru-note ul{margin:10px 0 0;padding-left:20px;font-size:.9rem;}
     document.getElementById("app-detail").classList.remove("hidden");
   });
   document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
-</script>
-<script>
-
-const STORAGE_KEY = 'modulProgress:matematika-pecahan-tp6';
-const TOTAL_PAGES = 9;
-let state = null;
-let isReplaying = false;
-
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    state = raw ? JSON.parse(raw) : {page:0, answers:{}, checks:{}, actions:[]};
-  }catch(e){ state = {page:0, answers:{}, checks:{}, actions:[]}; }
-  if(!state.answers) state.answers = {};
-  if(!state.checks) state.checks = {};
-  if(!state.actions) state.actions = [];
-}
-
-function saveState(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
-  updateSavedLabel();
-}
-
-function updateSavedLabel(){
-  const el = document.getElementById('savedLabel');
-  if(!el) return;
-  const d = new Date();
-  const hh = String(d.getHours()).padStart(2,'0');
-  const mm = String(d.getMinutes()).padStart(2,'0');
-  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
-}
-
-function goToPage(n){
-  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const target = document.querySelector('.page[data-page="'+n+'"]');
-  if(target) target.classList.add('active');
-  state.page = n;
-  saveState();
-  updateStepper();
-  const prevBtn = document.getElementById('btnPrev');
-  const nextBtn = document.getElementById('btnNext');
-  if(prevBtn) prevBtn.disabled = (n===0);
-  if(nextBtn) nextBtn.textContent = (n===TOTAL_PAGES-1) ? 'Selesai ✓' : 'Lanjut →';
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-function updateStepper(){
-  document.querySelectorAll('.step-dot').forEach(d=>{
-    const p = parseInt(d.dataset.page,10);
-    d.classList.toggle('active', p===state.page);
-    d.classList.toggle('done', p<state.page);
-  });
-}
-
-function wireTextPersistence(){
-  document.querySelectorAll('textarea.ans, input.ans-input').forEach(el=>{
-    const key = el.dataset.key;
-    if(!key) return;
-    if(state.answers[key] !== undefined) el.value = state.answers[key];
-    el.addEventListener('input', ()=>{ state.answers[key] = el.value; saveState(); });
-  });
-}
-
-function wireCheckPersistence(){
-  document.querySelectorAll('.check-item input[type=checkbox]').forEach(el=>{
-    const key = el.dataset.key;
-    if(!key) return;
-    if(state.checks[key]) el.checked = true;
-    el.addEventListener('change', ()=>{ state.checks[key] = el.checked; saveState(); });
-  });
-}
-
-function logAction(action){
-  if(isReplaying) return;
-  state.actions.push(action);
-  saveState();
-}
-
-function replayActions(){
-  isReplaying = true;
-  (state.actions||[]).forEach(a=>{
-    if(a.type==='mcq'){
-      const btn = document.querySelector('.opt-btn[data-group="'+a.group+'"][data-idx="'+a.chosen+'"]');
-      if(btn) btn.click();
-    } else if(a.type==='reveal'){
-      const el = document.getElementById(a.id);
-      if(el) el.classList.add('show');
-    }
-  });
-  isReplaying = false;
-}
-
-function toggleReveal(id){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.classList.toggle('show');
-  logAction({type:'reveal', id:id});
-}
-
-function renderQuiz(containerId, items){
-  const c = document.getElementById(containerId);
-  if(!c) return;
-  items.forEach((item, idx)=>{
-    const groupId = containerId+'-q'+idx;
-    if(item.type==='mcq'){
-      let html = '<div class="quiz-item"><p class="q-text">'+(idx+1)+'. '+item.text+'</p><div class="q-options" data-group="'+groupId+'">';
-      item.options.forEach((opt,oi)=>{
-        html += '<button type="button" class="opt-btn" data-group="'+groupId+'" data-idx="'+oi+'" onclick="checkMCQ(\''+groupId+'\', this, '+oi+', '+item.correct+')">'+opt+'</button>';
-      });
-      html += '</div><p class="q-feedback" id="'+groupId+'-fb"></p>';
-      if(item.explain){
-        html += '<button type="button" class="reveal-btn" onclick="toggleReveal(\''+groupId+'-exp\')">Lihat penjelasan</button>';
-        html += '<div class="reveal-box" id="'+groupId+'-exp">'+item.explain+'</div>';
-      }
-      html += '</div>';
-      c.insertAdjacentHTML('beforeend', html);
-    }
-  });
-}
-
-function checkMCQ(groupId, btn, chosenIdx, correctIdx){
-  const group = document.querySelector('.q-options[data-group="'+groupId+'"]');
-  if(!group) return;
-  group.querySelectorAll('.opt-btn').forEach(b=> b.classList.remove('correct','wrong'));
-  if(chosenIdx===correctIdx){
-    btn.classList.add('correct');
-  } else {
-    btn.classList.add('wrong');
-    group.querySelectorAll('[data-idx="'+correctIdx+'"]').forEach(b=>b.classList.add('correct'));
-  }
-  const fb = document.getElementById(groupId+'-fb');
-  if(fb) fb.textContent = (chosenIdx===correctIdx) ? '✓ Benar!' : '△ Belum tepat — lihat kunci di jawaban yang menyala hijau.';
-  logAction({type:'mcq', group:groupId, chosen:chosenIdx});
-}
-
-function resetProgress(){
-  if(confirm('Yakin mulai ulang dari awal? Semua jawaban tersimpan di perangkat ini akan dihapus.')){
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
-  }
-}
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  loadState();
-  wireTextPersistence();
-  wireCheckPersistence();
-  document.querySelectorAll('.q-options').forEach(()=>{});
-  replayActions();
-  goToPage(state.page || 0);
-  updateSavedLabel();
-  const prevBtn = document.getElementById('btnPrev');
-  const nextBtn = document.getElementById('btnNext');
-  if(prevBtn) prevBtn.addEventListener('click', ()=> goToPage(state.page-1));
-  if(nextBtn) nextBtn.addEventListener('click', ()=> goToPage(state.page+1));
-  document.querySelectorAll('.step-dot').forEach(d=> d.addEventListener('click', ()=> goToPage(parseInt(d.dataset.page,10))));
-});
-
 </script>
 </body>
 </html>
