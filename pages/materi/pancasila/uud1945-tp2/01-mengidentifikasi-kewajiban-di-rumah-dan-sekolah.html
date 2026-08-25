@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengidentifikasi Kewajiban di Rumah dan Sekolah · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .isian-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .isian-tabel th, .isian-tabel td { border: 1px solid var(--border); padding: 9px 11px; text-align: left; }
+  .isian-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); width: 45%; }
+  .isian-tabel td.kosong { color: var(--ink-3); font-style: italic; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">⚖️</span>
+      <div class="ma-cover-eyebrow">UUD 1945 · Norma, Hak, dan Kewajiban · Materi 1 dari 4</div>
+      <div class="ma-cover-title">Mengidentifikasi Kewajiban di Rumah dan Sekolah</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah menyelesaikan elemen Pancasila. Sekarang kita masuk ke elemen baru: <strong>Undang-Undang Dasar Negara Republik Indonesia Tahun 1945</strong> — biasa disingkat <strong>UUD 1945</strong>. Ini adalah dokumen resmi yang berisi aturan-aturan dasar untuk seluruh Indonesia.</p>
+
+      <p>Sebelum membahas dokumen besar itu, kita mulai dari sesuatu yang jauh lebih dekat denganmu dulu: aturan-aturan kecil yang sudah kamu jalani setiap hari, di rumah dan di sekolah. Salah satu jenis aturan itu bernama <strong>kewajiban</strong>.</p>
+
+      <div class="cerita-box">
+        <strong>Kewajiban</strong> adalah hal yang HARUS kamu lakukan — bukan pilihan boleh-tidak-boleh, tapi sesuatu yang memang menjadi tanggung jawabmu untuk dijalankan.
+      </div>
+
+      <p>Coba pikirkan sejenak: apa saja hal-hal yang HARUS kamu lakukan setiap hari, baik di rumah maupun di sekolah? Mungkin kamu langsung teringat beberapa hal, atau mungkin butuh waktu sebentar untuk menyadarinya — karena hal-hal itu sudah begitu rutin sampai jarang kamu pikirkan secara sadar.</p>
+
+      <ol class="langkah">
+        <li>Pikirkan dulu tentang RUMAH: apa yang HARUS kamu lakukan setiap hari di sana? (Misalnya: merapikan tempat tidur, membantu pekerjaan rumah tertentu, belajar di jam yang disepakati.)</li>
+        <li>Pikirkan tentang SEKOLAH: apa yang HARUS kamu lakukan setiap hari di sana? (Misalnya: piket kelas sesuai jadwal, mengerjakan tugas, mendengarkan saat guru menjelaskan.)</li>
+        <li>Tuliskan minimal 3 contoh kewajibanmu — boleh gabungan dari rumah dan sekolah.</li>
+        <li>Untuk setiap contoh, tanyakan pada dirimu sendiri: "Apakah ini benar-benar HARUS aku lakukan, atau sebenarnya cuma BOLEH aku lakukan?" Kalau jawabnya HARUS, berarti itu kewajiban.</li>
+      </ol>
+
+      <table class="isian-tabel">
+        <tr><th>Kewajibanku di Rumah</th><td class="kosong">(isi dengan pengalamanmu sendiri)</td></tr>
+        <tr><th>Kewajibanku di Sekolah</th><td class="kosong">(isi dengan pengalamanmu sendiri)</td></tr>
+      </table>
+
+      <div class="contoh-box">
+        Materi ini akan kita lanjutkan di pertemuan berikutnya dengan membahas lawan dari kewajiban, yaitu <strong>hak</strong> — supaya kamu bisa membedakan dua hal ini dengan jelas, tanpa tertukar.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu bermain sepak bola dalam sebuah tim. Ada hal yang HARUS kamu lakukan sebagai pemain — misalnya datang tepat waktu saat latihan, memakai seragam tim, dan mengikuti aturan permainan.</span></p>
+        <p>Kamu tidak bisa memilih untuk "tidak datang latihan karena malas" — itu adalah kewajibanmu sebagai anggota tim. Kewajiban di rumah dan sekolah bekerja dengan cara yang sama: ada hal-hal yang memang menjadi tanggung jawabmu untuk dijalankan, bukan sekadar pilihan bebas.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Fokus materi ini HANYA pada kewajiban dulu — belum membahas hak. Jangan buru-buru mencampur keduanya dalam satu daftar. Kita akan membedakan hak dari kewajiban secara khusus di pertemuan berikutnya, supaya kamu benar-benar paham perbedaannya, bukan sekadar menghafal daftar campuran.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Made menyebutkan "menonton kartun kesukaanku" sebagai salah satu kewajibannya di rumah. Apakah ini contoh kewajiban yang tepat? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Ini BUKAN contoh kewajiban yang tepat. Menonton kartun kesukaan adalah sesuatu yang BOLEH dilakukan (kalau ada waktu dan diizinkan), bukan sesuatu yang HARUS dilakukan setiap hari. Kewajiban bersifat wajib dijalankan, sedangkan menonton kartun bersifat pilihan.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Rani bingung menentukan apakah "piket menyapu kelas sesuai jadwal" termasuk kewajiban. Bagaimana cara Rani mengeceknya sendiri?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Rani bisa bertanya pada dirinya: "Apakah aku BOLEH memilih untuk tidak melakukannya begitu saja tanpa alasan?" Kalau jawabannya TIDAK BOLEH (karena sudah jadi jadwal dan tanggung jawab bersama), maka itu adalah KEWAJIBAN. Piket sesuai jadwal termasuk kewajiban karena bersifat wajib dijalankan, bukan pilihan bebas.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Wayan berkata, "kewajiban itu cuma ada di sekolah, kalau di rumah kan bebas, tidak ada kewajiban." Apakah pendapat Wayan tepat?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pendapat Wayan KURANG tepat. Kewajiban ada di KEDUA tempat, baik rumah maupun sekolah — misalnya merapikan tempat tidur sendiri atau membantu pekerjaan rumah tertentu adalah contoh kewajiban di rumah, meskipun rumah terasa lebih "bebas" dibanding sekolah secara suasana.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Isi tabel di atas dengan minimal 3 contoh kewajibanmu sendiri (gabungan dari rumah dan sekolah). Untuk setiap contoh, pastikan itu benar-benar sesuatu yang HARUS kamu lakukan, bukan sekadar sesuatu yang BOLEH kamu lakukan.
+      </div>
+
+      <p>Materi berikutnya akan membahas <strong>hak</strong> — lawan dari kewajiban — dan bagaimana cara membedakan keduanya supaya tidak tertukar.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
