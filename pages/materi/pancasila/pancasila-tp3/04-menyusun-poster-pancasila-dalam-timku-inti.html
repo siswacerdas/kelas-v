@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Menyusun Poster Pancasila dalam Timku · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .poster-box { border: 2px dashed var(--m-color); border-radius: var(--r-lg); padding: 1.1rem 1.2rem; margin: 1.1rem 0; background: #faf2f2; }
+  .poster-judul { font-family: 'Playfair Display', serif; font-weight: 700; font-size: calc(var(--content-fs) + 3px); color: var(--m-color); text-align: center; margin-bottom: 0.9rem; }
+  .poster-baris { border-bottom: 1.5px solid var(--m-color); opacity: 0.4; height: 20px; margin-bottom: 8px; }
+  .poster-sila { font-size: calc(var(--content-fs) - 3px); font-weight: 700; color: var(--m-color); margin: 0.8rem 0 0.4rem; }
+  .rubrik-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .rubrik-tabel th, .rubrik-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .rubrik-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); text-align: center; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+  .penutup-box { border: 3px solid var(--m-color); border-radius: var(--r-lg); padding: 1.4rem 1.3rem; margin: 1.6rem 0 0.6rem; background: #faf2f2; text-align: center; }
+  .penutup-box .bintang { font-size: 2.2rem; margin-bottom: 0.5rem; }
+  .penutup-box .judul { font-weight: 700; font-size: calc(var(--content-fs) + 3px); color: var(--m-color); margin-bottom: 0.7rem; font-family: 'Playfair Display', serif; }
+  .penutup-box p { font-size: calc(var(--content-fs) - 1px); line-height: 1.75; }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌟</span>
+      <div class="ma-cover-eyebrow">Pancasila · Sintesis Kelima Sila · Materi 4 dari 4 · Pertemuan Inti ⭐ · Penutup Tahun Ajaran</div>
+      <div class="ma-cover-title">Menyusun Poster Pancasila dalam Timku</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Hari ini adalah PUNCAK dari seluruh perjalanan belajar Pendidikan Pancasila-mu sepanjang tahun ini. Kamu akan menyempurnakan pemetaan yang sudah kamu mulai di materi sebelumnya, menjadi sebuah POSTER yang akan kamu presentasikan ke kelas.</p>
+
+      <div class="cerita-box">
+        Materi ini TIDAK membangun kompetensi baru — semua nilai yang akan kamu tunjukkan hari ini adalah nilai yang SUDAH kamu alami konkret sepanjang sembilan materi sebelumnya. Hari ini murni tentang MENGINTEGRASIKAN dan MENUNJUKKAN pemahamanmu secara utuh.
+      </div>
+
+      <ol class="langkah">
+        <li>Lanjutkan atau sempurnakan pemetaan kelompokmu dari materi sebelumnya.</li>
+        <li>Susun pemetaan itu menjadi poster kelompok berjudul <strong>"Pancasila dalam Timku"</strong> — gunakan situasi sosial yang sudah kalian pilih (tim olahraga/permainan/kelompok belajar).</li>
+        <li>Untuk setiap sila yang kalian temukan, tuliskan contoh konkret DAN alasan singkat kenapa contoh itu mencerminkan nilai tersebut.</li>
+        <li>Siapkan presentasi lisan singkat untuk menceritakan poster kalian ke kelas.</li>
+      </ol>
+
+      <div class="poster-box">
+        <div class="poster-judul">🌟 Pancasila dalam Timku</div>
+        <p style="text-align:center; font-size:calc(var(--content-fs) - 3px); color:var(--ink-2); margin:0 0 1rem;">Situasi pilihan kelompok kami:</p>
+        <div class="poster-baris"></div>
+        <div class="poster-sila">Sila 1 — Ketuhanan:</div>
+        <div class="poster-baris"></div>
+        <div class="poster-sila">Sila 2 — Kemanusiaan:</div>
+        <div class="poster-baris"></div>
+        <div class="poster-sila">Sila 3 — Persatuan:</div>
+        <div class="poster-baris"></div>
+        <div class="poster-sila">Sila 4 — Musyawarah:</div>
+        <div class="poster-baris"></div>
+        <div class="poster-sila">Sila 5 — Keadilan Sosial:</div>
+        <div class="poster-baris"></div>
+      </div>
+
+      <div class="contoh-box">
+        Boleh dihias dengan gambar, warna, atau simbol — tapi yang PALING penting adalah ISI penjelasannya, bukan keindahan visualnya semata.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu sudah mengumpulkan semua bahan untuk membuat sebuah karya seni sepanjang tahun — sedikit warna di sini, sedikit bentuk di sana. Hari ini adalah hari kamu menyatukan semua bahan itu menjadi SATU karya utuh yang bisa ditunjukkan pada orang lain.</span></p>
+        <p>Poster "Pancasila dalam Timku" adalah karya itu — hasil dari semua pengalaman belajarmu sepanjang tahun, disatukan menjadi satu bentuk yang bisa kamu bagikan dan banggakan.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Kalau kamu atau kelompokmu merasa KESULITAN di materi ini, itu biasanya BUKAN karena materi ini sulit — melainkan tanda bahwa ada salah satu dari sembilan materi sebelumnya yang perlu ditinjau ulang. Kesulitan di sini adalah SINYAL untuk belajar lagi, bukan tanda "gagal paham Pancasila".
+      </div>
+
+      <table class="rubrik-tabel">
+        <tr><th>Aspek yang Dinilai</th><th>✓ Sudah Memenuhi</th><th>△ Perlu Dikembangkan</th></tr>
+        <tr><td><strong>Identifikasi nilai sila</strong></td><td>Minimal 4 dari 5 nilai teridentifikasi dengan contoh konkret dari situasi pilihan</td><td>Kurang dari 3 nilai teridentifikasi, atau contoh bersifat generik</td></tr>
+        <tr><td><strong>Menjelaskan alasan</strong></td><td>Dapat menjelaskan KENAPA contoh itu mencerminkan nilai tersebut</td><td>Hanya menempelkan label sila tanpa bisa menjelaskan alasannya</td></tr>
+        <tr><td><strong>Keterkaitan antarnilai</strong></td><td>Pemetaan menunjukkan kelima nilai saling terkait dalam satu situasi</td><td>Lima nilai diperlakukan sebagai poin-poin lepas yang tidak berhubungan</td></tr>
+      </table>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Kelompok Made menemukan hanya 2 dari 5 nilai dengan jelas, dan mereka merasa gagal karena "harusnya bisa nemuin semua." Apa yang sebaiknya disampaikan pada kelompok Made?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Kelompok Made bisa didorong untuk meninjau ulang materi-materi sebelumnya yang berkaitan dengan nilai-nilai yang belum ditemukan — misalnya membuka lagi catatan tentang musyawarah atau keberagaman. Menemukan sedikit dari 5 nilai bukan berarti "gagal", tapi sinyal bahwa ada bagian materi lama yang perlu ditinjau kembali dengan bantuan guru atau teman.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Kelompok Rani menuliskan semua lima nilai dengan lengkap di poster, tapi ketika presentasi, mereka hanya membaca label sila tanpa menjelaskan alasannya. Aspek rubrik mana yang belum terpenuhi?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Aspek "Menjelaskan alasan" belum terpenuhi. Meskipun kelima label sila sudah lengkap tertulis, rubrik menuntut PENJELASAN tentang kenapa contoh itu mencerminkan nilai tersebut — bukan sekadar menyebutkan label tanpa alasan yang menyertainya.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Wayan bertanya, "kalau nanti masih ada yang bingung soal Pancasila setelah materi penutup ini, apa artinya belajar setahun ini sia-sia?" Bagaimana kamu menjawab pertanyaan Wayan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Tidak sia-sia sama sekali. Memahami nilai-nilai Pancasila adalah proses PEMBIASAAN yang terus berkembang sepanjang hidup, bukan sesuatu yang "selesai total" dalam satu tahun ajaran. Materi penutup ini adalah titik ANTARA yang baik untuk melihat sejauh mana pemahamanmu berkembang, bukan garis akhir dari proses belajar nilai-nilai ini.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Selesaikan poster "Pancasila dalam Timku" bersama kelompokmu, lengkap dengan contoh konkret dan alasan untuk setiap nilai. Presentasikan secara singkat ke kelas.
+      </div>
+
+      <div class="penutup-box">
+        <div class="bintang">🌟🕊️📜⚖️🧩🌏👐🔍📖</div>
+        <div class="judul">Selamat! Kamu Telah Menyelesaikan Pendidikan Pancasila Kelas 5!</div>
+        <p>Sepanjang tahun ini, kamu sudah menjelajahi kronologi lahirnya Pancasila, meneladani sikap para tokoh perumusnya, memahami norma-hak-kewajiban, bermusyawarah membuat Kesepakatan Kelas, menghormati dan menjaga keberagaman teman-temanmu, mengenal keberagaman asal keluarga sekelas, menumbuhkan rasa ingin tahu sejarah daerahmu, bergotong royong, memahami Pembukaan UUD 1945, dan hari ini — menyatukan semuanya menjadi satu pemahaman utuh tentang Pancasila.</p>
+        <p>Nilai-nilai yang sudah kamu pelajari ini bukan untuk berhenti di sini — teruslah mempraktikkannya dalam kesehariamu, di sekolah maupun di luar sekolah. Sampai jumpa di materi Pendidikan Pancasila Kelas 6!</p>
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

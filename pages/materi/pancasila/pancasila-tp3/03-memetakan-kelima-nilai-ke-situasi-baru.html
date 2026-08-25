@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memetakan Kelima Nilai ke Situasi Baru · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .cerita-box { border: 1px solid var(--border); border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.75; color: var(--ink-2); }
+  .langkah { counter-reset: langkah; margin: 1rem 0 1.4rem; padding: 0; list-style: none; }
+  .langkah li { counter-increment: langkah; position: relative; padding: 0.15rem 0 0.15rem 2.1rem; margin-bottom: 0.6rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .langkah li::before {
+    content: counter(langkah); position: absolute; left: 0; top: 0.1rem;
+    width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--m-color); color: #fff;
+    font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center;
+  }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; text-align: center; }
+  .isian-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 2px); }
+  .isian-tabel th, .isian-tabel td { border: 1px solid var(--border); padding: 9px 11px; text-align: left; vertical-align: top; }
+  .isian-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+  .isian-tabel td.sila-no { text-align: center; font-weight: 700; color: var(--m-color); width: 10%; }
+  .isian-tabel td.kosong { color: var(--ink-3); font-style: italic; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+</style>
+</head>
+<body class="ma-root ma-mapel-pancasila">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Pendidikan Pancasila
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌟</span>
+      <div class="ma-cover-eyebrow">Pancasila · Sintesis Kelima Sila (Penutup Tahun Ajaran) · Materi 3 dari 4</div>
+      <div class="ma-cover-title">Memetakan Kelima Nilai ke Situasi Baru</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kamu sudah berhasil menemukan kelima nilai Pancasila dalam momen Kesepakatan Kelas — situasi yang sudah sangat familiar. Sekarang, TANTANGAN yang lebih besar: memetakan kelima nilai itu ke situasi yang BENAR-BENAR BARU, yang belum pernah kita bahas sebelumnya.</p>
+
+      <div class="cerita-box">
+        Pilih SATU situasi sosial yang kamu sukai dalam kesehariamu — bisa tim olahraga (futsal, voli, dll), permainan kelompok (game daring bareng teman, permainan tradisional), atau kelompok belajar. Situasi ini boleh benar-benar dari duniamu sendiri, tidak harus berkaitan dengan sekolah.
+      </div>
+
+      <ol class="langkah">
+        <li>Pilih satu situasi sosial favoritmu (tim olahraga/permainan/kelompok belajar).</li>
+        <li>Berkumpul dalam kelompok kecil — boleh dengan teman yang menyukai situasi serupa, atau berbeda-beda supaya makin banyak variasi.</li>
+        <li>Diskusikan bersama: di mana kelima nilai Pancasila bisa ditemukan dalam situasi itu?</li>
+        <li>Untuk setiap nilai yang kalian temukan, cari CONTOH KONKRET dari situasi itu — bukan cuma menempelkan nama sila tanpa penjelasan.</li>
+      </ol>
+
+      <table class="isian-tabel">
+        <tr><th>Sila</th><th>Contoh Konkret dari Situasi Pilihanku</th></tr>
+        <tr><td class="sila-no">1</td><td class="kosong">(isi bersama kelompok)</td></tr>
+        <tr><td class="sila-no">2</td><td class="kosong">(isi bersama kelompok)</td></tr>
+        <tr><td class="sila-no">3</td><td class="kosong">(isi bersama kelompok)</td></tr>
+        <tr><td class="sila-no">4</td><td class="kosong">(isi bersama kelompok)</td></tr>
+        <tr><td class="sila-no">5</td><td class="kosong">(isi bersama kelompok)</td></tr>
+      </table>
+
+      <div class="contoh-box">
+        Contoh untuk tim futsal: Sila ke-4 (Musyawarah) bisa ditemukan saat tim mendiskusikan strategi bersama sebelum pertandingan — bukan satu orang saja yang menentukan semua keputusan.
+      </div>
+
+      <p>Tidak semua kelompok harus menemukan LIMA nilai dengan sama kuatnya — beberapa nilai mungkin lebih jelas terlihat dibanding yang lain dalam situasi tertentu, dan itu WAJAR.</p>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan kamu sudah belajar mengenali rasa masakan yang sudah familiar (masakan ibu di rumah). Sekarang, tantangannya adalah mencicipi masakan BARU yang belum pernah kamu coba, dan mencoba mengenali rasa-rasa yang sama (asin, gurih, manis) di dalamnya.</span></p>
+        <p>Sama seperti itu — kamu sudah berlatih "mencicipi" kelima nilai dalam momen Kesepakatan Kelas yang familiar. Sekarang, coba temukan rasa yang sama dalam "masakan baru": situasi sosial pilihanmu sendiri.</p>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Perhatikan Baik-Baik</span>
+        Hindari HANYA menempelkan nama sila tanpa penjelasan (misalnya cuma menulis "Sila 3: ada" tanpa contoh). Yang WAJIB dilakukan: berikan CONTOH KONKRET dari situasi pilihanmu untuk setiap nilai yang kamu temukan.
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Latihan &amp; Pembahasan — Cek Pemahamanmu</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Kelompok Made memilih situasi "tim futsal", dan untuk Sila ke-5 (Keadilan) mereka hanya menulis "ada keadilan di tim futsal" tanpa penjelasan lebih lanjut. Apakah jawaban ini sudah cukup?</div>
+          <div class="soal-a"><b>Pembahasan:</b> BELUM cukup. Materi ini menekankan pentingnya CONTOH KONKRET, bukan sekadar menempelkan label. Jawaban yang lebih baik misalnya: "Keadilan terlihat saat semua pemain mendapat giliran bermain yang setara, tidak ada yang selalu duduk di bangku cadangan tanpa alasan jelas."</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Kelompok Rani hanya berhasil menemukan 3 dari 5 nilai dengan jelas dalam situasi "kelompok belajar" yang mereka pilih. Apakah ini menjadi masalah?</div>
+          <div class="soal-a"><b>Pembahasan:</b> TIDAK menjadi masalah besar. Materi ini secara eksplisit menyebutkan bahwa tidak semua kelompok harus menemukan KELIMA nilai dengan sama kuatnya — beberapa nilai memang lebih jelas terlihat dibanding yang lain, tergantung situasi yang dipilih. Yang penting prosesnya sungguh-sungguh dicoba.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Wayan bertanya, "kenapa kita harus memilih situasi sendiri? Kenapa enggak dikasih contoh situasi yang sama untuk semua kelompok saja, biar lebih mudah?" Bagaimana kamu menjelaskan pentingnya memilih situasi sendiri pada Wayan?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Memilih situasi sendiri membuat pemetaan ini terasa lebih BERMAKNA dan PERSONAL bagi setiap siswa — karena situasi itu benar-benar bagian dari kehidupan mereka sendiri, bukan contoh yang dipaksakan dari luar. Ini juga melatih kemampuan MENERAPKAN nilai Pancasila secara mandiri ke berbagai konteks, bukan hanya menghafal satu contoh yang sama untuk semua orang.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri — Tugas Inti</span>
+        Bersama kelompokmu, pilih satu situasi sosial favorit dan lengkapi tabel di atas dengan contoh konkret untuk setiap nilai yang kalian temukan. Usahakan menemukan minimal 3-4 dari 5 nilai.
+      </div>
+
+      <p>Materi terakhir (Pertemuan Inti, sekaligus PENUTUP tahun ajaran Pendidikan Pancasila!) akan mengajakmu menyempurnakan pemetaan ini menjadi sebuah POSTER yang akan kamu presentasikan ke kelas.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
