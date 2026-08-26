@@ -1,6 +1,6 @@
 /**
  * laporan.js — logika pages/laporan-siswa/mpls.html (satu dari 3 "pintu" laporan; lihat
- * pages/laporan-siswa.html untuk landing-nya, dan RANCANGAN-LAPORAN-SISWA.md untuk peta
+ * pages/laporan-siswa.html untuk landing-nya, dan ANTIREGRESI.md §28 untuk peta
  * lengkap ketiganya: MPLS [halaman ini] / Perkembangan Belajar Mandiri / Latihan Mandiri Siswa).
  * Bergantung pada: MPLS_CONFIG (config.js), window.getFreshLaporanIdToken() (dari
  * assets/laporan-guard.js), window.LaporanPicker (dari assets/laporan-picker.js), dan event

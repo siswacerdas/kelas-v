@@ -5,7 +5,7 @@
  * (laporan-guard.js), window.LaporanPicker (laporan-picker.js), dan event
  * "laporan-context-ready" (detail: { role, nama, anak }).
  *
- * Cakupan HALAMAN INI (lihat RANCANGAN-LAPORAN-SISWA.md §7):
+ * Cakupan HALAMAN INI (lihat ANTIREGRESI.md §28 §7):
  *  - Ketuntasan Materi Ajar: AKTIF — dihitung dari sheet "Data Progres Materi" (diisi
  *    materi-progress-tracker.js tiap kali siswa membuka 1 materi).
  *  - Progres Modul: MASIH "Segera Hadir" — modul contoh yang pernah diberikan belum punya

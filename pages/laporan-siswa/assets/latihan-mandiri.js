@@ -8,7 +8,7 @@
  * BEDA dari Pintu 1 (mpls.html) & Pintu 2 (belajar-mandiri.html): kedua pintu itu baca data
  * lewat endpoint Apps Script (?laporanSiswa=1 / ?progresMateri=1, digerbang wajibAksesLaporan_()
  * di server). Pintu ini baca LANGSUNG dari Firestore koleksi `hasil_latihan` di sisi klien —
- * karena kuis Uji Kemampuan memang disimpan Firestore-native (lihat RANCANGAN-LAPORAN-SISWA.md
+ * karena kuis Uji Kemampuan memang disimpan Firestore-native (lihat ANTIREGRESI.md §28
  * §6.3), bukan lewat Apps Script/Sheets. Gerbangnya BUKAN wajibAksesLaporan_(), tapi Firestore
  * Security Rules (lihat README.md match /hasil_latihan/{id}): guru boleh baca semua dokumen,
  * orang tua cuma dokumen yang `namaSiswa`-nya ada di field `anak` miliknya — makanya modul ini
