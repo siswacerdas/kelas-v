@@ -1389,3 +1389,28 @@ Catat setiap sesi ujicoba di sini:
   warna `--m-{mapelSlug}` sudah didefinisikan di `pages/materi/assets/materi.css` DAN
   entri mapel itu ada di `pages/infografis/assets/infografis-data.js` (kalau ingin
   Galeri Visual-nya juga aktif untuk mapel itu).
+- **PENTING — cek DUPLIKAT entri di `materi-index.js`, bukan cuma entri yang hilang**:
+  kelas bug terpisah dari catatan di atas. Catatan sebelumnya soal IPAS menutup kasus
+  "file ada di repo tapi TIDAK terdaftar" (UNREGISTERED) — tapi belum pernah ada
+  pengecekan untuk arah sebaliknya: **satu entri yang sama tersalin DUA KALI** di array.
+  **Kejadian nyata**: saat menggabungkan beberapa ZIP materi Pendidikan Pancasila (dikirim
+  terpisah per-TP lewat beberapa sesi kerja) menjadi satu repo, satu entri
+  (`pancasila/uud1945-tp2/04-...-inti.html`) tersalin persis identik dua kali secara
+  manual — array sempat punya 182 entri padahal seharusnya 181, dan `urutan: 4` muncul
+  dua kali dalam TP yang sama. Baru ketahuan lewat audit terprogram, bukan baca manual.
+  **Checklist wajib setiap kali beberapa ZIP/potongan `materi-index.js` digabung manual
+  ke satu repo** (baik oleh Arif langsung maupun co-guru): jalankan pengecekan duplikat
+  berikut dari terminal (Node.js) sebelum push —
+  ```js
+  const fs=require('fs'); global.window={};
+  eval(fs.readFileSync('pages/materi/assets/materi-index.js','utf8'));
+  const idx=window.MATERI_INDEX;
+  const fileMap={}; idx.forEach((e,i)=>{ (fileMap[e.file]=fileMap[e.file]||[]).push(i); });
+  const dups=Object.entries(fileMap).filter(([f,ix])=>ix.length>1);
+  console.log('Total entri:', idx.length, '| Duplikat file path:', dups.length);
+  dups.forEach(([f,ix])=>console.log('  DUPLIKAT:', f, 'di index', ix));
+  ```
+  Harus menampilkan `Duplikat file path: 0` — kalau ada hasil, hapus salinan yang
+  berlebih sebelum push ke GitHub. Pengecekan ini SEKARANG bagian resmi dari workflow
+  validasi konten (lihat `SERAH_TERIMA_PROYEK.md` bagian internal Claude — dokumen
+  terpisah, bukan bagian dari repo publik ini — §5 langkah 1b).

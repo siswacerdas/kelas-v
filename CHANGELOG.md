@@ -8,6 +8,52 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Konten — Pendidikan Pancasila Kelas 5 tuntas (sesi kerja konten terpisah, tidak terkait v0.11.0)
+> Dikerjakan lewat jalur sesi kerja konten (Claude + Arif, upload-ZIP), berjalan paralel
+> dan independen dari pengerjaan Sistem Login Baru di atas. Tidak menyentuh kode
+> aplikasi/Firebase/Apps Script sama sekali — murni penambahan file `.html` materi +
+> entri `materi-index.js`.
+
+- **Seluruh 11 TP mata pelajaran Pendidikan Pancasila Kelas 5 selesai ditulis** (42 file
+  materi total, menambah dari 11 sesi yang sudah ada sebelumnya di titik ini):
+  UUD 1945 #2 (Norma/Hak/Kewajiban, 4 pertemuan), UUD 1945 #3 (Musyawarah & Kesepakatan
+  Kelas, 5 pertemuan), Bhinneka Tunggal Ika #2 (Menghormati & Menjaga Keberagaman, 4
+  pertemuan), NKRI #2 (Gotong Royong, 3 pertemuan), Bhinneka Tunggal Ika #1 (Keberagaman
+  Asal Keluarga, 5 pertemuan), Bhinneka Tunggal Ika #3 (Rasa Ingin Tahu Sejarah Lokal, 2
+  pertemuan — TP paling sensitif di kurikulum ini, lihat catatan di bawah), UUD 1945 #1
+  (Gagasan Pokok Pembukaan UUD 1945, 4 pertemuan), dan Pancasila #3 (Sintesis Kelima
+  Sila, TP penutup mapel, 4 pertemuan). Total sekarang **181 entri** di
+  `materi-index.js` (BI 42, Matematika 64, IPAS 33, Pancasila 42), naik dari 150 di
+  titik terakhir IPAS/Matematika selesai.
+- **Penanganan khusus BTI #3 (sejarah lokal)** — dokumen sumber melarang pembahasan
+  detail peristiwa kekerasan sejarah lokal (Gedoran Depok 1945). Materi ditulis memakai
+  pemantik netral yang diverifikasi lewat pencarian web (dua versi cerita asal-usul nama
+  "Depok"), tanpa rubrik penilaian formal (sesuai instruksi dokumen sumber "bukan bahan
+  ujian"), dan lolos pengecekan otomatis pasca-tulis (`grep -il` untuk kata kunci
+  sensitif) sebelum dikirim.
+
+### Diperbaiki — Bug duplikat di `materi-index.js` (ditemukan saat audit atas permintaan pengguna)
+- **1 entri tersalin dua kali persis identik**: `pancasila/uud1945-tp2/04-membedakan-
+  norma-hak-kewajiban-sekaligus-inti.html` muncul di 2 posisi berurutan dengan
+  `urutan: 4` ganda (total sempat 182 entri, Pancasila tercatat 43 padahal seharusnya
+  42). Kemungkinan besar terjadi saat proses manual menggabungkan beberapa ZIP kecil
+  (dikirim terpisah per-TP sepanjang beberapa sesi) menjadi satu repo gabungan.
+  Ditemukan lewat audit terprogram (bukan baca manual) yang mengecek duplikat file path
+  DAN duplikat kombinasi `(mapelSlug, tp, urutan)` sekaligus. Diperbaiki: salinan
+  kedua dihapus, total kembali ke 181 entri, Pancasila 42, seluruh 48 grup TP di index
+  diverifikasi ulang urutannya (`1,2,...,N` tanpa gap/duplikat) — nol masalah tersisa.
+- Ditemukan sekaligus (dilaporkan, TIDAK diperbaiki — bukan bug, murni kerapian): entri
+  Matematika terpecah jadi 2 blok terpisah di array mentah `materi-index.js` (9 entri →
+  disisipi 33 entri IPAS → 55 entri Matematika lagi), kemungkinan besar dari sesi
+  penambahan IPAS yang menyisipkan entrinya di tengah alih-alih di akhir array. TIDAK
+  memengaruhi fungsi (kode membaca lewat filter `mapelSlug`, bukan posisi array), jadi
+  sengaja TIDAK diubah tanpa persetujuan eksplisit pengguna — reorder besar berisiko
+  salah ketik/salah potong kalau dilakukan tergesa.
+- Ditambahkan catatan baru di `ANTIREGRESI.md` bagian "Catatan Penting": duplikat entri
+  adalah kelas bug BARU yang belum pernah dicek checklist sebelumnya (checklist lama
+  cuma mengecek "file ada tapi tidak terdaftar" dan sebaliknya) — sekarang jadi
+  pengecekan wajib setiap kali beberapa ZIP materi digabung manual ke satu repo.
+
 ### Direncanakan
 - Isi konten asli `cp-tp-atp.html` (CP/TP/ATP resmi per mapel) dan `jadwal.html`
   (jadwal mingguan resmi) — kerangkanya sudah ada sejak v0.9.0, tinggal menunggu
