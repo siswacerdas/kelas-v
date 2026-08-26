@@ -70,7 +70,7 @@
       onAuthStateChanged(auth, async function (user) {
         if (!user) return; // auth-guard.js yang mengurus redirect kalau belum login, bukan tugas file ini
 
-        // v1.1 (RANCANGAN-LOGIN-BARU.md Fase 3): siswa login pakai Firebase
+        // v1.1 (CHANGELOG.md (v0.11.0) Fase 3): siswa login pakai Firebase
         // Anonymous Auth, TIDAK PERNAH punya dokumen Firestore users/{uid} —
         // jadi cek Firestore role==="siswa" di bawah TIDAK PERNAH cocok untuk
         // mereka lagi (snap.exists() selalu false utk akun anonim). SEBELUM
