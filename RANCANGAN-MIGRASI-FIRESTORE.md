@@ -2,9 +2,9 @@
 
 > Status: **RENCANA — menunggu Arif menyiapkan Service Account di Google Cloud
 > Console (§1) sebelum kode bisa mulai ditulis.**
-> Dokumen ini pelacak progres migrasi Data Siswa saja. `RANCANGAN-LOGIN-BARU.md`
-> tetap jadi pelacak utama untuk seluruh upgrade login; dokumen ini dirujuk dari
-> situ (Fase 1 login).
+> Dokumen ini pelacak progres migrasi Data Siswa saja. `CHANGELOG.md`
+> (v0.11.0) tetap jadi riwayat utama seluruh upgrade login; dokumen ini
+> dirujuk dari situ (Fase 1 login).
 >
 > **Keputusan lingkup (dikonfirmasi Arif):** HANYA koleksi "Data Siswa" (profil +
 > NISN) yang pindah ke Firestore sekarang, sebagai bagian pekerjaan login. Data
@@ -137,8 +137,8 @@ ditambahkan bareng implementasi).
   **✅ SELESAI — 25 siswa berhasil masuk ke Firestore.**
 - [x] Update `ANTIREGRESI.md` §29 (gerbang wajib utk koleksi `siswa`, uji
   baca/tulis Firestore, uji koreksi NISN salah ketik, uji migrasi idempoten)
-- [ ] Update `RANCANGAN-LOGIN-BARU.md` §4 (tandai Fase 1 final, lanjut Fase 2
-  dengan asumsi backend siswa sudah Firestore) — **belum dikerjakan, lakukan
+- [ ] Tandai Fase 1 migrasi ini final di `CHANGELOG.md`, lanjut Fase 2
+  dengan asumsi backend siswa sudah Firestore — **belum dikerjakan, lakukan
   di sesi berikutnya sebelum mulai Fase 2**
 - [ ] (Nanti, proyek terpisah) Migrasi MPLS/Kognitif/Jurnal/Galeri
 

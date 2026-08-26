@@ -61,39 +61,45 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   di kedua halaman tsb)
 - Gerbang akses `input.html` masih pakai kode akses sederhana (belum dipindah ke
   Firebase) — sengaja tidak diubah dulu di update ini supaya tidak regresi
-- **[Diperbarui — catatan ini sempat usang]** Hasil pengerjaan siswa di Uji
-  Kemampuan SUDAH tersimpan ke Firestore (koleksi `hasil_latihan`, ditulis
-  langsung dari `uji-kemampuan.html` tiap kuis dinilai) dan SUDAH direkap
-  guru lewat `pages/riwayat-latihan.html` (guru-only). Yang BELUM: laporan
-  "Latihan Mandiri Siswa" untuk orang tua (Pintu 3,
-  `pages/laporan-siswa/latihan-mandiri.html`) masih kerangka "🚧 Segera
-  Hadir" — datanya sebenarnya sudah tersedia, tinggal dibuatkan tampilannya
-  (lihat `RANCANGAN-LAPORAN-SISWA.md` §6, juga perlu diperbarui)
-- Bug desain belum terselesaikan: `hasil_latihan` disimpan & dibaca pakai
-  `uid`, tapi siswa login lewat Firebase Anonymous Auth (UID baru tiap
-  sesi) — siswa sendiri TIDAK BISA membaca riwayat lamanya lewat `uid`
-  kalau nanti diberi akses baca sendiri. Belum jadi masalah nyata SAAT INI
-  karena satu-satunya halaman pembaca `hasil_latihan` (`riwayat-latihan.html`)
-  sengaja guru-only, tapi wajib dibereskan sebelum Pintu 3 memberi orang tua
-  akses (yang mana sudah aman karena dicocokkan lewat `namaSiswa`, bukan
-  `uid`) atau sebelum siswa sendiri diberi akses lihat riwayat
+- **[Selesai, catatan ini sempat usang 2x]** Hasil pengerjaan siswa di Uji
+  Kemampuan tersimpan ke Firestore (koleksi `hasil_latihan`), direkap guru
+  lewat `pages/riwayat-latihan.html`, DAN laporan "Latihan Mandiri Siswa"
+  untuk guru & orang tua (Pintu 3, `pages/laporan-siswa/latihan-mandiri.html`)
+  SUDAH aktif juga (bukan lagi kerangka "Segera Hadir") — baca langsung dari
+  Firestore di sisi klien, lihat detail arsitekturnya di `ANTIREGRESI.md` §28.
+  **Belum diuji sungguhan** di browser/Firebase asli sejak dibangun.
 - Migrasi Firestore untuk data MPLS/Kognitif/Jurnal Aktivitas/metadata Galeri
   Visual — SENGAJA ditunda sebagai proyek terpisah setelah Sistem Login Baru
   (lihat `RANCANGAN-MIGRASI-FIRESTORE.md`), supaya tidak merombak semua fitur
   sekaligus dalam 1 gelombang perubahan. Cuma "Data Siswa" yang sudah pindah.
 - Penegakan akses per-role belum menjangkau 150+ file materi/modul individual
   (`pages/materi/.../*.html`, `pages/modul/.../*.html`) — sengaja dibatasi ke
-  halaman induk saja untuk saat ini (lihat `RANCANGAN-LOGIN-BARU.md` §7)
-- Progres Modul (separuh laporan "Perkembangan Belajar Mandiri") — modul
-  contoh yang pernah diberikan belum punya jembatan pengiriman progres ke
-  server sama sekali; ditunda sampai ada modul sungguhan yang mau dipakai
-  (lihat `RANCANGAN-LAPORAN-SISWA.md` §7.2)
+  9 halaman induk saja untuk saat ini (lihat `ANTIREGRESI.md` §32)
+- Progres Modul (separuh laporan "Perkembangan Belajar Mandiri", Pintu 2) —
+  modul contoh yang pernah diberikan indikator "X% selesai"-nya murni
+  dihitung & disimpan di variabel JavaScript browser, hilang total begitu
+  halaman ditutup/refresh, TIDAK ada satu byte pun terkirim ke server.
+  Supaya progres ini bisa muncul di laporan, modul-modul berikutnya perlu
+  "jembatan" baru (fungsi kirim progres ke Apps Script tiap berubah/ditutup)
+  — ditunda sampai ada modul sungguhan yang mau dipakai, dan perlu pola/
+  template baku dulu supaya jembatan ini konsisten di semua modul ke depan
+  (bukan ditambal manual beda-beda tiap modul)
+- Laporan MPLS untuk orang tua (Pintu 1) belum menampilkan foto profil siswa
+  — proxy `?foto=` yang sudah ada masih hard-gated `wajibGuru_()` saja;
+  menampilkan foto untuk orang tua butuh perubahan ke `serveFotoBinary_()`
+  supaya bisa dibatasi cakupannya per-anak (bukan sekadar ganti gerbang),
+  disengaja ditunda supaya tidak menyentuh model keamanan proxy foto siswa
+  yang sudah berjalan tanpa perhatian desain khusus
+- Opsi cetak/PDF belum ada di Pintu 1 (MPLS)/Pintu 2/Pintu 3 Laporan Siswa —
+  browser sudah punya Ctrl+P/Cmd+P bawaan sebagai solusi sementara, tampilan
+  belum dioptimalkan khusus untuk itu (beda dari laporan MPLS ASLI di
+  `pages/mpls/laporan*.html` yang sudah punya cetak PDF A4 sejak lama)
 
 ### Ditambahkan (v0.11.0, sesi ini — Sistem Login Baru)
 Perombakan penuh mekanisme login, dari 1 jenis akun (email+password untuk
 semua orang) menjadi 3 peran terpisah dengan cara masuk & hak akses
-masing-masing. Rancangan & progres lengkap ada di `RANCANGAN-LOGIN-BARU.md`
-dan `RANCANGAN-MIGRASI-FIRESTORE.md`.
+masing-masing. Rancangan migrasi Data Siswa yang terkait ada di
+`RANCANGAN-MIGRASI-FIRESTORE.md`.
 
 - **Login Siswa (nama + NISN)** — siswa tidak lagi pakai email/password,
   cukup pilih namanya dari daftar (sumber: `MPLS_STUDENTS` di
@@ -247,7 +253,7 @@ mengasumsikan itu selalu ada):
 
 ### Ditambahkan
 - **Progres Materi Ajar** (separuh laporan "Perkembangan Belajar Mandiri",
-  Pintu 2 — lihat `RANCANGAN-LAPORAN-SISWA.md` §7.1) — siswa yang membuka
+  Pintu 2 — lihat `ANTIREGRESI.md §28` §7.1) — siswa yang membuka
   1 materi ajar sekarang otomatis tercatat "sudah dibaca":
   - `pages/materi/assets/materi-progress-tracker.js` — dipasang di
     **81 halaman materi** (disisipkan otomatis lewat skrip 1x jalan, bukan
@@ -296,7 +302,7 @@ mengasumsikan itu selalu ada):
   `pages/riwayat-latihan.html` (guru-only, dikelompokkan per nama
   siswa). `admin.html` tab Uji Kemampuan & tab Impor Massal (baru) ikut
   diperluas untuk mendukung field `tp` + 5 jenis soal ini. Lihat
-  `RANCANGAN-LAPORAN-SISWA.md` §6 untuk detail keputusan desainnya.
+  `ANTIREGRESI.md §28` §6 untuk detail keputusan desainnya.
 - **Pintu 3 — Latihan Mandiri Siswa diaktifkan** (`pages/laporan-siswa/
   latihan-mandiri.html`, dulu placeholder "Segera Hadir") — laporan untuk
   guru & orang tua (BUKAN siswa, konsisten dengan Pintu 1/2), dipilah per
@@ -346,7 +352,7 @@ mengasumsikan itu selalu ada):
   BSB + kalimat kesimpulan + rekomendasi konkret "di rumah" (dan "di
   sekolah" khusus untuk akun guru), bukan angka mentah.
 - **Laporan Siswa** (Fase 1 — lihat
-  `RANCANGAN-LAPORAN-SISWA.md` untuk rancangan lengkap & fase berikutnya)
+  `ANTIREGRESI.md §28` untuk rancangan lengkap & fase berikutnya)
   — halaman baru berisi ringkasan Profil, Asesmen MPLS (non-kognitif),
   Asesmen Kognitif, dan Jurnal Aktivitas per siswa. Bisa diakses **guru**
   (lihat siapa saja) DAN **orang tua** lewat akun Firebase terpisah (role
@@ -1405,7 +1411,7 @@ mengasumsikan itu selalu ada):
 - `apps-script/Code.gs`: sheet "Data Siswa" + header, endpoint `?all=1` dan
   `?siswa=1` di `doGet`, penanganan `type: "siswa"` di `doPost` (termasuk
   simpan foto base64 ke Drive)
-- `PROGRESS_MPLS_LANJUTAN.md` — pelacak progres pengerjaan fitur ini
+- `CHANGELOG.md` — pelacak progres pengerjaan fitur ini
 
 ### Catatan Arsitektur
 - Ambang skor kategori: <1.75 BB · 1.75–2.49 MB · 2.5–3.24 BSH · ≥3.25 BSB.

@@ -179,7 +179,7 @@
 
       try {
         // role "pending_orangtua" — BUKAN "orangtua" langsung. Aturan Firestore
-        // (lihat RANCANGAN-LOGIN-BARU.md §3.3) sengaja HANYA mengizinkan
+        // (lihat CHANGELOG.md v0.11.0) sengaja HANYA mengizinkan
         // pendaftar menulis dokumennya sendiri dengan role ini persis, supaya
         // tidak bisa self-approve jadi "orangtua" langsung dari sisi klien.
         await setDoc(doc(db, "users", cred.user.uid), {

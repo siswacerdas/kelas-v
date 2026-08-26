@@ -100,7 +100,7 @@ tipe **array**, lalu tambahkan tiap nama sebagai item array bertipe string.
 Akun `orangtua` HANYA bisa melihat laporan anak yang namanya ada di field
 ini (dibatasi di server, lihat `apps-script/Code.gs` fungsi
 `wajibAksesLaporan_`) — bukan sekadar disembunyikan di tampilan. Detail
-rancangan lengkap fitur ini ada di `RANCANGAN-LAPORAN-SISWA.md`.
+rancangan lengkap fitur ini ada di `ANTIREGRESI.md §28`.
 
 ### Langkah 8 — Aktifkan Modul MPLS (opsional, terpisah dari Firebase)
 Modul MPLS (`pages/mpls/`) memakai Google Sheets sebagai penyimpanan, bukan
@@ -170,7 +170,7 @@ kelas-v/
     │       ├── belajar-mandiri.js ← Logika Pintu 2 (Materi Ajar; Modul menyusul)
     │       └── latihan-mandiri.js ← Logika Pintu 3 (baca hasil_latihan LANGSUNG dari
     │                                  Firestore di klien, BUKAN lewat Apps Script — beda
-    │                                  dari Pintu 1/2, lihat RANCANGAN-LAPORAN-SISWA.md §6.3)
+    │                                  dari Pintu 1/2, lihat ANTIREGRESI.md §28 §6.3)
     └── mpls/
         ├── index.html     ← Landing MPLS (daftar sub-halaman)
         ├── input.html     ← Form input penilaian (mobile-first)

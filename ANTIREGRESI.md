@@ -115,6 +115,16 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] **Tombol "← Kembali ke Rekap" dan "🖨️ Cetak / Simpan sebagai PDF" TIDAK ikut tercetak** —
       cek betul-betul di hasil PDF final (bukan cuma print preview), ini sempat jadi bug
 
+> **Insight teknis (kenapa toolbar sempat tetap tercetak walau sudah ada
+> `display:none` di `@media print`)**: skrip men-set
+> `document.getElementById("toolbar").style.display = "flex"` (inline style)
+> untuk menampilkan toolbar di layar setelah data selesai dimuat. **Inline
+> style SELALU menang atas selector CSS biasa apa pun spesifisitasnya —
+> termasuk di dalam `@media print`.** Solusinya: tambahkan `!important` pada
+> aturan print (`#toolbar { display: none !important; }`). Pola ini perlu
+> diingat kalau nanti menambah elemen lain yang di-toggle via inline style
+> tapi harus disembunyikan saat print.
+
 ### 10. Data Kelas — Profil & Foto Siswa (`pages/kelas/`)
 - [ ] Halaman ini menolak akses jika bukan guru; kontainer "Kelas" di beranda hanya muncul untuk role `guru`
 - [ ] Dropdown "Nama Lengkap" berisi daftar siswa Kelas 5A yang sama persis dengan
@@ -406,7 +416,7 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 
 **Rekap guru** (`pages/riwayat-latihan.html`)
 - [ ] Akun **siswa** dan **orang tua** ditolak masuk halaman ini (guru-only
-      sesuai `RANCANGAN-LOGIN-BARU.md` §7 — cek dilempar balik ke beranda)
+      sesuai `CHANGELOG.md` (v0.11.0) — cek dilempar balik ke beranda)
 - [ ] Akun guru melihat riwayat SEMUA siswa, dikelompokkan per nama, hasil
       kuis yang baru saja disimpan di atas langsung muncul di sini (tanpa
       perlu tunggu proses tambahan)
@@ -1065,7 +1075,7 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
       `try/catch` rollback di `daftar-orangtua.html` masih ada
 
 ### 32. Pembatasan Akses per Role (`index.html`, `role-guard.js`, 9 halaman
-    induk, RANCANGAN-LOGIN-BARU.md §7 — siswa hanya Modul/Materi/Galeri/Uji
+    induk, lihat CHANGELOG.md v0.11.0 — siswa hanya Modul/Materi/Galeri/Uji
     Kemampuan, orang tua hanya Laporan Siswa/Pengumuman, guru semuanya)
 - [ ] Login sebagai **siswa** → di beranda HANYA kelihatan 4 kartu: Modul
       Pembelajaran, Materi Ajar, Galeri Visual, Uji Kemampuan (+ tetap tidak

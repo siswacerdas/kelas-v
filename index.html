@@ -335,7 +335,7 @@
       <button type="button" class="login-tab" id="tab-guru">Guru &amp; Orang Tua</button>
     </div>
 
-    <!-- Login Siswa: pilih nama + NISN (Fase 3, RANCANGAN-LOGIN-BARU.md §2.1) -->
+    <!-- Login Siswa: pilih nama + NISN (Fase 3, lihat CHANGELOG.md v0.11.0) -->
     <div id="form-login-siswa">
       <div class="form-group">
         <label>Nama Lengkap</label>
@@ -371,7 +371,7 @@
       </p>
     </div>
 
-    <!-- Lupa Kata Sandi (Fase 5, RANCANGAN-LOGIN-BARU.md §2.4) — SENGAJA
+    <!-- Lupa Kata Sandi (Fase 5, lihat CHANGELOG.md v0.11.0) — SENGAJA
          menggantikan tampilan form login guru/orangtua, bukan halaman/modal
          terpisah, supaya alurnya sesederhana mungkin. Cuma untuk guru/orangtua
          (email+password) — siswa tidak punya "kata sandi" dalam arti akun
@@ -395,7 +395,7 @@
 </div>
 
 <!-- Layar status akun orang tua yang BELUM/TIDAK bisa masuk (Fase 4,
-     RANCANGAN-LOGIN-BARU.md §2.3) — ditampilkan MENGGANTI #app sepenuhnya,
+     lihat CHANGELOG.md v0.11.0) — ditampilkan MENGGANTI #app sepenuhnya,
      bukan cuma menyembunyikan sebagian menu, supaya tidak ada celah orang tua
      yang belum disetujui melihat apa pun dari isi aplikasi. -->
 <div id="status-screen" class="hidden">
@@ -507,7 +507,7 @@
         <div class="card-badge">Hasil</div>
       </a>
       <!-- Khusus guru & orang tua — disembunyikan lewat class "hidden", ditampilkan oleh skrip
-           role-check di bawah (bukan untuk akun siswa, lihat RANCANGAN-LAPORAN-SISWA.md).
+           role-check di bawah (bukan untuk akun siswa, lihat ANTIREGRESI.md §28).
            Penegakan SESUNGGUHNYA tetap di server (wajibAksesLaporan_ di Code.gs) — ini cuma
            supaya siswa tidak melihat kartunya di beranda. -->
       <a href="pages/laporan-siswa.html" id="card-laporan-siswa" class="card hidden" style="--card-accent: #2a9d6f">
@@ -580,7 +580,7 @@
   const KEY_NAMA_SISWA = "kelas5_siswa_nama";
 
   /** Terapkan pembatasan kartu menu & bagian "Pengumuman Terbaru" per role
-   * (RANCANGAN-LOGIN-BARU.md §7). Guru SENGAJA tidak pernah dibatasi apa pun
+   * (lihat CHANGELOG.md v0.11.0). Guru SENGAJA tidak pernah dibatasi apa pun
    * di sini (selalu lihat semua menu) — TAPI TETAP wajib reset dulu semua ke
    * kondisi terlihat sebelum return, lihat catatan di bawah kenapa. */
   function terapkanAksesMenu_(role) {
@@ -677,7 +677,7 @@
 
   // Isi dropdown nama dari MPLS_STUDENTS (pages/mpls/assets/mpls-data.js — sumber
   // tunggal daftar 25 siswa, sudah dipakai di tempat lain juga, lihat
-  // RANCANGAN-LOGIN-BARU.md §0).
+  // CHANGELOG.md v0.11.0.
   (function isiDropdownSiswa() {
     const sel = document.getElementById("inp-siswa-nama");
     (typeof MPLS_STUDENTS !== "undefined" ? MPLS_STUDENTS : []).forEach((nama) => {
@@ -714,7 +714,7 @@
    * kalau cocok baru buat sesi Firebase Anonymous + simpan nama tampilan ke
    * sessionStorage (BUKAN localStorage — supaya tidak nyangkut ke sesi
    * berikutnya kalau HP dipakai bergantian antar siswa, lihat
-   * RANCANGAN-LOGIN-BARU.md §2.1). onAuthStateChanged yang menangani sisanya
+   * CHANGELOG.md v0.11.0. onAuthStateChanged yang menangani sisanya
    * (membuka aplikasi) setelah signInAnonymously berhasil. */
   window.doLoginSiswa = async () => {
     const nama = document.getElementById('inp-siswa-nama').value;
