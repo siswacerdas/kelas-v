@@ -61,11 +61,22 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   di kedua halaman tsb)
 - Gerbang akses `input.html` masih pakai kode akses sederhana (belum dipindah ke
   Firebase) — sengaja tidak diubah dulu di update ini supaya tidak regresi
-- Riwayat pengerjaan siswa di Uji Kemampuan (dulu "Bank Soal") belum
-  disimpan ke Firestore (kuis murni di sisi klien, skor tidak direkap guru)
-  — rencana penyimpanannya sudah dipetakan sebagai bagian dari laporan
-  "Latihan Mandiri Siswa" (lihat `RANCANGAN-LAPORAN-SISWA.md`), belum
-  dikerjakan
+- **[Diperbarui — catatan ini sempat usang]** Hasil pengerjaan siswa di Uji
+  Kemampuan SUDAH tersimpan ke Firestore (koleksi `hasil_latihan`, ditulis
+  langsung dari `uji-kemampuan.html` tiap kuis dinilai) dan SUDAH direkap
+  guru lewat `pages/riwayat-latihan.html` (guru-only). Yang BELUM: laporan
+  "Latihan Mandiri Siswa" untuk orang tua (Pintu 3,
+  `pages/laporan-siswa/latihan-mandiri.html`) masih kerangka "🚧 Segera
+  Hadir" — datanya sebenarnya sudah tersedia, tinggal dibuatkan tampilannya
+  (lihat `RANCANGAN-LAPORAN-SISWA.md` §6, juga perlu diperbarui)
+- Bug desain belum terselesaikan: `hasil_latihan` disimpan & dibaca pakai
+  `uid`, tapi siswa login lewat Firebase Anonymous Auth (UID baru tiap
+  sesi) — siswa sendiri TIDAK BISA membaca riwayat lamanya lewat `uid`
+  kalau nanti diberi akses baca sendiri. Belum jadi masalah nyata SAAT INI
+  karena satu-satunya halaman pembaca `hasil_latihan` (`riwayat-latihan.html`)
+  sengaja guru-only, tapi wajib dibereskan sebelum Pintu 3 memberi orang tua
+  akses (yang mana sudah aman karena dicocokkan lewat `namaSiswa`, bukan
+  `uid`) atau sebelum siswa sendiri diberi akses lihat riwayat
 - Migrasi Firestore untuk data MPLS/Kognitif/Jurnal Aktivitas/metadata Galeri
   Visual — SENGAJA ditunda sebagai proyek terpisah setelah Sistem Login Baru
   (lihat `RANCANGAN-MIGRASI-FIRESTORE.md`), supaya tidak merombak semua fitur
@@ -156,6 +167,61 @@ mengasumsikan itu selalu ada):
   sama ("email sudah terdaftar"). Diperbaiki: akun yang nyangkut itu otomatis
   dihapus lagi (`deleteUser`) begitu penyimpanan gagal.
 
+### Diperbaiki (sesi dokumentasi & audit Uji Kemampuan)
+- **[Laporan insiden nyata]** 1 siswa mengerjakan Uji Kemampuan, hasilnya
+  tersimpan (label "✓ Hasil tersimpan" muncul benar), TAPI di Riwayat
+  Latihan namanya tampil "(Tanpa nama)" — field `namaSiswa` kosong di
+  dokumen `hasil_latihan` walau `uid` & data lain tersimpan normal. Akar
+  masalah pastinya BELUM ditemukan (kode login sudah dicek, sekilas tidak
+  ada bug jelas — kemungkinan kasus tepi terkait sesi tab, belum
+  dikonfirmasi), TAPI 2 pertahanan langsung ditambahkan supaya kejadian
+  ini TIDAK BISA lagi tersimpan diam-diam ke depannya:
+  1. `pages/uji-kemampuan.html` — sebelum menilai & menyimpan kuis, kalau
+     `namaSiswa` kosong/tidak terbaca, tampilkan `alert()` minta siswa
+     logout & login ulang, TOLAK simpan sama sekali (skor tidak akan
+     tampil kalau nama kosong — lebih baik siswa disuruh ulang daripada
+     hasilnya tersimpan tapi tidak bisa dikenali guru).
+  2. Firestore Security Rules `hasil_latihan` (`README.md`) — klausa
+     `create` sekarang juga mewajibkan `namaSiswa` berupa string tidak
+     kosong. **⚠️ PENTING: perubahan rules ini baru berlaku kalau
+     di-copy-paste ulang secara manual ke Firebase Console → Firestore
+     Database → tab Rules → Publish** — proyek ini tidak pakai
+     `firestore.rules` yang otomatis ter-deploy, jadi mengedit
+     `README.md` saja TIDAK CUKUP.
+  - Ditemukan juga saat menelusuri: komentar "v1.1" di
+    `uji-kemampuan.html` (soal `nama` yang dulu salah dibaca ulang dari
+    `Firestore users/{uid}` untuk siswa anonim, sekarang dari
+    `role-verified` langsung) **tidak pernah tercatat di CHANGELOG ini**
+    — dicatat sekarang untuk sejarah, walau BUKAN penyebab insiden di
+    atas (pemilik proyek konfirmasi kode versi ini sudah live sebelum
+    insiden terjadi).
+- **["Bug UID anonim" yang sempat ditandai kritis — ternyata bukan blocker,
+  melainkan kode mati]**: `riwayat-latihan.html` punya cabang `role ===
+  "siswa"` (`muatUntukSiswa`, query `hasil_latihan` berdasar `uid`) DAN
+  cabang `role === "orangtua"` yang **tidak pernah bisa terpicu** — halaman
+  ini digerbang `guardRolePage(['guru'], ...)`, dan kebijakan proyek
+  (tabel fitur di `README.md`) memang mengecualikan siswa dari SEMUA
+  laporan/riwayat sejak awal. Kedua cabang mati itu (termasuk pencocokan
+  `uid` yang memang tidak akan pernah cocok lintas sesi anonim) sudah
+  **dihapus** — halaman ini sekarang jujur cuma berisi jalur guru. Aturan
+  keamanan `hasil_latihan` di `README.md` DIBIARKAN apa adanya (klausa
+  `uid` tidak berbahaya walau tidak terpakai), tapi diberi catatan jelas
+  soal kenapa klausa itu tidak akan berfungsi kalau suatu saat diaktifkan.
+- **Label "Belum Dijawab" (fitur v0.9.1) hilang total saat redesain 5-jenis-
+  soal `uji-kemampuan.html` dibangun** — ditemukan saat merapikan
+  `ANTIREGRESI.md` §19: soal yang tidak disentuh sama sekali sebelumnya
+  tidak diberi tanda apa pun (bukan hijau, bukan merah), berisiko dikira
+  "otomatis benar" oleh siswa yang buru-buru. Dikembalikan untuk 4 dari 5
+  jenis soal (pg_tunggal, pg_kompleks, pg_kategori, menjodohkan): soal yang
+  sama sekali tidak disentuh diberi label merah "⚠ Belum dijawab" di nomor
+  soal, dan baris skor mencantumkan jumlahnya ("· N soal belum dijawab").
+  Jenis **mengurutkan** sengaja TIDAK diberi label ini — soal itu selalu
+  menampilkan urutan default begitu kuis dibuka, jadi tidak ada state
+  "kosong" yang bisa dibedakan dari "sudah disusun ulang". Soal yang
+  DISENTUH SEBAGIAN (mis. pg_kategori/menjodohkan yang sebagian baris
+  diisi) tidak diberi label ini — baris yang kosong tetap ditandai merah
+  seperti jawaban salah biasa, konsisten dengan perilaku lama.
+
 ### Diperbaiki (v0.10.x, sesi ini)
 - **IPAS tidak bisa diakses dari situs sama sekali padahal filenya sudah ada di
   repo** — akar masalahnya: 33 file materi IPAS (mapel benar-benar baru) dan 5
@@ -215,20 +281,51 @@ mengasumsikan itu selalu ada):
   data). Alasan ganti nama: "Bank Soal" terdengar seperti gudang soal untuk
   guru, padahal ini halaman LATIHAN untuk siswa — "Uji Kemampuan" lebih
   menggambarkan fungsinya dari sudut pandang siswa.
+- **[Entri ini belum pernah tertulis sebelumnya — ditambahkan sekarang saat
+  merapikan dokumentasi]** Redesain besar Uji Kemampuan (bukan cuma ganti
+  nama di atas) — alur berubah dari 1 mapel = semua soal tampil sekaligus,
+  jadi **3 tahap**: pilih mapel → pilih **Tujuan Pembelajaran (TP)**
+  (kartu dinonaktifkan kalau soal TP itu <5, ditandai "pool belum lengkap"
+  kalau <200) → kuis berisi **15 soal diambil acak** dari pool tiap TP
+  (field `randKey` + query dua arah supaya acaknya merata). **5 jenis
+  soal** didukung (pilihan ganda tunggal, pilihan ganda kompleks,
+  kategorikan, mengurutkan, menjodohkan), masing-masing punya UI &
+  logika penilaian sendiri. Skor hasil kuis **disimpan ke Firestore
+  `hasil_latihan`** (uid, nama, mapel, TP, skor, detail jawaban per
+  soal) tiap kali dinilai — direkap guru lewat halaman baru
+  `pages/riwayat-latihan.html` (guru-only, dikelompokkan per nama
+  siswa). `admin.html` tab Uji Kemampuan & tab Impor Massal (baru) ikut
+  diperluas untuk mendukung field `tp` + 5 jenis soal ini. Lihat
+  `RANCANGAN-LAPORAN-SISWA.md` §6 untuk detail keputusan desainnya.
+- **Pintu 3 — Latihan Mandiri Siswa diaktifkan** (`pages/laporan-siswa/
+  latihan-mandiri.html`, dulu placeholder "Segera Hadir") — laporan untuk
+  guru & orang tua (BUKAN siswa, konsisten dengan Pintu 1/2), dipilah per
+  mapel → per Tujuan Pembelajaran: skor terbaik, jumlah percobaan, skor +
+  tanggal percobaan terakhir per TP, plus kartu ringkasan (rata-rata skor
+  terbaik & cakupan "N dari M TP tersedia sudah dicoba"). **Beda
+  arsitektur dari Pintu 1/2**: Pintu 1/2 baca lewat endpoint Apps Script
+  (`?laporanSiswa=1`/`?progresMateri=1`); Pintu 3 baca `hasil_latihan`
+  **langsung dari Firestore di sisi klien** (file baru
+  `pages/laporan-siswa/assets/latihan-mandiri.js`) — gerbangnya Firestore
+  Security Rules (guru baca semua, orang tua cuma `namaSiswa` yang ada di
+  `anak` miliknya), bukan `wajibAksesLaporan_()`. Tetap pakai komponen
+  pemilih siswa yang sama (`laporan-picker.js`). TP yang belum pernah
+  dicoba siswa TIDAK ditampilkan sebagai baris kosong (beda dari Pintu 2
+  yang menampilkan semua materi termasuk yang belum dibaca) — soal Uji
+  Kemampuan baru mencakup sebagian TP/mapel, jadi menampilkan semua TP
+  kosong dinilai lebih membingungkan daripada membantu di tahap ini.
 - **Laporan Siswa direstrukturisasi jadi 3 pintu terpisah** — sebelumnya 1
   halaman tunggal (`pages/laporan-siswa.html`) langsung berisi laporan
   MPLS. Sekarang halaman itu jadi LANDING (menu 3 pintu), laporan MPLS-nya
   sendiri pindah ke `pages/laporan-siswa/mpls.html`:
   1. **MPLS** (`mpls.html`) — AKTIF, isinya sama seperti Fase 1 sebelumnya
      (Profil, Kesiapan Belajar, Kesiapan Akademik, Jurnal Aktivitas)
-  2. **Perkembangan Belajar Mandiri** (`belajar-mandiri.html`) — halaman
-     "Segera Hadir", nanti berisi ketuntasan Materi Ajar yang sudah dibaca
-     siswa + progres Modul belajar mandiri (belum ada pelacakannya sama
-     sekali di sistem — lihat rencana lengkap di `RANCANGAN-LAPORAN-SISWA.md`)
-  3. **Latihan Mandiri Siswa** (`latihan-mandiri.html`) — halaman "Segera
-     Hadir", nanti berisi hasil latihan dari Uji Kemampuan dipilah per
-     Tujuan Pembelajaran (skornya juga belum tersimpan ke server sama
-     sekali — lihat baris "Direncanakan" di atas)
+  2. **Perkembangan Belajar Mandiri** (`belajar-mandiri.html`) — awalnya
+     halaman "Segera Hadir"; **AKTIF untuk bagian Materi Ajar sejak entri
+     "Progres Materi Ajar" di atas** (bagian Modul masih "segera menyusul")
+  3. **Latihan Mandiri Siswa** (`latihan-mandiri.html`) — awalnya halaman
+     "Segera Hadir"; **AKTIF sejak entri "Pintu 3 — Latihan Mandiri Siswa
+     diaktifkan" di bawah**
   - Refactor pendukung: logika gerbang akses (Firebase Auth + baca
     role/anak dari Firestore, blokir akun siswa) yang sebelumnya inline di
     1 file, sekarang diekstrak jadi `pages/laporan-siswa/assets/

@@ -1,0 +1,120 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Data user: hanya bisa dibaca/ditulis oleh pemilik atau guru
+    match /users/{uid} {
+      // v1.0 (Fase 4 — Persetujuan Orang Tua di admin.html): guru BUTUH baca
+      // (query) dokumen SIAPA SAJA di koleksi ini (bukan cuma dokumen sendiri)
+      // untuk menampilkan daftar pendaftaran yang menunggu persetujuan.
+      // SEBELUM baris "|| get(...).data.role == 'guru'" ini ditambahkan, guru
+      // TIDAK BISA melihat daftar itu sama sekali — Firestore menolak query
+      // "list" kalau aturan read tidak bisa dipastikan berlaku utk SEMUA hasil
+      // yang mungkin cocok, dan "request.auth.uid == uid" saja cuma pernah
+      // benar untuk 1 dokumen (milik sendiri), sehingga query manapun ke
+      // koleksi ini oleh siapa pun kembali kosong sebelum perbaikan ini.
+      allow read: if request.auth != null && (
+        request.auth.uid == uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru'
+      );
+
+      // v1.0 (Fase 4 login — pendaftaran mandiri orang tua): pendaftar HANYA
+      // boleh membuat dokumennya SENDIRI dengan role PERSIS "pending_orangtua"
+      // — tidak bisa langsung set role "guru"/"orangtua" sendiri (mencegah
+      // eskalasi privilese dari sisi klien). Field lain (nama/anak/email/wa)
+      // boleh apa saja, hanya "role" yang dikunci.
+      allow create: if request.auth != null && request.auth.uid == uid &&
+        request.resource.data.role == "pending_orangtua";
+
+      // Guru tetap bisa tulis/ubah dokumen SIAPA SAJA (approve/reject
+      // pendaftaran orang tua, atau buat akun guru/orangtua manual).
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    // Koleksi "siswa/{nisn}" (profil siswa + NISN, sejak migrasi Firestore —
+    // lihat RANCANGAN-MIGRASI-FIRESTORE.md) SENGAJA TIDAK PUNYA blok match di
+    // sini sama sekali. Koleksi ini HANYA pernah dibaca/ditulis lewat Apps
+    // Script pakai kredensial Service Account (IAM), yang MELEWATI Firestore
+    // Rules sepenuhnya (diatur oleh izin IAM, bukan Rules) — jadi Rules di
+    // file ini tidak relevan untuknya. TIDAK menambahkan blok match untuk
+    // "siswa" adalah PILIHAN YANG BENAR di sini (bukan lupa) — default
+    // Firestore Rules adalah TOLAK SEMUA untuk path tanpa match block, yang
+    // artinya TIDAK ADA client (browser siapa pun, termasuk yang sudah login)
+    // yang bisa baca koleksi ini langsung. Ini justru pelindung utama supaya
+    // NISN 25 siswa tidak pernah bisa dibaca borongan dari luar. JANGAN
+    // menambahkan blok match /siswa/{nisn} di sini kecuali benar-benar paham
+    // konsekuensinya — itu akan MEMBUKA celah baca borongan NISN semua siswa.
+
+    // Pengumuman, modul, soal: semua login bisa baca; hanya guru yang bisa tulis.
+    // PENTING: ditulis per-koleksi secara EKSPLISIT (bukan wildcard /{koleksi}/{id})
+    // karena Firestore meng-OR-kan semua match block yang cocok dengan sebuah path —
+    // wildcard generik di sini akan "menabrak" & melumpuhkan pembatasan yang sudah
+    // dibuat di /users/{uid} di atas (siapa saja yang login jadi bisa baca dokumen
+    // users/{uid} SIAPA PUN lewat blok wildcard ini, bukan cuma dokumennya sendiri).
+    // Kalau menambah koleksi baru (mis. `jadwal`), tambahkan blok match baru di sini,
+    // JANGAN pakai wildcard generik lagi.
+    match /pengumuman/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /modul/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /materi/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /bank_soal/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    // Hasil Uji Kemampuan: siswa HANYA bisa membuat dokumen miliknya sendiri
+    // (uid harus sama dengan uid pembuat, DAN namaSiswa wajib diisi — lihat
+    // catatan v1.3 di bawah) dan TIDAK PERNAH bisa mengubah/menghapusnya —
+    // update & delete cuma diberikan ke role "guru". Orang tua bisa membaca
+    // hasil anaknya (dicocokkan lewat field `anak` di users/{uid}), tapi
+    // juga tidak diberi izin write sama sekali.
+    //
+    // Klausa `resource.data.uid == request.auth.uid` di bawah SAAT INI TIDAK
+    // PERNAH benar-benar dipakai untuk membaca — kebijakan proyek sengaja
+    // mengecualikan siswa dari SEMUA laporan/riwayat (guru & orang tua saja).
+    // Dibiarkan di rules ini (tidak berbahaya, tidak membuka akses baru)
+    // untuk jaga-jaga, TAPI kalau suatu saat siswa memang diberi akses lihat
+    // riwayat sendiri, klausa ini TIDAK AKAN BERFUNGSI: siswa login lewat
+    // Firebase Anonymous Auth dan dapat `uid` BARU tiap sesi, jadi tidak
+    // akan pernah cocok dengan `uid` yang tersimpan di dokumen lama. Pola
+    // yang benar untuk kasus itu adalah cocokkan lewat `namaSiswa` (sama
+    // seperti klausa orang tua di bawah), BUKAN `uid`.
+    //
+    // v1.3: ditambah validasi `namaSiswa` wajib string tidak kosong di
+    // `create` — insiden nyata: 1 dokumen tersimpan dengan `namaSiswa`
+    // kosong (akar sebab belum pasti, lihat CHANGELOG.md), guru tidak bisa
+    // kenali riwayat itu punya siswa siapa. Validasi ini pertahanan lapis
+    // ke-2 (lapis ke-1: `pages/uji-kemampuan.html` sudah menolak submit
+    // kalau nama kosong sebelum sampai ke Firestore sama sekali).
+    match /hasil_latihan/{id} {
+      allow create: if request.auth != null &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.namaSiswa is string &&
+        request.resource.data.namaSiswa.size() > 0;
+      allow read: if request.auth != null && (
+        resource.data.uid == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru' ||
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'orangtua' &&
+         resource.data.namaSiswa in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.anak)
+      );
+      allow update, delete: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+  }
+}

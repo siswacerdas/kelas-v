@@ -158,13 +158,19 @@ kelas-v/
     │       └── infografis-kelola-tp.js
     ├── laporan-siswa/
     │   ├── mpls.html            ← Pintu 1: kesiapan belajar+akademik+jurnal (AKTIF)
-    │   ├── belajar-mandiri.html ← Pintu 2: ketuntasan Materi Ajar & Modul (Segera Hadir)
-    │   ├── latihan-mandiri.html ← Pintu 3: hasil Uji Kemampuan per TP (Segera Hadir)
+    │   ├── belajar-mandiri.html ← Pintu 2: ketuntasan Materi Ajar (AKTIF) & Modul (Segera Hadir)
+    │   ├── latihan-mandiri.html ← Pintu 3: hasil Uji Kemampuan per TP (AKTIF)
     │   └── assets/
-    │       ├── laporan-guard.js ← Gerbang akses bersama (role guru/orangtua, blokir siswa)
-    │       │                       untuk landing + ketiga pintu di atas
+    │       ├── laporan-guard.js  ← Gerbang akses bersama (role guru/orangtua, blokir siswa)
+    │       │                        untuk landing + ketiga pintu di atas
+    │       ├── laporan-picker.js ← Komponen pemilih siswa bersama (guru cari siapa saja /
+    │       │                        orang tua pilih anaknya), dipakai Pintu 1/2/3
     │       ├── laporan.css
-    │       └── laporan.js       ← Logika Pintu 1 (MPLS) saja
+    │       ├── laporan.js         ← Logika Pintu 1 (MPLS)
+    │       ├── belajar-mandiri.js ← Logika Pintu 2 (Materi Ajar; Modul menyusul)
+    │       └── latihan-mandiri.js ← Logika Pintu 3 (baca hasil_latihan LANGSUNG dari
+    │                                  Firestore di klien, BUKAN lewat Apps Script — beda
+    │                                  dari Pintu 1/2, lihat RANCANGAN-LAPORAN-SISWA.md §6.3)
     └── mpls/
         ├── index.html     ← Landing MPLS (daftar sub-halaman)
         ├── input.html     ← Form input penilaian (mobile-first)
@@ -368,9 +374,22 @@ service cloud.firestore {
     // — update & delete cuma diberikan ke role "guru". Orang tua bisa membaca hasil
     // anaknya (dicocokkan lewat field `anak` di users/{uid}), tapi juga tidak
     // diberi izin write sama sekali.
+    //
+    // Klausa `resource.data.uid == request.auth.uid` di bawah SAAT INI TIDAK
+    // PERNAH benar-benar dipakai untuk membaca — kebijakan proyek (lihat tabel
+    // fitur di atas) sengaja mengecualikan siswa dari SEMUA laporan/riwayat
+    // (guru & orang tua saja). Dibiarkan di rules ini (tidak berbahaya, tidak
+    // membuka akses baru) untuk jaga-jaga, TAPI kalau suatu saat siswa memang
+    // diberi akses lihat riwayat sendiri, klausa ini TIDAK AKAN BERFUNGSI:
+    // siswa login lewat Firebase Anonymous Auth dan dapat `uid` BARU tiap
+    // sesi, jadi tidak akan pernah cocok dengan `uid` yang tersimpan di
+    // dokumen lama. Pola yang benar untuk kasus itu adalah cocokkan lewat
+    // `namaSiswa` (sama seperti klausa orang tua di bawah), BUKAN `uid`.
     match /hasil_latihan/{id} {
       allow create: if request.auth != null &&
-        request.resource.data.uid == request.auth.uid;
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.namaSiswa is string &&
+        request.resource.data.namaSiswa.size() > 0;
       allow read: if request.auth != null && (
         resource.data.uid == request.auth.uid ||
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru' ||

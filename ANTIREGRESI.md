@@ -253,11 +253,24 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
       mapel baru; tambah modul kedua dengan mapel yang SAMA tapi urutan lebih
       kecil → tampil LEBIH ATAS dari yang pertama (urutan menentukan posisi,
       bukan waktu tambah); Edit & Hapus berfungsi sama seperti Pengumuman
-- [ ] **Tab Uji Kemampuan**: isi 2-4 pilihan, centang radio "Benar" di salah satu →
-      field jawaban yang tersimpan **sesuai teks pilihan yang dicentang**, bukan
-      urutan/huruf (A/B/C/D); ubah radio ke pilihan lain sebelum simpan → jawaban
-      ikut berubah; Edit soal lama → radio "Benar" otomatis tercentang ulang di
-      pilihan yang sesuai
+- [ ] **Tab Uji Kemampuan** — ⚠️ *checklist di bawah ini ditulis ulang, versi
+      sebelumnya cuma mendeskripsikan form pg_tunggal lama; sekarang form
+      punya pilihan `jenisSoal` (5 jenis) + wajib pilih `tp`:*
+  - [ ] Ganti dropdown jenis soal → field-field form ikut berubah sesuai
+        jenis (mis. pindah dari pg_tunggal ke mengurutkan → field pilihan
+        radio hilang, diganti field daftar item urutan)
+  - [ ] Pilih TP dari dropdown (bukan ketik bebas) → tersimpan sebagai kode
+        TP yang valid, konsisten dengan `tp-kko-index.js`
+  - [ ] Validasi KKO: soal dengan KKO melebihi batas KKO maksimum TP yang
+        dipilih → ditolak simpan dengan pesan error yang jelas (bukan
+        gagal diam-diam)
+  - [ ] Edit soal lama dari tiap jenis → seluruh field form terisi ulang
+        sesuai jenis soal & isinya, bukan cuma sebagian
+  - [ ] **Tab Impor Massal** (belum ada checklist sebelumnya — cek manual
+        kalau menyentuh fitur ini): tempel/upload JSON array soal → SEMUA
+        soal divalidasi dulu (TP valid, KKO tidak melebihi batas, field
+        wajib tiap jenis lengkap); kalau ADA SATU yang bermasalah, TIDAK
+        ADA yang tersimpan sampai diperbaiki (bukan sebagian tersimpan)
 - [ ] Coba isi judul/pertanyaan dengan karakter aneh seperti `<script>` atau
       `<img onerror=...>` → HARUS tampil sebagai teks biasa di list (bukan
       dieksekusi/muncul kotak alert) — ini uji anti-XSS, bukan sekadar tampilan
@@ -303,32 +316,100 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 
 ---
 
-### 19. Uji Kemampuan — Latihan Interaktif (`pages/uji-kemampuan.html`, dulu bernama "Bank Soal"/`bank-soal.html` sebelum v0.10.x, v0.9.0 + v0.9.1)
-- [ ] Bisa dibuka akun **siswa** (bukan guru-only)
-- [ ] Kotak pilihan mapel menampilkan jumlah soal yang benar per mapel (mis.
-      "5 soal") sesuai isi `bank_soal` yang sudah ditambahkan guru
-- [ ] Klik salah satu mapel → masuk mode kuis, menampilkan SEMUA soal mapel itu
-      sekaligus (bukan satu-satu)
-- [ ] Pilih jawaban untuk sebagian atau semua soal → klik "Periksa Jawaban" →
-      skor (x/y) muncul dan SESUAI dengan jumlah jawaban yang benar-benar cocok
-- [ ] Pilihan yang benar ditandai **hijau** untuk SEMUA soal (termasuk yang
-      dijawab benar maupun salah); pilihan yang dipilih siswa tapi SALAH ditandai
-      **merah**
-- [ ] **Sejak v0.9.1**: soal yang TIDAK dijawab sama sekali diberi label merah
-      "Belum dijawab" di nomor soal (bukan dibiarkan tanpa tanda apa pun), dan
-      label skor mencantumkan "· N soal belum dijawab"; soal itu tetap dihitung
-      SALAH di skor (bukan benar, bukan dilewati dari perhitungan)
-- [ ] **Sejak v0.9.1**: urutan tampil pilihan diacak tiap kali kuis dibuka —
-      buka mapel yang sama beberapa kali, urutan pilihan seharusnya TIDAK selalu
-      persis sama; penilaian tetap benar walau urutan berubah (dicocokkan lewat
-      teks, bukan posisi)
-- [ ] Setelah dinilai: semua radio button terkunci (tidak bisa diubah lagi) dan
-      tombol berubah jadi "Sudah Dinilai" (nonaktif)
-- [ ] Tombol "← Pilih mapel lain" mengembalikan ke daftar mapel, dan memilih
-      mapel lain/sama menampilkan kuis BARU (bukan hasil kuis sebelumnya yang
-      masih nyangkut)
-- [ ] Soal dengan hanya 2 pilihan maupun 4 pilihan sama-sama tampil rapi
-      (jumlah pilihan tidak seragam antar soal — cek tidak ada yang janggal)
+### 19. Uji Kemampuan — Latihan Interaktif (`pages/uji-kemampuan.html`, dulu bernama "Bank Soal"/`bank-soal.html` sebelum v0.10.x; redesain 3-tahap + 5 jenis soal + penyimpanan hasil, belum dirilis)
+
+> **⚠️ Checklist ini ditulis ulang total** — versi sebelumnya mendeskripsikan
+> UI LAMA (1 mapel = semua soal pg_tunggal tampil sekaligus, tanpa TP, tanpa
+> penyimpanan hasil). Itu sudah tidak sesuai kode sejak redesain TP-based +
+> 5 jenis soal (lihat `CHANGELOG.md` bagian "Ditambahkan" & entri riwayat di
+> bawah).
+>
+> **Update**: label "Belum dijawab" dari fitur v0.9.1 sempat hilang total
+> saat redesain 5-jenis-soal ini dibangun (bukan disederhanakan dengan
+> sengaja — murni ketinggalan/regresi, tidak ada di manapun di kode maupun
+> di `pages/bank-soal.html` versi lama). **Sudah dikembalikan** (lihat
+> entri "Diperbaiki" di `CHANGELOG.md`) untuk pg_tunggal, pg_kompleks,
+> pg_kategori, dan menjodohkan. Jenis **mengurutkan** SENGAJA dikecualikan
+> — soal itu selalu menampilkan urutan default begitu kuis dibuka (tidak
+> ada state "kosong" untuk item yang bisa disusun ulang), jadi tidak ada
+> cara valid membedakan "belum disentuh" dari "urutan defaultnya kebetulan
+> sudah cocok".
+
+**Tahap 1 — Pilih mapel** (`view-pilih-mapel`)
+- [ ] Bisa dibuka akun **siswa** DAN **guru**; akun **orang tua** ditolak
+      (dilempar balik ke beranda, sesuai `guardRolePage(['siswa','guru'], ...)`)
+- [ ] Grid mapel menampilkan tiap mapel dari `URUTAN_MAPEL` + jumlah TP-nya
+      (mis. "9 TP"), BUKAN jumlah soal — jumlah soal baru muncul di Tahap 2
+
+**Tahap 2 — Pilih TP** (`view-pilih-tp`)
+- [ ] Klik 1 mapel → tampil daftar TP mapel itu dari `TP_KKO_INDEX`, tiap
+      kartu menunjukkan jumlah soal tersedia (hasil `getCountFromServer`
+      query `bank_soal` where `tp == <kode>` — query hitung, bukan unduh
+      semua dokumen)
+- [ ] TP dengan **< 5 soal** kartunya nonaktif (abu-abu, tidak bisa diklik)
+- [ ] TP dengan **< 200 soal** (tapi ≥5) tetap bisa diklik, tapi label jumlah
+      soalnya berwarna merah + teks "(pool belum lengkap)"
+- [ ] Tombol "← Pilih mapel lain" kembali ke Tahap 1 tanpa nyangkut state lama
+
+**Tahap 3 — Kuis** (`view-kuis`)
+- [ ] Klik 1 TP yang aktif → maksimal **15 soal** diambil ACAK dari pool TP
+      itu (kalau pool <15, semua soal yang ada dipakai); buka TP yang sama
+      berkali-kali → soal yang muncul TIDAK selalu identik/urutan sama
+      (dicek pakai field `randKey`)
+- [ ] Kelima jenis soal tampil dan berfungsi benar:
+  - [ ] **Pilihan ganda tunggal** (`pg_tunggal`) — radio button, 1 jawaban
+  - [ ] **Pilihan ganda kompleks** (`pg_kompleks`) — checkbox, BISA >1
+        jawaban dicentang; dinilai benar HANYA kalau himpunan yang
+        dicentang PERSIS sama dengan `jawabanBenar` (tidak ada nilai
+        parsial untuk jawaban sebagian benar)
+  - [ ] **Kategorikan** (`pg_kategori`) — tiap item punya dropdown kategori;
+        semua baris harus cocok kategorinya untuk soal itu dihitung benar
+  - [ ] **Mengurutkan** — daftar item diacak posisinya saat tampil, siswa
+        susun ulang pakai tombol ▲▼; benar hanya kalau urutan akhir PERSIS
+        sama dengan urutan asli di `bank_soal`
+  - [ ] **Menjodohkan** — sisi kanan (opsi jodoh) diacak urutannya, siswa
+        pilih pasangan lewat dropdown per baris; semua baris harus cocok
+- [ ] Klik "Periksa Jawaban" → skor **x/y (persen%)** muncul sesuai jumlah
+      soal yang benar-benar cocok; opsi/baris/item yang benar ditandai
+      **hijau**, yang dipilih siswa tapi salah ditandai **merah**
+- [ ] Soal pg_tunggal/pg_kompleks/pg_kategori/menjodohkan yang **sama
+      sekali tidak disentuh** → nomor soalnya diberi label merah "⚠ Belum
+      dijawab", dan baris skor mencantumkan "· N soal belum dijawab"; soal
+      itu tetap dihitung SALAH di skor (bukan dilewati dari perhitungan).
+      Soal **mengurutkan** SENGAJA tidak pernah diberi label ini (lihat
+      catatan di atas)
+- [ ] Soal pg_kategori/menjodohkan yang **sebagian** baris diisi (tidak
+      semua) → TIDAK diberi label "Belum dijawab" (dianggap sudah dicoba),
+      baris yang kosong tetap ditandai merah seperti jawaban salah biasa
+- [ ] Setelah dinilai: seluruh input soal (radio/checkbox/dropdown/tombol
+      urut) terkunci, tombol berubah jadi "Sudah Dinilai" (nonaktif)
+- [ ] Muncul label "Menyimpan hasil…" lalu berubah jadi "✓ Hasil tersimpan
+      — bisa dilihat lagi lewat Riwayat Latihan" (hijau) dalam kondisi
+      normal; kalau simpan gagal (mis. offline), label berubah jadi pesan
+      error berwarna merah TAPI skor di layar tetap terlihat (tidak hilang)
+- [ ] Cek isi dokumen baru di Firestore `hasil_latihan` setelah submit:
+      `uid`, `namaSiswa`, `mapel`, `tp`, `tpJudul`, `jumlahBenar`,
+      `jumlahSoal`, `skor`, `detailJawaban` (array per soal), `timestamp`
+      — semua terisi benar, `namaSiswa` BUKAN nama akun lain
+- [ ] Tombol "← Pilih TP lain" kembali ke Tahap 2, dan memilih TP lain/sama
+      menampilkan kuis BARU (bukan hasil kuis sebelumnya yang masih nyangkut)
+- [ ] **[Insiden nyata, lihat CHANGELOG.md]** Kalau `namaSiswa` kosong saat
+      klik "Periksa Jawaban" (susah disimulasikan manual — kasus tepi sesi
+      tab) → muncul `alert()` minta login ulang, skor TIDAK ditampilkan
+      dan TIDAK ada dokumen `hasil_latihan` baru yang tersimpan dengan nama
+      kosong. Kalau memungkinkan untuk disimulasikan (mis. lewat DevTools,
+      set variabel `namaSiswa` jadi string kosong sebelum klik), verifikasi
+      perilaku ini; kalau tidak, minimal pastikan Firestore Security Rules
+      `hasil_latihan` di Firebase Console SUDAH dipublikasikan ulang dengan
+      klausa `namaSiswa.size() > 0` (cek tab Rules di Firebase Console,
+      bandingkan dengan `README.md` — bukan cuma cek repo)
+
+**Rekap guru** (`pages/riwayat-latihan.html`)
+- [ ] Akun **siswa** dan **orang tua** ditolak masuk halaman ini (guru-only
+      sesuai `RANCANGAN-LOGIN-BARU.md` §7 — cek dilempar balik ke beranda)
+- [ ] Akun guru melihat riwayat SEMUA siswa, dikelompokkan per nama, hasil
+      kuis yang baru saja disimpan di atas langsung muncul di sini (tanpa
+      perlu tunggu proses tambahan)
 
 ---
 
@@ -725,7 +806,7 @@ penting soal cara menguji)**
 ### 28. Laporan Siswa (3 pintu: `pages/laporan-siswa.html` = landing,
 `pages/laporan-siswa/mpls.html` = Pintu 1 AKTIF, `belajar-mandiri.html` =
 Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
-`latihan-mandiri.html` = Pintu 3 masih "Segera Hadir", belum dirilis)
+`latihan-mandiri.html` = Pintu 3 AKTIF sejak sesi ini, belum dirilis)
 
 > **Perubahan struktur**: sejak restrukturisasi 3-menu, `pages/laporan-siswa.html`
 > BUKAN LAGI halaman laporan itu sendiri — sekarang cuma landing (menu 3
@@ -733,6 +814,17 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
 > `pages/laporan-siswa/mpls.html`. Item checklist di bawah yang dulu
 > menyebut `pages/laporan-siswa.html` sebagai halaman laporan sudah
 > disesuaikan ke `pages/laporan-siswa/mpls.html`.
+>
+> **Pintu 3 BEDA ARSITEKTUR dari Pintu 1/2** — Pintu 1/2 baca data lewat
+> endpoint Apps Script (`?laporanSiswa=1`/`?progresMateri=1`, digerbang
+> `wajibAksesLaporan_()` di SERVER). Pintu 3 baca `hasil_latihan` LANGSUNG
+> dari Firestore di SISI KLIEN — gerbangnya Firestore Security Rules
+> (`README.md` match `/hasil_latihan/{id}`), BUKAN `wajibAksesLaporan_()`.
+> Konsekuensinya: pengujian "batas akses orangtua lewat server langsung"
+> yang dipakai Pintu 1/2 (poin di bawah, panggil `APPS_SCRIPT_URL?...`
+> manual) TIDAK RELEVAN untuk Pintu 3 — pengujian setaranya untuk Pintu 3
+> adalah coba baca Firestore langsung (mis. lewat Firebase Console/DevTools
+> dengan sesi login orang tua) dengan `namaSiswa` yang BUKAN anaknya.
 
 - [ ] **Akun siswa DITOLAK di SEMUA 4 halaman** (landing + 3 pintu) — coba
       buka tiap URL langsung (bukan lewat kartu menu, yang memang
@@ -744,14 +836,42 @@ Pintu 2 AKTIF untuk Materi Ajar (Modul masih "segera menyusul"),
       `pages/laporan-siswa.html`) TIDAK tampil untuk akun siswa; tampil
       untuk akun guru DAN akun orangtua
 - [ ] **Landing (`pages/laporan-siswa.html`)**: setelah lolos gerbang akses,
-      3 kartu menu tampil — "MPLS" dan "Perkembangan Belajar Mandiri" bisa
-      diklik langsung (TIDAK ada badge "Segera Hadir" lagi di keduanya),
-      "Latihan Mandiri Siswa" masih berlabel "Segera Hadir" mengarah ke
-      halaman placeholder, BUKAN ke halaman kosong/rusak
-- [ ] **Pintu 3 (placeholder)**: buka `latihan-mandiri.html` langsung →
-      gerbang akses tetap jalan (blokir siswa), lalu tampil kotak "Laporan
-      ini sedang disiapkan" dengan penjelasan singkat — BUKAN halaman
-      kosong/error
+      3 kartu menu tampil dan SEMUANYA bisa diklik langsung (TIDAK ada
+      badge "Segera Hadir" di ketiganya lagi)
+- [ ] **Pintu 3 — Latihan Mandiri Siswa (`latihan-mandiri.html`), akun
+      guru**: buka halaman → muncul kolom cari + daftar SEMUA siswa; klik 1
+      nama yang SUDAH PERNAH mengerjakan Uji Kemampuan → tampil kartu
+      ringkasan (rata-rata skor terbaik, "N dari M TP tersedia sudah
+      dicoba", total sesi), dikelompokkan per mapel (bisa dibuka/tutup),
+      tiap TP menampilkan skor terbaik + jumlah percobaan + skor & tanggal
+      percobaan terakhir
+- [ ] **Pintu 3, siswa yang BELUM PERNAH mengerjakan Uji Kemampuan sama
+      sekali**: pilih nama itu → tampil pesan "belum pernah mengerjakan
+      Uji Kemampuan sama sekali", BUKAN halaman kosong/error/kartu 0%
+- [ ] **Pintu 3, akun orangtua**: sama seperti Pintu 1/2 — 1 anak langsung
+      tampil, 2+ anak tampil chip pilihan; laporan yang tampil HARUS cuma
+      hasil TP yang benar-benar dikerjakan anak itu, bukan tercampur data
+      siswa lain
+- [ ] **Pintu 3 — batas akses orangtua (Firestore langsung, BUKAN lewat
+      `APPS_SCRIPT_URL`)**: login sebagai orangtua, lewat DevTools Console
+      coba jalankan query Firestore `hasil_latihan` dengan `namaSiswa` yang
+      BUKAN anaknya sendiri → HARUS ditolak oleh Security Rules (error
+      `permission-denied`), TIDAK BOLEH mengembalikan data siswa lain itu
+- [ ] Data 1 siswa yang mengerjakan TP yang SAMA berkali-kali → cuma
+      muncul 1 baris untuk TP itu (bukan baris duplikat per percobaan),
+      "jumlah percobaan" bertambah dan "skor terbaik" mengambil nilai
+      TERTINGGI dari semua percobaan (bukan cuma percobaan terakhir)
+- [ ] Segera setelah siswa menyelesaikan 1 sesi baru di `uji-kemampuan.html`
+      → buka Pintu 3 (guru/orangtua) untuk siswa itu → hasil terbaru SUDAH
+      ikut terhitung TANPA perlu tunggu proses tambahan (baca langsung dari
+      Firestore, bukan cache/rekap berkala)
+- [ ] Klik "← Pilih siswa lain" di Pintu 3 → kembali ke daftar pilih siswa
+      (guru) atau reset pilihan chip (orangtua), BUKAN nyangkut di laporan
+      siswa sebelumnya
+- [ ] TP yang ADA di `bank_soal`/`TP_KKO_INDEX` tapi BELUM PERNAH dicoba
+      siswa itu TIDAK ditampilkan sebagai baris kosong di laporan (sengaja
+      — lihat catatan desain di `latihan-mandiri.js`); cakupan keseluruhan
+      tetap terlihat lewat angka "N dari M TP tersedia" di kartu ringkasan
 - [ ] **Pintu 1 — MPLS (`pages/laporan-siswa/mpls.html`), akun guru**: buka
       halaman → muncul kolom cari + daftar SEMUA siswa; ketik sebagian nama
       → daftar tersaring; klik 1 nama → laporan siswa itu tampil (Profil,
