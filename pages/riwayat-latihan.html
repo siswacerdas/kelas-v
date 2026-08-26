@@ -86,19 +86,14 @@
       🔒 Setiap hasil Uji Kemampuan tersimpan otomatis di sini dan <b>tidak bisa dihapus atau diubah</b> oleh siswa maupun orang tua — hanya guru yang berwenang mengelolanya.
     </div>
 
-    <div class="filter-row hidden" id="filter-anak-wrap">
-      <select id="filter-anak" onchange="terapkanFilter()"></select>
-    </div>
-
     <div id="ringkasan-wrap"></div>
     <div id="daftar-riwayat"><div class="loading-inline">Memuat riwayat…</div></div>
   </div>
 </div>
 
-<script src="materi/assets/tp-kko-index.js"></script>
 <script type="module" src="../assets/js/role-guard.js"></script>
 <script type="module">
-  import { getFirestore, collection, doc, getDoc, getDocs, query, where }
+  import { getFirestore, collection, getDocs }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
@@ -106,7 +101,6 @@
   const db = getFirestore(app);
 
   let semuaHasil = [];
-  let role = "siswa";
 
   function escHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -146,20 +140,17 @@
       return tb - ta;
     });
     wrap.innerHTML = "";
-    if (role !== "siswa") {
-      // Guru/orang tua dengan >1 anak: kelompokkan per nama siswa
-      const grouped = {};
-      sorted.forEach((it) => { (grouped[it.namaSiswa || "(Tanpa nama)"] = grouped[it.namaSiswa || "(Tanpa nama)"] || []).push(it); });
-      Object.keys(grouped).sort().forEach((nama) => {
-        const title = document.createElement("div");
-        title.className = "list-group-title";
-        title.textContent = nama;
-        wrap.appendChild(title);
-        grouped[nama].forEach((it) => wrap.appendChild(buatBarisRiwayat(it)));
-      });
-    } else {
-      sorted.forEach((it) => wrap.appendChild(buatBarisRiwayat(it)));
-    }
+    // Halaman ini guru-only (lihat guardRolePage di bawah) — selalu kelompokkan
+    // per nama siswa, tidak perlu cabang "role !== siswa" seperti sebelumnya.
+    const grouped = {};
+    sorted.forEach((it) => { (grouped[it.namaSiswa || "(Tanpa nama)"] = grouped[it.namaSiswa || "(Tanpa nama)"] || []).push(it); });
+    Object.keys(grouped).sort().forEach((nama) => {
+      const title = document.createElement("div");
+      title.className = "list-group-title";
+      title.textContent = nama;
+      wrap.appendChild(title);
+      grouped[nama].forEach((it) => wrap.appendChild(buatBarisRiwayat(it)));
+    });
   }
 
   function buatBarisRiwayat(it) {
@@ -174,30 +165,6 @@
     return el;
   }
 
-  window.terapkanFilter = function () {
-    const sel = document.getElementById("filter-anak");
-    const nilai = sel.value;
-    const list = nilai === "__semua__" ? semuaHasil : semuaHasil.filter((it) => it.namaSiswa === nilai);
-    renderRingkasan(list);
-    renderDaftar(list);
-  };
-
-  async function muatUntukSiswa(uid) {
-    const snap = await getDocs(query(collection(db, "hasil_latihan"), where("uid", "==", uid)));
-    const list = [];
-    snap.forEach((d) => list.push({ id: d.id, ...d.data() }));
-    return list;
-  }
-
-  async function muatUntukOrangtua(anakList) {
-    if (!anakList || anakList.length === 0) return [];
-    // Firestore 'in' maksimal 30 nilai — cukup untuk jumlah anak wajar per akun orang tua
-    const snap = await getDocs(query(collection(db, "hasil_latihan"), where("namaSiswa", "in", anakList.slice(0, 30))));
-    const list = [];
-    snap.forEach((d) => list.push({ id: d.id, ...d.data() }));
-    return list;
-  }
-
   async function muatUntukGuru() {
     const snap = await getDocs(collection(db, "hasil_latihan"));
     const list = [];
@@ -206,31 +173,12 @@
   }
 
   document.addEventListener("role-verified", async (e) => {
-    const user = e.detail.user;
     document.getElementById("checking").remove();
     document.getElementById("app-riwayat").classList.remove("hidden");
-
-    const userSnap = await getDoc(doc(db, "users", user.uid));
-    const userData = userSnap.exists() ? userSnap.data() : {};
-    role = userData.role || "siswa";
+    document.getElementById("riwayat-subtitle").textContent = "Riwayat hasil Uji Kemampuan seluruh siswa.";
 
     try {
-      if (role === "siswa") {
-        document.getElementById("riwayat-subtitle").textContent = "Riwayat hasil Uji Kemampuan kamu.";
-        semuaHasil = await muatUntukSiswa(user.uid);
-      } else if (role === "orangtua") {
-        const anak = userData.anak || [];
-        document.getElementById("riwayat-subtitle").textContent = "Riwayat hasil Uji Kemampuan anak Anda.";
-        semuaHasil = await muatUntukOrangtua(anak);
-        if (anak.length > 1) {
-          document.getElementById("filter-anak-wrap").classList.remove("hidden");
-          const sel = document.getElementById("filter-anak");
-          sel.innerHTML = `<option value="__semua__">Semua Anak</option>` + anak.map((n) => `<option value="${escHtml(n)}">${escHtml(n)}</option>`).join("");
-        }
-      } else {
-        document.getElementById("riwayat-subtitle").textContent = "Riwayat hasil Uji Kemampuan seluruh siswa.";
-        semuaHasil = await muatUntukGuru();
-      }
+      semuaHasil = await muatUntukGuru();
       renderRingkasan(semuaHasil);
       renderDaftar(semuaHasil);
     } catch (err) {

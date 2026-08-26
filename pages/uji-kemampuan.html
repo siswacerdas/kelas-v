@@ -57,6 +57,8 @@
   /* ── KUIS: SOAL ── */
   .soal-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 1rem; margin-bottom: 12px; }
   .soal-card .s-nomor { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .soal-card .s-belum-dijawab { display: none; font-size: 11px; font-weight: 700; color: var(--err); margin-bottom: 4px; }
+  .soal-card.tidak-dijawab .s-belum-dijawab { display: block; }
   .soal-card .s-jenis { font-size: 10.5px; font-weight: 600; color: var(--ink-3); background: var(--paper-2); border-radius: 999px; padding: 2px 8px; display: inline-block; margin-bottom: 6px; }
   .soal-card .s-pertanyaan { font-size: 14.5px; font-weight: 600; margin-bottom: 0.8rem; line-height: 1.5; }
 
@@ -90,6 +92,7 @@
   #hasil-skor { background: #fff; border: 2px solid var(--purple); border-radius: var(--r); padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; }
   #hasil-skor .skor-angka { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--purple); }
   #hasil-skor .skor-label { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  #hasil-skor .skor-belum-dijawab { color: var(--err); font-weight: 600; }
   #hasil-skor .skor-tersimpan { font-size: 11.5px; color: var(--ok); margin-top: 6px; }
 
   .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
@@ -285,6 +288,7 @@
 
     const header = `
       <div class="s-nomor">Soal ${i + 1} dari ${currentSoal.length}</div>
+      <div class="s-belum-dijawab">⚠ Belum dijawab</div>
       <div class="s-jenis">${escHtml(JENIS_LABEL[jenis] || "Pilihan Ganda")}</div>
       <div class="s-pertanyaan">${escHtml(soal.pertanyaan || "")}</div>`;
 
@@ -337,7 +341,18 @@
 
   // ═══════════════════════ PENILAIAN ═══════════════════════
   window.nilaiKuis = async function () {
+    // Jaga-jaga terhadap kasus tepi (mis. sesi tab yang tidak wajar) di mana
+    // `namaSiswa` bisa kosong walau guard sudah lolos di awal — LEBIH BAIK
+    // TOLAK simpan & minta login ulang daripada diam-diam tersimpan ke
+    // `hasil_latihan` dengan nama kosong (jadi "(Tanpa nama)" yang tidak
+    // bisa dikenali guru di Riwayat Latihan — lihat CHANGELOG.md).
+    if (!namaSiswa || !namaSiswa.trim()) {
+      alert("Sesi login kamu bermasalah (nama tidak terbaca). Silakan keluar dan login ulang sebelum mengerjakan kuis ini, supaya hasilnya tersimpan dengan benar.");
+      return;
+    }
+
     let benar = 0;
+    let belumDijawab = 0;
     const detail = [];
     const cards = document.querySelectorAll("#daftar-soal .soal-card");
 
@@ -346,10 +361,12 @@
       const soal = currentSoal.find((s) => s.id === soalId);
       const jenis = soal.jenisSoal || "pg_tunggal";
       let isBenar = false;
+      let terjawab = true; // "mengurutkan" selalu punya urutan default, jadi selalu dianggap terjawab
 
       if (jenis === "pg_tunggal") {
         const checked = card.querySelector(`input[name="soal-${soalId}"]:checked`);
         const dipilih = checked ? checked.value : null;
+        terjawab = dipilih !== null;
         isBenar = dipilih === soal.jawaban;
         card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
           const val = opt.dataset.pilihan;
@@ -359,6 +376,7 @@
       } else if (jenis === "pg_kompleks") {
         const dipilih = [...card.querySelectorAll(`input[name="soal-${soalId}"]:checked`)].map((el) => el.value);
         const benarSet = soal.jawabanBenar || [];
+        terjawab = dipilih.length > 0;
         isBenar = dipilih.length === benarSet.length && dipilih.every((v) => benarSet.includes(v));
         card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
           const val = opt.dataset.pilihan;
@@ -370,10 +388,12 @@
       } else if (jenis === "pg_kategori") {
         const rows = [...card.querySelectorAll(".kat-row")];
         isBenar = rows.length > 0;
+        terjawab = false;
         rows.forEach((row) => {
           const idx = row.dataset.itemIdx;
           const sel = card.querySelector(`select[data-item-idx="${idx}"]`);
           const dipilih = sel ? sel.value : "";
+          if (dipilih !== "") terjawab = true;
           const benarItem = row.dataset.kategoriBenar;
           const ok = dipilih === benarItem;
           if (!ok) isBenar = false;
@@ -389,10 +409,12 @@
       } else if (jenis === "menjodohkan") {
         const rows = [...card.querySelectorAll(".jodoh-row")];
         isBenar = rows.length > 0;
+        terjawab = false;
         rows.forEach((row) => {
           const idx = row.dataset.itemIdx;
           const sel = card.querySelector(`select[data-item-idx="${idx}"]`);
           const dipilih = sel ? sel.value : "";
+          if (dipilih !== "") terjawab = true;
           const benarItem = row.dataset.kananBenar;
           const ok = dipilih === benarItem;
           if (!ok) isBenar = false;
@@ -401,17 +423,24 @@
       }
 
       if (isBenar) benar++;
-      detail.push({ soalId, jenisSoal: jenis, benar: isBenar });
+      if (!terjawab) {
+        belumDijawab++;
+        card.classList.add("tidak-dijawab");
+      }
+      detail.push({ soalId, jenisSoal: jenis, benar: isBenar, terjawab });
       card.classList.add("dinilai");
     });
 
     const total = cards.length;
     const skorPersen = total > 0 ? Math.round((benar / total) * 100) : 0;
+    const belumDijawabHtml = belumDijawab > 0
+      ? ` <span class="skor-belum-dijawab">· ${belumDijawab} soal belum dijawab</span>`
+      : "";
     const skorEl = document.getElementById("hasil-skor");
     skorEl.classList.remove("hidden");
     skorEl.innerHTML = `
       <div class="skor-angka">${benar} / ${total}</div>
-      <div class="skor-label">jawaban benar (${skorPersen}%)</div>
+      <div class="skor-label">jawaban benar (${skorPersen}%)${belumDijawabHtml}</div>
       <div class="skor-tersimpan" id="skor-tersimpan-label">Menyimpan hasil…</div>`;
     document.getElementById("btn-submit-kuis").disabled = true;
     document.getElementById("btn-submit-kuis").textContent = "Sudah Dinilai";
