@@ -4,10 +4,10 @@
  *
  * Dipakai di halaman-halaman INDUK (mis. materi.html, modul.html, jadwal.html)
  * yang aksesnya dibatasi per role sejak Fase "Pembatasan Akses" (lihat
- * RANCANGAN-LOGIN-BARU.md §7) — SENGAJA belum diterapkan ke ratusan file
+ * CHANGELOG.md v0.11.0) — SENGAJA belum diterapkan ke ratusan file
  * konten individual di dalamnya (pages/materi/.../*.html,
  * pages/modul/.../*.html) supaya tidak menyentuh sistem konten yang sudah
- * stabil sekaligus dalam 1 sesi (lihat catatan di RANCANGAN-LOGIN-BARU.md §7
+ * stabil sekaligus dalam 1 sesi (lihat catatan di CHANGELOG.md v0.11.0
  * soal cakupan yang sengaja dibatasi ini).
  *
  * Menangani akun siswa (Firebase Anonymous Auth, TIDAK punya dokumen
