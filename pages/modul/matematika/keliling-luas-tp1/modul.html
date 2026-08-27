@@ -1,1 +1,641 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga — Matematika Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#1e4d3b; --nav-l:#2d7055;
+  --bg:#f7f1e3; --paper:#fffdf6; --ink:#2b2013; --ink-soft:#6b5c44; --ink-faint:#a3937a; --border:#e6d8b3;
+  --gold:#b8860b; --gold-l:#f6e6bf; --gold-d:#8a6408;
+  --correct:#2d7055; --correct-bg:#e5f2ec; --wrong:#b3432b; --wrong-bg:#fbe9e3;
+  --radius:16px; --shadow: 0 4px 20px rgba(43,32,19,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;padding-bottom:80px;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;color:var(--ink);}
+a{color:inherit;}
+.topnav{position:sticky;top:0;z-index:100;background:var(--nav);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:10px;font-size:13px;box-shadow:0 2px 10px rgba(0,0,0,.15);}
+.topnav a{color:rgba(255,255,255,.7);text-decoration:none;}
+.topnav a:hover{color:#fff;}
+.topnav .sep{color:rgba(255,255,255,.35);}
+.topnav .curr{font-weight:600;color:#fff;}
+.progress-wrap{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;color:rgba(255,255,255,.75);}
+.progress-bar{width:110px;height:6px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);width:0%;transition:width .4s ease;}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+.cover{padding:56px 0 36px;text-align:center;}
+.cover .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold-d);background:var(--gold-l);padding:6px 16px;border-radius:20px;margin-bottom:18px;}
+.cover h1{font-size:clamp(28px,5vw,42px);line-height:1.2;margin-bottom:14px;}
+.cover p.lede{font-size:15px;color:var(--ink-soft);max-width:540px;margin:0 auto;}
+.cover-meta{display:flex;justify-content:center;gap:18px;margin-top:22px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft);}
+.cover-meta span{display:flex;align-items:center;gap:6px;}
+.important-banner{background:#fdf0d5;border:2px solid #e8c27a;border-radius:14px;padding:16px 20px;margin:20px auto 0;max-width:540px;font-size:13.5px;color:#7a5a12;text-align:left;}
+section.block{background:var(--paper);border:1.5px solid var(--border);border-radius:var(--radius);padding:30px 28px;margin-bottom:26px;box-shadow:var(--shadow);scroll-margin-top:70px;}
+.block-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-d);margin-bottom:8px;}
+.block h2{font-size:23px;margin-bottom:6px;}
+.block .sub-desc{color:var(--ink-soft);font-size:14px;margin-bottom:18px;}
+details.guru-note{background:#eef4f0;border:1.5px dashed var(--nav-l);border-radius:12px;padding:14px 18px;margin-bottom:26px;font-size:13px;color:#1c3b2d;}
+details.guru-note summary{cursor:pointer;font-weight:700;color:var(--nav);}
+details.guru-note[open] summary{margin-bottom:10px;}
+details.guru-note ul{margin:8px 0 0 18px;}
+details.guru-note li{margin-bottom:4px;}
+.produk-banner{background:linear-gradient(135deg,var(--nav),var(--nav-l));color:#f4efe0;border-radius:14px;padding:18px 20px;margin-top:20px;display:flex;gap:14px;align-items:flex-start;}
+.produk-banner .icon{font-size:26px;}
+.produk-banner strong{display:block;color:var(--gold-l);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.pemantik{background:var(--gold-l);border:1.5px solid #ecd58f;border-radius:12px;padding:16px 18px;margin:16px 0;}
+.pemantik .lbl{font-weight:700;color:var(--gold-d);font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.pemantik ol,.pemantik ul{margin-left:18px;font-size:13.5px;}
+.pemantik li{margin-bottom:6px;}
+textarea.ans{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);resize:vertical;min-height:56px;margin-top:6px;background:#fffef9;}
+textarea.ans:focus{outline:none;border-color:var(--gold);}
+input.ans-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-family:inherit;font-size:13.5px;color:var(--ink);background:#fffef9;}
+input.ans-input:focus{outline:none;border-color:var(--gold);}
+.activity{border:1.5px solid var(--border);border-radius:12px;padding:18px 18px;margin:16px 0;background:#fffefb;}
+.activity .act-title{font-weight:700;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.activity .act-desc{font-size:13px;color:var(--ink-soft);margin-bottom:14px;}
+.field-row{margin-bottom:14px;}
+.field-row label{display:block;font-size:12.5px;font-weight:700;color:var(--gold-d);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px;}
+.field-hint{font-size:12px;color:var(--ink-faint);margin-top:4px;}
+.choice-group{display:flex;gap:8px;flex-wrap:wrap;}
+.choice-btn{border:1.5px solid var(--border);background:#fff;border-radius:24px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;color:var(--ink);}
+.choice-btn:hover{border-color:var(--gold);}
+.choice-btn.correct{background:var(--correct-bg);border-color:var(--correct);color:var(--correct);}
+.choice-btn.wrong{background:var(--wrong-bg);border-color:var(--wrong);color:var(--wrong);animation:shake .3s;}
+.choice-btn.disabled{pointer-events:none;opacity:.5;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-4px);}75%{transform:translateX(4px);}}
+.mini-btn{margin-top:14px;border:none;border-radius:24px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--nav);color:#fff;font-family:inherit;margin-right:8px;}
+.mini-btn.ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink-soft);}
+.q-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.q-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.q-num{font-size:11px;font-weight:700;color:var(--gold-d);letter-spacing:.5px;}
+.q-text{font-size:14px;font-weight:600;margin:4px 0 10px;}
+.reflect-q{margin-bottom:14px;}
+.reflect-q label{display:block;font-size:13.5px;font-weight:600;margin-bottom:6px;}
+.badge-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--nav);color:#fff;font-family:'Fraunces',serif;font-weight:700;font-size:14px;margin-right:10px;}
+.badge-inti{background:var(--gold);color:#231a04;}
+.subunit-head{display:flex;align-items:center;margin-bottom:4px;}
+.glossary dt{font-weight:700;color:var(--nav);margin-top:10px;}
+.glossary dd{margin-left:0;font-size:13.5px;color:var(--ink-soft);}
+.closing{text-align:center;padding:30px 20px;color:var(--ink-soft);font-size:13px;}
+.hidden{display:none !important;}
+#checking{padding:4rem 1.5rem;text-align:center;color:var(--ink-soft);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;}
+.stepper{position:sticky;top:48px;z-index:90;background:var(--nav-l);display:flex;gap:6px;overflow-x:auto;padding:10px 20px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.step{flex-shrink:0;width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.28);color:#fff;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;}
+.step:hover{background:rgba(255,255,255,.45);}
+.step.active{background:var(--gold);color:#231a04;}
+.step.done{background:rgba(255,255,255,.65);color:#1e4d3b;}
+.save-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 0;font-size:11.5px;color:var(--ink-faint);}
+.reset-link{background:none;border:none;color:var(--ink-faint);text-decoration:underline;font-size:11.5px;cursor:pointer;font-family:inherit;padding:0;}
+.page{display:none;}
+.page.active{display:block;}
+.page-nav{display:flex;justify-content:space-between;margin:22px 0 6px;}
+.page-nav .spacer{flex:1;}
+.card-preview{
+  background:#fffefb; border:2px dashed var(--gold); border-radius:12px; padding:22px 24px;
+  position:relative; transform:rotate(-0.6deg); box-shadow:0 6px 18px rgba(43,32,19,.10); margin-top:16px;
+}
+.card-preview::before{content:'📐';position:absolute;top:-14px;left:22px;font-size:22px;transform:rotate(12deg);}
+.card-preview h4{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--gold-d);margin-bottom:10px;}
+.card-preview .cp-section{margin-bottom:12px;font-size:13.5px;line-height:1.7;}
+.card-preview .cp-section b{color:var(--nav);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+.card-preview .cp-empty{color:var(--ink-faint);font-style:italic;}
+.tip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.tip-card{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:12.5px;}
+.tip-card .ti{font-size:18px;margin-bottom:4px;}
+@media (max-width:560px){.tip-grid{grid-template-columns:1fr;}}
+.check-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13.5px;}
+.check-item input{margin-top:3px;width:16px;height:16px;flex-shrink:0;}
+.contoh-soal{background:#fff;border-left:4px solid var(--nav-l);border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:13.5px;}
+</style>
+</head>
+<body>
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="hidden">
+
+<nav class="topnav">
+  <a href="../../../../index.html">Beranda</a><span class="sep">/</span>
+  <a href="../../../modul.html">Modul</a><span class="sep">/</span>
+  <span class="curr">Keliling dan Luas: Persegi, Persegi Panjang, Segitiga</span>
+  <div class="progress-wrap">
+    <span id="progressLabel">0% selesai</span>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</nav>
+
+<div id="stepper" class="stepper"></div>
+
+<div class="wrap">
+
+<details class="guru-note">
+<summary>Catatan untuk Guru (klik untuk buka — tidak perlu ditampilkan ke siswa)</summary>
+<ul>
+<li><b>TP sumber:</b> Pengukuran TP1 — Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga (Potong-Susun Fisik). TP terbesar Elemen Pengukuran (4 tangga + 1 Inti). Diambil dari <code>Dokumen2_TP_Kelas5_Matematika.docx</code> dan <code>Scaffolding_Kelas5_Matematika_Pengukuran.docx</code> — sesi ini tidak memiliki akses ke <code>pages/materi/matematika/</code>, mohon dicek konsistensi bila folder materi resmi sudah tersedia.</li>
+<li><b>PENTING — keterbatasan modul digital:</b> TP ini secara eksplisit menuntut aktivitas potong-susun kertas FISIK (memotong jajar genjang, menggabungkan segitiga kongruen) sebagai cara MENEMUKAN rumus, bukan menghafalnya. Modul digital ini HANYA membantu siswa membayangkan/merefleksikan proses tersebut — aktivitas potong-gunting fisik WAJIB tetap dilakukan di kelas, tidak bisa digantikan modul.</li>
+<li><b>RPM v3 belum tersedia</b> — Aktivitas Inti Siswa diterjemahkan dari kolom "Aktivitas" Scaffolding. Elemen PAK tidak dimasukkan karena belum ada RPM yang mengisinya.</li>
+<li>🔗 <b>Keterkaitan silang:</b> Aktivitas potong-susun di sini beririsan dengan kompetensi komposisi-dekomposisi bangun datar di Elemen Geometri TP1 (2D vs 3D) — tetap dua TP terpisah, tidak digabung, hanya ditandai keterkaitannya.</li>
+<li><b>Produk Belajar:</b> "Buku Rumus Temuanku" — siswa mencatat "penemuan" rumus luas dari aktivitas potong-susun fisik di tiap tangga, dirangkum di Inti.</li>
+<li><b>Dimensi Profil Lulusan:</b> Penalaran Kritis (menjelaskan asal rumus, bukan menghafal), Kemandirian (refleksi mandiri tiap subunit), Kolaborasi (aktivitas potong-susun berkelompok di kelas).</li>
+<li><b>WAJIB diwaspadai</b> (sesuai catatan sumber): siswa yang lancar menghitung namun sama sekali tidak bisa menjelaskan asal rumus meski sudah mengalami aktivitas potong-susun — sinyal aktivitas fisik dijalani sebagai tempel-gunting semata tanpa refleksi konseptual. Soal uraian dirancang khusus meminta penjelasan asal rumus, bukan hanya penerapannya.</li>
+<li>Asesmen Awal bersifat diagnostik murni (tidak dinilai). Latihan sudah divariasikan (PG/BS ≤50%, minimal 1 uraian, minimal 1 penerapan), sesuai Buku Saku Bagian E.4e. Profil kelas: kemampuan akademik beragam (default), karakter kelas belum diketahui guru → pemantik dan instruksi dibuat lebih eksplisit.</li>
+</ul>
+</details>
+
+<div class="cover">
+  <span class="kicker">✦ Matematika · Kelas 5 · Elemen Pengukuran</span>
+  <h1>Keliling dan Luas: Persegi, Persegi Panjang, Segitiga</h1>
+  <p class="lede">Bismillah, mari kita mulai elemen baru: Pengukuran! Kali ini kita tidak akan menghafal rumus — kita akan MENEMUKANNYA sendiri lewat aktivitas memotong dan menyusun ulang kertas.</p>
+  <div class="cover-meta">
+    <span>📐 5 bagian belajar</span>
+    <span>📘 1 Buku Rumus Temuan untuk dibuat</span>
+    <span>✂️ Potong-susun kertas fisik di kelas</span>
+  </div>
+  <div class="important-banner">✂️ <strong>Penting:</strong> Bagian penting dari unit ini adalah aktivitas memotong-menyusun kertas SECARA FISIK bersama gurumu di kelas. Modul ini membantumu MEREFLEKSIKAN proses itu, bukan menggantikannya.</div>
+</div>
+
+<div class="save-row">
+  <span id="savedLabel" class="saved-label">Progresmu tersimpan otomatis di perangkat/peramban ini.</span>
+  <button class="reset-link" onclick="resetProgress()">Mulai ulang dari awal</button>
+</div>
+
+<div class="page" data-page="0">
+<section class="block" id="pengantar">
+  <div class="block-eyebrow">Pengantar</div>
+  <h2>Sebelum Mulai, Baca Ini Dulu ya, Sahabat Belajar!</h2>
+  <p>Selama ini mungkin kamu menghafal "luas persegi panjang = panjang × lebar" tanpa tahu kenapa. Di unit ini, kamu akan MENEMUKAN sendiri dari mana rumus-rumus itu berasal, lewat aktivitas memotong dan menyusun ulang kertas.</p>
+  <div class="produk-banner">
+    <div class="icon">📘</div>
+    <div>
+      <strong>Karya yang akan kamu buat</strong>
+      Kamu akan menyusun <b>Buku Rumus Temuanku</b> — catatan bagaimana kamu MENEMUKAN sendiri rumus luas jajar genjang, persegi panjang, dan segitiga, supaya kamu tidak pernah lupa asal-usulnya.
+    </div>
+  </div>
+</section>
+<div class="page-nav"><span class="spacer"></span><button class="mini-btn" onclick="goToPage(1)">Lanjut →</button></div>
+</div><!-- /page 0 -->
+
+<div class="page" data-page="1">
+<section class="block" id="asesmen-awal">
+  <div class="block-eyebrow">Yuk, Uji Kesiapan Belajarmu!</div>
+  <h2>Sebelum Kita Mulai...</h2>
+  <p class="sub-desc">Jawab semampumu. Ini bukan ujian — jawabanmu tidak dinilai, hanya untuk membantu kita belajar bersama!</p>
+  <div id="quizAwal"></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(0)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(2)">Lanjut →</button></div>
+</div><!-- /page 1 -->
+
+<div class="page" data-page="2">
+<!-- SUBUNIT 1 — keliling penyegaran -->
+<section class="block" id="subunit1">
+  <div class="subunit-head"><span class="badge-num">1</span>
+    <div><div class="block-eyebrow">Bagian 1 dari 5 · Materi Pintu Masuk</div><h2 style="margin-bottom:0;">Menyegarkan Kembali Keliling</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Kita mulai dari yang sudah kamu kenal: keliling.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau kamu berjalan mengelilingi lapangan sekolah tepat di pinggirnya, jarak apa yang kamu tempuh?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Keliling = Jumlah Semua Sisi</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Keliling adalah jumlah panjang seluruh sisi bangun datar. Untuk persegi sisi 12 cm: keliling = 4 × 12 = 48 cm. Untuk persegi panjang panjang 15 cm lebar 8 cm: keliling = 2×(15+8) = 46 cm.</p>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Kalau ada benda persegi/persegi panjang di rumahmu, coba ukur kelilingnya dengan tali/penggaris.</div>
+    <div class="field-row"><label>Segitiga dengan sisi 6, 8, 10 cm. Berapa kelilingnya?</label><input class="ans-input" type="text" placeholder="..."></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz1"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 1 ini?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(1)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(3)">Lanjut →</button></div>
+</div><!-- /page 2 -->
+
+<div class="page" data-page="3">
+<!-- SUBUNIT 2 — luas petak satuan -->
+<section class="block" id="subunit2">
+  <div class="subunit-head"><span class="badge-num">2</span>
+    <div><div class="block-eyebrow">Bagian 2 dari 5</div><h2 style="margin-bottom:0;">Menghitung Luas dengan Petak Satuan</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">SEBELUM rumus dikenalkan, mari hitung luas dengan cara paling dasar: menghitung petak.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau kamu punya kertas berpetak dan menggambar persegi panjang di atasnya, bagaimana caramu menghitung berapa petak yang ada di dalamnya TANPA menghitung satu-satu?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Menghitung Sistematis</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Bayangkan persegi panjang berukuran 6 petak × 4 petak. Daripada menghitung satu-satu, hitung SISTEMATIS: setiap baris ada 6 petak, ada 4 baris, jadi 6×4=24 petak.</p>
+    <div class="contoh-soal">Ini asal-usul rumus "panjang × lebar" — sebenarnya kita sedang menghitung petak secara sistematis!</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Yuk, Mencoba Sendiri</div>
+    <div class="act-desc">Bayangkan persegi panjang berukuran 6 petak × 4 petak.</div>
+    <div class="field-row"><label>Berapa total petak satuan di dalamnya? Jelaskan cara sistematismu.</label><textarea class="ans" placeholder="Saya hitung per baris: setiap baris ada 6 petak, ada 4 baris, jadi..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📘 Entri Pertama Buku Rumus Temuanku</div>
+    <div class="field-row"><label>Catatan: Dari Mana Rumus "Panjang × Lebar" Berasal?</label><textarea class="ans" id="rumus1" placeholder="Menurutku, rumus panjang x lebar berasal dari..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz2"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang berubah dari pemahamanmu tentang rumus luas setelah Bagian 2 ini?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(2)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(4)">Lanjut →</button></div>
+</div><!-- /page 3 -->
+
+<div class="page" data-page="4">
+<!-- SUBUNIT 3 — luas jajar genjang -->
+<section class="block" id="subunit3">
+  <div class="subunit-head"><span class="badge-num">3</span>
+    <div><div class="block-eyebrow">Bagian 3 dari 5</div><h2 style="margin-bottom:0;">Menemukan Rumus Luas Jajar Genjang</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Di kelas, kamu akan memotong jajar genjang kertas dan menyusunnya ulang menjadi persegi panjang. Bagian ini membantumu merefleksikan aktivitas itu.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau kamu memotong segitiga kecil dari ujung jajar genjang dan menempelkannya di ujung lain, menurutmu apa yang terjadi pada luasnya?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Potong-Susun Jajar Genjang</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Bayangkan sebuah jajar genjang kertas. Potong segitiga kecil di salah satu ujungnya, lalu tempelkan di ujung yang lain — hasilnya menjadi PERSEGI PANJANG dengan luas yang SAMA PERSIS (tidak ada bagian yang hilang/bertambah)!</p>
+    <div class="contoh-soal">Karena hasilnya jadi persegi panjang, kita bisa pakai rumus panjang×lebar — hanya di jajar genjang disebut alas×tinggi.</div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Refleksi Potong-Susun</div>
+    <div class="act-desc">Setelah melakukan aktivitas potong-susun di kelas (atau membayangkannya), jelaskan.</div>
+    <div class="field-row"><label>Mengapa luas jajar genjang tetap sama setelah dipotong-susun menjadi persegi panjang? Dari mana asal rumus "alas × tinggi"?</label><textarea class="ans" placeholder="Luasnya tetap sama karena kita hanya memindahkan bagian, bukan menambah/mengurangi. Alas x tinggi berasal dari..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📘 Tambahan untuk Buku Rumus Temuanku</div>
+    <div class="field-row"><label>Catatan: Asal Rumus Luas Jajar Genjang</label><textarea class="ans" id="rumus2" placeholder="Rumus alas x tinggi kutemukan dari aktivitas..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz3"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apakah aktivitas potong-susun membantumu memahami rumus ini lebih baik dari menghafal?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(3)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(5)">Lanjut →</button></div>
+</div><!-- /page 4 -->
+
+<div class="page" data-page="5">
+<!-- SUBUNIT 4 — luas segitiga -->
+<section class="block" id="subunit4">
+  <div class="subunit-head"><span class="badge-num">4</span>
+    <div><div class="block-eyebrow">Bagian 4 dari 5</div><h2 style="margin-bottom:0;">Menemukan Rumus Luas Segitiga</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Kali ini kamu akan menggabungkan dua segitiga kongruen menjadi satu jajar genjang.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Kalau kamu punya dua segitiga yang SAMA PERSIS bentuk dan ukurannya, lalu digabungkan, bangun apa yang bisa terbentuk?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Dua Segitiga Jadi Satu Jajar Genjang</div>
+    <div class="act-desc">Bacalah dulu penjelasan ini.</div>
+    <p style="font-size:13.5px;margin-bottom:10px;">Jika digabungkan, dua segitiga KONGRUEN (sama persis) membentuk SATU jajar genjang utuh. Karena itu, luas SATU segitiga adalah SETENGAH dari luas jajar genjang tersebut — inilah asal faktor ½ pada rumus luas segitiga!</p>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✏️ Jelaskan dengan Gambar (Kata-kata)</div>
+    <div class="field-row"><label>Jelaskan mengapa luas segitiga adalah setengah dari jajar genjang yang terbentuk dari dua segitiga kongruen.</label><textarea class="ans" placeholder="Jika saya gabungkan dua segitiga yang sama persis, sisi miringnya akan..."></textarea></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📘 Tambahan untuk Buku Rumus Temuanku</div>
+    <div class="field-row"><label>Catatan: Asal Faktor ½ pada Rumus Luas Segitiga</label><textarea class="ans" id="rumus3" placeholder="Faktor 1/2 muncul karena..."></textarea></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Latihan</h3>
+  <div id="quiz4"></div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Pribadi</h3>
+  <div class="reflect-q"><label>Apa yang kamu pelajari dari Bagian 4 ini?</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(4)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(6)">Lanjut →</button></div>
+</div><!-- /page 5 -->
+
+<div class="page" data-page="6">
+<!-- SUBUNIT 5 — PERTEMUAN INTI -->
+<section class="block" id="subunit5">
+  <div class="subunit-head"><span class="badge-num badge-inti">5</span>
+    <div><div class="block-eyebrow">Bagian 5 dari 5 · Pertemuan Inti — Saatnya Menerapkan!</div><h2 style="margin-bottom:0;">Soal Cerita Bangun Gabungan</h2></div>
+  </div>
+  <p class="sub-desc" style="margin-top:10px;">Sekarang terapkan kemampuanmu menghitung keliling dan luas gabungan, lalu rangkum Buku Rumus Temuanmu.</p>
+
+  <div class="pemantik">
+    <div class="lbl">🤔 Sebelum Kita Mulai</div>
+    <ol><li>Andaikan suatu saat nanti kamu lupa rumus luas segitiga — apa langkah yang akan kamu lakukan untuk menemukannya kembali?
+      <textarea class="ans"></textarea>
+    </li></ol>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📖 Soal Cerita — Luas Taman Gabungan</div>
+    <div class="act-desc">Sebuah taman berbentuk gabungan persegi panjang (panjang 10 m, lebar 6 m) dan segitiga di salah satu ujungnya (alas 6 m, tinggi 4 m). Berapa luas total taman tersebut?</div>
+    <textarea class="ans" placeholder="Luas persegi panjang = 10x6=... Luas segitiga = 1/2x6x4=... Total = ..."></textarea>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📘 Tuntaskan Buku Rumus Temuanku</div>
+    <button class="mini-btn" onclick="showBuku()">Susun Buku Rumus Temuanku</button>
+    <div class="card-preview hidden" id="bukuPreview"></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">✅ Kesiapanku</div>
+    <div class="check-item"><input type="checkbox" id="chk1"><label for="chk1">Aku bisa menghitung keliling bangun dasar</label></div>
+    <div class="check-item"><input type="checkbox" id="chk2"><label for="chk2">Aku bisa menjelaskan asal rumus luas jajar genjang dan segitiga</label></div>
+    <div class="check-item"><input type="checkbox" id="chk3"><label for="chk3">Aku bisa menghitung luas bangun gabungan</label></div>
+    <div class="check-item"><input type="checkbox" id="chk4"><label for="chk4">Buku Rumus Temuanku sudah selesai kususun</label></div>
+  </div>
+
+  <div class="activity">
+    <div class="act-title">📝 Latihan Akhir Unit</div>
+    <div id="quizAkhir"></div>
+  </div>
+
+  <h3 style="font-size:16px;margin-top:22px;margin-bottom:8px;">Refleksi Akhir Unit</h3>
+  <div class="reflect-q"><label>Melihat kembali perjalananmu di unit ini, apa yang paling berkesan bagimu?</label><textarea class="ans"></textarea></div>
+  <div class="reflect-q"><label>Alhamdulillah, unit ini selesai! Tuliskan satu hal yang kamu syukuri dari belajar hari ini.</label><textarea class="ans"></textarea></div>
+</section>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(5)">← Sebelumnya</button><button class="mini-btn" onclick="goToPage(7)">Lanjut →</button></div>
+</div><!-- /page 6 -->
+
+<div class="page" data-page="7">
+<section class="block" id="glosarium">
+  <div class="block-eyebrow">Lampiran</div>
+  <h2>Glosarium</h2>
+  <dl class="glossary">
+    <dt>Keliling</dt><dd>Jumlah panjang seluruh sisi bangun datar.</dd>
+    <dt>Bangun kongruen</dt><dd>Dua bangun yang bentuk dan ukurannya sama persis.</dd>
+    <dt>Potong-susun (komposisi-dekomposisi)</dt><dd>Memotong suatu bangun dan menyusunnya ulang menjadi bangun lain tanpa mengubah luasnya.</dd>
+  </dl>
+</section>
+<div class="closing">Selamat! Kamu sudah menemukan sendiri rumus luas, bukan cuma menghafalnya. Semoga menjadi berkah dan bermanfaat. Aamiin. 🌿</div>
+<div class="page-nav"><button class="mini-btn ghost" onclick="goToPage(6)">← Sebelumnya</button><span class="spacer"></span></div>
+</div><!-- /page 7 -->
+
+</div><!-- /wrap -->
+</div><!-- /app-detail -->
+
+<script>
+const STORAGE_KEY = 'modulProgress:mtk-keliling-luas-tp1';
+const TOTAL_PAGES = 8;
+let currentPage = 0;
+let isReplaying = false;
+
+function loadState(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveState(mutator){
+  const state = loadState();
+  mutator(state);
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* storage penuh/nonaktif — abaikan diam-diam */ }
+  showSavedLabel();
+}
+function showSavedLabel(){
+  const el = document.getElementById('savedLabel');
+  if(!el) return;
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  el.textContent = 'Tersimpan otomatis · ' + hh + ':' + mm;
+}
+function resetProgress(){
+  if(confirm('Hapus semua progres dan jawaban di modul ini dari perangkat ini? Tindakan ini tidak bisa dibatalkan.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function logAction(action){
+  if(isReplaying) return;
+  saveState(s => { s.actions = s.actions || []; s.actions.push(action); });
+}
+
+const PAGE_LABELS = ['Mulai','Uji Diri','Bag.1','Bag.2','Bag.3','Bag.4','Inti','Selesai'];
+function buildStepper(){
+  const wrap = document.getElementById('stepper');
+  wrap.innerHTML = PAGE_LABELS.map((lb,i)=>`<button class="step" data-step="${i}" onclick="goToPage(${i})" title="${lb}">${i+1}</button>`).join('');
+}
+function goToPage(n){
+  n = Math.max(0, Math.min(TOTAL_PAGES-1, n));
+  currentPage = n;
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', parseInt(p.dataset.page,10) === n));
+  document.querySelectorAll('.step').forEach(s => {
+    const sp = parseInt(s.dataset.step,10);
+    s.classList.toggle('active', sp === n);
+    s.classList.toggle('done', sp < n);
+  });
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(!isReplaying) saveState(s => { s.page = n; });
+}
+
+let fieldCounter = 0;
+function wireTextPersistence(){
+  const state = loadState();
+  const els = document.querySelectorAll('textarea.ans, input.ans-input');
+  els.forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(!el.dataset.save){ el.dataset.save = 'field-' + (fieldCounter++); }
+    if(state.text && state.text[el.dataset.save] !== undefined){
+      el.value = state.text[el.dataset.save];
+    }
+    el.addEventListener('input', ()=>{
+      saveState(s=>{ s.text = s.text || {}; s.text[el.dataset.save] = el.value; });
+    });
+  });
+}
+
+function wireCheckPersistence(){
+  const state = loadState();
+  document.querySelectorAll('.check-item input[type=checkbox]').forEach((el)=>{
+    if(el.dataset.wired) return;
+    el.dataset.wired = '1';
+    if(state.check && state.check[el.id] !== undefined){ el.checked = state.check[el.id]; }
+    el.addEventListener('change', ()=>{
+      saveState(s=>{ s.check = s.check || {}; s.check[el.id] = el.checked; });
+    });
+  });
+}
+
+function dispatchAction(a){
+  if(a.type === 'mcq'){
+    const group = document.getElementById(a.group);
+    const btn = group && group.children[a.chosen];
+    if(btn) btn.click();
+  }
+}
+function replayActions(){
+  const state = loadState();
+  isReplaying = true;
+  (state.actions||[]).forEach(a => { try { dispatchAction(a); } catch(e){ console.warn('Gagal memulihkan aksi:', a, e); } });
+  isReplaying = false;
+}
+
+function renderQuiz(containerId, items){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map((q, i) => {
+    let body = '';
+    if(q.type === 'mcq'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        q.options.map((opt,oi) => `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,${oi},${q.correct})">${opt}</button>`).join('') +
+        `</div>`;
+    } else if(q.type === 'bs'){
+      body = `<div class="choice-group" id="${containerId}-q${i}">` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,0,${q.correct})">Benar</button>` +
+        `<button class="choice-btn" onclick="checkMCQ('${containerId}-q${i}',this,1,${q.correct})">Salah</button>` +
+        `</div>`;
+    } else {
+      body = `<textarea class="ans" placeholder="Tulis jawabanmu di sini..."></textarea>` +
+        (q.key ? `<br><button class="reveal-key" onclick="this.nextElementSibling.classList.toggle('show')" style="margin-top:8px;background:none;border:none;color:var(--nav);font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;">Lihat contoh jawaban</button><div class="key-box" style="display:none;margin-top:8px;background:var(--correct-bg);border-radius:8px;padding:10px 12px;font-size:13px;color:#1c3b2d;">${q.key}</div>` : '');
+    }
+    return `<div class="q-item"><div class="q-num">Soal ${i+1}${q.tag ? ' · '+q.tag : ''}</div><div class="q-text">${q.text}</div>${body}</div>`;
+  }).join('');
+}
+function checkMCQ(groupId, btn, chosenIdx, correctIdx){
+  const group = document.getElementById(groupId);
+  [...group.children].forEach(b=>b.classList.add('disabled'));
+  if(chosenIdx === correctIdx){ btn.classList.add('correct'); }
+  else { btn.classList.add('wrong'); group.children[correctIdx].classList.add('correct'); }
+  updateProgress();
+  if(!isReplaying) logAction({type:'mcq', group:groupId, chosen:chosenIdx});
+}
+
+/* ============ SUBUNIT 5: rangkum Buku Rumus Temuan ============ */
+function showBuku(){
+  const r1 = document.getElementById('rumus1').value;
+  const r2 = document.getElementById('rumus2').value;
+  const r3 = document.getElementById('rumus3').value;
+
+  const box = document.getElementById('bukuPreview');
+  box.innerHTML = `
+    <h4>Buku Rumus Temuanku</h4>
+    <div class="cp-section"><b>Rumus Panjang x Lebar (Bagian 2)</b>${r1 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Rumus Luas Jajar Genjang (Bagian 3)</b>${r2 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+    <div class="cp-section"><b>Rumus Luas Segitiga (Bagian 4)</b>${r3 || '<span class="cp-empty">(belum diisi)</span>'}</div>
+  `;
+  box.classList.remove('hidden');
+  updateProgress();
+}
+
+/* ============ QUIZ DATA ============ */
+renderQuiz('quizAwal', [
+  {type:'mcq', text:'Keliling persegi dengan sisi 7 cm adalah...', options:['28 cm','14 cm','49 cm'], correct:0},
+  {type:'bs', text:'Luas adalah jumlah panjang seluruh sisi suatu bangun datar.', correct:1},
+  {type:'essay', text:'Apakah kamu masih ingat rumus luas persegi panjang? Coba tuliskan.'}
+]);
+
+renderQuiz('quiz1', [
+  {type:'mcq', text:'Keliling persegi panjang dengan panjang 15 cm dan lebar 8 cm adalah...', options:['46 cm','23 cm','120 cm'], correct:0},
+  {type:'bs', text:'Keliling dihitung dengan menjumlahkan seluruh panjang sisi bangun datar.', correct:0},
+  {type:'essay', text:'Hitung keliling segitiga dengan sisi 5, 12, 13 cm.', tag:'isian'},
+  {type:'essay', text:'Jelaskan bedanya keliling dan luas dengan kata-katamu sendiri.', tag:'uraian', key:'Contoh: keliling adalah jarak mengelilingi TEPI bangun (garis batas luar), sedangkan luas adalah ukuran DAERAH atau ruang di dalam bangun tersebut.'},
+  {type:'essay', text:'Sebuah taman berbentuk persegi dengan sisi 20 m akan dipasangi pagar di sekelilingnya. Berapa meter pagar yang dibutuhkan?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz2', [
+  {type:'mcq', text:'Sebuah persegi panjang berukuran 8 petak x 5 petak. Berapa total petak satuan?', options:['40','13','35'], correct:0},
+  {type:'bs', text:'Menghitung luas dengan petak satuan secara sistematis (per baris/kolom) sama hasilnya dengan rumus panjang x lebar.', correct:0},
+  {type:'essay', text:'Sebuah persegi panjang berukuran 7 petak x 3 petak. Berapa total petaknya?', tag:'isian'},
+  {type:'essay', text:'Jelaskan mengapa menghitung petak per baris (bukan satu-satu) itu lebih efisien.', tag:'uraian', key:'Contoh: karena kita bisa langsung mengalikan jumlah petak dalam satu baris dengan jumlah baris, tanpa harus menghitung setiap petak satu per satu — ini jauh lebih cepat terutama untuk bangun yang besar.'},
+  {type:'essay', text:'Sebuah ruangan berbentuk persegi panjang berukuran 9 m x 6 m akan dipasangi keramik. Berapa luas keramik yang dibutuhkan?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz3', [
+  {type:'mcq', text:'Luas jajar genjang dengan alas 10 cm dan tinggi 6 cm adalah...', options:['60 cm²','16 cm²','30 cm²'], correct:0},
+  {type:'bs', text:'Rumus alas x tinggi pada jajar genjang berasal dari fakta bahwa jajar genjang bisa disusun ulang menjadi persegi panjang tanpa mengubah luasnya.', correct:0},
+  {type:'essay', text:'Hitung luas jajar genjang dengan alas 15 cm dan tinggi 8 cm.', tag:'isian'},
+  {type:'essay', text:'Jelaskan langkah memotong-menyusun jajar genjang menjadi persegi panjang dengan kata-katamu.', tag:'uraian', key:'Contoh: aku memotong segitiga kecil di salah satu ujung jajar genjang, lalu menempelkannya di ujung yang lain sehingga terbentuk persegi panjang — luasnya tetap sama karena tidak ada bagian yang hilang atau ditambah, hanya dipindah posisinya.'},
+  {type:'essay', text:'Sebuah kebun berbentuk jajar genjang dengan alas 18 m dan tinggi 9 m. Berapa luas kebun tersebut?', tag:'penerapan'}
+]);
+
+renderQuiz('quiz4', [
+  {type:'mcq', text:'Luas segitiga dengan alas 12 cm dan tinggi 8 cm adalah...', options:['48 cm²','96 cm²','20 cm²'], correct:0},
+  {type:'bs', text:'Faktor 1/2 pada rumus luas segitiga muncul karena dua segitiga kongruen bisa membentuk satu jajar genjang utuh.', correct:0},
+  {type:'essay', text:'Hitung luas segitiga dengan alas 20 cm dan tinggi 14 cm.', tag:'isian'},
+  {type:'essay', text:'Jelaskan mengapa luas segitiga SELALU setengah dari jajar genjang yang sealas dan setinggi dengannya.', tag:'uraian', key:'Contoh: karena jajar genjang tersebut bisa dibagi menjadi dua segitiga kongruen, sehingga luas satu segitiga pasti setengah dari total luas jajar genjang itu.'},
+  {type:'essay', text:'Sebuah bendera segitiga memiliki alas 30 cm dan tinggi 20 cm. Berapa luas kain yang dibutuhkan untuk membuat bendera tersebut?', tag:'penerapan'}
+]);
+
+renderQuiz('quizAkhir', [
+  {type:'mcq', text:'Andaikan kamu lupa rumus luas segitiga, cara paling tepat menemukannya kembali adalah...', options:['Membayangkan dua segitiga kongruen digabung menjadi jajar genjang','Menebak-nebak rumus secara acak','Bertanya jawaban langsung tanpa memahami','Menghitung keliling sebagai gantinya'], correct:0},
+  {type:'bs', text:'Siswa yang bisa menghitung luas dengan cepat namun tidak bisa menjelaskan asal rumusnya sudah pasti benar-benar memahami konsepnya.', correct:1},
+  {type:'essay', text:'Sebuah lapangan berbentuk gabungan persegi panjang (panjang 24 m, lebar 10 m) dan segitiga di ujungnya (alas 10 m, tinggi 6 m). Berapa luas total lapangan?', tag:'penerapan'},
+  {type:'essay', text:'Bagaimana perasaanmu setelah menyelesaikan unit ini? Apakah menemukan sendiri rumus terasa berbeda dari menghafalnya?', tag:'uraian'}
+]);
+
+/* ============ PROGRESS TRACKER ============ */
+function updateProgress(){
+  const totalMarkers = 20;
+  let done = 0;
+  document.querySelectorAll('.choice-btn.correct').forEach(()=>done++);
+  if(!document.getElementById('bukuPreview').classList.contains('hidden')) done++;
+  document.querySelectorAll('.check-item input:checked').forEach(()=>done++);
+  const pct = Math.min(100, Math.round((done/totalMarkers)*100));
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = pct+'% selesai';
+}
+
+/* ============ INISIALISASI HALAMAN & PEMULIHAN PROGRES ============ */
+buildStepper();
+wireTextPersistence();
+wireCheckPersistence();
+const _savedState = loadState();
+currentPage = _savedState.page || 0;
+isReplaying = true;
+goToPage(currentPage);
+isReplaying = false;
+replayActions();
+wireTextPersistence();
+wireCheckPersistence();
+updateProgress();
+</script>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
