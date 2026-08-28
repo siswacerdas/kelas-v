@@ -27,9 +27,20 @@
 
   function kirimProgres(namaSiswa, materiSlug) {
     try {
-      // fetch tanpa await/then yang menunggu — benar-benar fire-and-forget, dan pakai
-      // keepalive supaya request tetap terkirim walau siswa langsung pindah halaman
-      // (klik "Berikutnya ›" dari materi-nav.js) sebelum request selesai.
+      // KEDUA panggilan di bawah SENGAJA ditembak BERSAMAAN (bukan dirangkai .then()),
+      // masing-masing dengan keepalive sendiri — supaya KEDUANYA sempat terkirim
+      // sebelum browser tutup koneksi kalau siswa langsung pindah halaman (klik
+      // "Berikutnya ›" dari materi-nav.js secepatnya, skenario yang MEMANG
+      // diantisipasi lewat keepalive). Merangkai .then() pernah dicoba tapi
+      // DIBATALKAN — panggilan kedua dalam rangkaian .then() BISA TIDAK PERNAH
+      // terkirim kalau halaman keburu dimatikan sebelum promise pertama selesai
+      // (keepalive cuma menjaga request yang SUDAH diinisiasi, tidak menjaga sisa
+      // kode JS yang belum sempat jalan). Konsekuensinya: sesekali panggilan
+      // hitung_gamifikasi bisa membaca sheet SEBELUM baris progres_materi ini
+      // selesai tertulis, EXP jadi telat 1 hitungan — TIDAK APA-APA, sembuh sendiri
+      // di panggilan berikutnya karena EXP dihitung ulang PENUH tiap kali, bukan
+      // di-increment. Ini pertukaran yang jauh lebih aman daripada risiko EXP
+      // gagal ter-update sama sekali akibat rangkaian .then() yang terputus.
       fetch(APPS_SCRIPT_URL, {
         method: "POST",
         keepalive: true,
@@ -38,7 +49,13 @@
           "Nama Siswa": namaSiswa,
           "Materi Slug": materiSlug,
         }),
-      }).catch(function () { /* diamkan — lihat catatan fire-and-forget di atas */ });
+      }).catch(function () { /* diamkan */ });
+
+      fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        keepalive: true,
+        body: JSON.stringify({ type: "hitung_gamifikasi", nama: namaSiswa }),
+      }).catch(function () { /* diamkan */ });
     } catch (e) { /* diamkan */ }
   }
 
