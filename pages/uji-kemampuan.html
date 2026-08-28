@@ -93,6 +93,8 @@
   #hasil-skor .skor-angka { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--purple); }
   #hasil-skor .skor-label { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
   #hasil-skor .skor-belum-dijawab { color: var(--err); font-weight: 600; }
+  .level-status { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(155,89,182,0.08); border: 1px solid rgba(155,89,182,0.25); font-size: 13px; color: var(--ink-2); }
+  .level-status.level-naik { background: rgba(42,157,111,0.1); border-color: rgba(42,157,111,0.35); color: var(--ok); font-size: 14px; }
   #hasil-skor .skor-tersimpan { font-size: 11.5px; color: var(--ok); margin-top: 6px; }
 
   .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
@@ -460,11 +462,50 @@
         timestamp: serverTimestamp(),
       });
       document.getElementById("skor-tersimpan-label").textContent = "✓ Hasil tersimpan — bisa dilihat lagi lewat Riwayat Latihan.";
+      panggilHitungLevel(namaSiswa);
     } catch (err) {
-      document.getElementById("skor-tersimpan-label").textContent = "⚠️ Hasil belum tersimpan (" + err.message + "). Skormu tetap terlihat di atas.";
       document.getElementById("skor-tersimpan-label").style.color = "var(--err)";
+      document.getElementById("skor-tersimpan-label").textContent = "⚠️ Hasil belum tersimpan (" + err.message + "). Skormu tetap terlihat di atas.";
     }
   };
+
+  // ═══════════════ LEVEL UJI KEMAMPUAN (belum dirilis) ═══════════════
+  // Level DIHITUNG & DITULIS DI SERVER (Apps Script), BUKAN di sini — lihat
+  // catatan keamanan panjang di apps-script/Code.gs (doPostHitungLevel_).
+  // Panggilan ini HASILNYA DIPAKAI (beda dari fire-and-forget progres_materi),
+  // tapi kegagalannya SENGAJA tidak ditampilkan sebagai error ke siswa — skor
+  // kuisnya sendiri sudah aman tersimpan (lihat blok di atas); status level
+  // cuma bonus, gagal mengecek level tidak boleh terasa seperti kuisnya gagal.
+  const APPS_SCRIPT_URL_LEVEL = "https://script.google.com/macros/s/AKfycbzM8gGleSPv-zBpjEQyDTOmia9h9ackGbJsKOexl7WPf8c0RHAx5LWEYeCvL4W-6RgLvg/exec";
+  const LEVEL_LABEL = { dasar: "Dasar", menengah: "Menengah", atas: "Atas", mahir: "Mahir" };
+
+  async function panggilHitungLevel(nama) {
+    try {
+      const res = await fetch(APPS_SCRIPT_URL_LEVEL, {
+        method: "POST",
+        body: JSON.stringify({ type: "hitung_level", nama: nama }),
+      });
+      const data = await res.json();
+      if (data.status !== "ok") return; // diam-diam abaikan, lihat catatan di atas
+      tampilkanStatusLevel(data);
+    } catch (e) { /* diamkan, lihat catatan di atas */ }
+  }
+
+  function tampilkanStatusLevel(d) {
+    const wrap = document.createElement("div");
+    wrap.className = "level-status";
+    const labelLevel = LEVEL_LABEL[d.level] || d.level;
+    const naikLevelBaruSaja = (JSON.parse(d.riwayatLevelUpJson || "[]").slice(-1)[0] || {}).padaSkor;
+    if (naikLevelBaruSaja !== undefined) {
+      wrap.innerHTML = `🎉 <strong>Selamat! Level naik jadi ${labelLevel}.</strong>`;
+      wrap.classList.add("level-naik");
+    } else if (d.mahirTercapai) {
+      wrap.innerHTML = `🏆 Level <strong>Mahir</strong> — capaian tertinggi sudah diraih!`;
+    } else {
+      wrap.innerHTML = `Level saat ini: <strong>${labelLevel}</strong> — progres ${d.progress}/${d.butuhLulus} menuju level berikutnya (perlu skor &gt;${d.ambangLevelIni}%).`;
+    }
+    document.getElementById("hasil-skor").appendChild(wrap);
+  }
 
   // ═══════════════════════ INISIALISASI ═══════════════════════
   document.addEventListener("role-verified", async (e) => {
