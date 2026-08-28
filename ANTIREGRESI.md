@@ -1546,13 +1546,15 @@ Catat setiap sesi ujicoba di sini:
   terpisah, bukan bagian dari repo publik ini — §5 langkah 1b).
 
 ### 35. Sistem Level Uji Kemampuan (`apps-script/Code.gs`, `pages/uji-kemampuan.html`,
-koleksi Firestore `level_siswa` — BARU BACKEND-nya saja, belum dirilis, UI profil/papan
+`pages/profil-siswa.html`, koleksi Firestore `level_siswa` — Fase 1 (mesin
+server) + Fase 2 (profil siswa) sudah dibangun, belum dirilis; EXP & papan
 perbandingan MENYUSUL)
 
-> **Cakupan fase ini**: cuma mesin hitung level di server + pemicunya di
-> `uji-kemampuan.html`. BELUM ada halaman profil siswa, BELUM ada EXP, BELUM ada
-> papan perbandingan — 3 hal itu menyusul di fase berikutnya. Yang bisa diuji
-> SEKARANG cuma kotak kecil status level yang muncul di bawah skor kuis.
+> **Cakupan sampai fase ini**: mesin hitung level di server + pemicunya di
+> `uji-kemampuan.html` + halaman profil siswa (`profil-siswa.html`). BELUM
+> ada EXP, BELUM ada papan perbandingan antar siswa, BELUM ada cara guru
+> melihat profil level siswa TERTENTU (siswa cuma bisa lihat profilnya
+> sendiri) — semua itu menyusul di fase berikutnya.
 >
 > **Keputusan desain kunci** (kalau lupa kenapa dibuat begini, baca CHANGELOG.md):
 > level GLOBAL (bukan per-TP/per-mapel), dihitung ulang PENUH dari `hasil_latihan`
@@ -1595,3 +1597,26 @@ perbandingan MENYUSUL)
       itu) → kotak status berubah jadi "🏆 Level Mahir — capaian tertinggi sudah
       diraih!" untuk SEMUA kuis berikutnya (bukan lagi progres N/M), berapa pun
       skor kuis selanjutnya (termasuk yang jelek)
+
+**Halaman Profil Siswa** (`pages/profil-siswa.html`, kartu menu "Profil & Level")
+- [ ] Akun **guru** dan **orang tua** TIDAK melihat kartu menu ini di beranda
+      (data-akses="siswa" saja) — dan kalau buka URL-nya langsung, ditolak
+      guard (dilempar balik ke beranda), BUKAN ditampilkan datanya
+- [ ] Siswa yang BELUM PERNAH mengerjakan Uji Kemampuan sama sekali (dokumen
+      `level_siswa` belum ada) → tampil pesan ramah "belum punya data level"
+      dengan tautan ke Uji Kemampuan, BUKAN halaman kosong/error di konsol
+- [ ] Siswa yang SUDAH pernah mengerjakan kuis → kartu level besar tampil
+      dengan warna & ikon SESUAI level saat ini (Dasar abu-abu 🌱, Menengah
+      biru 🌿, Atas emas 🌳, Mahir ungu 🏆), bar progres terisi sesuai
+      `progress/butuhLulus`, dan 4 kartu statistik (kuis dikerjakan, total
+      lulus, skor tertinggi, rata-rata) menampilkan angka yang MASUK AKAL
+      dibanding riwayat kuis sungguhan siswa itu di `hasil_latihan`
+- [ ] Siswa dengan level Mahir + `mahirTercapai: true` → kartu level
+      menampilkan lencana "🏆 Capaian puncak sudah diraih — level tertinggi!"
+      (BUKAN bar progres kosong/aneh)
+- [ ] Daftar "Riwayat Kenaikan Level" menampilkan SEMUA momen naik level
+      (bukan cuma yang terakhir), urut dari yang TERBARU di atas, masing-
+      masing dengan tanggal & skor yang benar
+- [ ] Segera setelah siswa naik level di `uji-kemampuan.html` (lihat kotak
+      "🎉 Level naik!") → buka halaman Profil & Level → perubahan itu SUDAH
+      tercermin (baca langsung dari Firestore, tidak ada cache/jeda berarti)

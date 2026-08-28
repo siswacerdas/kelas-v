@@ -115,6 +115,32 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   progres Modul sendiri belum pernah terkirim ke server sama sekali — lihat
   poin terkait di atas), dan papan perbandingan antar siswa.
 
+### Ditambahkan — Sistem Level Uji Kemampuan, Fase 2: halaman profil siswa
+(belum dirilis; EXP & papan perbandingan MASIH menyusul di fase berikutnya)
+- `pages/profil-siswa.html` (halaman baru) — siswa login lihat kartu level
+  besar (ikon + warna berbeda per level: Dasar abu-abu, Menengah biru, Atas
+  emas, Mahir ungu), bar progres menuju level berikutnya (atau lencana
+  "🏆 Capaian puncak" kalau sudah Mahir tercapai), 4 kartu statistik (kuis
+  dikerjakan, total lulus, skor tertinggi, rata-rata skor), dan daftar
+  riwayat tiap kali naik level (tanggal + skor yang men-triggernya).
+- **SENGAJA siswa-only** (bukan "siswa guru" seperti kartu lain) — ini
+  profil PRIBADI 1 siswa yang sedang login, bukan alat guru mengecek siswa
+  lain (guru sudah punya Riwayat Latihan & Laporan Siswa Pintu 3 untuk itu).
+- Kartu menu baru "Profil & Level" ditambahkan di `index.html`, sebelah
+  kartu Uji Kemampuan.
+- Halaman ini CUMA MEMBACA `level_siswa/{namaSiswa}` langsung dari
+  Firestore (client-side, sesuai Security Rules yang sudah dipasang di Fase
+  1 — siapa saja yang login boleh baca). Kalau dokumennya belum ada (siswa
+  belum pernah mengerjakan Uji Kemampuan sama sekali), tampil pesan ramah
+  dengan tautan langsung ke halaman Uji Kemampuan, bukan halaman kosong/error.
+- Label/ikon/warna level di halaman ini (`LEVEL_INFO`) MURNI tampilan —
+  bukan sumber kebenaran. Kalau nama/ambang level di `LEVEL_TAHAP_`
+  (`Code.gs`) berubah, `LEVEL_INFO` di sini perlu disesuaikan manual demi
+  konsistensi, tapi TIDAK mempengaruhi logika penentuan level itu sendiri.
+- **BELUM dikerjakan (fase berikutnya)**: sistem EXP, papan perbandingan
+  antar siswa, dan akses guru untuk melihat profil siswa TERTENTU (saat ini
+  cuma siswa yang bersangkutan yang bisa lihat profilnya sendiri).
+
 ### Direncanakan
 - Isi konten asli `cp-tp-atp.html` (CP/TP/ATP resmi per mapel) dan `jadwal.html`
   (jadwal mingguan resmi) — kerangkanya sudah ada sejak v0.9.0, tinggal menunggu
