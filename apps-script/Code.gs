@@ -1162,16 +1162,18 @@ function doPost(e) {
       return doPostProgresMateri_(body);
     }
 
-    if (body.type === "hitung_level") {
+    if (body.type === "hitung_gamifikasi") {
       // SENGAJA TANPA gerbang — dipanggil siswa sendiri tepat setelah 1 hasil kuis
-      // tersimpan. TIDAK bisa disalahgunakan untuk menaikkan level curang: fungsi ini
-      // TIDAK PERNAH mempercayai angka level/progress apa pun dari body permintaan,
-      // selalu hitung ulang dari nol berdasar `hasil_latihan` yang sudah tersimpan di
-      // Firestore (lihat doPostHitungLevel_). Paling buruk yang bisa disalahgunakan:
-      // memanggil ini berkali-kali untuk nama siswa lain — tapi hasilnya tetap SAMA
-      // PERSIS (functionya murni/deterministik dari data sumber), jadi tidak ada
-      // manfaat curang dari memanggilnya berulang atau atas nama siswa lain.
-      return doPostHitungLevel_(body);
+      // tersimpan ATAU 1 materi ditandai dibaca. TIDAK bisa disalahgunakan untuk
+      // menaikkan level/EXP curang: fungsi ini TIDAK PERNAH mempercayai angka
+      // level/progress/exp apa pun dari body permintaan, selalu hitung ulang dari
+      // nol berdasar `hasil_latihan` + sheet "Data Progres Materi" yang sudah
+      // tersimpan (lihat doPostHitungGamifikasi_). Paling buruk yang bisa
+      // disalahgunakan: memanggil ini berkali-kali untuk nama siswa lain — tapi
+      // hasilnya tetap SAMA PERSIS (fungsinya murni/deterministik dari data
+      // sumber), jadi tidak ada manfaat curang dari memanggilnya berulang atau
+      // atas nama siswa lain.
+      return doPostHitungGamifikasi_(body);
     }
 
     if (body.type === "mpls_kognitif") {
@@ -1642,6 +1644,26 @@ const LEVEL_TAHAP_ = {
 };
 const LEVEL_AMBANG_LULUS_UMUM_ = 70; // ambang "lulus" generik untuk statistik total (independen dari level)
 
+/* ── EXP (poin pengalaman) — lihat CHANGELOG.md untuk latar belakang keputusan.
+ * Sengaja dari AKTIVITAS YANG SELESAI, BUKAN durasi/waktu dihabiskan — durasi gampang
+ * dicurangi (buka tab lalu ditinggal), sedangkan "materi ini sudah dibaca" atau "kuis ini
+ * sudah dikerjakan" adalah sinyal yang jauh lebih sulit dipalsukan tanpa benar-benar
+ * berinteraksi. Sumber EXP sekarang: Materi Ajar (10/materi) + Uji Kemampuan (5/kuis
+ * dikerjakan + 10 bonus kalau lulus ≥70%). EXP dari Modul MENYUSUL — progres Modul sendiri
+ * belum pernah terkirim ke server sama sekali (lihat CHANGELOG.md bagian Direncanakan). */
+const EXP_PER_MATERI_ = 10;
+const EXP_PER_KUIS_DIKERJAKAN_ = 5;
+const EXP_BONUS_KUIS_LULUS_ = 10;
+
+/** Hitung jumlah materi yang sudah "Dibaca" 1 siswa dari sheet "Data Progres Materi".
+ * 1 baris = 1 materi (upsert per Nama Siswa + Materi Slug, lihat doPostProgresMateri_),
+ * jadi cukup hitung baris yang cocok namanya — tidak perlu deduplikasi lagi di sini. */
+function hitungJumlahMateriDibaca_(nama) {
+  const target = String(nama).trim().toLowerCase();
+  const rows = sheetToObjects_(getProgresMateriSheet_());
+  return rows.filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target).length;
+}
+
 /** Ambil SEMUA dokumen hasil_latihan milik 1 nama siswa, urut kronologis (lama -> baru).
  * Pola paging SAMA seperti cariDokumenSiswaByNama_ (baca-semua-lalu-filter) — koleksi ini
  * jauh lebih besar dari `siswa` (bisa ratusan/ribuan dokumen dalam 1 tahun ajaran), TAPI
@@ -1682,11 +1704,13 @@ function hitungLevelDariRiwayat_(riwayat) {
   let totalLulusUmum = 0;
   let skorTertinggi = 0;
   let totalSkor = 0;
+  let expDariKuis = 0;
 
   riwayat.forEach((r) => {
     totalSkor += r.skor;
     if (r.skor > skorTertinggi) skorTertinggi = r.skor;
     if (r.skor >= LEVEL_AMBANG_LULUS_UMUM_) totalLulusUmum++;
+    expDariKuis += EXP_PER_KUIS_DIKERJAKAN_ + (r.skor >= LEVEL_AMBANG_LULUS_UMUM_ ? EXP_BONUS_KUIS_LULUS_ : 0);
 
     if (mahirTercapai) return; // sudah di puncak, sisa riwayat cuma pengaruhi statistik umum di atas
 
@@ -1716,6 +1740,7 @@ function hitungLevelDariRiwayat_(riwayat) {
     totalLulusUmum: totalLulusUmum,
     skorTertinggi: skorTertinggi,
     rataRataSkor: riwayat.length > 0 ? Math.round(totalSkor / riwayat.length) : 0,
+    expDariKuis: expDariKuis,
     riwayatLevelUpJson: JSON.stringify(riwayatLevelUp),
   };
 }
@@ -1731,19 +1756,41 @@ function setLevelSiswaFirestore_(nama, levelData) {
   if (r.code !== 200) throw new Error("Gagal menyimpan level siswa ke Firestore: " + r.text);
 }
 
-/** Dipanggil klien (uji-kemampuan.html) SEGERA setelah 1 hasil kuis berhasil tersimpan ke
- * hasil_latihan. Fire-and-forget dari sudut pandang siswa (sama seperti doPostProgresMateri_)
- * — TAPI beda dari itu, di sini responsnya DIPAKAI klien (untuk animasi "naik level!"), jadi
- * error di sini TETAP dibalas apa adanya (bukan selalu "ok") supaya klien tahu kalau gagal
- * dan tidak salah menampilkan status level yang keliru ke siswa. */
-function doPostHitungLevel_(body) {
+/** Dipanggil klien SEGERA setelah: (a) 1 hasil kuis berhasil tersimpan
+ * (uji-kemampuan.html), atau (b) 1 materi berhasil ditandai "Dibaca"
+ * (materi-progress-tracker.js). Fire-and-forget dari sudut pandang siswa —
+ * TAPI beda dari progres_materi murni, di sini responsnya DIPAKAI klien
+ * (untuk animasi "naik level!" & tampilan EXP), jadi error di sini TETAP
+ * dibalas apa adanya (bukan selalu "ok") supaya klien tahu kalau gagal dan
+ * tidak salah menampilkan status yang keliru ke siswa. */
+/** Baca level_siswa/{nama} yang TERSIMPAN SAAT INI (sebelum dihitung ulang) — dipakai
+ * doPostHitungGamifikasi_ semata-mata untuk tahu "apakah baru saja naik level PERSIS di
+ * panggilan ini", bukan "pernah naik level kapan saja di riwayat". Tanpa ini, karena
+ * hitungLevelDariRiwayat_ selalu mereplay SELURUH riwayat dari nol, pesan "🎉 Level naik!"
+ * akan MUNCUL SELAMANYA di setiap kuis berikutnya setelah naik level pertama kali (bug nyata
+ * yang sempat lolos di Fase 1 — riwayatLevelUpJson tidak pernah "kosong lagi" setelah entri
+ * pertama masuk, jadi cek "entri terakhir ada" akan selalu benar). */
+function ambilLevelSiswaSaatIni_(nama) {
+  const r = firestoreFetch_("level_siswa/" + encodeURIComponent(nama), "get");
+  if (r.code !== 200) return { level: "dasar", mahirTercapai: false }; // belum pernah dihitung sama sekali
+  const f = objFromFirestoreFields_(r.json.fields);
+  return { level: f.level || "dasar", mahirTercapai: !!f.mahirTercapai };
+}
+
+function doPostHitungGamifikasi_(body) {
   const nama = String(body.nama || "").trim();
   if (!nama) return jsonOut_({ status: "error", message: "Nama wajib diisi" });
   try {
+    const sebelum = ambilLevelSiswaSaatIni_(nama);
     const riwayat = ambilRiwayatHasilLatihan_(nama);
     const levelData = hitungLevelDariRiwayat_(riwayat);
-    setLevelSiswaFirestore_(nama, levelData);
-    return jsonOut_(Object.assign({ status: "ok" }, levelData));
+    const jumlahMateriDibaca = hitungJumlahMateriDibaca_(nama);
+    const exp = jumlahMateriDibaca * EXP_PER_MATERI_ + levelData.expDariKuis;
+    const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
+      (levelData.mahirTercapai && !sebelum.mahirTercapai);
+    const dataLengkap = Object.assign({}, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, exp: exp });
+    setLevelSiswaFirestore_(nama, dataLengkap);
+    return jsonOut_(Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap));
   } catch (err) {
     return jsonOut_({ status: "error", message: String(err) });
   }
