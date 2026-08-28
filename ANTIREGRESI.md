@@ -1544,3 +1544,54 @@ Catat setiap sesi ujicoba di sini:
   berlebih sebelum push ke GitHub. Pengecekan ini SEKARANG bagian resmi dari workflow
   validasi konten (lihat `SERAH_TERIMA_PROYEK.md` bagian internal Claude — dokumen
   terpisah, bukan bagian dari repo publik ini — §5 langkah 1b).
+
+### 35. Sistem Level Uji Kemampuan (`apps-script/Code.gs`, `pages/uji-kemampuan.html`,
+koleksi Firestore `level_siswa` — BARU BACKEND-nya saja, belum dirilis, UI profil/papan
+perbandingan MENYUSUL)
+
+> **Cakupan fase ini**: cuma mesin hitung level di server + pemicunya di
+> `uji-kemampuan.html`. BELUM ada halaman profil siswa, BELUM ada EXP, BELUM ada
+> papan perbandingan — 3 hal itu menyusul di fase berikutnya. Yang bisa diuji
+> SEKARANG cuma kotak kecil status level yang muncul di bawah skor kuis.
+>
+> **Keputusan desain kunci** (kalau lupa kenapa dibuat begini, baca CHANGELOG.md):
+> level GLOBAL (bukan per-TP/per-mapel), dihitung ulang PENUH dari `hasil_latihan`
+> tiap dipanggil (bukan counter tersimpan), gagal TIDAK mereset hitungan progres,
+> dan — PALING PENTING — **dihitung di server (Apps Script), BUKAN di klien**,
+> supaya siswa tidak bisa menaikkan levelnya sendiri lewat DevTools.
+
+- [ ] **Setup Firebase Console WAJIB sebelum uji apa pun di sini**: Security Rules
+      (`firestore.rules`) sudah dipublikasikan ulang dengan blok `match
+      /level_siswa/{namaSiswa}` (`allow read: if request.auth != null; allow write:
+      if false;`) — cek di Firebase Console → Firestore → Rules, BUKAN cuma di repo
+- [ ] Login siswa, kerjakan 1 kuis Uji Kemampuan apa saja sampai selesai & skor
+      tersimpan (label "✓ Hasil tersimpan" muncul) → **beberapa saat kemudian**
+      (bukan instan, ada jeda panggilan ke Apps Script) muncul kotak ungu di
+      bawah skor bertuliskan "Level saat ini: Dasar — progres N/3 menuju level
+      berikutnya (perlu skor >90%)"
+- [ ] Kerjakan kuis dengan skor **> 90%** sampai 3 KALI (boleh TP/mapel apa saja,
+      boleh diselingi kuis dengan skor rendah di antaranya) → pada kuis ke-3 yang
+      lulus, kotak berubah warna HIJAU: "🎉 Selamat! Level naik jadi Menengah."
+- [ ] Setelah naik ke Menengah, kerjakan kuis skor RENDAH (mis. 40%) → kotak
+      status TETAP menunjukkan progres Menengah yang belum berubah (mis. "0/3"
+      kalau belum ada yang lulus di level baru) — BUKAN error, BUKAN turun level,
+      BUKAN progres berkurang. Ini pengujian paling penting dari keputusan "gagal
+      tidak mereset" — kalau ternyata malah reset atau turun level, ada bug
+- [ ] Buka Firebase Console → Firestore → Data → koleksi `level_siswa` → cari
+      dokumen dengan ID nama siswa yang tadi diuji → field `level`, `progress`,
+      `totalKuisDikerjakan`, `skorTertinggi`, `rataRataSkor` HARUS sesuai dengan
+      riwayat kuis yang sebenarnya dikerjakan siswa itu di `hasil_latihan`
+- [ ] **Uji keamanan (paling penting)**: masih login sebagai siswa, buka
+      DevTools → Console → coba jalankan langsung lewat Firebase JS SDK
+      `setDoc(doc(db,"level_siswa","<nama saya>"), {level:"mahir", ...})` (atau
+      cara lain menulis langsung ke koleksi ini) → HARUS ditolak Security Rules
+      (`permission-denied`), TIDAK BOLEH berhasil menimpa levelnya sendiri
+- [ ] Uji kegagalan jaringan (mis. matikan koneksi internet sesaat sebelum klik
+      "Periksa Jawaban", nyalakan lagi setelah beberapa detik): skor kuis TETAP
+      tersimpan & tampil normal, kotak status level BOLEH tidak muncul sama
+      sekali (silent fail, sesuai desain) — TAPI TIDAK BOLEH ada pesan error
+      yang terlihat siswa akibat gagalnya panggilan hitung level ini
+- [ ] Siswa yang levelnya sudah Mahir + sudah tercapai (1x lulus >75% di level
+      itu) → kotak status berubah jadi "🏆 Level Mahir — capaian tertinggi sudah
+      diraih!" untuk SEMUA kuis berikutnya (bukan lagi progres N/M), berapa pun
+      skor kuis selanjutnya (termasuk yang jelek)

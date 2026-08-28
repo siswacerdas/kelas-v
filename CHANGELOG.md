@@ -54,6 +54,67 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   cuma mengecek "file ada tapi tidak terdaftar" dan sebaliknya) — sekarang jadi
   pengecekan wajib setiap kali beberapa ZIP materi digabung manual ke satu repo.
 
+### Ditambahkan — Sistem Level Uji Kemampuan, Fase 1: mesin hitung di server
+(belum dirilis; profil siswa/EXP/papan perbandingan MENYUSUL di fase berikutnya)
+> Latar belakang: pemilik proyek ingin sistem gamifikasi — siswa naik level
+> (Dasar → Menengah → Atas → Mahir) berdasar konsistensi lulus Uji Kemampuan,
+> supaya siswa termotivasi belajar & bisa membandingkan progres dengan teman.
+> Sesi ini BARU membangun fondasi (mesin hitung level), BUKAN fitur lengkapnya.
+
+- **Cakupan level: GLOBAL**, bukan per-TP atau per-mapel — 1 siswa cuma punya
+  1 level (gabungan dari SEMUA kuis Uji Kemampuan yang pernah dikerjakan,
+  mapel/TP apa saja), diputuskan supaya sistemnya sederhana dan tidak
+  butuh soal per level per TP (yang kontennya akan sangat besar — lihat poin
+  berikutnya).
+- **Syarat naik level** (dari `LEVEL_TAHAP_` di `Code.gs`):
+  - Dasar → Menengah: 3× lulus dengan skor **>90%**
+  - Menengah → Atas: 3× lulus dengan skor **>85%**
+  - Atas → Mahir: 2× lulus dengan skor **>80%**
+  - Di level Mahir: 1× lulus dengan skor **>75%** menandai "Mahir Tercapai"
+    (capaian puncak — level tidak naik lagi setelah ini, tidak ada level di
+    atas Mahir)
+  - **Gagal TIDAK mereset maupun mengurangi hitungan progres** — cuma tidak
+    menambah. Sengaja begitu (bukan default "harus berturut-turut") supaya
+    1 hari buruk tidak menghapus progres berhari-hari sebelumnya.
+- **Soal per level BELUM dibedakan tingkat kesulitannya** — sengaja pakai pool
+  soal `bank_soal` yang SAMA seperti sekarang (per-TP, tanpa tag level).
+  Membedakan soal per level (Dasar/Menengah/Atas/Mahir × tiap TP × tiap
+  mapel) adalah pekerjaan KONTEN BESAR terpisah, ditunda sampai mesin
+  levelnya sendiri terbukti jalan baik.
+- **Dihitung ULANG PENUH dari riwayat `hasil_latihan` setiap dipanggil**
+  (fungsi murni `hitungLevelDariRiwayat_` di `Code.gs`, sudah diuji lolos
+  dengan skenario 12 kuis campur lulus/gagal/naik-level bertingkat) — BUKAN
+  disimpan sebagai counter yang di-increment sedikit-sedikit. Keputusan ini
+  supaya level SELALU bisa dibuktikan benar dari data sumber; tidak mungkin
+  "nyasar" beda dari riwayat sungguhan karena bug increment di suatu titik.
+- **Dihitung & ditulis DI SERVER (Apps Script `doPostHitungLevel_`), BUKAN
+  di klien** — keputusan keamanan sadar: siswa login anonim tidak bisa
+  dibuktikan identitasnya ke Firestore Security Rules, jadi kalau level
+  ditulis langsung dari klien, siswa yang paham DevTools browser bisa
+  menaikkan levelnya sendiri secara curang (risiko ini nyata untuk fitur
+  KOMPETITIF seperti ini, beda dari `hasil_latihan` yang sifatnya privat).
+  Firestore Security Rules koleksi BARU `level_siswa` (lihat
+  `firestore.rules` & `README.md`) sengaja `allow write: if false` MUTLAK
+  untuk semua klien — cuma Service Account (lewat Apps Script) yang bisa
+  menulis, siapa pun yang login boleh MEMBACA (dasar dari fitur
+  "bandingkan level dengan teman" nanti).
+- `pages/uji-kemampuan.html` memanggil endpoint baru `?type=hitung_level`
+  segera setelah 1 hasil kuis berhasil tersimpan — hasilnya ditampilkan
+  sebagai kotak kecil di bawah skor (progres saat ini, atau perayaan "🎉
+  Level naik!" kalau baru saja naik). Gagal memanggil endpoint ini (mis.
+  jaringan terputus) SENGAJA tidak ditampilkan sebagai error ke siswa —
+  skor kuisnya sendiri sudah aman tersimpan terpisah, status level cuma
+  bonus di atasnya.
+- Perluasan kecil ke helper Firestore REST bersama (`firestoreValue_` &
+  `objFromFirestoreFields_` di `Code.gs`) — sekarang mendukung angka
+  (integer & desimal) dan boolean, sebelumnya cuma string & timestamp
+  (cukup untuk `siswa`/`hasil_latihan` yang semua fieldnya teks/tanggal).
+- **BELUM dikerjakan (fase berikutnya)**: halaman profil siswa (tampilkan
+  level + riwayat kenaikan level), sistem EXP (dari aktivitas Materi Ajar +
+  Uji Kemampuan yang sudah ada datanya; EXP dari Modul MENYUSUL karena
+  progres Modul sendiri belum pernah terkirim ke server sama sekali — lihat
+  poin terkait di atas), dan papan perbandingan antar siswa.
+
 ### Direncanakan
 - Isi konten asli `cp-tp-atp.html` (CP/TP/ATP resmi per mapel) dan `jadwal.html`
   (jadwal mingguan resmi) — kerangkanya sudah ada sejak v0.9.0, tinggal menunggu

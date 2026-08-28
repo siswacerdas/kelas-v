@@ -399,6 +399,16 @@ service cloud.firestore {
       allow update, delete: if request.auth != null &&
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
     }
+
+    // Level Uji Kemampuan (belum dirilis): dibaca SIAPA SAJA yang login (termasuk
+    // siswa lain — dasar dari fitur "bandingkan level dengan teman"). TIDAK ADA
+    // klien yang boleh menulis SAMA SEKALI — satu-satunya penulis adalah Apps
+    // Script lewat Service Account (lihat apps-script/Code.gs doPostHitungLevel_
+    // untuk kenapa dihitung di server, bukan klien).
+    match /level_siswa/{namaSiswa} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
   }
 }
 ```
