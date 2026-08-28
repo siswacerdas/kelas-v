@@ -95,6 +95,7 @@
   #hasil-skor .skor-belum-dijawab { color: var(--err); font-weight: 600; }
   .level-status { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(155,89,182,0.08); border: 1px solid rgba(155,89,182,0.25); font-size: 13px; color: var(--ink-2); }
   .level-status.level-naik { background: rgba(42,157,111,0.1); border-color: rgba(42,157,111,0.35); color: var(--ok); font-size: 14px; }
+  .level-status .level-exp { font-weight: 700; color: var(--purple); }
   #hasil-skor .skor-tersimpan { font-size: 11.5px; color: var(--ok); margin-top: 6px; }
 
   .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
@@ -469,9 +470,9 @@
     }
   };
 
-  // ═══════════════ LEVEL UJI KEMAMPUAN (belum dirilis) ═══════════════
-  // Level DIHITUNG & DITULIS DI SERVER (Apps Script), BUKAN di sini — lihat
-  // catatan keamanan panjang di apps-script/Code.gs (doPostHitungLevel_).
+  // ═══════════════ LEVEL & EXP UJI KEMAMPUAN (belum dirilis) ═══════════════
+  // Level & EXP DIHITUNG & DITULIS DI SERVER (Apps Script), BUKAN di sini —
+  // lihat catatan keamanan panjang di apps-script/Code.gs (doPostHitungGamifikasi_).
   // Panggilan ini HASILNYA DIPAKAI (beda dari fire-and-forget progres_materi),
   // tapi kegagalannya SENGAJA tidak ditampilkan sebagai error ke siswa — skor
   // kuisnya sendiri sudah aman tersimpan (lihat blok di atas); status level
@@ -483,7 +484,7 @@
     try {
       const res = await fetch(APPS_SCRIPT_URL_LEVEL, {
         method: "POST",
-        body: JSON.stringify({ type: "hitung_level", nama: nama }),
+        body: JSON.stringify({ type: "hitung_gamifikasi", nama: nama }),
       });
       const data = await res.json();
       if (data.status !== "ok") return; // diam-diam abaikan, lihat catatan di atas
@@ -495,14 +496,14 @@
     const wrap = document.createElement("div");
     wrap.className = "level-status";
     const labelLevel = LEVEL_LABEL[d.level] || d.level;
-    const naikLevelBaruSaja = (JSON.parse(d.riwayatLevelUpJson || "[]").slice(-1)[0] || {}).padaSkor;
-    if (naikLevelBaruSaja !== undefined) {
-      wrap.innerHTML = `🎉 <strong>Selamat! Level naik jadi ${labelLevel}.</strong>`;
+    const expHtml = ` <span class="level-exp">⭐ ${d.exp} EXP</span>`;
+    if (d.baruSajaNaikLevel) {
+      wrap.innerHTML = `🎉 <strong>Selamat! Level naik jadi ${labelLevel}.</strong>${expHtml}`;
       wrap.classList.add("level-naik");
     } else if (d.mahirTercapai) {
-      wrap.innerHTML = `🏆 Level <strong>Mahir</strong> — capaian tertinggi sudah diraih!`;
+      wrap.innerHTML = `🏆 Level <strong>Mahir</strong> — capaian tertinggi sudah diraih!${expHtml}`;
     } else {
-      wrap.innerHTML = `Level saat ini: <strong>${labelLevel}</strong> — progres ${d.progress}/${d.butuhLulus} menuju level berikutnya (perlu skor &gt;${d.ambangLevelIni}%).`;
+      wrap.innerHTML = `Level saat ini: <strong>${labelLevel}</strong> — progres ${d.progress}/${d.butuhLulus} menuju level berikutnya (perlu skor &gt;${d.ambangLevelIni}%).${expHtml}`;
     }
     document.getElementById("hasil-skor").appendChild(wrap);
   }

@@ -40,6 +40,7 @@
   }
   .level-card .lv-icon { font-size: 2.75rem; line-height: 1; margin-bottom: 6px; }
   .level-card .lv-nama { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
+  .level-card .lv-exp { font-size: 13px; font-weight: 700; margin-top: 4px; opacity: 0.95; }
   .level-card .lv-caption { font-size: 12.5px; opacity: 0.9; margin-top: 4px; }
   .lv-progress-track { background: rgba(255,255,255,0.28); border-radius: 99px; height: 10px; margin-top: 14px; overflow: hidden; }
   .lv-progress-fill { background: #fff; height: 100%; border-radius: 99px; transition: width 0.4s ease; }
@@ -126,6 +127,7 @@
       <div class="level-card" style="--lv-color-1:${info.warna[0]}; --lv-color-2:${info.warna[1]}">
         <div class="lv-icon">${info.icon}</div>
         <div class="lv-nama">Level ${info.label}</div>
+        <div class="lv-exp">⭐ ${d.exp || 0} EXP</div>
         <div class="lv-caption">Dari seluruh mapel & TP yang pernah kamu uji</div>
         ${progressHtml}
       </div>`;
@@ -138,6 +140,8 @@
         <div class="stat-card"><div class="st-angka">${d.totalLulusUmum}</div><div class="st-label">Total Lulus</div></div>
         <div class="stat-card"><div class="st-angka">${d.skorTertinggi}%</div><div class="st-label">Skor Tertinggi</div></div>
         <div class="stat-card"><div class="st-angka">${d.rataRataSkor}%</div><div class="st-label">Rata-rata Skor</div></div>
+        <div class="stat-card"><div class="st-angka">${d.jumlahMateriDibaca || 0}</div><div class="st-label">Materi Dibaca</div></div>
+        <div class="stat-card"><div class="st-angka">⭐ ${d.exp || 0}</div><div class="st-label">Total EXP</div></div>
       </div>`;
   }
 
