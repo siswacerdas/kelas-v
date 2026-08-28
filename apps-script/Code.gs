@@ -212,6 +212,11 @@ function firestoreFetch_(path, method, bodyObj) {
 
 function firestoreValue_(v) {
   if (v instanceof Date) return { timestampValue: v.toISOString() };
+  if (typeof v === "number") {
+    return Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v };
+  }
+  if (typeof v === "boolean") return { booleanValue: v };
+  if (Array.isArray(v)) return { arrayValue: { values: v.map(firestoreValue_) } };
   return { stringValue: String(v === undefined || v === null ? "" : v) };
 }
 function firestoreFieldsFromObj_(obj) {
@@ -227,6 +232,7 @@ function objFromFirestoreFields_(fields) {
     obj[k] = v.stringValue !== undefined ? v.stringValue
       : v.timestampValue !== undefined ? v.timestampValue
       : v.integerValue !== undefined ? Number(v.integerValue)
+      : v.doubleValue !== undefined ? Number(v.doubleValue)
       : v.booleanValue !== undefined ? v.booleanValue
       : "";
   });
@@ -1156,6 +1162,18 @@ function doPost(e) {
       return doPostProgresMateri_(body);
     }
 
+    if (body.type === "hitung_level") {
+      // SENGAJA TANPA gerbang — dipanggil siswa sendiri tepat setelah 1 hasil kuis
+      // tersimpan. TIDAK bisa disalahgunakan untuk menaikkan level curang: fungsi ini
+      // TIDAK PERNAH mempercayai angka level/progress apa pun dari body permintaan,
+      // selalu hitung ulang dari nol berdasar `hasil_latihan` yang sudah tersimpan di
+      // Firestore (lihat doPostHitungLevel_). Paling buruk yang bisa disalahgunakan:
+      // memanggil ini berkali-kali untuk nama siswa lain — tapi hasilnya tetap SAMA
+      // PERSIS (functionya murni/deterministik dari data sumber), jadi tidak ada
+      // manfaat curang dari memanggilnya berulang atau atas nama siswa lain.
+      return doPostHitungLevel_(body);
+    }
+
     if (body.type === "mpls_kognitif") {
       wajibKodeAkses_(body.kode);
       const sheet = getSheetKognitif_();
@@ -1597,5 +1615,137 @@ function doPostProgresMateri_(body) {
     sheet.appendRow(rowValues);
   }
   return jsonOut_({ status: "ok" });
+}
+
+/* ═══════════════════ SISTEM LEVEL UJI KEMAMPUAN (belum dirilis) ═══════════════════
+ * Lihat CHANGELOG.md untuk latar belakang lengkap. Ringkasan keputusan desain:
+ * - Level GLOBAL (gabungan seluruh mapel/TP), BUKAN per-TP — 1 siswa = 1 level.
+ * - "Lulus" untuk kenaikan level = skor > ambang level SAAT INI (bukan ambang tetap).
+ *   Gagal TIDAK mengurangi/mereset hitungan — cuma tidak menambah (lihat CHANGELOG.md).
+ * - Level DIHITUNG ULANG PENUH dari riwayat `hasil_latihan` setiap dipanggil (bukan
+ *   disimpan sebagai counter yang di-increment) — supaya levelnya SELALU bisa dibuktikan
+ *   benar dari data sumber, tidak mungkin "nyasar" beda dari riwayat sungguhan.
+ * - DIHITUNG & DITULIS DI SINI (server, pakai Service Account), BUKAN di klien —
+ *   keputusan sadar demi keamanan: siswa login anonim tidak bisa dibuktikan identitasnya
+ *   ke Firestore Security Rules, jadi kalau level ditulis langsung dari klien, siswa yang
+ *   paham DevTools bisa menaikkan levelnya sendiri secara curang. Menghitung di server
+ *   (yang baca `hasil_latihan` APA ADANYA, bukan percaya klaim klien) menutup celah itu.
+ *   Firestore Security Rules koleksi `level_siswa` SENGAJA `allow write: if false` untuk
+ *   SEMUA klien — cuma Service Account (lewat sini) yang bisa menulis. Lihat firestore.rules.
+ */
+
+const LEVEL_TAHAP_ = {
+  dasar:    { ambang: 90, butuhLulus: 3, berikutnya: "menengah" },
+  menengah: { ambang: 85, butuhLulus: 3, berikutnya: "atas" },
+  atas:     { ambang: 80, butuhLulus: 2, berikutnya: "mahir" },
+  mahir:    { ambang: 75, butuhLulus: 1, berikutnya: null }, // terminal — lihat catatan di hitungLevelDariRiwayat_
+};
+const LEVEL_AMBANG_LULUS_UMUM_ = 70; // ambang "lulus" generik untuk statistik total (independen dari level)
+
+/** Ambil SEMUA dokumen hasil_latihan milik 1 nama siswa, urut kronologis (lama -> baru).
+ * Pola paging SAMA seperti cariDokumenSiswaByNama_ (baca-semua-lalu-filter) — koleksi ini
+ * jauh lebih besar dari `siswa` (bisa ratusan/ribuan dokumen dalam 1 tahun ajaran), TAPI
+ * structured query REST Firestore (:runQuery) belum pernah dipakai di proyek ini dan perlu
+ * composite index manual di Firebase Console kalau digabung dengan orderBy — paging biasa
+ * dipilih supaya TIDAK ADA langkah setup manual tambahan yang diperlukan Arif di Firebase
+ * Console selain publish Security Rules yang sudah ada. Kalau nanti data membengkak sangat
+ * besar (ribuan siswa/tahun), pola ini perlu diganti structured query + composite index. */
+function ambilRiwayatHasilLatihan_(nama) {
+  const target = String(nama).trim().toLowerCase();
+  const hasil = [];
+  let pageToken = "";
+  do {
+    const qs = "pageSize=300" + (pageToken ? "&pageToken=" + encodeURIComponent(pageToken) : "");
+    const r = firestoreFetch_("hasil_latihan?" + qs, "get");
+    if (r.code !== 200) throw new Error("Gagal membaca riwayat hasil_latihan: " + r.text);
+    (r.json.documents || []).forEach((doc) => {
+      const f = objFromFirestoreFields_(doc.fields);
+      if (String(f.namaSiswa || "").trim().toLowerCase() === target) {
+        hasil.push({ skor: Number(f.skor) || 0, timestamp: f.timestamp || "" });
+      }
+    });
+    pageToken = (r.json && r.json.nextPageToken) || "";
+  } while (pageToken);
+  hasil.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  return hasil;
+}
+
+/** Fungsi MURNI (tidak menyentuh Firestore) — supaya logikanya mudah diperiksa/diuji
+ * terpisah dari urusan jaringan. Input: array {skor, timestamp} urut kronologis.
+ * Mereplay SELURUH riwayat dari awal setiap dipanggil (lihat catatan arsitektur di atas). */
+function hitungLevelDariRiwayat_(riwayat) {
+  let level = "dasar";
+  let progress = 0;
+  let mahirTercapai = false;
+  const riwayatLevelUp = []; // {level, padaSkor, waktu} — buat ditampilkan di profil siswa
+
+  let totalLulusUmum = 0;
+  let skorTertinggi = 0;
+  let totalSkor = 0;
+
+  riwayat.forEach((r) => {
+    totalSkor += r.skor;
+    if (r.skor > skorTertinggi) skorTertinggi = r.skor;
+    if (r.skor >= LEVEL_AMBANG_LULUS_UMUM_) totalLulusUmum++;
+
+    if (mahirTercapai) return; // sudah di puncak, sisa riwayat cuma pengaruhi statistik umum di atas
+
+    const cfg = LEVEL_TAHAP_[level];
+    if (r.skor > cfg.ambang) {
+      progress++;
+      if (progress >= cfg.butuhLulus) {
+        if (cfg.berikutnya) {
+          level = cfg.berikutnya;
+          progress = 0;
+        } else {
+          mahirTercapai = true; // level tetap "mahir", cuma tandai capaian puncak tercapai
+        }
+        riwayatLevelUp.push({ level: cfg.berikutnya || "mahir_tercapai", padaSkor: r.skor, waktu: r.timestamp });
+      }
+    }
+    // r.skor <= cfg.ambang: gagal, progress TIDAK berubah (keputusan desain, lihat CHANGELOG.md)
+  });
+
+  return {
+    level: level,
+    progress: progress,
+    butuhLulus: LEVEL_TAHAP_[level].butuhLulus,
+    ambangLevelIni: LEVEL_TAHAP_[level].ambang,
+    mahirTercapai: mahirTercapai,
+    totalKuisDikerjakan: riwayat.length,
+    totalLulusUmum: totalLulusUmum,
+    skorTertinggi: skorTertinggi,
+    rataRataSkor: riwayat.length > 0 ? Math.round(totalSkor / riwayat.length) : 0,
+    riwayatLevelUpJson: JSON.stringify(riwayatLevelUp),
+  };
+}
+
+/** PATCH tanpa updateMask MENIMPA SELURUH dokumen — sengaja begitu (sama prinsip
+ * dengan setSiswaFirestore_) karena hitungLevelDariRiwayat_ selalu menghasilkan
+ * objek state LENGKAP dari nol, bukan pembaruan sebagian. */
+function setLevelSiswaFirestore_(nama, levelData) {
+  const record = Object.assign({ namaSiswa: nama, diperbaruiPada: new Date() }, levelData);
+  const r = firestoreFetch_("level_siswa/" + encodeURIComponent(nama), "patch", {
+    fields: firestoreFieldsFromObj_(record),
+  });
+  if (r.code !== 200) throw new Error("Gagal menyimpan level siswa ke Firestore: " + r.text);
+}
+
+/** Dipanggil klien (uji-kemampuan.html) SEGERA setelah 1 hasil kuis berhasil tersimpan ke
+ * hasil_latihan. Fire-and-forget dari sudut pandang siswa (sama seperti doPostProgresMateri_)
+ * — TAPI beda dari itu, di sini responsnya DIPAKAI klien (untuk animasi "naik level!"), jadi
+ * error di sini TETAP dibalas apa adanya (bukan selalu "ok") supaya klien tahu kalau gagal
+ * dan tidak salah menampilkan status level yang keliru ke siswa. */
+function doPostHitungLevel_(body) {
+  const nama = String(body.nama || "").trim();
+  if (!nama) return jsonOut_({ status: "error", message: "Nama wajib diisi" });
+  try {
+    const riwayat = ambilRiwayatHasilLatihan_(nama);
+    const levelData = hitungLevelDariRiwayat_(riwayat);
+    setLevelSiswaFirestore_(nama, levelData);
+    return jsonOut_(Object.assign({ status: "ok" }, levelData));
+  } catch (err) {
+    return jsonOut_({ status: "error", message: String(err) });
+  }
 }
 
