@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Profil & Level · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --purple: #9b59b6; --ok: #2a9d6f; --err: #c94040;
+    --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--purple);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--purple); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+  .empty-state { padding: 2.5rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; background: #fff; border-radius: var(--r); border: 1px solid var(--border); }
+  .empty-state a { color: var(--accent); }
+
+  /* ── KARTU LEVEL ── */
+  .level-card {
+    border-radius: 16px; padding: 1.75rem 1.5rem; color: #fff; text-align: center;
+    margin-bottom: 1.25rem; background: linear-gradient(135deg, var(--lv-color-1), var(--lv-color-2));
+  }
+  .level-card .lv-icon { font-size: 2.75rem; line-height: 1; margin-bottom: 6px; }
+  .level-card .lv-nama { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
+  .level-card .lv-caption { font-size: 12.5px; opacity: 0.9; margin-top: 4px; }
+  .lv-progress-track { background: rgba(255,255,255,0.28); border-radius: 99px; height: 10px; margin-top: 14px; overflow: hidden; }
+  .lv-progress-fill { background: #fff; height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+  .lv-progress-label { font-size: 11.5px; margin-top: 6px; opacity: 0.95; }
+
+  /* ── STATISTIK ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .stat-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 0.9rem 1rem; text-align: center; }
+  .stat-card .st-angka { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--ink); }
+  .stat-card .st-label { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+
+  /* ── RIWAYAT KENAIKAN LEVEL ── */
+  .section-title { font-size: 12px; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+  .riwayat-item {
+    display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border);
+    border-radius: var(--r); padding: 0.75rem 1rem; margin-bottom: 8px;
+  }
+  .riwayat-item .ri-icon { font-size: 1.3rem; }
+  .riwayat-item .ri-body { flex: 1; }
+  .riwayat-item .ri-judul { font-weight: 600; font-size: 13.5px; }
+  .riwayat-item .ri-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 1px; }
+
+  .loading-inline { padding: 1rem; text-align: center; color: var(--ink-3); font-size: 12.5px; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-profil" class="hidden">
+  <div id="topbar">
+    <div class="brand">Profil <span>&amp;</span> Level</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1 id="judul-profil">🎮 Profilmu</h1>
+    <p class="subtitle">Level naik lewat konsistensi lulus Uji Kemampuan — bukan cuma sekali beruntung.</p>
+    <div id="isi-profil"><div class="loading-inline">Memuat…</div></div>
+  </div>
+</div>
+
+<script type="module" src="../assets/js/role-guard.js"></script>
+<script type="module">
+  import { getFirestore, doc, getDoc }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  const db = getFirestore(getApps()[0]);
+
+  // Label/ikon/warna TAMPILAN saja — bukan sumber kebenaran (level SEBENARNYA
+  // dihitung & disimpan server, lihat apps-script/Code.gs LEVEL_TAHAP_). Kalau
+  // ambang/nama level di server berubah, sesuaikan juga di sini demi konsistensi
+  // tampilan, tapi TIDAK MEMPENGARUHI logika penentuan level itu sendiri.
+  const LEVEL_INFO = {
+    dasar:    { label: "Dasar",    icon: "🌱", warna: ["#8a97a8", "#5f6b7a"], ambangBerikut: 90 },
+    menengah: { label: "Menengah", icon: "🌿", warna: ["#2e6fbc", "#1f4e8a"], ambangBerikut: 85 },
+    atas:     { label: "Atas",     icon: "🌳", warna: ["#c9a227", "#9c7d16"], ambangBerikut: 80 },
+    mahir:    { label: "Mahir",    icon: "🏆", warna: ["#9b59b6", "#6b3d80"], ambangBerikut: 75 },
+  };
+
+  function esc(str) {
+    return String(str || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  function fmtTanggal(iso) {
+    if (!iso) return "-";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return "-";
+    return d.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  function renderLevelCard(d) {
+    const info = LEVEL_INFO[d.level] || LEVEL_INFO.dasar;
+    let progressHtml;
+    if (d.mahirTercapai) {
+      progressHtml = `<div class="lv-progress-label">🏆 Capaian puncak sudah diraih — level tertinggi!</div>`;
+    } else {
+      const persen = Math.round((d.progress / d.butuhLulus) * 100);
+      progressHtml = `
+        <div class="lv-progress-track"><div class="lv-progress-fill" style="width:${persen}%"></div></div>
+        <div class="lv-progress-label">${d.progress}/${d.butuhLulus} lulus menuju level berikutnya (perlu skor &gt;${info.ambangBerikut}%)</div>`;
+    }
+    return `
+      <div class="level-card" style="--lv-color-1:${info.warna[0]}; --lv-color-2:${info.warna[1]}">
+        <div class="lv-icon">${info.icon}</div>
+        <div class="lv-nama">Level ${info.label}</div>
+        <div class="lv-caption">Dari seluruh mapel & TP yang pernah kamu uji</div>
+        ${progressHtml}
+      </div>`;
+  }
+
+  function renderStats(d) {
+    return `
+      <div class="stat-grid">
+        <div class="stat-card"><div class="st-angka">${d.totalKuisDikerjakan}</div><div class="st-label">Kuis Dikerjakan</div></div>
+        <div class="stat-card"><div class="st-angka">${d.totalLulusUmum}</div><div class="st-label">Total Lulus</div></div>
+        <div class="stat-card"><div class="st-angka">${d.skorTertinggi}%</div><div class="st-label">Skor Tertinggi</div></div>
+        <div class="stat-card"><div class="st-angka">${d.rataRataSkor}%</div><div class="st-label">Rata-rata Skor</div></div>
+      </div>`;
+  }
+
+  function renderRiwayat(d) {
+    let riwayat = [];
+    try { riwayat = JSON.parse(d.riwayatLevelUpJson || "[]"); } catch (e) { riwayat = []; }
+    if (riwayat.length === 0) {
+      return `<p class="section-title">Riwayat Kenaikan Level</p>
+        <div class="empty-state" style="padding:1.25rem;">Belum ada kenaikan level — terus berlatih!</div>`;
+    }
+    const items = riwayat.slice().reverse().map((r) => {
+      const info = LEVEL_INFO[r.level] || null;
+      const judul = r.level === "mahir_tercapai"
+        ? "🏆 Capaian puncak Mahir tercapai"
+        : `Naik ke Level ${info ? info.label : r.level}`;
+      return `
+        <div class="riwayat-item">
+          <div class="ri-icon">${info ? info.icon : "🏆"}</div>
+          <div class="ri-body">
+            <div class="ri-judul">${esc(judul)}</div>
+            <div class="ri-meta">${fmtTanggal(r.waktu)} · skor ${r.padaSkor}%</div>
+          </div>
+        </div>`;
+    }).join("");
+    return `<p class="section-title">Riwayat Kenaikan Level</p>${items}`;
+  }
+
+  async function muatProfil(nama) {
+    const wrap = document.getElementById("isi-profil");
+    try {
+      const snap = await getDoc(doc(db, "level_siswa", nama));
+      if (!snap.exists()) {
+        wrap.innerHTML = `<div class="empty-state">Kamu belum punya data level — level muncul begitu kamu
+          menyelesaikan Uji Kemampuan pertamamu. <a href="uji-kemampuan.html">Coba sekarang →</a></div>`;
+        return;
+      }
+      const d = snap.data();
+      wrap.innerHTML = renderLevelCard(d) + renderStats(d) + renderRiwayat(d);
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat profil: ${esc(err.message)}</div>`;
+    }
+  }
+
+  // Halaman ini KHUSUS siswa melihat profilnya SENDIRI (bukan guru mengecek siswa
+  // lain — guru sudah punya Riwayat Latihan & Laporan Siswa Pintu 3 untuk itu).
+  document.addEventListener("role-verified", (e) => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-profil").classList.remove("hidden");
+    document.getElementById("judul-profil").textContent = "🎮 Profil " + e.detail.nama;
+    muatProfil(e.detail.nama);
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa'], '../index.html'));
+</script>
+</body>
+</html>
