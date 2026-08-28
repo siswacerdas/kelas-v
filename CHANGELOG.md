@@ -109,14 +109,16 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   `objFromFirestoreFields_` di `Code.gs`) — sekarang mendukung angka
   (integer & desimal) dan boolean, sebelumnya cuma string & timestamp
   (cukup untuk `siswa`/`hasil_latihan` yang semua fieldnya teks/tanggal).
-- **BELUM dikerjakan (fase berikutnya)**: halaman profil siswa (tampilkan
-  level + riwayat kenaikan level), sistem EXP (dari aktivitas Materi Ajar +
-  Uji Kemampuan yang sudah ada datanya; EXP dari Modul MENYUSUL karena
-  progres Modul sendiri belum pernah terkirim ke server sama sekali — lihat
-  poin terkait di atas), dan papan perbandingan antar siswa.
+- **[Selesai di Fase 2 & 3, catatan ini sempat usang]** Halaman profil siswa
+  dan sistem EXP sudah dibangun (lihat entri Fase 2 & 3 di bawah) — yang
+  MASIH menyusul cuma papan perbandingan antar siswa, EXP dari Modul
+  (menunggu jembatan pengiriman progres Modul yang belum ada), dan akses
+  guru untuk melihat profil siswa tertentu (saat ini cuma siswa yang
+  bersangkutan yang bisa lihat profilnya sendiri).
 
 ### Ditambahkan — Sistem Level Uji Kemampuan, Fase 2: halaman profil siswa
-(belum dirilis; EXP & papan perbandingan MASIH menyusul di fase berikutnya)
+(belum dirilis; EXP sudah menyusul di Fase 3 di bawah, papan perbandingan
+antar siswa MASIH menyusul)
 - `pages/profil-siswa.html` (halaman baru) — siswa login lihat kartu level
   besar (ikon + warna berbeda per level: Dasar abu-abu, Menengah biru, Atas
   emas, Mahir ungu), bar progres menuju level berikutnya (atau lencana
@@ -140,6 +142,53 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 - **BELUM dikerjakan (fase berikutnya)**: sistem EXP, papan perbandingan
   antar siswa, dan akses guru untuk melihat profil siswa TERTENTU (saat ini
   cuma siswa yang bersangkutan yang bisa lihat profilnya sendiri).
+
+### Ditambahkan — Sistem Level Uji Kemampuan, Fase 3: EXP
+(belum dirilis; papan perbandingan antar siswa MASIH menyusul)
+- **Sumber EXP** (endpoint `hitung_gamifikasi`, ganti nama dari
+  `hitung_level` karena cakupannya sudah lebih luas dari sekadar level):
+  - Materi Ajar: **10 EXP per materi** yang sudah ditandai "Dibaca" (dihitung
+    dari sheet "Data Progres Materi" yang sudah ada, `hitungJumlahMateriDibaca_`)
+  - Uji Kemampuan: **5 EXP per kuis dikerjakan** + **10 EXP bonus** kalau
+    skor kuis itu ≥70% (ambang "lulus umum" yang sama dengan statistik
+    `totalLulusUmum` di profil)
+  - EXP dari **Modul MASIH BELUM ADA** — progres Modul sendiri belum pernah
+    terkirim ke server sama sekali (gap lama, lihat bagian Direncanakan)
+- **Kenapa dari aktivitas selesai, bukan durasi/waktu**: durasi gampang
+  dicurangi (buka tab lalu ditinggal, tidak benar-benar belajar) —
+  "materi ini sudah dibaca"/"kuis ini sudah dikerjakan" jauh lebih sulit
+  dipalsukan tanpa benar-benar berinteraksi dengan kontennya.
+- `materi-progress-tracker.js` sekarang ikut memanggil `hitung_gamifikasi`
+  SETIAP kali materi ditandai dibaca (sebelumnya cuma dipanggil dari
+  `uji-kemampuan.html` setelah kuis) — supaya EXP dari membaca materi
+  langsung ter-update, tidak perlu nunggu siswa itu mengerjakan kuis dulu.
+  **Sengaja ditembak BERSAMAAN dengan panggilan `progres_materi`** (bukan
+  dirangkai `.then()`) — dirangkai sempat dicoba tapi DIBATALKAN karena
+  berisiko panggilan `hitung_gamifikasi`-nya tidak pernah terkirim sama
+  sekali kalau siswa keburu pindah halaman (skenario nyata: klik
+  "Berikutnya ›" cepat-cepat) sebelum promise pertama selesai — keepalive
+  cuma menjaga request yang SUDAH diinisiasi, bukan sisa kode JS yang
+  belum sempat jalan. Konsekuensi menembak bersamaan: SESEKALI EXP bisa
+  telat 1 hitungan (baca sheet sebelum baris barunya selesai tertulis) —
+  tidak masalah, sembuh sendiri di panggilan berikutnya (EXP dihitung
+  ulang PENUH tiap kali, bukan di-increment).
+- **[Bug ditemukan & diperbaiki sebelum sempat dipakai]** Pesan "🎉 Level
+  naik!" di `uji-kemampuan.html` (Fase 1) ternyata akan **muncul selamanya**
+  di SETIAP kuis berikutnya setelah naik level pertama kali — sebabnya,
+  `riwayatLevelUpJson` berisi SELURUH riwayat (bukan cuma dari panggilan
+  saat ini), jadi cek "ada entri di riwayat" akan selalu benar setelah
+  entri pertama masuk. Diperbaiki dengan cara BERBEDA: server sekarang baca
+  dulu `level_siswa` yang TERSIMPAN SEBELUM dihitung ulang
+  (`ambilLevelSiswaSaatIni_`), bandingkan dengan hasil hitungan baru, dan
+  kirim flag eksplisit `baruSajaNaikLevel` yang HANYA benar kalau level
+  ini benar-benar baru saja berubah di panggilan INI — klien tinggal baca
+  flag itu, tidak perlu menebak-nebak dari riwayat lagi.
+- Halaman profil (`profil-siswa.html`) menampilkan EXP di kartu level
+  (badge "⭐ N EXP") dan sebagai kartu statistik tersendiri, plus 1 kartu
+  baru "Materi Dibaca".
+- **BELUM dikerjakan (fase berikutnya)**: papan perbandingan antar siswa,
+  EXP dari Modul (menunggu jembatan pengiriman progres Modul yang belum
+  ada), dan akses guru untuk melihat profil siswa tertentu.
 
 ### Direncanakan
 - Isi konten asli `cp-tp-atp.html` (CP/TP/ATP resmi per mapel) dan `jadwal.html`

@@ -1545,16 +1545,22 @@ Catat setiap sesi ujicoba di sini:
   validasi konten (lihat `SERAH_TERIMA_PROYEK.md` bagian internal Claude — dokumen
   terpisah, bukan bagian dari repo publik ini — §5 langkah 1b).
 
-### 35. Sistem Level Uji Kemampuan (`apps-script/Code.gs`, `pages/uji-kemampuan.html`,
-`pages/profil-siswa.html`, koleksi Firestore `level_siswa` — Fase 1 (mesin
-server) + Fase 2 (profil siswa) sudah dibangun, belum dirilis; EXP & papan
-perbandingan MENYUSUL)
+### 35. Sistem Level & EXP Uji Kemampuan (`apps-script/Code.gs`, `pages/uji-kemampuan.html`,
+`pages/profil-siswa.html`, `pages/materi/assets/materi-progress-tracker.js`, koleksi
+Firestore `level_siswa` — Fase 1 (mesin server) + Fase 2 (profil siswa) + Fase 3 (EXP)
+sudah dibangun, belum dirilis; papan perbandingan antar siswa MENYUSUL)
 
-> **Cakupan sampai fase ini**: mesin hitung level di server + pemicunya di
-> `uji-kemampuan.html` + halaman profil siswa (`profil-siswa.html`). BELUM
-> ada EXP, BELUM ada papan perbandingan antar siswa, BELUM ada cara guru
-> melihat profil level siswa TERTENTU (siswa cuma bisa lihat profilnya
-> sendiri) — semua itu menyusul di fase berikutnya.
+> **Cakupan sampai fase ini**: mesin hitung level & EXP di server + pemicunya di
+> `uji-kemampuan.html` (setelah kuis) & `materi-progress-tracker.js` (setelah
+> materi dibaca) + halaman profil siswa. BELUM ada papan perbandingan antar
+> siswa, BELUM ada cara guru melihat profil level siswa TERTENTU (siswa cuma
+> bisa lihat profilnya sendiri), BELUM ada EXP dari Modul (progres Modul
+> sendiri belum pernah terkirim ke server) — semua itu menyusul.
+>
+> **Perhatian khusus**: endpoint Apps Script berganti nama dari `hitung_level`
+> jadi **`hitung_gamifikasi`** di Fase 3 (cakupannya sudah lebih luas dari
+> sekadar level) — kalau pernah lihat referensi lama ke `hitung_level` di
+> versi Code.gs yang ter-deploy, itu tandanya deploy-nya belum yang terbaru.
 >
 > **Keputusan desain kunci** (kalau lupa kenapa dibuat begini, baca CHANGELOG.md):
 > level GLOBAL (bukan per-TP/per-mapel), dihitung ulang PENUH dari `hasil_latihan`
@@ -1620,3 +1626,25 @@ perbandingan MENYUSUL)
 - [ ] Segera setelah siswa naik level di `uji-kemampuan.html` (lihat kotak
       "🎉 Level naik!") → buka halaman Profil & Level → perubahan itu SUDAH
       tercermin (baca langsung dari Firestore, tidak ada cache/jeda berarti)
+
+**EXP (Fase 3)**
+- [ ] **Uji regresi bug yang sudah diperbaiki** — kerjakan 3 kuis skor >90%
+      berturut-turut sampai naik level (kotak "🎉 Level naik!" muncul) →
+      kerjakan 1 kuis LAGI setelahnya (skor berapa saja) → kotak HARUS
+      kembali ke tampilan progres biasa ("Level saat ini: ..."), **BUKAN**
+      menampilkan "🎉 Level naik!" lagi. Ini pengujian paling penting di
+      bagian EXP — kalau muncul lagi, bug lama yang sudah diperbaiki kambuh.
+- [ ] Baca 1 materi Bahasa Indonesia sampai tuntas (scroll ke bawah / apa
+      pun pemicu `materi-progress-tracker.js` di materi itu) → buka Profil
+      & Level → angka "Materi Dibaca" & "Total EXP" bertambah 10 dibanding
+      sebelumnya (tanpa perlu mengerjakan kuis apa pun dulu)
+- [ ] Baca materi YANG SAMA 2 kali (buka lagi materi yang sudah pernah
+      dibaca) → EXP dari materi TIDAK bertambah lagi (tetap 1 materi = 10
+      EXP, bukan dobel — karena progres materi upsert per Nama+Slug, bukan
+      log tiap kunjungan)
+- [ ] Kerjakan 1 kuis dengan skor **di bawah 70%** → EXP bertambah **+5**
+      saja (bukan +15) — tidak dapat bonus kelulusan
+- [ ] Kerjakan 1 kuis dengan skor **≥70%** → EXP bertambah **+15** (+5 dasar
+      + 10 bonus lulus)
+- [ ] Total EXP di kartu level & di kartu statistik "Total EXP" HARUS SAMA
+      PERSIS (2 tempat, 1 sumber data) — kalau beda, ada bug tampilan
