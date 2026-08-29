@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Papan Peringkat · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --accent: #2e6fbc; --purple: #9b59b6; --ok: #2a9d6f; --err: #c94040;
+    --border: rgba(26,26,46,0.10); --r: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--purple);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--purple); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+  .empty-state { padding: 2.5rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; background: #fff; border-radius: var(--r); border: 1px solid var(--border); }
+  .loading-inline { padding: 1rem; text-align: center; color: var(--ink-3); font-size: 12.5px; }
+
+  /* ── GRUP PER RANK (Level 1-99) ── */
+  .tier-section { margin-bottom: 1.5rem; }
+  .tier-header {
+    display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 99px;
+    color: #fff; font-weight: 700; font-size: 13px; margin-bottom: 8px; width: fit-content;
+  }
+  .tier-header img { width: 22px; height: 22px; }
+  .tier-header .tier-count { font-weight: 500; opacity: 0.85; font-size: 11.5px; }
+
+  .siswa-row {
+    display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border);
+    border-radius: var(--r); padding: 0.7rem 1rem; margin-bottom: 6px;
+  }
+  .siswa-row.ini-kamu { border: 1.5px solid var(--purple); background: rgba(155,89,182,0.06); }
+  .siswa-row .sr-nama { flex: 1; font-weight: 600; font-size: 13.5px; min-width: 0; }
+  .siswa-row .sr-nama .tag-kamu { color: var(--purple); font-weight: 700; font-size: 11px; margin-left: 4px; }
+  .siswa-row .sr-level-kemampuan { font-size: 11px; color: var(--ink-3); white-space: nowrap; margin-right: 4px; }
+  .siswa-row .sr-exp { font-size: 12.5px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
+  .siswa-row.belum-mulai { opacity: 0.55; }
+  .siswa-row.belum-mulai .sr-exp { color: var(--ink-3); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-papan" class="hidden">
+  <div id="topbar">
+    <div class="brand">Papan <span>·</span> Peringkat</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>🏅 Papan Peringkat Kelas</h1>
+    <p class="subtitle">Rank & Level (1-99) seluruh teman sekelas, dari Uji Kemampuan & Materi Ajar.</p>
+    <div id="isi-papan"><div class="loading-inline">Memuat…</div></div>
+  </div>
+</div>
+
+<script src="mpls/assets/mpls-data.js"></script>
+<script type="module" src="../assets/js/role-guard.js"></script>
+<script type="module">
+  import { getFirestore, collection, getDocs }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  const db = getFirestore(getApps()[0]);
+
+  // Urutan tampil dari TERTINGGI ke TERENDAH — murni urutan TAMPILAN papan
+  // peringkat, sumber kebenaran rentang levelnya tetap RANK_TAHAP_ di Code.gs.
+  const RANK_URUTAN = ["maestro_kelas_5", "begawan_ilmu", "cendekiawan_muda", "pencari_ilmu", "penjelajah", "perintis"];
+  const RANK_INFO = {
+    maestro_kelas_5:  { label: "Maestro Kelas 5",  warna: ["#c9a227", "#8a6d0f"], gambar: "../assets/img/badges/rank-06-maestro-kelas-5.webp" },
+    begawan_ilmu:     { label: "Begawan Ilmu",     warna: ["#9b59b6", "#6b3d80"], gambar: "../assets/img/badges/rank-05-begawan-ilmu.webp" },
+    cendekiawan_muda: { label: "Cendekiawan Muda", warna: ["#2e4e8a", "#1a2f57"], gambar: "../assets/img/badges/rank-04-cendekiawan-muda.webp" },
+    pencari_ilmu:     { label: "Pencari Ilmu",     warna: ["#c07a1f", "#8a5613"], gambar: "../assets/img/badges/rank-03-pencari-ilmu.webp" },
+    penjelajah:       { label: "Penjelajah",       warna: ["#2e6fbc", "#1f4e8a"], gambar: "../assets/img/badges/rank-02-penjelajah.webp" },
+    perintis:         { label: "Perintis",         warna: ["#8a7355", "#5f4e39"], gambar: "../assets/img/badges/rank-01-perintis.webp" },
+  };
+
+  // Ikon Level Kemampuan (dasar/menengah/atas/mahir) — ditampilkan sebagai tag
+  // KECIL di tiap baris (informasi tambahan), BUKAN pengelompokan utama papan
+  // ini lagi (pengelompokan utama sekarang per Rank/Level 1-99, lihat di bawah).
+  const LEVEL_KEMAMPUAN_ICON = { dasar: "🌱", menengah: "🌿", atas: "🌳", mahir: "🏆" };
+
+  function esc(str) {
+    return String(str || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  /** Gabungkan roster lengkap (MPLS_STUDENTS, sumber tunggal 25 nama siswa — SUDAH
+   * publik lewat dropdown login, jadi bukan data baru yang dibocorkan di sini) dengan
+   * data level_siswa yang ADA. Siswa yang belum pernah mengerjakan apa pun TETAP
+   * muncul (rank Perintis Level 1, 0 EXP) — supaya papan ini mengajak semua orang
+   * ikut, bukan cuma menampilkan yang sudah aktif saja. */
+  function gabungkanRoster(dokumenLevel) {
+    const byNamaLower = {};
+    dokumenLevel.forEach((d) => { byNamaLower[d.namaSiswa.trim().toLowerCase()] = d; });
+    return (window.MPLS_STUDENTS || []).map((nama) => {
+      const data = byNamaLower[nama.trim().toLowerCase()];
+      return data || {
+        namaSiswa: nama, level: "dasar", exp: 0, mahirTercapai: false,
+        rank: "perintis", level99: 1, belumMulai: true,
+      };
+    });
+  }
+
+  function renderPapan(roster, namaSayaLower) {
+    const wrap = document.getElementById("isi-papan");
+    const grouped = {};
+    RANK_URUTAN.forEach((r) => { grouped[r] = []; });
+    roster.forEach((s) => { (grouped[s.rank] || grouped.perintis).push(s); });
+
+    let html = "";
+    RANK_URUTAN.forEach((rank) => {
+      const info = RANK_INFO[rank];
+      const anggota = grouped[rank].slice().sort((a, b) => (b.exp || 0) - (a.exp || 0));
+      if (anggota.length === 0) return;
+      const baris = anggota.map((s) => {
+        const iniKamu = namaSayaLower && s.namaSiswa.trim().toLowerCase() === namaSayaLower;
+        const kelas = [iniKamu ? "ini-kamu" : "", s.belumMulai ? "belum-mulai" : ""].filter(Boolean).join(" ");
+        const levelKemampuanTag = s.belumMulai ? "" :
+          `<span class="sr-level-kemampuan">${LEVEL_KEMAMPUAN_ICON[s.level] || "🌱"} Lv.${s.level99 || 1}</span>`;
+        return `
+          <div class="siswa-row ${kelas}">
+            <div class="sr-nama">${esc(s.namaSiswa)}${iniKamu ? '<span class="tag-kamu">← Ini kamu!</span>' : ""}</div>
+            ${levelKemampuanTag}
+            <div class="sr-exp">${s.belumMulai ? "Belum mulai" : "⭐ " + (s.exp || 0) + " EXP"}</div>
+          </div>`;
+      }).join("");
+      html += `
+        <div class="tier-section">
+          <div class="tier-header" style="background: linear-gradient(135deg, ${info.warna[0]}, ${info.warna[1]})">
+            <img src="${info.gambar}" alt="" /> ${esc(info.label)} <span class="tier-count">(${anggota.length} siswa)</span>
+          </div>
+          ${baris}
+        </div>`;
+    });
+    wrap.innerHTML = html || '<div class="empty-state">Belum ada data.</div>';
+  }
+
+  async function muatPapan(namaSaya) {
+    const wrap = document.getElementById("isi-papan");
+    try {
+      const snap = await getDocs(collection(db, "level_siswa"));
+      const dokumenLevel = [];
+      snap.forEach((d) => dokumenLevel.push(d.data()));
+      const roster = gabungkanRoster(dokumenLevel);
+      renderPapan(roster, namaSaya ? namaSaya.trim().toLowerCase() : null);
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat papan peringkat: ${esc(err.message)}</div>`;
+    }
+  }
+
+  // Siswa DAN guru boleh lihat papan ini (data level/EXP memang dirancang publik
+  // untuk siapa saja yang login — lihat firestore.rules — beda dari hasil_latihan
+  // yang detail jawabannya privat). Kalau yang login siswa, baris namanya sendiri
+  // disorot; kalau guru, tidak ada yang disorot (guru tidak punya level).
+  document.addEventListener("role-verified", (e) => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-papan").classList.remove("hidden");
+    muatPapan(e.detail.role === "siswa" ? e.detail.nama : null);
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
+</script>
+</body>
+</html>
