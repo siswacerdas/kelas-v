@@ -1545,17 +1545,24 @@ Catat setiap sesi ujicoba di sini:
   validasi konten (lihat `SERAH_TERIMA_PROYEK.md` bagian internal Claude — dokumen
   terpisah, bukan bagian dari repo publik ini — §5 langkah 1b).
 
-### 35. Sistem Level & EXP Uji Kemampuan (`apps-script/Code.gs`, `pages/uji-kemampuan.html`,
-`pages/profil-siswa.html`, `pages/materi/assets/materi-progress-tracker.js`, koleksi
-Firestore `level_siswa` — Fase 1 (mesin server) + Fase 2 (profil siswa) + Fase 3 (EXP)
-sudah dibangun, belum dirilis; papan perbandingan antar siswa MENYUSUL)
+### 35. Sistem Level, EXP, Rank & Badge Uji Kemampuan (`apps-script/Code.gs`,
+`pages/uji-kemampuan.html`, `pages/profil-siswa.html`, `pages/papan-peringkat.html`,
+`pages/materi/assets/materi-progress-tracker.js`, `assets/img/badges/`, koleksi
+Firestore `level_siswa` — Fase 1-5 SEMUA sudah dibangun, belum dirilis)
 
-> **Cakupan sampai fase ini**: mesin hitung level & EXP di server + pemicunya di
-> `uji-kemampuan.html` (setelah kuis) & `materi-progress-tracker.js` (setelah
-> materi dibaca) + halaman profil siswa. BELUM ada papan perbandingan antar
-> siswa, BELUM ada cara guru melihat profil level siswa TERTENTU (siswa cuma
-> bisa lihat profilnya sendiri), BELUM ada EXP dari Modul (progres Modul
-> sendiri belum pernah terkirim ke server) — semua itu menyusul.
+> **Cakupan sampai fase ini**: DUA sistem gamifikasi paralel yang jangan
+> sampai tertukar saat menguji:
+> 1. **Level Kemampuan** (dasar/menengah/atas/mahir) — indikator PENGUASAAN,
+>    ketat, dari Fase 1. Field Firestore: `level`, `progress`, `butuhLulus`,
+>    `mahirTercapai`.
+> 2. **Level 1-99 & Rank** (Perintis→Maestro Kelas 5) — indikator
+>    KEAKTIFAN, dari EXP, dari Fase 5. Field Firestore: `level99`, `rank`,
+>    `level99Maksimal`, `expProgresLevelIni`, `expDibutuhkanLevelBerikutnya`.
+>
+> Keduanya SAMA-SAMA ada di 1 dokumen `level_siswa/{namaSiswa}`, ditampilkan
+> sebagai 2 KARTU TERPISAH di `profil-siswa.html` (dengan judul jelas beda),
+> dan Papan Peringkat SEKARANG dikelompokkan per **Rank** (bukan Level
+> Kemampuan lagi) — Level Kemampuan cuma jadi tag kecil di tiap baris.
 >
 > **Perhatian khusus**: endpoint Apps Script berganti nama dari `hitung_level`
 > jadi **`hitung_gamifikasi`** di Fase 3 (cakupannya sudah lebih luas dari
@@ -1648,3 +1655,51 @@ sudah dibangun, belum dirilis; papan perbandingan antar siswa MENYUSUL)
       + 10 bonus lulus)
 - [ ] Total EXP di kartu level & di kartu statistik "Total EXP" HARUS SAMA
       PERSIS (2 tempat, 1 sumber data) — kalau beda, ada bug tampilan
+
+**Papan Peringkat** (`pages/papan-peringkat.html`, kartu menu "🏅 Papan Peringkat")
+- [ ] Akun **siswa** dan **guru** SAMA-SAMA bisa buka halaman ini (beda dari
+      Profil & Level yang siswa-only) — akun **orang tua** TETAP ditolak
+- [ ] **SEMUA 25 nama siswa muncul**, termasuk yang belum pernah mengerjakan
+      apa pun sama sekali (label "Belum mulai", BUKAN "0 EXP", BUKAN hilang
+      dari daftar) — cek jumlah nama yang tampil = 25 kalau dijumlah semua
+      tier, kalau kurang berarti ada nama yang tidak ke-mapping dengan benar
+- [ ] Dikelompokkan per tier (Mahir → Atas → Menengah → Dasar dari atas ke
+      bawah), di dalam 1 tier diurutkan EXP dari besar ke kecil
+- [ ] Login sebagai **siswa** → baris nama SENDIRI disorot ungu + tulisan
+      "← Ini kamu!" — baris siswa LAIN tidak disorot
+- [ ] Login sebagai **guru** → TIDAK ADA baris yang disorot "Ini kamu!"
+      (guru tidak punya level/EXP)
+- [ ] Siswa yang baru saja naik level/dapat EXP baru (habis kerja kuis/baca
+      materi) → buka Papan Peringkat → posisinya SUDAH pindah tier/urutan
+      sesuai data terbaru (baca langsung dari Firestore, bukan cache basi)
+- [ ] Ganti 1 nama di `MPLS_STUDENTS` (`pages/mpls/assets/mpls-data.js`,
+      simulasikan mis. siswa pindah sekolah diganti nama baru) → Papan
+      Peringkat ikut menampilkan nama yang sudah diperbarui (sumber
+      namanya SATU tempat, tidak nyangkut versi lama)
+
+**Level 1-99, Rank & Badge (Fase 5)**
+- [ ] Buka `profil-siswa.html` → **2 kartu terpisah** tampil dengan judul
+      jelas beda: "Rank & EXP — dari keaktifan belajar" (di atas) dan
+      "Level Kemampuan — dari konsistensi lulus Uji Kemampuan" (di bawah)
+      — pastikan TIDAK tertukar/ketampil cuma 1
+- [ ] Kartu Rank menampilkan **gambar badge asli** (bukan ikon emoji) sesuai
+      rank siswa saat ini, nama rank, "Level N dari 99", dan bar progres
+      EXP menuju level berikutnya — gambar badge HARUS benar-benar muncul
+      (bukan ikon gambar rusak/404 — cek path `assets/img/badges/*.webp`
+      ada di server)
+- [ ] Siswa dengan EXP pas di batas transisi rank (mis. tepat di Level 16,
+      awal Penjelajah) → badge & nama rank yang tampil SESUAI Level 16
+      (Penjelajah), bukan Level 15 (Perintis) — cek 1-2 titik transisi
+      manual kalau memungkinkan (Level 15/16, 30/31, 50/51, 70/71, 90/91)
+- [ ] Siswa dengan EXP ≥7.215 (Level 99 tercapai) → kartu Rank menampilkan
+      "🎉 Level 99 tercapai — puncak rank tertinggi!" (BUKAN bar progres
+      kosong/pembagian dengan nol/tampilan aneh)
+- [ ] Buka `papan-peringkat.html` → pengelompokan SEKARANG per **Rank**
+      (Maestro Kelas 5 di atas → Perintis di bawah), BUKAN lagi per Level
+      Kemampuan — header tiap grup menampilkan gambar badge asli
+- [ ] Tiap baris siswa (kecuali yang "Belum mulai") menampilkan **tag kecil
+      Level Kemampuan** (mis. "🌿 Lv.18") di sebelah EXP — informasi ini
+      TIDAK hilang, cuma bukan pengelompokan utama lagi
+- [ ] Total siswa yang tampil di SEMUA grup Rank dijumlah = 25 (sama seperti
+      pengecekan di Fase 4, cuma sekarang per Rank bukan per Level
+      Kemampuan)

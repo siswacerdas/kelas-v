@@ -190,6 +190,90 @@ antar siswa MASIH menyusul)
   EXP dari Modul (menunggu jembatan pengiriman progres Modul yang belum
   ada), dan akses guru untuk melihat profil siswa tertentu.
 
+### Ditambahkan — Sistem Level Uji Kemampuan, Fase 4: Papan Peringkat
+(belum dirilis — sistem gamifikasi yang diminta pemilik proyek sekarang
+LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
+- `pages/papan-peringkat.html` (halaman baru) — daftar SEMUA 25 siswa
+  (bukan cuma yang sudah pernah mengerjakan sesuatu), dikelompokkan per
+  tier level (Mahir di atas, lalu Atas/Menengah/Dasar), diurutkan EXP
+  menurun di dalam tiernya masing-masing. Siswa yang belum pernah
+  mengerjakan apa pun tetap muncul (di tier Dasar, berlabel "Belum mulai"
+  — BUKAN "0 EXP" yang terkesan negatif) supaya papan ini mengajak semua
+  orang ikut, bukan cuma memamerkan yang sudah aktif.
+- **Daftar 25 nama siswa diambil dari `MPLS_STUDENTS`** (`pages/mpls/assets/
+  mpls-data.js`) — BUKAN dari koleksi Firestore `siswa` (yang sengaja
+  TIDAK BISA dibaca langsung dari klien, lihat komentar di `firestore.rules`
+  soal proteksi NISN). `MPLS_STUDENTS` aman dipakai karena SUDAH publik
+  sejak awal (daftar nama yang sama persis dipakai buat dropdown login),
+  jadi tidak ada data baru yang jadi lebih terbuka gara-gara papan ini.
+- **Siswa DAN guru** boleh membuka papan ini (`data-akses="siswa guru"`)
+  — data level/EXP memang dirancang terbuka untuk siapa saja yang login
+  sejak Fase 1 (`firestore.rules` koleksi `level_siswa`), beda dari
+  `hasil_latihan` yang detail jawabannya privat. Baris nama siswa yang
+  SEDANG LOGIN disorot ungu + label "← Ini kamu!" (cuma untuk akun siswa;
+  guru tidak punya level, jadi tidak ada yang disorot buat mereka).
+- **Keputusan desain buat menjaga suasana tetap sehat** (mengikuti
+  kekhawatiran yang sempat diangkat sebelum fase gamifikasi ini dimulai —
+  lihat diskusi awal soal papan perbandingan di percakapan sesi ini,
+  keputusan detail pengelompokan ini dipilih sendiri sebagai default yang
+  masuk akal, BELUM dikonfirmasi ulang secara eksplisit ke pemilik
+  proyek): dikelompokkan per TIER LEVEL dulu (bukan 1 daftar rangking
+  #1-#25 yang datar) — supaya siswa di level bawah tidak merasa "peringkat
+  terakhir dari 25", tapi tetap bisa lihat "aku salah satu dari sekian
+  siswa Level Dasar" dan termotivasi naik ke kelompok berikutnya.
+- Tautan silang ditambahkan: `profil-siswa.html` → "Lihat Papan Peringkat →",
+  dan kartu menu baru "🏅 Papan Peringkat" di `index.html`.
+- **BELUM dikerjakan**: EXP dari Modul (menunggu jembatan pengiriman
+  progres Modul yang belum ada — lihat catatan di Fase 3 & bagian
+  Direncanakan), dan indikator "naik/turun tier minggu ini" (perbandingan
+  antar waktu, bukan cuma snapshot posisi sekarang).
+
+### Ditambahkan — Sistem Level Uji Kemampuan, Fase 5: Level 1-99 & Rank + badge
+(belum dirilis)
+- **Lapisan gimmick BARU, TERPISAH dari Level Kemampuan** (dasar/menengah/
+  atas/mahir yang sudah ada sejak Fase 1) — perbedaannya SENGAJA: Level
+  Kemampuan = indikator PENGUASAAN (ketat, cuma naik lewat kelulusan
+  konsisten); **Level 1-99 & Rank = indikator KEAKTIFAN/USAHA** (naik terus
+  dari EXP yang sudah ada sejak Fase 3, aktivitas apa pun), supaya siswa
+  SELALU punya progres kecil untuk dikejar tiap hari, tidak cuma menunggu
+  lulus kuis susah.
+- **Kurva EXP per level SENGAJA TIDAK LINEAR** (`EXP_PER_LEVEL99_TAHAP_` di
+  `Code.gs`) — 15 EXP/level (Level 1-10) → 30 EXP/level (10-30) → 60
+  EXP/level (30-60) → 120 EXP/level (60-99). Naik cepat di awal (bikin
+  nagih), makin lambat di atas (bikin Level 99 terasa istimewa — total
+  ±7.215 EXP buat tembus dari nol, target realistisnya cuma segelintir
+  siswa paling aktif sepanjang tahun).
+- **6 Rank** (`RANK_TAHAP_`), nama edukatif bukan logam generik: Perintis
+  (1-15) → Penjelajah (16-30) → Pencari Ilmu (31-50) → Cendekiawan Muda
+  (51-70) → Begawan Ilmu (71-90) → Maestro Kelas 5 (91-99).
+- **6 badge digenerate lewat AI image generator** (prompt disusun di sesi
+  ini, hasil digenerate pemilik proyek sendiri) — disimpan di
+  `assets/img/badges/rank-0N-nama.webp`, dikonversi dari PNG ke WebP
+  (turun ±80% ukuran file, dari total ±2,4MB jadi ±430KB untuk 6 badge)
+  supaya ringan dimuat di HP siswa. Background sudah transparan dari
+  generatornya, tidak perlu diproses ulang.
+- `pages/profil-siswa.html` menampilkan **2 kartu terpisah dengan judul
+  jelas**: "Rank & EXP — dari keaktifan belajar" (badge gambar, nama rank,
+  Level N/99, bar progres EXP) dan "Level Kemampuan — dari konsistensi
+  lulus Uji Kemampuan" (kartu lama dari Fase 1-2) — supaya siswa tidak
+  bingung 2 sistem ini beda arti.
+- `pages/papan-peringkat.html` **pengelompokan utamanya diganti dari Level
+  Kemampuan jadi Rank** (lebih granular — 6 kelompok vs 4, dan semua siswa
+  yang aktif akan terus naik kelompok secara berkala, beda dari Level
+  Kemampuan yang bisa lama macet di 1 tingkat) — header tiap grup pakai
+  gambar badge asli, dan Level Kemampuan tetap ditampilkan sebagai tag
+  kecil di tiap baris (informasi tambahan, bukan hilang).
+- Perhitungan Level 1-99/Rank **murni fungsi dari `exp`** yang sudah
+  dihitung server sejak Fase 3 — TIDAK butuh pertimbangan keamanan
+  tambahan (turunan dari angka yang sudah tepercaya otomatis ikut
+  tepercaya), tapi tetap dihitung & disimpan di server (`level99`, `rank`
+  jadi field baru di dokumen `level_siswa`) demi konsistensi pola "server
+  hitung, klien cuma tampilkan" yang sudah dipakai sejak awal.
+- Prompt desain badge (6 rank + 2 versi alternatif nuansa Islami untuk
+  Pencari Ilmu & Begawan Ilmu) didokumentasikan terpisah di file
+  `badge-prompts-rank-kelas-v.md` (dibagikan ke pemilik proyek, BUKAN
+  bagian dari repo situs — cuma referensi kerja).
+
 ### Direncanakan
 - Isi konten asli `cp-tp-atp.html` (CP/TP/ATP resmi per mapel) dan `jadwal.html`
   (jadwal mingguan resmi) — kerangkanya sudah ada sejak v0.9.0, tinggal menunggu
