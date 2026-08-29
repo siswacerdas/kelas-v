@@ -1664,6 +1664,74 @@ function hitungJumlahMateriDibaca_(nama) {
   return rows.filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target).length;
 }
 
+/* ── LEVEL 1-99 & RANK — lapisan gimmick TAMBAHAN di atas EXP, terpisah dari
+ * "Level Kemampuan" (dasar/menengah/atas/mahir) di atas. Bedanya: Level Kemampuan
+ * = indikator PENGUASAAN (ketat, cuma naik kalau lulus konsisten). Level 1-99 +
+ * Rank = indikator KEAKTIFAN/USAHA (naik terus dari EXP, apa pun aktivitasnya) —
+ * supaya siswa selalu punya progres kecil untuk dikejar tiap hari, walau
+ * penguasaannya belum naik-naik. Murni FUNGSI dari `exp` yang sudah dihitung di
+ * atas — TIDAK butuh sumber data baru, TIDAK butuh pertimbangan keamanan
+ * tambahan (exp-nya sendiri sudah dihitung server, turunan dari situ otomatis
+ * ikut terpercaya).
+ *
+ * Kurva EXP per level SENGAJA TIDAK LINEAR — naik cepat di level awal (bikin
+ * nagih), makin lambat di level tinggi (bikin Level 99 terasa istimewa/langka):
+ * Level 1-10: 15 EXP/level · Level 10-30: 30 EXP/level ·
+ * Level 30-60: 60 EXP/level · Level 60-99: 120 EXP/level
+ * (total EXP buat tembus Level 99 dari nol: ±7.215 EXP — target realistisnya
+ * cuma segelintir siswa paling aktif sepanjang tahun ajaran, itu justru poinnya). */
+const EXP_PER_LEVEL99_TAHAP_ = [
+  { hinggaLevel: 10, expPerLevel: 15 },
+  { hinggaLevel: 30, expPerLevel: 30 },
+  { hinggaLevel: 60, expPerLevel: 60 },
+  { hinggaLevel: 99, expPerLevel: 120 },
+];
+
+// Rentang level -> rank, lihat CHANGELOG.md untuk penamaan & alasan tiap rank.
+const RANK_TAHAP_ = [
+  { hinggaLevel: 15, rank: "perintis" },
+  { hinggaLevel: 30, rank: "penjelajah" },
+  { hinggaLevel: 50, rank: "pencari_ilmu" },
+  { hinggaLevel: 70, rank: "cendekiawan_muda" },
+  { hinggaLevel: 90, rank: "begawan_ilmu" },
+  { hinggaLevel: 99, rank: "maestro_kelas_5" },
+];
+
+/** Tabel EXP KUMULATIF yang dibutuhkan buat MENCAPAI tiap level (index = level,
+ * table[1] = 0 karena semua siswa mulai di Level 1). Dibangun sekali saat file
+ * di-load (bukan dihitung ulang tiap panggilan) — 99 elemen, murah dihitung. */
+function bangunTabelThresholdLevel99_() {
+  const table = [0, 0]; // table[0] tidak dipakai, table[1] = 0
+  let cum = 0;
+  for (let lvl = 2; lvl <= 99; lvl++) {
+    const tahap = EXP_PER_LEVEL99_TAHAP_.filter((t) => lvl <= t.hinggaLevel)[0];
+    cum += tahap.expPerLevel;
+    table[lvl] = cum;
+  }
+  return table;
+}
+const TABEL_THRESHOLD_LEVEL99_ = bangunTabelThresholdLevel99_();
+
+/** Fungsi MURNI — cuma bergantung pada 1 angka `exp`, gampang diperiksa/diuji
+ * terpisah. Dipanggil dari doPostHitungGamifikasi_ setelah exp final dihitung. */
+function hitungLevel99DanRank_(exp) {
+  let level99 = 1;
+  for (let lvl = 99; lvl >= 1; lvl--) {
+    if (exp >= TABEL_THRESHOLD_LEVEL99_[lvl]) { level99 = lvl; break; }
+  }
+  const rankTahap = RANK_TAHAP_.filter((t) => level99 <= t.hinggaLevel)[0];
+  const expLevelIni = TABEL_THRESHOLD_LEVEL99_[level99];
+  const sudahMaksimal = level99 >= 99;
+  const expLevelBerikutnya = sudahMaksimal ? null : TABEL_THRESHOLD_LEVEL99_[level99 + 1];
+  return {
+    level99: level99,
+    rank: rankTahap.rank,
+    level99Maksimal: sudahMaksimal,
+    expProgresLevelIni: exp - expLevelIni,
+    expDibutuhkanLevelBerikutnya: sudahMaksimal ? 0 : (expLevelBerikutnya - expLevelIni),
+  };
+}
+
 /** Ambil SEMUA dokumen hasil_latihan milik 1 nama siswa, urut kronologis (lama -> baru).
  * Pola paging SAMA seperti cariDokumenSiswaByNama_ (baca-semua-lalu-filter) — koleksi ini
  * jauh lebih besar dari `siswa` (bisa ratusan/ribuan dokumen dalam 1 tahun ajaran), TAPI
@@ -1786,9 +1854,10 @@ function doPostHitungGamifikasi_(body) {
     const levelData = hitungLevelDariRiwayat_(riwayat);
     const jumlahMateriDibaca = hitungJumlahMateriDibaca_(nama);
     const exp = jumlahMateriDibaca * EXP_PER_MATERI_ + levelData.expDariKuis;
+    const level99Data = hitungLevel99DanRank_(exp);
     const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
       (levelData.mahirTercapai && !sebelum.mahirTercapai);
-    const dataLengkap = Object.assign({}, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, exp: exp });
+    const dataLengkap = Object.assign({}, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, exp: exp }, level99Data);
     setLevelSiswaFirestore_(nama, dataLengkap);
     return jsonOut_(Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap));
   } catch (err) {
