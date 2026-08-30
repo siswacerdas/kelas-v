@@ -147,7 +147,6 @@
     <div class="tabs">
       <button class="tab-btn active" data-tab="pengumuman" onclick="switchTab('pengumuman')">📢 Pengumuman</button>
       <button class="tab-btn" data-tab="modul" onclick="switchTab('modul')">📚 Modul</button>
-      <button class="tab-btn" data-tab="materi" onclick="switchTab('materi')">📖 Materi Ajar</button>
       <button class="tab-btn" data-tab="soal" onclick="switchTab('soal')">💪 Uji Kemampuan</button>
       <button class="tab-btn" data-tab="ortu" onclick="switchTab('ortu')">👪 Persetujuan Orang Tua</button>
       <button class="tab-btn" data-tab="impor" onclick="switchTab('impor')">📥 Impor Massal</button>
@@ -216,50 +215,76 @@
       <div id="list-modul"><div class="empty-state">Memuat…</div></div>
     </div>
 
-    <!-- ══════════════ TAB: MATERI AJAR ══════════════ -->
-    <div id="tab-materi" class="tab-panel">
-      <div class="panel-card">
-        <h2 id="materi-form-title">Tambah Materi Baru</h2>
-        <form id="form-materi" onsubmit="return false;">
-          <input type="hidden" id="materi-edit-id" value="" />
-          <div class="form-row">
-            <label for="materi-judul">Judul Materi</label>
-            <input type="text" id="materi-judul" placeholder="mis. Mengenal Ekosistem Sawah" />
-          </div>
-          <div class="form-grid-2">
-            <div class="form-row">
-              <label for="materi-mapel">Mata Pelajaran</label>
-              <input type="text" id="materi-mapel" placeholder="mis. IPA" />
-            </div>
-            <div class="form-row">
-              <label for="materi-tema">Tema</label>
-              <input type="text" id="materi-tema" placeholder="mis. Ekosistem" />
-            </div>
-          </div>
-          <div class="form-row">
-            <label for="materi-isi">Isi Materi (dibaca langsung oleh siswa)</label>
-            <textarea id="materi-isi" style="min-height:140px" placeholder="Tulis rangkuman/materi yang bisa dibaca langsung oleh siswa…"></textarea>
-          </div>
-          <div class="form-row">
-            <label for="materi-url">Lampiran Tambahan (opsional)</label>
-            <input type="text" id="materi-url" placeholder="Link Google Drive / PDF (kalau ada)" />
-          </div>
-          <div class="form-row">
-            <label for="materi-urutan">Urutan Tampil (dalam mapel yang sama)</label>
-            <input type="number" id="materi-urutan" placeholder="1" />
-          </div>
-          <div class="form-actions">
-            <button class="btn btn-primary" id="materi-submit-btn" onclick="simpanMateri()">Simpan Materi</button>
-            <button class="btn btn-secondary hidden" id="materi-cancel-btn" onclick="batalEditMateri()">Batal Edit</button>
-          </div>
-          <div id="materi-status" class="status-msg"></div>
-        </form>
-      </div>
-      <div id="list-materi"><div class="empty-state">Memuat…</div></div>
-    </div>
+    <!-- Tab "Materi Ajar" (mengelola koleksi Firestore `materi`) DIHAPUS dari sini —
+         ternyata kode mati sejak awal: koleksi `materi` yang ditulis form ini TIDAK
+         PERNAH dibaca halaman manapun. Materi ajar yang sungguhan dibaca siswa adalah
+         sistem terpisah (HTML statis + `materi-index.js`, lihat pages/materi/).
+         Lihat CHANGELOG.md & ANTIREGRESI.md §37 untuk detail penghapusan ini. -->
 
     <!-- ══════════════ TAB: UJI KEMAMPUAN (BANK SOAL) ══════════════ -->
     <div id="tab-soal" class="tab-panel">
+      <!-- ══ Ringkasan progres pool (tidak terpengaruh filter di bawah) ══ -->
+      <div id="soal-pool-summary"></div>
+
+      <!-- ══ Filter & Daftar Soal — TAMPILAN UTAMA tab ini, karena penambahan
+           massal dilakukan lewat tab Impor Massal, bukan di sini (lihat
+           ANTIREGRESI §37). Form tambah/edit manual disembunyikan default,
+           lihat di bawah. ══ -->
+      <div class="panel-card">
+        <h2>Cari &amp; Edit Soal</h2>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="filter-soal-mapel">Mata Pelajaran</label>
+            <select id="filter-soal-mapel" onchange="onFilterMapelChange()">
+              <option value="">— Semua Mapel —</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="filter-soal-tp">Tujuan Pembelajaran (TP)</label>
+            <select id="filter-soal-tp" onchange="renderSoalList()">
+              <option value="">— Semua TP —</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="filter-soal-kompleksitas">Kompleksitas</label>
+            <select id="filter-soal-kompleksitas" onchange="renderSoalList()">
+              <option value="">— Semua Tingkat —</option>
+              <option value="dasar">Dasar</option>
+              <option value="menengah">Menengah</option>
+              <option value="menantang">Menantang</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="filter-soal-jenis">Jenis Soal</label>
+            <select id="filter-soal-jenis" onchange="renderSoalList()">
+              <option value="">— Semua Jenis —</option>
+              <option value="pg_tunggal">Pilihan Ganda</option>
+              <option value="pg_kompleks">Pilihan Ganda Kompleks</option>
+              <option value="pg_kategori">Pilihan Ganda Kategori</option>
+              <option value="mengurutkan">Mengurutkan</option>
+              <option value="menjodohkan">Menjodohkan</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="filter-soal-cari">Cari teks pertanyaan</label>
+          <input type="text" id="filter-soal-cari" placeholder="mis. timbangan" oninput="renderSoalList()" />
+        </div>
+        <div class="form-row">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="resetFilterSoal()">↺ Reset Filter</button>
+        </div>
+      </div>
+      <div id="soal-filter-count" style="margin: -0.5rem 0 0.75rem; font-size: 12.5px; color: var(--ink-3);"></div>
+      <div id="list-soal"><div class="empty-state">Memuat…</div></div>
+
+      <!-- ══ Form Tambah/Edit — disembunyikan default, expand manual atau
+           otomatis saat klik "Edit" di daftar di atas ══ -->
+      <button type="button" class="btn btn-secondary" id="toggle-form-soal-btn" onclick="toggleFormSoal()" style="margin: 1.5rem 0 0.75rem;">
+        ➕ Tambah Soal Manual
+      </button>
+      <div id="soal-form-wrapper" class="hidden">
       <div class="panel-card">
         <h2 id="soal-form-title">Tambah Soal Baru</h2>
         <form id="form-soal" onsubmit="return false;">
@@ -381,8 +406,7 @@
           <div id="soal-status" class="status-msg"></div>
         </form>
       </div>
-      <div id="soal-pool-summary"></div>
-      <div id="list-soal"><div class="empty-state">Memuat…</div></div>
+      </div>
     </div>
 
     <!-- ══════════════ TAB: PERSETUJUAN ORANG TUA (Fase 4, lihat CHANGELOG.md v0.11.0) ══════════════ -->
@@ -653,108 +677,6 @@
     }
   }
 
-  // ═══════════════════════ MATERI AJAR ═══════════════════════
-  window.simpanMateri = async function () {
-    const judul = document.getElementById("materi-judul").value.trim();
-    const mapel = document.getElementById("materi-mapel").value.trim();
-    const tema = document.getElementById("materi-tema").value.trim();
-    const isi = document.getElementById("materi-isi").value.trim();
-    const url_file = document.getElementById("materi-url").value.trim();
-    const urutan = Number(document.getElementById("materi-urutan").value) || 0;
-    const editId = document.getElementById("materi-edit-id").value;
-    if (!judul || !mapel || !isi) { setStatus("materi-status", "Judul, mapel, dan isi materi wajib diisi.", true); return; }
-    try {
-      const payload = { judul, mapel, tema, isi, url_file, urutan };
-      if (editId) {
-        await updateDoc(doc(db, "materi", editId), payload);
-        setStatus("materi-status", "Materi diperbarui.", false);
-      } else {
-        await addDoc(collection(db, "materi"), payload);
-        setStatus("materi-status", "Materi ditambahkan.", false);
-      }
-      batalEditMateri();
-      loadMateri();
-    } catch (err) {
-      setStatus("materi-status", "Gagal menyimpan: " + err.message, true);
-    }
-  };
-
-  window.editMateri = function (id, data) {
-    document.getElementById("materi-edit-id").value = id;
-    document.getElementById("materi-judul").value = data.judul || "";
-    document.getElementById("materi-mapel").value = data.mapel || "";
-    document.getElementById("materi-tema").value = data.tema || "";
-    document.getElementById("materi-isi").value = data.isi || "";
-    document.getElementById("materi-url").value = data.url_file || "";
-    document.getElementById("materi-urutan").value = data.urutan || 0;
-    document.getElementById("materi-form-title").textContent = "Edit Materi";
-    document.getElementById("materi-submit-btn").textContent = "Update Materi";
-    document.getElementById("materi-cancel-btn").classList.remove("hidden");
-    document.getElementById("tab-materi").scrollIntoView({ behavior: "smooth" });
-  };
-
-  window.batalEditMateri = function () {
-    document.getElementById("materi-edit-id").value = "";
-    document.getElementById("materi-judul").value = "";
-    document.getElementById("materi-mapel").value = "";
-    document.getElementById("materi-tema").value = "";
-    document.getElementById("materi-isi").value = "";
-    document.getElementById("materi-url").value = "";
-    document.getElementById("materi-urutan").value = "";
-    document.getElementById("materi-form-title").textContent = "Tambah Materi Baru";
-    document.getElementById("materi-submit-btn").textContent = "Simpan Materi";
-    document.getElementById("materi-cancel-btn").classList.add("hidden");
-  };
-
-  window.hapusMateri = async function (id) {
-    if (!confirm("Hapus materi ini? Tindakan ini tidak bisa dibatalkan.")) return;
-    try {
-      await deleteDoc(doc(db, "materi", id));
-      loadMateri();
-    } catch (err) {
-      alert("Gagal menghapus: " + err.message);
-    }
-  };
-
-  async function loadMateri() {
-    const wrap = document.getElementById("list-materi");
-    try {
-      const snap = await getDocs(collection(db, "materi"));
-      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada materi.</div>'; return; }
-      const items = [];
-      snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
-      const grouped = {};
-      items.forEach((it) => { (grouped[it.mapel || "(Tanpa Mapel)"] = grouped[it.mapel || "(Tanpa Mapel)"] || []).push(it); });
-      Object.keys(grouped).forEach((k) => grouped[k].sort((a, b) => (a.urutan || 0) - (b.urutan || 0)));
-
-      wrap.innerHTML = "";
-      Object.keys(grouped).sort().forEach((mapel) => {
-        const title = document.createElement("div");
-        title.className = "list-group-title";
-        title.textContent = mapel;
-        wrap.appendChild(title);
-        grouped[mapel].forEach((it) => {
-          const item = document.createElement("div");
-          item.className = "list-item";
-          const cuplikan = (it.isi || "").slice(0, 80) + ((it.isi || "").length > 80 ? "…" : "");
-          item.innerHTML = `
-            <div class="li-body">
-              <div class="li-title">${escHtml(it.judul || "")}</div>
-              <div class="li-meta">${escHtml(it.tema || "")} · urutan ${it.urutan ?? "-"}</div>
-              <div class="li-desc">${escHtml(cuplikan)}</div>
-            </div>
-            <div class="li-actions">
-              <button class="btn btn-secondary btn-sm" onclick='editMateri(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
-              <button class="btn btn-danger btn-sm" onclick="hapusMateri('${it.id}')">Hapus</button>
-            </div>`;
-          wrap.appendChild(item);
-        });
-      });
-    } catch (err) {
-      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
-    }
-  }
-
   // ═══════════════════════ UJI KEMAMPUAN (BANK SOAL) ═══════════════════════
   const JENIS_LABEL = {
     pg_tunggal: "PG Tunggal", pg_kompleks: "PG Kompleks", pg_kategori: "PG Kategori",
@@ -762,11 +684,46 @@
   };
   const POOL_TARGET = 200;
   const JENIS_LIST = ["pg_tunggal", "pg_kompleks", "pg_kategori", "mengurutkan", "menjodohkan"];
+  const KOMPLEKSITAS_LABEL_ADMIN = { dasar: "Dasar", menengah: "Menengah", menantang: "Menantang" };
+  let allSoalItems = []; // hasil 1x fetch loadSoal() — filter di renderSoalList() murni di klien, tanpa query ulang
 
   function populateMapelSelect() {
     const sel = document.getElementById("soal-mapel");
     sel.innerHTML = (window.URUTAN_MAPEL || []).map((m) => `<option value="${escHtml(m)}">${escHtml(m)}</option>`).join("");
   }
+
+  // ── Filter Cari & Edit Soal (terpisah dari dropdown form tambah/edit di atas) ──
+  function populateFilterMapelSelect() {
+    const sel = document.getElementById("filter-soal-mapel");
+    sel.innerHTML = '<option value="">— Semua Mapel —</option>' +
+      (window.URUTAN_MAPEL || []).map((m) => `<option value="${escHtml(m)}">${escHtml(m)}</option>`).join("");
+  }
+
+  window.onFilterMapelChange = function () {
+    const mapel = document.getElementById("filter-soal-mapel").value;
+    const tpSel = document.getElementById("filter-soal-tp");
+    const list = mapel ? (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel) : (window.TP_KKO_INDEX || []);
+    tpSel.innerHTML = '<option value="">— Semua TP —</option>' +
+      list.map((e) => `<option value="${escHtml(e.tp)}">${escHtml(e.judul)} (${e.tp})</option>`).join("");
+    renderSoalList();
+  };
+
+  window.resetFilterSoal = function () {
+    document.getElementById("filter-soal-mapel").value = "";
+    onFilterMapelChange();
+    document.getElementById("filter-soal-kompleksitas").value = "";
+    document.getElementById("filter-soal-jenis").value = "";
+    document.getElementById("filter-soal-cari").value = "";
+    renderSoalList();
+  };
+
+  window.toggleFormSoal = function () {
+    const wrap = document.getElementById("soal-form-wrapper");
+    const btn = document.getElementById("toggle-form-soal-btn");
+    const sedangTerbuka = !wrap.classList.contains("hidden");
+    wrap.classList.toggle("hidden");
+    btn.textContent = sedangTerbuka ? "➕ Tambah Soal Manual" : "▲ Sembunyikan Form";
+  };
 
   window.onMapelChange = function () {
     const mapel = document.getElementById("soal-mapel").value;
@@ -998,7 +955,9 @@
     document.getElementById("soal-form-title").textContent = "Edit Soal";
     document.getElementById("soal-submit-btn").textContent = "Update Soal";
     document.getElementById("soal-cancel-btn").classList.remove("hidden");
-    document.getElementById("tab-soal").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("soal-form-wrapper").classList.remove("hidden");
+    document.getElementById("toggle-form-soal-btn").textContent = "▲ Sembunyikan Form";
+    document.getElementById("soal-form-wrapper").scrollIntoView({ behavior: "smooth" });
   };
 
   window.batalEditSoal = function () {
@@ -1021,6 +980,8 @@
     document.getElementById("soal-form-title").textContent = "Tambah Soal Baru";
     document.getElementById("soal-submit-btn").textContent = "Simpan Soal";
     document.getElementById("soal-cancel-btn").classList.add("hidden");
+    document.getElementById("soal-form-wrapper").classList.add("hidden");
+    document.getElementById("toggle-form-soal-btn").textContent = "➕ Tambah Soal Manual";
   };
 
   window.hapusSoal = async function (id) {
@@ -1038,59 +999,104 @@
     const summaryWrap = document.getElementById("soal-pool-summary");
     try {
       const snap = await getDocs(collection(db, "bank_soal"));
-      if (snap.empty) { wrap.innerHTML = '<div class="empty-state">Belum ada soal.</div>'; summaryWrap.innerHTML = ""; return; }
-      const items = [];
-      snap.forEach((d) => items.push({ id: d.id, ...d.data() }));
+      allSoalItems = [];
+      snap.forEach((d) => allSoalItems.push({ id: d.id, ...d.data() }));
 
-      // Ringkasan progres pool per TP (dari TP_KKO_INDEX supaya TP yang masih 0 soal pun kelihatan)
+      // Ringkasan progres pool per TP (dari TP_KKO_INDEX supaya TP yang masih 0 soal pun
+      // kelihatan) — SELALU dari data lengkap, TIDAK terpengaruh filter di bawah.
       const countByTp = {};
-      items.forEach((it) => { if (it.tp) countByTp[it.tp] = (countByTp[it.tp] || 0) + 1; });
+      allSoalItems.forEach((it) => { if (it.tp) countByTp[it.tp] = (countByTp[it.tp] || 0) + 1; });
       const belumCukup = (window.TP_KKO_INDEX || []).filter((e) => (countByTp[e.tp] || 0) < POOL_TARGET);
-      summaryWrap.innerHTML = belumCukup.length > 0
-        ? `<div class="pool-warning">⚠️ ${belumCukup.length} dari ${window.TP_KKO_INDEX.length} TP masih di bawah target ${POOL_TARGET} soal.</div>`
-        : `<div class="pool-ok">✅ Semua TP sudah mencapai target ${POOL_TARGET} soal.</div>`;
+      summaryWrap.innerHTML = allSoalItems.length === 0
+        ? ""
+        : (belumCukup.length > 0
+          ? `<div class="pool-warning">⚠️ ${belumCukup.length} dari ${window.TP_KKO_INDEX.length} TP masih di bawah target ${POOL_TARGET} soal.</div>`
+          : `<div class="pool-ok">✅ Semua TP sudah mencapai target ${POOL_TARGET} soal.</div>`);
 
-      const grouped = {};
-      items.forEach((it) => {
-        const mapel = it.mapel || "(Tanpa Mapel — format soal lama)";
-        const tp = it.tp || "(Tanpa TP — format soal lama)";
-        grouped[mapel] = grouped[mapel] || {};
-        grouped[mapel][tp] = grouped[mapel][tp] || [];
-        grouped[mapel][tp].push(it);
-      });
-
-      wrap.innerHTML = "";
-      Object.keys(grouped).sort().forEach((mapel) => {
-        Object.keys(grouped[mapel]).sort().forEach((tp) => {
-          const list = grouped[mapel][tp];
-          const tpEntry = window.getTpKko(tp);
-          const judulTp = tpEntry ? tpEntry.judul : tp;
-          const target = tpEntry ? ` · ${list.length}/${POOL_TARGET}` : "";
-          const title = document.createElement("div");
-          title.className = "list-group-title";
-          title.textContent = `${mapel} · ${judulTp}${target}`;
-          wrap.appendChild(title);
-          list.forEach((it) => {
-            const item = document.createElement("div");
-            item.className = "list-item";
-            const jenisLbl = JENIS_LABEL[it.jenisSoal] || "PG (format lama)";
-            item.innerHTML = `
-              <div class="li-body">
-                <div class="li-title">${escHtml(it.pertanyaan || "")}</div>
-                <div class="li-desc">${jenisLbl}<span class="kko-badge">${escHtml(it.kko || "-")}</span><span class="kko-badge">${escHtml(it.kompleksitas || "-")}</span></div>
-              </div>
-              <div class="li-actions">
-                <button class="btn btn-secondary btn-sm" onclick='editSoal(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="hapusSoal('${it.id}')">Hapus</button>
-              </div>`;
-            wrap.appendChild(item);
-          });
-        });
-      });
+      renderSoalList();
     } catch (err) {
       wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
     }
   }
+
+  // Menyaring `allSoalItems` (sudah diunduh sekali oleh loadSoal()) sesuai filter
+  // yang dipilih, lalu render ulang — TANPA query Firestore baru. Dipanggil tiap
+  // ada perubahan di salah satu dropdown/kotak pencarian filter.
+  window.renderSoalList = function () {
+    const wrap = document.getElementById("list-soal");
+    const countLabel = document.getElementById("soal-filter-count");
+    if (allSoalItems.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Belum ada soal.</div>';
+      countLabel.textContent = "";
+      return;
+    }
+
+    const fMapel = document.getElementById("filter-soal-mapel").value;
+    const fTp = document.getElementById("filter-soal-tp").value;
+    const fKompleksitas = document.getElementById("filter-soal-kompleksitas").value;
+    const fJenis = document.getElementById("filter-soal-jenis").value;
+    const fCari = document.getElementById("filter-soal-cari").value.trim().toLowerCase();
+
+    const items = allSoalItems.filter((it) => {
+      if (fMapel && it.mapel !== fMapel) return false;
+      if (fTp && it.tp !== fTp) return false;
+      if (fKompleksitas && it.kompleksitas !== fKompleksitas) return false;
+      if (fJenis && (it.jenisSoal || "pg_tunggal") !== fJenis) return false;
+      if (fCari && !(it.pertanyaan || "").toLowerCase().includes(fCari)) return false;
+      return true;
+    });
+
+    countLabel.textContent = items.length === allSoalItems.length
+      ? `Menampilkan semua ${allSoalItems.length} soal.`
+      : `Menampilkan ${items.length} dari ${allSoalItems.length} soal (sesuai filter).`;
+
+    if (items.length === 0) {
+      wrap.innerHTML = '<div class="empty-state">Tidak ada soal yang cocok dengan filter ini.</div>';
+      return;
+    }
+
+    const grouped = {};
+    items.forEach((it) => {
+      const mapel = it.mapel || "(Tanpa Mapel — format soal lama)";
+      const tp = it.tp || "(Tanpa TP — format soal lama)";
+      grouped[mapel] = grouped[mapel] || {};
+      grouped[mapel][tp] = grouped[mapel][tp] || [];
+      grouped[mapel][tp].push(it);
+    });
+
+    wrap.innerHTML = "";
+    Object.keys(grouped).sort().forEach((mapel) => {
+      Object.keys(grouped[mapel]).sort().forEach((tp) => {
+        const list = grouped[mapel][tp];
+        const tpEntry = window.getTpKko(tp);
+        const judulTp = tpEntry ? tpEntry.judul : tp;
+        // Total pool TP ini (dari SELURUH data, bukan cuma yang lolos filter) supaya
+        // target ".../200" tetap akurat walau sedang menyaring kompleksitas/jenis tertentu.
+        const totalTp = allSoalItems.filter((s) => (s.mapel || "(Tanpa Mapel — format soal lama)") === mapel && (s.tp || "(Tanpa TP — format soal lama)") === tp).length;
+        const target = tpEntry ? ` · ${list.length}/${totalTp} tampil (target ${POOL_TARGET})` : ` · ${list.length} tampil`;
+        const title = document.createElement("div");
+        title.className = "list-group-title";
+        title.textContent = `${mapel} · ${judulTp}${target}`;
+        wrap.appendChild(title);
+        list.forEach((it) => {
+          const item = document.createElement("div");
+          item.className = "list-item";
+          const jenisLbl = JENIS_LABEL[it.jenisSoal] || "PG (format lama)";
+          const labelKompleksitas = it.kompleksitas ? (KOMPLEKSITAS_LABEL_ADMIN[it.kompleksitas] || it.kompleksitas) : "⚠ belum ditandai";
+          item.innerHTML = `
+            <div class="li-body">
+              <div class="li-title">${escHtml(it.pertanyaan || "")}</div>
+              <div class="li-desc">${jenisLbl}<span class="kko-badge">${escHtml(it.kko || "-")}</span><span class="kko-badge">${escHtml(labelKompleksitas)}</span></div>
+            </div>
+            <div class="li-actions">
+              <button class="btn btn-secondary btn-sm" onclick='editSoal(${JSON.stringify(it.id)}, ${JSON.stringify(it)})'>Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusSoal('${it.id}')">Hapus</button>
+            </div>`;
+          wrap.appendChild(item);
+        });
+      });
+    });
+  };
 
   // Inisialisasi form Uji Kemampuan begitu script ini jalan (dropdown mapel/TP,
   // subform default) — tidak perlu menunggu event guru-verified karena hanya
@@ -1098,6 +1104,11 @@
   populateMapelSelect();
   onMapelChange();
   onJenisChange();
+  populateFilterMapelSelect();
+  // Isi dropdown TP filter tanpa memicu renderSoalList() dulu (allSoalItems masih
+  // kosong sebelum loadSoal() jalan, biar placeholder "Memuat…" tidak keburu tertimpa).
+  document.getElementById("filter-soal-tp").innerHTML = '<option value="">— Semua TP —</option>' +
+    (window.TP_KKO_INDEX || []).map((e) => `<option value="${escHtml(e.tp)}">${escHtml(e.judul)} (${e.tp})</option>`).join("");
 
   // ═══════════════════════ IMPOR MASSAL ═══════════════════════
   window.muatFileImpor = function (event) {
@@ -1332,16 +1343,15 @@
     document.getElementById("app-admin").classList.remove("hidden");
     loadPengumuman();
     loadModul();
-    loadMateri();
     loadSoal();
     loadSemuaOrtu();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../index.html"));
 
-  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #materi / #soal / #ortu
+  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #soal / #ortu
   window.addEventListener("load", () => {
     const hash = window.location.hash.replace("#", "");
-    if (["pengumuman", "modul", "materi", "soal", "ortu", "impor"].includes(hash)) switchTab(hash);
+    if (["pengumuman", "modul", "soal", "ortu", "impor"].includes(hash)) switchTab(hash);
   });
 </script>
 </body>
