@@ -505,6 +505,15 @@
         <div class="card-desc">Lihat level, progres, dan riwayat capaianmu di Uji Kemampuan</div>
         <div class="card-badge">Baru</div>
       </a>
+      <!-- Papan Peringkat: siswa DAN guru boleh lihat — data level/EXP memang dirancang
+           publik untuk siapa saja yang login (beda dari hasil_latihan yang privat),
+           lihat ANTIREGRESI.md §35. -->
+      <a href="pages/papan-peringkat.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
+        <div class="card-icon">🏅</div>
+        <div class="card-title">Papan Peringkat</div>
+        <div class="card-desc">Bandingkan level & EXP-mu dengan teman sekelas</div>
+        <div class="card-badge">Baru</div>
+      </a>
       <!-- Riwayat Latihan: TIDAK termasuk 4 akses siswa yang diminta Arif
            (Modul/Materi/Galeri/Uji Kemampuan saja) — jadi guru-only untuk saat
            ini. Kalau ini tidak sengaja (siswa biasanya wajar melihat riwayat

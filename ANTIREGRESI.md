@@ -1703,3 +1703,94 @@ Firestore `level_siswa` — Fase 1-5 SEMUA sudah dibangun, belum dirilis)
 - [ ] Total siswa yang tampil di SEMUA grup Rank dijumlah = 25 (sama seperti
       pengecekan di Fase 4, cuma sekarang per Rank bukan per Level
       Kemampuan)
+
+---
+
+### 36. Uji Kemampuan: soal disesuaikan otomatis dengan Level Kemampuan
+(`pages/uji-kemampuan.html`, belum dirilis — belum pernah diuji live)
+
+Menyambungkan Level Kemampuan (§35 Fase 1) ke soal yang benar-benar diterima
+siswa. Sebelum fitur ini, level dihitung tapi soal tetap acak dari SELURUH
+pool TP tanpa peduli `kompleksitas`.
+
+**Skema & pemetaan (JANGAN diubah tanpa alasan kuat, sudah diputuskan
+eksplisit oleh pemilik proyek):**
+- `kompleksitas` bank_soal TETAP 3 nilai: `dasar`/`menengah`/`menantang`.
+  TIDAK ditambah jadi 4 walau Level Kemampuan punya 4 tingkat.
+- Pemetaan: Level Dasar → soal `dasar`. Level Menengah → soal `menengah`.
+  Level **Atas MAUPUN Mahir** → soal `menantang` (2 level kemampuan berbagi
+  1 kompleksitas soal, disengaja).
+- Rantai fallback kalau pool kurang dari 5 soal: `menantang → menengah →
+  dasar`. Kalau bahkan `dasar` juga < 5, TP dinonaktifkan total.
+- Level Kemampuan yang dipakai untuk memilih soal tetap GLOBAL (1 siswa = 1
+  level utk semua mapel/TP), TIDAK dihitung per-TP/mapel — konsisten dengan
+  desain sejak Fase 1.
+
+**Uji manual yang WAJIB dilakukan sebelum fitur ini dianggap aman:**
+- [ ] Login sebagai siswa BARU (belum pernah mengerjakan kuis apa pun,
+      belum punya dokumen `level_siswa`) → buka Uji Kemampuan → pilih mapel
+      apa saja → banner di atas daftar TP menampilkan "Level kemampuanmu
+      saat ini: **Dasar**" (default aman untuk siswa baru)
+- [ ] Siswa level Dasar mengerjakan TP yang pool-nya campuran dasar+menengah
+      (seperti contoh 200 soal aljabar-tp1: 45 dasar + 155 menengah) → soal
+      yang muncul HARUS semua bertanda `kompleksitas: "dasar"` (cek lewat
+      `console.log` sementara atau field `kompleksitasSoal` di hasil
+      tersimpan), BUKAN tercampur dengan soal menengah
+- [ ] Siswa level Menengah mengerjakan TP yang sama → soal yang muncul HARUS
+      semua `kompleksitas: "menengah"`
+- [ ] Siswa level Mahir (atau Atas) mengerjakan TP yang BELUM punya soal
+      `menantang` sama sekali (seperti contoh aljabar-tp1 di atas) → kartu TP
+      menampilkan catatan fallback ("⚠ Soal tingkat Menantang untuk TP ini
+      belum tersedia — kamu akan mendapat soal tingkat Menengah dulu"), soal
+      yang muncul HARUS `kompleksitas: "menengah"` (bukan dasar, karena
+      menengah cukup ≥5), dan catatan senada juga tampil di subjudul layar
+      kuis
+- [ ] TP dengan pool soal < 5 di SEMUA tingkat (termasuk dasar) → kartu TP
+      tidak bisa diklik (disabled), pesan menyebutkan jumlah pool total
+- [ ] Akun **guru** membuka Uji Kemampuan → muncul dropdown "Mode guru —
+      tampilkan soal tingkat" di Tahap 1 yang TIDAK muncul untuk siswa
+- [ ] Guru dengan pilihan default "Semua tingkat" → perilaku PERSIS seperti
+      sebelum fitur ini ada (hitung pool pakai aggregation query, soal
+      diambil pakai trik randKey lama, TIDAK difilter kompleksitas sama
+      sekali) — termasuk soal LAMA yang belum ditandai `kompleksitas` tetap
+      ikut muncul
+- [ ] Guru ganti dropdown ke "Menantang" pada TP yang belum ada soal
+      menantang-nya → kartu TP disabled dengan pesan pool kurang (BUKAN
+      fallback turun tingkat — mode guru manual sengaja tanpa fallback)
+- [ ] Guru ganti dropdown lalu KEMBALI ke "Semua tingkat" → grid TP di-refresh
+      dan kembali ke perilaku lama dengan benar (cache `poolSoalTpCache`
+      tidak nyangkut dari pilihan sebelumnya)
+- [ ] Selesaikan 1 kuis sebagai siswa → dokumen baru di `hasil_latihan` (cek
+      lewat Riwayat Latihan / Firestore Console) punya field
+      `kompleksitasSoal` berisi tingkat yang benar-benar dipakai sesi itu
+- [ ] Selesaikan 1 kuis lewat mode guru "Semua tingkat" → dokumen
+      `hasil_latihan`-nya punya `kompleksitasSoal: null` (bukan error/hilang)
+- [ ] Level naik di tengah sesi pemakaian (mis. siswa baru saja naik dari
+      Dasar ke Menengah) → **buka ulang** halaman Uji Kemampuan (bukan cuma
+      kembali ke Tahap 1 tanpa reload) → banner & soal yang ditawarkan sudah
+      memakai level BARU (level dibaca sekali saat halaman dimuat via event
+      `role-verified`, BUKAN reaktif live — ini perilaku yang diharapkan,
+      bukan bug, tapi perlu dikonfirmasi tidak membingungkan di praktiknya)
+
+**Catatan arsitektur penting untuk sesi lanjutan:**
+- Query ke `bank_soal` di jalur baru SENGAJA cuma pakai 1 filter kesetaraan
+  (`tp == X`), lalu kelompokkan per `kompleksitas` DI KLIEN — BUKAN
+  `where("tp","==",X).where("kompleksitas","==",Y)` — supaya TIDAK butuh
+  composite index Firestore baru (2 filter kesetaraan field berbeda WAJIB
+  composite index, sudah diverifikasi lewat pencarian dokumentasi Firestore).
+  Pola ini sama dengan pengelompokan modul per mapel di klien (§16). **Kalau
+  ada sesi mendatang ingin "mengoptimalkan" jadi query gabungan di server,
+  INGAT alasan ini dulu** — perlu composite index manual di Firebase Console
+  kalau mau diubah.
+- Konsekuensinya: setiap kali grid TP dirender (Tahap 2), SELURUH pool soal
+  TP itu diunduh (bukan cuma dihitung) untuk role siswa/guru-manual. Untuk
+  ukuran pool saat ini (puluhan-ratusan dokumen kecil per TP) ini tidak
+  masalah, tapi kalau pool per TP membengkak sampai ribuan dokumen di masa
+  depan, ini perlu ditinjau ulang (mis. kembali ke aggregation count + hanya
+  unduh penuh saat kuis benar-benar dimulai, dengan query per-kompleksitas
+  yang butuh composite index).
+- Soal LAMA tanpa field `kompleksitas` (undefined) TIDAK match ke tingkat
+  manapun di jalur baru — otomatis tersembunyi dari siswa, cuma kelihatan
+  lewat mode guru "Semua tingkat". Kalau ada laporan "TP ini dulu bisa diuji
+  siswa, sekarang kartunya disabled", cek dulu apakah soal-soal di TP itu
+  sudah punya tag `kompleksitas` di `bank-soal.html`.

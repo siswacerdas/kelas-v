@@ -274,6 +274,47 @@ LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
   `badge-prompts-rank-kelas-v.md` (dibagikan ke pemilik proyek, BUKAN
   bagian dari repo situs — cuma referensi kerja).
 
+### Ditambahkan — Sistem Level Uji Kemampuan, Fase 6: soal disesuaikan otomatis dengan level (belum dirilis)
+- **Menutup celah lama**: sejak Fase 1, Level Kemampuan (dasar/menengah/atas/
+  mahir) sudah dihitung dari riwayat, tapi `uji-kemampuan.html` selalu mengambil
+  soal ACAK dari SELURUH pool TP tanpa peduli `kompleksitas` sama sekali — level
+  siswa dihitung tapi tidak pernah benar-benar memengaruhi soal apa yang dia
+  terima. Fase 6 menyambungkan keduanya: soal yang diberikan sekarang mengikuti
+  Level Kemampuan siswa saat ini.
+- **Skema `kompleksitas` TETAP 3 nilai** (`dasar`/`menengah`/`menantang` — tidak
+  ditambah jadi 4), keputusan eksplisit pemilik proyek: `menantang` dipakai
+  BERSAMA untuk Level Kemampuan **Atas** maupun **Mahir**. `bank_soal` dan
+  `admin.html` TIDAK berubah sama sekali.
+- **Fallback otomatis turun tingkat**: kalau pool soal kompleksitas target
+  (sesuai level siswa) di suatu TP belum cukup (< 5 soal), sistem otomatis
+  turun ke kompleksitas di bawahnya (menantang→menengah→dasar), dengan catatan
+  kecil ditampilkan ke siswa di kartu TP maupun di layar kuis. Kalau bahkan
+  Dasar pun belum cukup, TP itu dinonaktifkan untuk diuji.
+- **Dibaca langsung dari klien, TANPA endpoint Apps Script baru**: level siswa
+  dibaca langsung dari `level_siswa/{namaSiswa}` (aturan baca publik sudah ada
+  sejak Fase 1), lalu pool `bank_soal` per TP diunduh 1x (equality tunggal
+  `tp==X`, sama seperti sebelumnya) dan dikelompokkan per `kompleksitas` DI
+  KLIEN — **sengaja menghindari composite index Firestore baru** (2 filter
+  kesetaraan field berbeda WAJIB composite index), mengikuti pola yang sama
+  dengan pengelompokan modul per mapel di klien (lihat ANTIREGRESI §16). Jadi
+  **tidak ada langkah manual Firebase Console baru** untuk fitur ini.
+- **Mode guru dipisah dari mode siswa**: siswa SELALU otomatis mengikuti level
+  (tidak ada pilihan manual). Guru punya dropdown "tampilkan soal tingkat:" di
+  Tahap 1 (Semua/Dasar/Menengah/Menantang) — default "Semua tingkat" memakai
+  JALUR LAMA yang tidak berubah sama sekali (termasuk trik randKey 2-query),
+  supaya guru tetap bisa melihat/menguji seluruh pool apa adanya (termasuk
+  soal lama yang belum ditandai `kompleksitas`). Kalau guru pilih tingkat
+  spesifik, TIDAK ada fallback (murni pratinjau pool tingkat itu).
+- Dokumen `hasil_latihan` sekarang punya field baru `kompleksitasSoal`
+  (`"dasar"`/`"menengah"`/`"menantang"`/`null` untuk mode guru "semua") —
+  aditif, tidak mengubah dokumen lama, untuk keperluan audit/laporan di masa
+  depan.
+- **Peringatan penting**: soal LAMA yang belum pernah ditandai `kompleksitas`
+  (field kosong/undefined) TIDAK akan pernah muncul di sesi siswa manapun
+  sejak Fase 6 ini (tidak cocok ke tingkat apa pun) — hanya tetap terlihat
+  lewat mode guru "Semua tingkat". Perlu dicek `bank-soal.html`/`admin.html`
+  apakah ada soal lama yang perlu ditandai kompleksitasnya secara manual.
+
 ### Direncanakan
 - Isi konten asli `cp-tp-atp.html` (CP/TP/ATP resmi per mapel) dan `jadwal.html`
   (jadwal mingguan resmi) — kerangkanya sudah ada sejak v0.9.0, tinggal menunggu
