@@ -274,6 +274,32 @@ LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
   `badge-prompts-rank-kelas-v.md` (dibagikan ke pemilik proyek, BUKAN
   bagian dari repo situs — cuma referensi kerja).
 
+### Ditambahkan — EXP dari Modul (menutup gap lama, belum dirilis)
+- **Menutup celah yang sudah lama diketahui**: sejak Fase 3 EXP, sumber EXP cuma Materi Ajar
+  + Uji Kemampuan — progres Modul sendiri belum pernah terkirim ke server sama sekali
+  (tercatat eksplisit di kode sebagai "MENYUSUL"). Sekarang siswa yang menuntaskan Modul juga
+  dapat EXP, sama seperti Materi Ajar.
+- **"Selesai" = mencapai HALAMAN TERAKHIR modul**, BUKAN sekadar membuka halaman (beda dari
+  Materi Ajar yang cukup "dibuka" — materi cuma 1 halaman singkat, modul 6-8 halaman + kuis
+  tertanam di tiap bagian, jadi butuh bukti keterlibatan lebih dari sekadar membuka).
+  Terdeteksi lewat monkey-patch `window.goToPage` bawaan tiap modul (dipanggil dengan
+  `n === TOTAL_PAGES - 1`) di file baru `pages/modul/assets/modul-progress-tracker.js`,
+  dipasang di SEMUA 41 file `modul.html`.
+- **EXP per modul: 25** (direkomendasikan Claude, bisa diubah lewat 1 konstanta
+  `EXP_PER_MODUL_` di `Code.gs`) — lebih besar dari materi (10) untuk merefleksikan modul
+  yang jauh lebih panjang/mendalam (setara kira-kira 2,5 materi atau lebih dari 1 sesi kuis
+  penuh dengan bonus lulus).
+- Server: sheet baru "Data Progres Modul" (self-healing, pola identik "Data Progres Materi"),
+  endpoint `doPost` baru `type: "progres_modul"` (upsert per Nama Siswa + Modul Slug, TANPA
+  gerbang guru — sama level keamanan dengan `progres_materi`), fungsi
+  `hitungJumlahModulDiselesaikan_()`. `doPostHitungGamifikasi_()` sekarang menjumlahkan EXP
+  dari 3 sumber: materi + modul + kuis.
+- `profil-siswa.html` menambah 1 kartu statistik baru "Modul Selesai" (field
+  `jumlahModulSelesai`, sama pola dengan "Materi Dibaca").
+- **Sama seperti Materi/Uji Kemampuan**: dihitung ulang PENUH dari sumber (sheet "Data
+  Progres Modul") setiap `hitung_gamifikasi` dipanggil, BUKAN counter yang di-increment —
+  aman dipanggil berkali-kali tanpa menggandakan EXP.
+
 ### Diubah — Panel Admin: rapikan tab Uji Kemampuan, hapus tab Materi Ajar (belum dirilis)
 - **Tab "Uji Kemampuan" dirombak jadi berorientasi CARI & EDIT**, bukan tambah
   massal (penambahan massal sudah dan tetap lewat tab Impor Massal, terpisah

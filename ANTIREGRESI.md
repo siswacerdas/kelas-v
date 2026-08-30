@@ -1862,3 +1862,67 @@ eksplisit oleh pemilik proyek):**
       modul, tersimpan & tampil balik ke `modul.html` siswa)
 - [ ] Akses langsung `admin.html#materi` (hash lama) → TIDAK error, cukup
       tidak melakukan apa-apa (hash tidak dikenali lagi, tetap di tab default)
+
+---
+
+### 38. EXP dari Modul (`pages/modul/assets/modul-progress-tracker.js`,
+`apps-script/Code.gs`, `pages/profil-siswa.html`, belum dirilis — belum
+pernah diuji live)
+
+Menutup gap yang sejak Fase 3 EXP tercatat eksplisit sebagai "MENYUSUL" —
+progres Modul sekarang ikut menyumbang EXP, sama seperti Materi Ajar.
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- "Selesai" = MENCAPAI HALAMAN TERAKHIR modul (`goToPage` dipanggil dengan
+  `n === TOTAL_PAGES - 1`), BUKAN sekadar membuka halaman modul. Ini SENGAJA
+  beda dari Materi Ajar (yang cukup dibuka) — modul jauh lebih panjang (6-8
+  halaman + kuis tertanam per bagian), jadi sekadar membuka halaman pertama
+  tidak representatif sebagai bukti belajar.
+- Deteksi ini bergantung pada pola `STORAGE_KEY`/`TOTAL_PAGES`/`goToPage`
+  yang SUDAH DIVERIFIKASI KONSISTEN di SEMUA 41 file `modul.html` (per
+  Agustus 2026). **Kalau ada modul BARU dibuat dengan struktur/nama variabel
+  berbeda, `modul-progress-tracker.js` TIDAK AKAN mendeteksi modul itu**
+  (`init()` diam-diam berhenti kalau `window.goToPage`/`window.TOTAL_PAGES`
+  tidak ditemukan) — WAJIB pasang manual
+  `<script src="../../assets/modul-progress-tracker.js"></script>` di modul
+  baru DAN pertahankan pola nama variabel yang sama, atau modul itu tidak
+  akan pernah tercatat selesai walau siswa benar-benar menuntaskannya.
+- EXP per modul = **25** (konstanta `EXP_PER_MODUL_` di `Code.gs`),
+  direkomendasikan Claude atas dasar 1 modul ≈ 2,5 materi dari segi
+  cakupan/usaha — BUKAN angka yang diminta eksplisit oleh Arif, jadi kalau
+  setelah dipakai beberapa waktu terasa kurang/lebih pas, ini yang pertama
+  ditinjau ulang.
+- Sama seperti Materi Ajar & Uji Kemampuan: `jumlahModulSelesai` DIHITUNG
+  ULANG PENUH dari sheet "Data Progres Modul" setiap `hitung_gamifikasi`
+  dipanggil, BUKAN counter yang di-increment.
+
+**Uji manual yang WAJIB dilakukan sebelum fitur ini dianggap aman:**
+- [ ] Login sebagai siswa → buka salah satu modul (mis.
+      `pages/modul/matematika/kesetaraan-tp1/modul.html`) → klik "Lanjut →"
+      cuma sampai halaman ke-3 dari 6 (BELUM sampai akhir) → cek sheet "Data
+      Progres Modul" di Google Sheets → TIDAK ada baris baru untuk siswa ini
+- [ ] Lanjutkan klik "Lanjut →" sampai halaman TERAKHIR (halaman "Selesai")
+      → cek sheet "Data Progres Modul" → ADA 1 baris baru (Nama Siswa, Modul
+      Slug cocok, Status "Selesai")
+- [ ] Buka `profil-siswa.html` siswa yang sama → kartu "Modul Selesai"
+      menampilkan angka 1, dan Total EXP naik 25 dibanding sebelum modul
+      diselesaikan
+- [ ] Selesaikan modul YANG SAMA sekali lagi (buka ulang, tunggu progres
+      lokal dipulihkan otomatis ke halaman terakhir) → sheet "Data Progres
+      Modul" TETAP 1 baris (bukan 2 — upsert, bukan log), Total EXP TIDAK
+      bertambah lagi (masih 25 untuk modul itu, bukan 50)
+- [ ] Selesaikan modul KEDUA yang berbeda → kartu "Modul Selesai" jadi 2,
+      Total EXP dari modul jadi 50 (2×25)
+- [ ] Login sebagai GURU, buka modul manapun sampai halaman terakhir → sheet
+      "Data Progres Modul" TIDAK bertambah baris (guru sengaja tidak
+      dilacak, sama seperti materi-progress-tracker.js)
+- [ ] Uji di ≥3 modul dari mapel BERBEDA (mis. Matematika, Bahasa Indonesia,
+      Pendidikan Pancasila — ketiganya punya `TOTAL_PAGES` berbeda: 6, 8, 6)
+      untuk pastikan deteksi halaman terakhir bekerja generik, tidak
+      hardcode ke satu nilai `TOTAL_PAGES` tertentu
+- [ ] Buka DevTools Console saat mengerjakan modul → pastikan TIDAK ada
+      error JavaScript yang muncul akibat `modul-progress-tracker.js`
+      (terutama di modul yang polanya sedikit berbeda kalau ada)
+- [ ] Redeploy Apps Script SELESAI dilakukan sebelum uji ini (endpoint
+      `progres_modul` baru, sama seperti seluruh sistem gamifikasi lain,
+      lihat §35 poin 2 kalau lupa langkah manual ini)
