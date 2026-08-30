@@ -458,5 +458,67 @@ window.MODUL_INDEX = [
     ringkasan: "Menyelesaikan masalah sehari-hari (harga per satuan, kecepatan, resep) dengan rasio satuan.",
     status: "selesai",
     file: "matematika/rasio-satuan-tp4/modul.html"
+  },
+
+  // ============ MATEMATIKA - PENGUKURAN (4 entri BARU) ============
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "📐",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp1",
+    tema: "Pengukuran · Keliling-Luas Potong-Susun",
+    urutan: 13,
+    judul: "Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga",
+    ringkasan: "Menurunkan rumus luas lewat aktivitas potong-susun fisik, bukan dihafal.",
+    status: "selesai",
+    file: "matematika/keliling-luas-tp1/modul.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "🔷",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp2",
+    tema: "Pengukuran · Segi Banyak & Bangun Gabungan",
+    urutan: 14,
+    judul: "Keliling dan Luas Segi Banyak Beraturan & Bangun Gabungan",
+    ringkasan: "Segi lima-enam beraturan dan bangun gabungan, memecah menjadi bangun dasar.",
+    status: "selesai",
+    file: "matematika/segi-banyak-tp2/modul.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "⏱️",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp3",
+    tema: "Pengukuran · Durasi Waktu",
+    urutan: 15,
+    judul: "Durasi Waktu (Konversi & Lintas Tengah Malam)",
+    ringkasan: "Konversi jam-menit-detik dan durasi yang melintasi tengah malam.",
+    status: "selesai",
+    file: "matematika/durasi-waktu-tp3/modul.html"
+  },
+  {
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "📏",
+    elemen: "Pengukuran",
+    tp: "pengukuran-tp4",
+    tema: "Pengukuran · Sudut",
+    urutan: 16,
+    judul: "Mengukur Besar Sudut dengan Protractor",
+    ringkasan: "Klasifikasi jenis sudut dan pengukuran teknis dengan protractor fisik.",
+    status: "selesai",
+    file: "matematika/sudut-protractor-tp4/modul.html"
   }
 ];
