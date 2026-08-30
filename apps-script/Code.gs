@@ -462,6 +462,22 @@ const PROGRES_MATERI_HEADERS = [
                     // lebih rinci di masa depan (mis. "Sedang Dibaca"), belum dipakai sekarang
 ];
 
+const PROGRES_MODUL_SHEET_NAME = "Data Progres Modul";
+// "Modul Slug" = bagian setelah titik dua di STORAGE_KEY tiap file modul.html
+// (format "modulProgress:<slug>", mis. "modulProgress:mtk-kesetaraan-tp1" -> slug
+// "mtk-kesetaraan-tp1") — sudah diverifikasi konsisten di SEMUA 41 file modul.html
+// (lihat ANTIREGRESI.md §38), sama pola dgn Materi Slug di atas: satu sumber
+// kebenaran yang sudah ada, bukan skema ID baru.
+const PROGRES_MODUL_HEADERS = [
+  "Timestamp",     // kapan TERAKHIR mencapai halaman terakhir (upsert, sama pola dgn Progres
+                    // Materi — 1 siswa+1 modul = 1 baris saja, bukan log tiap kunjungan)
+  "Nama Siswa",
+  "Modul Slug",
+  "Status",         // saat ini SELALU "Selesai" (beda dari materi yang "Dibaca" — modul baru
+                    // tercatat kalau BENAR mencapai halaman terakhir, lihat
+                    // modul-progress-tracker.js, bukan sekadar dibuka)
+];
+
 const HEADERS = [
   "Timestamp",
   "No",
@@ -736,6 +752,26 @@ function getProgresMateriSheet_() {
   if (missing.length > 0) {
     sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
     Logger.log('Kolom baru ditambahkan otomatis ke "Data Progres Materi": ' + missing.join(", "));
+  }
+  return sheet;
+}
+
+/** Sama pola persis dengan getProgresMateriSheet_() di atas, sheet terpisah untuk progres
+ * Modul (lihat §38 ANTIREGRESI.md — dibuat belakangan, EXP dari Modul sebelumnya MENYUSUL). */
+function getProgresModulSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(PROGRES_MODUL_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(PROGRES_MODUL_SHEET_NAME);
+    sheet.getRange(1, 1, 1, PROGRES_MODUL_HEADERS.length).setValues([PROGRES_MODUL_HEADERS]);
+    sheet.setFrozenRows(1);
+    return sheet;
+  }
+  const currentHeaders = readHeaderRow_(sheet);
+  const missing = PROGRES_MODUL_HEADERS.filter((h) => currentHeaders.indexOf(h) === -1);
+  if (missing.length > 0) {
+    sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
+    Logger.log('Kolom baru ditambahkan otomatis ke "Data Progres Modul": ' + missing.join(", "));
   }
   return sheet;
 }
@@ -1160,6 +1196,12 @@ function doPost(e) {
       // cukup validasi field wajar, tidak perlu identitas login penuh (materi pages memakai
       // auth-guard.js, bukan role check, jadi tidak ada idToken bermakna untuk digerbang di sini).
       return doPostProgresMateri_(body);
+    }
+
+    if (body.type === "progres_modul") {
+      // Sama level keamanan & alasan persis dengan "progres_materi" di atas — pengirimnya
+      // SISWA sendiri lewat modul-progress-tracker.js saat mencapai halaman terakhir modul.
+      return doPostProgresModul_(body);
     }
 
     if (body.type === "hitung_gamifikasi") {
@@ -1619,6 +1661,31 @@ function doPostProgresMateri_(body) {
   return jsonOut_({ status: "ok" });
 }
 
+/** Sama pola persis dengan doPostProgresMateri_() di atas — bedanya cuma dipanggil dari
+ * modul-progress-tracker.js saat siswa MENCAPAI HALAMAN TERAKHIR modul (bukan sekadar
+ * membuka), lihat komentar panjang di modul-progress-tracker.js untuk alasannya. */
+function doPostProgresModul_(body) {
+  const nama = String(body["Nama Siswa"] || "").trim();
+  const slug = String(body["Modul Slug"] || "").trim();
+  if (!nama || !slug) return jsonOut_({ status: "ok" }); // diam-diam abaikan, sama alasan dgn doPostProgresMateri_
+
+  const sheet = getProgresModulSheet_();
+  const existingRow = findRowByTwoColumns_(sheet, "Nama Siswa", nama, "Modul Slug", slug);
+  const record = {
+    "Timestamp": new Date(),
+    "Nama Siswa": nama,
+    "Modul Slug": slug,
+    "Status": "Selesai",
+  };
+  const rowValues = buildRowByHeaders_(sheet, record);
+  if (existingRow !== -1) {
+    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
+  } else {
+    sheet.appendRow(rowValues);
+  }
+  return jsonOut_({ status: "ok" });
+}
+
 /* ═══════════════════ SISTEM LEVEL UJI KEMAMPUAN (belum dirilis) ═══════════════════
  * Lihat CHANGELOG.md untuk latar belakang lengkap. Ringkasan keputusan desain:
  * - Level GLOBAL (gabungan seluruh mapel/TP), BUKAN per-TP — 1 siswa = 1 level.
@@ -1646,12 +1713,16 @@ const LEVEL_AMBANG_LULUS_UMUM_ = 70; // ambang "lulus" generik untuk statistik t
 
 /* ── EXP (poin pengalaman) — lihat CHANGELOG.md untuk latar belakang keputusan.
  * Sengaja dari AKTIVITAS YANG SELESAI, BUKAN durasi/waktu dihabiskan — durasi gampang
- * dicurangi (buka tab lalu ditinggal), sedangkan "materi ini sudah dibaca" atau "kuis ini
- * sudah dikerjakan" adalah sinyal yang jauh lebih sulit dipalsukan tanpa benar-benar
- * berinteraksi. Sumber EXP sekarang: Materi Ajar (10/materi) + Uji Kemampuan (5/kuis
- * dikerjakan + 10 bonus kalau lulus ≥70%). EXP dari Modul MENYUSUL — progres Modul sendiri
- * belum pernah terkirim ke server sama sekali (lihat CHANGELOG.md bagian Direncanakan). */
+ * dicurangi (buka tab lalu ditinggal), sedangkan "materi ini sudah dibaca", "modul ini sudah
+ * dituntaskan", atau "kuis ini sudah dikerjakan" adalah sinyal yang jauh lebih sulit
+ * dipalsukan tanpa benar-benar berinteraksi. Sumber EXP: Materi Ajar (10/materi dibaca),
+ * Modul (25/modul dituntaskan sampai halaman terakhir — nilai lebih besar dari materi karena
+ * 1 modul mencakup beberapa bagian + beberapa kuis tertanam, jauh lebih banyak usaha
+ * dibanding 1 materi; angka ini direkomendasikan Claude, mudah diubah di sini kalau dirasa
+ * kurang/lebih pas setelah dipakai beberapa waktu), dan Uji Kemampuan (5/kuis dikerjakan +
+ * 10 bonus kalau lulus ≥70%). */
 const EXP_PER_MATERI_ = 10;
+const EXP_PER_MODUL_ = 25;
 const EXP_PER_KUIS_DIKERJAKAN_ = 5;
 const EXP_BONUS_KUIS_LULUS_ = 10;
 
@@ -1661,6 +1732,15 @@ const EXP_BONUS_KUIS_LULUS_ = 10;
 function hitungJumlahMateriDibaca_(nama) {
   const target = String(nama).trim().toLowerCase();
   const rows = sheetToObjects_(getProgresMateriSheet_());
+  return rows.filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target).length;
+}
+
+/** Sama pola persis dengan hitungJumlahMateriDibaca_() di atas, dari sheet "Data Progres
+ * Modul" (1 baris = 1 modul yang sudah mencapai halaman terakhir, upsert per Nama Siswa +
+ * Modul Slug, lihat doPostProgresModul_). */
+function hitungJumlahModulDiselesaikan_(nama) {
+  const target = String(nama).trim().toLowerCase();
+  const rows = sheetToObjects_(getProgresModulSheet_());
   return rows.filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target).length;
 }
 
@@ -1853,11 +1933,12 @@ function doPostHitungGamifikasi_(body) {
     const riwayat = ambilRiwayatHasilLatihan_(nama);
     const levelData = hitungLevelDariRiwayat_(riwayat);
     const jumlahMateriDibaca = hitungJumlahMateriDibaca_(nama);
-    const exp = jumlahMateriDibaca * EXP_PER_MATERI_ + levelData.expDariKuis;
+    const jumlahModulSelesai = hitungJumlahModulDiselesaikan_(nama);
+    const exp = jumlahMateriDibaca * EXP_PER_MATERI_ + jumlahModulSelesai * EXP_PER_MODUL_ + levelData.expDariKuis;
     const level99Data = hitungLevel99DanRank_(exp);
     const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
       (levelData.mahirTercapai && !sebelum.mahirTercapai);
-    const dataLengkap = Object.assign({}, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, exp: exp }, level99Data);
+    const dataLengkap = Object.assign({}, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, jumlahModulSelesai: jumlahModulSelesai, exp: exp }, level99Data);
     setLevelSiswaFirestore_(nama, dataLengkap);
     return jsonOut_(Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap));
   } catch (err) {
