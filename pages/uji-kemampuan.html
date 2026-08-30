@@ -118,6 +118,20 @@
     <div id="view-pilih-mapel">
       <h1>💪 Uji Kemampuan</h1>
       <p class="subtitle">Pilih mata pelajaran, lalu pilih Tujuan Pembelajaran (TP) yang ingin kamu uji.</p>
+      <!-- Mode guru saja — siswa TIDAK PERNAH melihat ini, soal siswa selalu
+           otomatis mengikuti Level Kemampuan-nya sendiri (lihat ANTIREGRESI §36). -->
+      <div id="guru-filter-kompleksitas" class="hidden" style="margin-bottom:1.25rem; padding:0.75rem 1rem; background:#fff; border:1px solid var(--border); border-radius:var(--r);">
+        <label for="guru-kompleksitas-select" style="font-size:12px; color:var(--ink-3); display:block; margin-bottom:5px;">
+          Mode guru — tampilkan soal tingkat:
+        </label>
+        <select id="guru-kompleksitas-select" onchange="window.__setGuruKompleksitas(this.value)"
+          style="font-family:inherit; font-size:13px; padding:6px 10px; border-radius:8px; border:1px solid var(--paper-3);">
+          <option value="semua" selected>Semua tingkat (seperti sebelumnya)</option>
+          <option value="dasar">Dasar</option>
+          <option value="menengah">Menengah</option>
+          <option value="menantang">Menantang</option>
+        </select>
+      </div>
       <div id="mapel-grid" class="mapel-grid"><div class="empty-state">Memuat…</div></div>
     </div>
 
@@ -125,7 +139,8 @@
     <div id="view-pilih-tp" class="hidden">
       <span class="back-link" onclick="kembaliKePilihMapel()">← Pilih mapel lain</span>
       <h1 id="tp-mapel-judul">Mapel</h1>
-      <p class="subtitle">Pilih TP yang ingin kamu uji. Soal diambil acak dari pool setiap TP.</p>
+      <p class="subtitle" id="tp-subtitle">Pilih TP yang ingin kamu uji.</p>
+      <div id="level-info-banner" class="level-status hidden" style="margin-bottom:1rem;"></div>
       <div id="tp-grid"><div class="empty-state">Memuat…</div></div>
     </div>
 
@@ -154,12 +169,32 @@
   const db = getFirestore(app);
 
   const N_SOAL_PER_SESI = 15; // jumlah soal yang diambil acak dari pool tiap sesi tes
+  const MIN_SOAL_BISA_DIUJI = 5; // ambang minimal supaya sesi tidak kosong
+
+  // ═══ SOAL BERBASIS LEVEL KEMAMPUAN (lihat ANTIREGRESI §36) ═══
+  // "kompleksitas" bank_soal SENGAJA tetap 3 nilai (dasar/menengah/menantang),
+  // TIDAK ditambah jadi 4 — atas keputusan eksplisit Arif. "menantang" dipakai
+  // BERSAMA untuk Level Kemampuan Atas MAUPUN Mahir.
+  const LEVEL_TO_KOMPLEKSITAS = { dasar: "dasar", menengah: "menengah", atas: "menantang", mahir: "menantang" };
+  const KOMPLEKSITAS_LABEL = { dasar: "Dasar", menengah: "Menengah", menantang: "Menantang" };
+  // Rantai fallback: kalau kompleksitas target belum cukup soalnya di suatu TP,
+  // turun otomatis ke kompleksitas di bawahnya (keputusan eksplisit Arif).
+  const RANTAI_FALLBACK = {
+    dasar: ["dasar"],
+    menengah: ["menengah", "dasar"],
+    menantang: ["menantang", "menengah", "dasar"],
+  };
 
   let currentUser = null;
+  let currentRole = "";   // "siswa" | "guru" (dari role-guard.js)
   let namaSiswa = "";
   let currentMapel = "";
   let currentTp = null;   // entri dari TP_KKO_INDEX
   let currentSoal = [];   // soal aktif dalam sesi kuis berjalan
+  let currentSoalKompleksitas = null; // kompleksitas soal sesi berjalan (null = mode guru "semua")
+  let levelSiswaInfo = null;   // { level, targetKompleksitas, chain } — hanya diisi utk role siswa
+  let guruKompleksitasPilihan = "semua"; // dipakai role guru saja
+  let poolSoalTpCache = {};   // tp.tp -> { kompleksitas, soal[] } | null — dari renderTpGrid, dipakai ulang di mulaiKuis supaya tidak query 2x
 
   function escHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -193,6 +228,7 @@
     document.getElementById("view-pilih-mapel").classList.add("hidden");
     document.getElementById("view-pilih-tp").classList.remove("hidden");
     document.getElementById("tp-mapel-judul").textContent = mapel;
+    renderLevelBanner();
     await renderTpGrid(mapel);
   };
 
@@ -201,34 +237,138 @@
     document.getElementById("view-pilih-mapel").classList.remove("hidden");
   };
 
+  // ═══ LEVEL KEMAMPUAN → KOMPLEKSITAS SOAL (baca dari level_siswa, sudah
+  // publik dibaca siapa saja yang login — lihat firestore.rules) ═══
+  async function ambilLevelSiswa(nama) {
+    try {
+      const snap = await getDoc(doc(db, "level_siswa", nama));
+      const level = snap.exists() && snap.data().level ? snap.data().level : "dasar";
+      const target = LEVEL_TO_KOMPLEKSITAS[level] || "dasar";
+      return { level, targetKompleksitas: target, chain: RANTAI_FALLBACK[target] };
+    } catch (e) {
+      // Gagal baca level (mis. offline sesaat) -> JANGAN blokir siswa, anggap
+      // Dasar dulu supaya tetap bisa berlatih; ini bukan keputusan level asli,
+      // cuma fallback aman di klien.
+      return { level: "dasar", targetKompleksitas: "dasar", chain: RANTAI_FALLBACK.dasar };
+    }
+  }
+
+  window.__setGuruKompleksitas = function (val) {
+    guruKompleksitasPilihan = val;
+    poolSoalTpCache = {};
+    if (currentMapel && !document.getElementById("view-pilih-tp").classList.contains("hidden")) {
+      renderLevelBanner();
+      renderTpGrid(currentMapel);
+    }
+  };
+
+  function renderLevelBanner() {
+    const banner = document.getElementById("level-info-banner");
+    const subtitle = document.getElementById("tp-subtitle");
+    if (currentRole === "siswa" && levelSiswaInfo) {
+      const labelLevel = LEVEL_LABEL[levelSiswaInfo.level] || levelSiswaInfo.level;
+      banner.classList.remove("hidden");
+      banner.innerHTML = `Level kemampuanmu saat ini: <strong>${labelLevel}</strong> — soal yang diujikan otomatis menyesuaikan levelmu.`;
+      subtitle.textContent = "Pilih TP yang ingin kamu uji.";
+    } else if (currentRole === "guru" && guruKompleksitasPilihan !== "semua") {
+      banner.classList.remove("hidden");
+      banner.innerHTML = `Mode guru — menampilkan soal tingkat <strong>${KOMPLEKSITAS_LABEL[guruKompleksitasPilihan]}</strong> untuk semua TP (bukan berdasarkan level, murni untuk pratinjau/cek pool soal).`;
+      subtitle.textContent = "Pilih TP yang ingin dicoba.";
+    } else {
+      banner.classList.add("hidden");
+      banner.innerHTML = "";
+      subtitle.textContent = "Pilih TP yang ingin kamu uji. Soal diambil acak dari pool setiap TP.";
+    }
+  }
+
   // ═══════════════════════ TAHAP 2: PILIH TP ═══════════════════════
   async function renderTpGrid(mapel) {
     const wrap = document.getElementById("tp-grid");
-    wrap.innerHTML = '<div class="loading-inline">Memuat jumlah soal tiap TP…</div>';
+    wrap.innerHTML = '<div class="loading-inline">Memuat soal tiap TP…</div>';
     const tpList = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel);
     if (tpList.length === 0) {
       wrap.innerHTML = '<div class="empty-state">Belum ada TP terdaftar untuk mapel ini.</div>';
       return;
     }
-    // Hitung jumlah soal per TP pakai aggregation query (ringan — tidak mengunduh isi dokumen)
-    const counts = await Promise.all(tpList.map(async (tp) => {
+
+    // ── Mode "Semua tingkat" (guru saja, JALUR LAMA — TIDAK diubah) ──
+    // Cuma hitung pakai aggregation query murah (tidak mengunduh isi
+    // dokumen), tanpa peduli kompleksitas sama sekali. Ini persis perilaku
+    // sebelum fitur soal-berbasis-level ada, sengaja dipertahankan supaya
+    // guru tetap bisa lihat & coba SELURUH pool soal apa adanya (termasuk
+    // soal lama yang belum ditandai `kompleksitas`).
+    if (currentRole === "guru" && guruKompleksitasPilihan === "semua") {
+      const counts = await Promise.all(tpList.map(async (tp) => {
+        try {
+          const snap = await getCountFromServer(query(collection(db, "bank_soal"), where("tp", "==", tp.tp)));
+          return snap.data().count;
+        } catch (e) { return 0; }
+      }));
+      wrap.innerHTML = "";
+      tpList.forEach((tp, i) => {
+        const jumlah = counts[i];
+        const bisaDiuji = jumlah >= MIN_SOAL_BISA_DIUJI;
+        const card = document.createElement("div");
+        card.className = "tp-card" + (bisaDiuji ? "" : " disabled");
+        card.innerHTML = `
+          <div class="tp-elemen">${escHtml(tp.elemen)}</div>
+          <div class="tp-judul">${escHtml(tp.judul)}</div>
+          <div class="tp-count ${jumlah < 200 ? "kurang" : ""}">${jumlah} soal tersedia${jumlah < 200 ? " (pool belum lengkap)" : ""}</div>`;
+        if (bisaDiuji) card.onclick = () => mulaiKuisSemua(tp, jumlah);
+        wrap.appendChild(card);
+      });
+      return;
+    }
+
+    // ── Mode BERBASIS LEVEL (siswa selalu; guru kalau pilih tingkat manual) ──
+    // Unduh SELURUH pool tiap TP (1 query equality tunggal, sama seperti versi
+    // lama — TIDAK butuh composite index), lalu kelompokkan per `kompleksitas`
+    // DI KLIEN. Hasilnya di-cache di poolSoalTpCache supaya mulaiKuis() tidak
+    // perlu query lagi. Lihat ANTIREGRESI §36 utk alasan lengkap pola ini.
+    const chain = currentRole === "guru" ? [guruKompleksitasPilihan] : levelSiswaInfo.chain;
+    const targetKompleksitas = chain[0];
+
+    const hasilPerTp = await Promise.all(tpList.map(async (tp) => {
       try {
-        const snap = await getCountFromServer(query(collection(db, "bank_soal"), where("tp", "==", tp.tp)));
-        return snap.data().count;
-      } catch (e) { return 0; }
+        const snap = await getDocs(query(collection(db, "bank_soal"), where("tp", "==", tp.tp)));
+        const semua = [];
+        snap.forEach((d) => semua.push({ id: d.id, ...d.data() }));
+        for (const k of chain) {
+          const subset = semua.filter((s) => s.kompleksitas === k);
+          if (subset.length >= MIN_SOAL_BISA_DIUJI) return { totalPool: semua.length, resolved: { kompleksitas: k, soal: subset } };
+        }
+        return { totalPool: semua.length, resolved: null };
+      } catch (e) {
+        return { totalPool: 0, resolved: null };
+      }
     }));
 
     wrap.innerHTML = "";
     tpList.forEach((tp, i) => {
-      const jumlah = counts[i];
-      const bisaDiuji = jumlah >= 5; // ambang minimal supaya sesi tidak kosong; idealnya jumlah >= N_SOAL_PER_SESI
+      const { totalPool, resolved } = hasilPerTp[i];
+      poolSoalTpCache[tp.tp] = resolved;
       const card = document.createElement("div");
-      card.className = "tp-card" + (bisaDiuji ? "" : " disabled");
+      if (!resolved) {
+        card.className = "tp-card disabled";
+        card.innerHTML = `
+          <div class="tp-elemen">${escHtml(tp.elemen)}</div>
+          <div class="tp-judul">${escHtml(tp.judul)}</div>
+          <div class="tp-count kurang">Soal untuk TP ini belum cukup tersedia (${totalPool} soal total, belum ada yang cocok tingkat manapun di levelmu).</div>`;
+        wrap.appendChild(card);
+        return;
+      }
+      const isFallback = resolved.kompleksitas !== targetKompleksitas;
+      const labelResolved = KOMPLEKSITAS_LABEL[resolved.kompleksitas] || resolved.kompleksitas;
+      const catatanFallback = isFallback
+        ? `<div class="tp-count kurang">⚠ Soal tingkat ${KOMPLEKSITAS_LABEL[targetKompleksitas]} untuk TP ini belum tersedia — kamu akan mendapat soal tingkat ${labelResolved} dulu.</div>`
+        : "";
+      card.className = "tp-card";
       card.innerHTML = `
         <div class="tp-elemen">${escHtml(tp.elemen)}</div>
         <div class="tp-judul">${escHtml(tp.judul)}</div>
-        <div class="tp-count ${jumlah < 200 ? "kurang" : ""}">${jumlah} soal tersedia${jumlah < 200 ? " (pool belum lengkap)" : ""}</div>`;
-      if (bisaDiuji) card.onclick = () => mulaiKuis(tp, jumlah);
+        <div class="tp-count">${resolved.soal.length} soal tingkat ${labelResolved} tersedia</div>
+        ${catatanFallback}`;
+      card.onclick = () => mulaiKuis(tp, resolved.kompleksitas, isFallback);
       wrap.appendChild(card);
     });
   }
@@ -254,8 +394,13 @@
     return shuffle(hasil);
   }
 
-  window.mulaiKuis = async function (tpEntry, jumlahTersedia) {
+  // JALUR LAMA — khusus mode guru "Semua tingkat", TIDAK difilter kompleksitas
+  // sama sekali. Dipertahankan persis seperti sebelum fitur soal-berbasis-level
+  // ada (termasuk trik randKey dua-query), supaya guru tetap bisa uji-coba
+  // seluruh pool apa adanya (termasuk soal lama tanpa tag `kompleksitas`).
+  window.mulaiKuisSemua = async function (tpEntry, jumlahTersedia) {
     currentTp = tpEntry;
+    currentSoalKompleksitas = null;
     document.getElementById("view-pilih-tp").classList.add("hidden");
     document.getElementById("view-kuis").classList.remove("hidden");
     document.getElementById("kuis-judul").textContent = tpEntry.judul;
@@ -267,6 +412,33 @@
 
     currentSoal = await ambilSoalAcak(tpEntry.tp, jumlahTersedia);
     document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal — jawab semua lalu klik \"Periksa Jawaban\".";
+    document.getElementById("btn-submit-kuis").disabled = false;
+    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
+    renderDaftarSoal();
+  };
+
+  // JALUR BARU — soal berbasis Level Kemampuan. Pool sudah diunduh & di-cache
+  // sewaktu renderTpGrid(), jadi di sini tinggal acak & potong N_SOAL_PER_SESI
+  // dari cache (tidak ada query Firestore tambahan).
+  window.mulaiKuis = async function (tpEntry, kompleksitas, isFallback) {
+    currentTp = tpEntry;
+    currentSoalKompleksitas = kompleksitas;
+    document.getElementById("view-pilih-tp").classList.add("hidden");
+    document.getElementById("view-kuis").classList.remove("hidden");
+    document.getElementById("kuis-judul").textContent = tpEntry.judul;
+    document.getElementById("hasil-skor").classList.add("hidden");
+    document.getElementById("daftar-soal").innerHTML = "";
+
+    const entriCache = poolSoalTpCache[tpEntry.tp];
+    const pool = (entriCache && entriCache.soal) || [];
+    const n = Math.min(N_SOAL_PER_SESI, pool.length);
+    currentSoal = shuffle(pool).slice(0, n);
+
+    const labelK = KOMPLEKSITAS_LABEL[kompleksitas] || kompleksitas;
+    const catatan = isFallback
+      ? ` tingkat ${labelK} (soal tingkat levelmu belum tersedia untuk TP ini, jadi diturunkan sementara)`
+      : ` tingkat ${labelK}`;
+    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal" + catatan + " — jawab semua lalu klik \"Periksa Jawaban\".";
     document.getElementById("btn-submit-kuis").disabled = false;
     document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
     renderDaftarSoal();
@@ -460,6 +632,7 @@
         jumlahSoal: total,
         skor: skorPersen,
         detailJawaban: detail,
+        kompleksitasSoal: currentSoalKompleksitas, // "dasar"/"menengah"/"menantang", null = mode guru "semua" — lihat ANTIREGRESI §36
         timestamp: serverTimestamp(),
       });
       document.getElementById("skor-tersimpan-label").textContent = "✓ Hasil tersimpan — bisa dilihat lagi lewat Riwayat Latihan.";
@@ -520,6 +693,12 @@
     // akun anonim tidak punya dokumen users/{uid} ATAU email sama sekali, jadi
     // fallback lama "currentUser.email" akan jadi undefined untuk siswa.
     namaSiswa = e.detail.nama;
+    currentRole = e.detail.role;
+    if (currentRole === "siswa") {
+      levelSiswaInfo = await ambilLevelSiswa(namaSiswa);
+    } else if (currentRole === "guru") {
+      document.getElementById("guru-filter-kompleksitas").classList.remove("hidden");
+    }
     renderMapelGrid();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
