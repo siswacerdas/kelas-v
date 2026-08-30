@@ -1794,3 +1794,71 @@ eksplisit oleh pemilik proyek):**
   lewat mode guru "Semua tingkat". Kalau ada laporan "TP ini dulu bisa diuji
   siswa, sekarang kartunya disabled", cek dulu apakah soal-soal di TP itu
   sudah punya tag `kompleksitas` di `bank-soal.html`.
+
+---
+
+### 37. Panel Admin: filter tab Uji Kemampuan & penghapusan tab Materi Ajar
+(`pages/admin.html`, belum dirilis — belum pernah diuji live)
+
+**Bagian A — Filter & tampilan Cari/Edit Soal:**
+- `allSoalItems` adalah variabel global hasil 1x `getDocs(collection(db,
+  "bank_soal"))` di `loadSoal()`. Filter (`renderSoalList()`) MURNI menyaring
+  array ini di klien — TIDAK ada query Firestore baru tiap dropdown filter
+  berubah. Kalau ada penambahan/penghapusan soal, `loadSoal()` dipanggil ulang
+  (lihat `simpanSoal()`, `hapusSoal()`) supaya `allSoalItems` ikut ter-refresh.
+- Filter yang dipakai `renderSoalList()` (`#filter-soal-mapel`,
+  `#filter-soal-tp`, `#filter-soal-kompleksitas`, `#filter-soal-jenis`,
+  `#filter-soal-cari`) adalah SET DROPDOWN TERPISAH dari dropdown form tambah/
+  edit (`#soal-mapel`, `#soal-tp`, dst.) — JANGAN disatukan, keduanya punya
+  fungsi berbeda (menyaring tampilan vs. mengisi data soal yang disimpan).
+- Ringkasan progres pool (`#soal-pool-summary`, target 200 soal/TP) SELALU
+  dihitung dari `allSoalItems` LENGKAP, tidak terpengaruh filter — supaya guru
+  tetap lihat gambaran keseluruhan pool walau sedang menyaring satu TP/tingkat.
+- Form "Tambah Soal Baru" (`#soal-form-wrapper`) disembunyikan (`class="hidden"`)
+  secara default. `editSoal()` membuka wrapper ini (`.classList.remove
+  ("hidden")`) sebelum scroll — `batalEditSoal()` menutupnya lagi. Tombol
+  toggle manual `#toggle-form-soal-btn` (`toggleFormSoal()`) label teksnya
+  harus konsisten dgn state (➕ Tambah Soal Manual ↔ ▲ Sembunyikan Form).
+
+**Uji manual yang WAJIB dilakukan:**
+- [ ] Buka tab Uji Kemampuan → form tambah soal TERTUTUP default, daftar soal
+      (dengan filter di atasnya) langsung terlihat
+- [ ] Pilih Mapel di filter → dropdown TP filter otomatis terisi cuma TP mapel
+      itu, daftar soal ikut menyempit ke mapel itu saja
+- [ ] Pilih TP tertentu + Kompleksitas "Menengah" → hanya soal TP itu dengan
+      kompleksitas menengah yang tampil, label "Menampilkan X dari Y soal"
+      akurat
+- [ ] Ketik teks di kotak pencarian (mis. sebagian kalimat soal) → daftar
+      menyempit ke soal yang pertanyaannya mengandung teks itu (tidak case
+      sensitive)
+- [ ] Klik "↺ Reset Filter" → semua dropdown & kotak pencarian kembali ke
+      default, daftar kembali menampilkan semua soal
+- [ ] Klik "Edit" pada salah satu soal → form OTOMATIS terbuka (tidak perlu
+      klik tombol toggle dulu), ter-scroll ke form, terisi data soal yang benar
+- [ ] Setelah edit selesai & klik "Batal Edit" (atau berhasil "Update Soal") →
+      form kembali tertutup otomatis, tombol toggle kembali ke label
+      "➕ Tambah Soal Manual"
+- [ ] Klik manual "➕ Tambah Soal Manual" tanpa mengedit apa pun → form terbuka
+      kosong (mode tambah baru), toggle jadi "▲ Sembunyikan Form"
+- [ ] Impor massal 200 soal contoh (`soal-aljabar-tp1-simbol-sama-dengan-200.json`)
+      lewat tab Impor Massal → kembali ke tab Uji Kemampuan → filter Mapel
+      Matematika + TP aljabar-tp1 → 200 soal (45 dasar + 155 menengah) semua
+      kelihatan & bisa diedit satu per satu
+- [ ] Soal LAMA yang belum ditandai `kompleksitas` (kalau ada) → badge
+      kompleksitasnya menampilkan "⚠ belum ditandai", bukan "-" atau kosong
+
+**Bagian B — Penghapusan tab Materi Ajar:**
+- Koleksi Firestore `materi` (ditulis tab ini) dikonfirmasi TIDAK dibaca
+  halaman manapun lain di repo (`grep -rn "collection(db, \"materi\""`)
+  sebelum dihapus — materi ajar asli yang dibaca siswa 100% statis lewat
+  `materi-index.js`, sistem berbeda total. **Ini keputusan final Arif**,
+  bukan asumsi sepihak Claude.
+- Tab "Modul" (mirip secara struktur/kegunaan) **SENGAJA DIPERTAHANKAN** —
+  `modul.html` benar-benar membaca koleksi Firestore `modul` yang dikelola
+  tab ini, JADI JANGAN dihapus juga tanpa konfirmasi eksplisit terpisah kalau
+  ada permintaan serupa di masa depan.
+- [ ] Buka panel admin → tab "📖 Materi Ajar" TIDAK ADA lagi di daftar tab
+- [ ] Tab "📚 Modul" masih ada & masih berfungsi normal (tambah/edit/hapus
+      modul, tersimpan & tampil balik ke `modul.html` siswa)
+- [ ] Akses langsung `admin.html#materi` (hash lama) → TIDAK error, cukup
+      tidak melakukan apa-apa (hash tidak dikenali lagi, tetap di tab default)

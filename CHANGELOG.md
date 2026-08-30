@@ -274,6 +274,35 @@ LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
   `badge-prompts-rank-kelas-v.md` (dibagikan ke pemilik proyek, BUKAN
   bagian dari repo situs — cuma referensi kerja).
 
+### Diubah — Panel Admin: rapikan tab Uji Kemampuan, hapus tab Materi Ajar (belum dirilis)
+- **Tab "Uji Kemampuan" dirombak jadi berorientasi CARI & EDIT**, bukan tambah
+  massal (penambahan massal sudah dan tetap lewat tab Impor Massal, terpisah
+  sejak awal). Ditambahkan filter: Mata Pelajaran → TP (dependen), Kompleksitas
+  (dasar/menengah/menantang), Jenis Soal, dan pencarian teks pertanyaan — semua
+  disaring DI KLIEN dari 1x fetch (`allSoalItems`), tanpa query Firestore
+  tambahan tiap filter berubah.
+- Sebelumnya soal SUDAH dikelompokkan per Mapel→TP (`loadSoal()`), tapi cuma
+  jadi header visual di tengah daftar panjang tanpa cara menyaring — dengan
+  pool 200 soal/TP, halaman jadi sangat panjang untuk diedit. Sekarang bisa
+  langsung difilter ke satu TP + satu kompleksitas.
+- Badge kompleksitas di tiap item sekarang menandai jelas `⚠ belum ditandai`
+  untuk soal lama yang field `kompleksitas`-nya kosong (relevan sejak Fase 6
+  Level Kemampuan — soal begini tidak akan pernah muncul ke siswa).
+- **Form "Tambah Soal Baru" disembunyikan default** di balik tombol
+  "➕ Tambah Soal Manual" (collapsed), karena penggunaan nyatanya sudah hampir
+  murni untuk EDIT (klik "Edit" pada daftar otomatis membuka & scroll ke form).
+  Form ini tidak dihapus — form ini yang dipakai `editSoal()`/`simpanSoal()`
+  untuk memperbaiki soal satu per satu.
+- **Tab "Materi Ajar" DIHAPUS SELURUHNYA** (markup, CSS trigger, & semua fungsi
+  JS: `simpanMateri`, `editMateri`, `batalEditMateri`, `hapusMateri`,
+  `loadMateri`) — terbukti kode mati sejak awal: koleksi Firestore `materi`
+  yang ditulis form ini TIDAK PERNAH dibaca halaman manapun. Materi ajar yang
+  sungguhan dibaca siswa adalah sistem terpisah total (HTML statis +
+  `materi-index.js`, lihat `pages/materi/`), dikelola manual lewat repo.
+- **Tab "Modul" DIPERTAHANKAN** (beda dari Materi Ajar) — `modul.html` yang
+  dilihat siswa BENAR membaca dari koleksi Firestore `modul` yang dikelola tab
+  ini, jadi tab ini bukan kode mati.
+
 ### Ditambahkan — Sistem Level Uji Kemampuan, Fase 6: soal disesuaikan otomatis dengan level (belum dirilis)
 - **Menutup celah lama**: sejak Fase 1, Level Kemampuan (dasar/menengah/atas/
   mahir) sudah dihitung dari riwayat, tapi `uji-kemampuan.html` selalu mengambil
