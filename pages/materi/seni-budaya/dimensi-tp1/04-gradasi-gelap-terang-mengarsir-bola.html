@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gradasi Gelap-Terang (Shading): Mengarsir Bola · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .langkah-list { margin: 1rem 0; }
+  .langkah-item { display: flex; gap: 0.8rem; padding: 0.75rem 0; border-bottom: 1px dashed var(--border); }
+  .langkah-item:last-child { border-bottom: none; }
+  .langkah-no { flex: 0 0 auto; width: 2rem; height: 2rem; border-radius: 50%; background: var(--m-color); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Playfair Display', serif; }
+  .langkah-text b { display: block; margin-bottom: 0.2rem; color: var(--ink); }
+  .langkah-text p { margin: 0; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+</style>
+</head>
+<body class="ma-root ma-mapel-seni-budaya">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Seni Budaya
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🔦</span>
+      <div class="ma-cover-eyebrow">Seni Rupa · Menghidupkan Dimensi (Sketsa, Perspektif, dan Gelap-Terang) · Materi 4 dari 6</div>
+      <div class="ma-cover-title">Gradasi Gelap-Terang (Shading): Mengarsir Bola</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔎 Sebelum Kita Mulai</span>
+        Kalau kamu punya senter HP, arahkan cahayanya ke telapak tanganmu dari arah samping. Sebutkan bagian mana dari tanganmu yang paling terang, bagian mana yang teduh/gelap, dan di mana bayangan tanganmu jatuh pada dinding atau meja!
+      </div>
+
+      <p><strong>Gelap-Terang</strong> atau <strong>Shading</strong> adalah unsur seni rupa yang memberikan ilusi volume (ketebalan) dan berat pada sebuah objek. Ketika cahaya mengenai suatu benda, permukaan yang menghadap cahaya akan terlihat terang (disebut <em>high light</em>), sementara permukaan yang membelakangi cahaya akan teduh gelap (disebut <em>core shadow</em>), dan benda tersebut akan menghasilkan bayangan jatuh (disebut <em>cast shadow</em>) pada lantai di sekitarnya.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Materi ini dikerjakan di kertas gambar</span>
+        Siapkan pensil dan kertas gambarmu sebelum lanjut ke panduan berikut.
+      </div>
+
+      <h3>Panduan Scaffolding Progresif Mengarsir Bola</h3>
+      <div class="langkah-list">
+        <div class="langkah-item">
+          <div class="langkah-no">1</div>
+          <div class="langkah-text"><b>Bentuk &amp; Arah Cahaya</b><p>Gambarkan sebuah lingkaran polos tipis, lalu tentukan asal datangnya cahaya dengan simbol panah (misalnya dari kanan atas).</p></div>
+        </div>
+        <div class="langkah-item">
+          <div class="langkah-no">2</div>
+          <div class="langkah-text"><b>Arsir Tipis Teduh</b><p>Sapu secara tipis dan merata arsiran pensil pada setengah bagian lingkaran yang membelakangi arah datangnya cahaya.</p></div>
+        </div>
+        <div class="langkah-item">
+          <div class="langkah-no">3</div>
+          <div class="langkah-text"><b>Perhalus Gradasi</b><p>Perhalus arsiran dengan menambah kerapatan hingga terbentuk gradasi halus dari gelap pekat (<em>core shadow</em>) ke terang (<em>high light</em>).</p></div>
+        </div>
+        <div class="langkah-item">
+          <div class="langkah-no">4</div>
+          <div class="langkah-text"><b>Bayangan Jatuh</b><p>Tambahkan bayangan jatuh di lantai pada sisi berlawanan dengan cahaya (<em>cast shadow</em>), dan rapikan hasil arsiran.</p></div>
+        </div>
+      </div>
+
+      <div class="contoh-box">
+        <strong>Tiga area penting yang perlu diingat:</strong> <em>high light</em> (area paling terang, paling dekat sumber cahaya), <em>core shadow</em> (area paling gelap, membelakangi cahaya, ADA DI PERMUKAAN BENDA itu sendiri), dan <em>cast shadow</em> (bayangan yang jatuh di LANTAI/permukaan lain akibat benda menghalangi cahaya).
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Ingat percobaan senter ke telapak tangan tadi? Bagian tanganmu yang langsung disorot senter itulah "high light". Bagian tangan yang membelakangi senter (misalnya punggung tangan saat telapak disorot) itulah "core shadow" — masih bagian dari tanganmu sendiri, hanya saja tidak kena cahaya. Sedangkan bayangan hitam yang jatuh di dinding/meja, yang bentuknya menyerupai siluet tanganmu, itulah "cast shadow" — ini bukan bagian dari tanganmu, melainkan area gelap di PERMUKAAN LAIN karena cahaya terhalang.</span></p>
+        <p>Kalau kamu bingung membedakan core shadow dan cast shadow: core shadow ADA DI BENDANYA, cast shadow ADA DI PERMUKAAN LAIN (lantai/dinding) di sekitar benda.</p>
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Cahaya matahari datang dari arah kanan atas mengenai sebuah bola. Di bagian manakah dari BOLA ITU SENDIRI yang seharusnya diarsir paling gelap?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Bagian kiri bawah bola (sisi yang membelakangi arah datangnya cahaya dari kanan atas). Bagian ini disebut <em>core shadow</em> — permukaan benda yang tidak terkena cahaya langsung akan selalu terlihat paling gelap, sementara sisi yang menghadap cahaya (kanan atas) akan menjadi bagian paling terang (<em>high light</em>).</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Doni menggambar bayangan jatuh (cast shadow) TEPAT DI BAWAH bola, padahal cahaya datang dari arah kanan atas. Apakah posisi bayangan yang digambar Doni sudah tepat? Jelaskan!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Belum tepat. Karena cahaya datang dari arah kanan atas, bayangan jatuh (cast shadow) seharusnya berada di sisi KIRI BAWAH bola (arah berlawanan dari sumber cahaya), bukan tepat di bawahnya. Posisi bayangan jatuh selalu mengikuti arah datangnya cahaya — semakin miring arah cahaya, semakin miring dan panjang pula bayangan yang terbentuk.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Praktikkan keempat langkah di atas di kertas gambarmu. Coba ulangi dengan menentukan arah cahaya yang berbeda-beda, dan amati bagaimana posisi area gelap dan bayangan jatuh ikut berubah.
+      </div>
+
+      <p>Kita sudah mempelajari ketiga rahasia seni rupa: sketsa geometris, perspektif, dan gelap-terang. Materi berikutnya akan mengajak kita berhenti sejenak dari menggambar, dan belajar mengapresiasi karya diri sendiri maupun teman sekelas.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

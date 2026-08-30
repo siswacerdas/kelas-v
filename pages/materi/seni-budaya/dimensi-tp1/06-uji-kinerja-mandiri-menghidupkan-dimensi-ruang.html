@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Uji Kinerja Mandiri: Menghidupkan Dimensi Ruang · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box { border: 1px solid #e6d3d3; border-left: 5px solid var(--m-color); border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #faf2f2; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: var(--m-color); margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--m-color); color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: var(--m-color); }
+  .opsi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin: 0.9rem 0; }
+  @media (max-width: 560px) { .opsi-grid { grid-template-columns: 1fr; } }
+  .opsi-card { border: 1.5px dashed var(--m-color); border-radius: var(--r-lg); padding: 0.9rem 1rem; background: var(--paper-2); }
+  .opsi-card .opsi-tag { display: inline-block; font-size: 11px; font-weight: 700; color: #fff; background: var(--m-color); border-radius: 999px; padding: 0.15em 0.7em; margin-bottom: 0.5rem; }
+  .opsi-card h4 { margin: 0 0 0.4rem; font-size: calc(var(--content-fs) - 1px); }
+  .opsi-card p { margin: 0.2em 0; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; color: var(--ink-2); }
+  .glosarium-list { margin: 0.8rem 0; }
+  .glos-item { padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+  .glos-item:last-child { border-bottom: none; }
+  .glos-item b { color: var(--m-color); font-family: 'Playfair Display', serif; }
+  .glos-item p { margin: 0.2em 0 0; font-size: calc(var(--content-fs) - 3px); color: var(--ink-2); }
+  .kktp-tabel { border-collapse: collapse; width: 100%; margin: 0.8rem 0 1.2rem; font-size: calc(var(--content-fs) - 3px); }
+  .kktp-tabel th, .kktp-tabel td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; vertical-align: top; }
+  .kktp-tabel th { background: var(--paper-2); font-weight: 700; color: var(--ink-2); }
+</style>
+</head>
+<body class="ma-root ma-mapel-seni-budaya">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › Seni Budaya
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌟</span>
+      <div class="ma-cover-eyebrow">Seni Rupa · Menghidupkan Dimensi (Sketsa, Perspektif, dan Gelap-Terang) · Materi 6 dari 6</div>
+      <div class="ma-cover-title">Uji Kinerja Mandiri: Menghidupkan Dimensi Ruang</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Selamat! Kalian telah melewati seluruh proses mengalami, mengapresiasi, dan berlatih teknis dasar menggambar dimensi. Materi terakhir ini mengajakmu menguji kemandirianmu secara utuh — menggabungkan ketiga rahasia seni rupa (sketsa geometris, perspektif, dan gelap-terang) sekaligus dalam satu gambar pemandangan.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Tugas dikerjakan di kertas gambar</span>
+        Kalian tidak perlu menggambar bentuk dari nol di atas kertas kosong. Guru akan membagikan sketsa garis luar (outline) polos yang tinggal kalian hidupkan dengan garis perspektif dan arsiran gelap-terang. Pilih salah satu dari dua opsi berikut sesuai arahan gurumu.
+      </div>
+
+      <div class="opsi-grid">
+        <div class="opsi-card">
+          <span class="opsi-tag">OPSI A</span>
+          <h4>Pemandangan Ruangan Kelas</h4>
+          <p>Sketsa memperlihatkan batas dinding, lantai berpetak, sebuah pintu, jendela samping, dan meja kosong polos. Tugasmu: hubungkan garis-garis lantai ubin dan tepi meja menuju satu Titik Hilang, lalu arsir gradasi gelap-terang pada dinding, lantai, dan meja.</p>
+        </div>
+        <div class="opsi-card">
+          <span class="opsi-tag">OPSI B</span>
+          <h4>Pemandangan Tepi Jalan dengan Pohon</h4>
+          <p>Sketsa memperlihatkan tepi jalan dengan satu pohon contoh di sisi kiri depan. Tugasmu: gambarkan minimal 3 pohon tambahan dengan ukuran mengecil mengikuti garis perspektif, lalu arsir gradasi gelap-terang pada batang dan daun setiap pohon.</p>
+        </div>
+      </div>
+
+      <h3>Instruksi Tugas Uji Kinerja</h3>
+      <div class="contoh-box">
+        <ol style="margin:0; padding-left:1.2em;">
+          <li>Amati gambar sketsa garis luar (outline) yang telah disediakan gurumu secara saksama.</li>
+          <li>Hubungkan garis-garis yang menjauh (tepi lantai/meja untuk Opsi A, atau tepi jalan/trotoar untuk Opsi B) menuju ke arah satu Titik Hilang (TH) di garis cakrawala, dengan menarik garis lurus bantu menggunakan pensil tipis.</li>
+          <li>Tentukan arah datangnya cahaya (misalnya cahaya bersumber dari jendela sebelah kiri, atau dari sebelah kiri atas).</li>
+          <li>Gambarkan arsir gradasi gelap-terang (<em>shading</em>) pada seluruh permukaan objek polos. Bagian yang membelakangi arah cahaya diarsir lebih tebal (gelap), sedangkan bagian yang menghadap cahaya diarsir tipis (terang).</li>
+          <li>Tambahkan satu bayangan jatuh (<em>cast shadow</em>) yang gelap, sesuai arah datangnya cahaya.</li>
+          <li>Selesaikan pengisian perspektif dan arsir gelap-terang langsung pada gambar tersebut dalam alokasi waktu 60 menit, dengan tenang, teliti, dan tertib.</li>
+        </ol>
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Anggap tugas ini seperti memasak resep gabungan dari tiga masakan yang sudah kamu kuasai satu-satu (sketsa, perspektif, gelap-terang). Kamu tidak perlu belajar teknik baru — kamu hanya perlu mengingat lagi urutannya: dulukan garis bantu perspektif ke Titik Hilang dulu (supaya "kerangka ruang"-nya benar), baru setelah itu tambahkan arsiran gelap-terang di atasnya.</span></p>
+        <p>Kalau bingung mulai dari mana, mulailah dengan menarik SEMUA garis bantu perspektif terlebih dahulu sampai selesai, baru pindah ke tahap mengarsir — jangan bolak-balik antara kedua tahap itu supaya arah cahaya dan garis perspektifmu tetap konsisten.</p>
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Pada Opsi B, cahaya ditentukan datang dari sebelah kiri atas. Sisi manakah dari batang setiap pohon yang seharusnya diarsir lebih gelap?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Sisi kanan batang pohon (sisi yang membelakangi arah datangnya cahaya dari kiri atas). Prinsipnya sama seperti mengarsir bola di materi sebelumnya: permukaan yang membelakangi cahaya selalu diarsir lebih gelap (core shadow), sementara sisi yang menghadap cahaya dibiarkan lebih terang.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Pada Opsi A, mengapa pohon atau meja yang letaknya lebih jauh dari posisi kita (mendekati Titik Hilang) perlu digambar dengan ukuran yang lebih kecil?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena ini prinsip dasar perspektif — semakin jauh sebuah benda dari mata kita, semakin kecil ia terlihat, sampai akhirnya seolah menyatu dengan Titik Hilang di kejauhan. Jika semua benda digambar dengan ukuran yang sama besar tanpa memperhatikan jaraknya ke Titik Hilang, ilusi kedalaman ruangnya akan hilang dan gambar akan terlihat datar.</div>
+        </div>
+      </div>
+
+      <h3>Renungkan dan Tumbuhkan Dirimu!</h3>
+      <p>Setelah menyelesaikan gambar dimensimu, coba renungkan: apakah kamu sudah memahami cara menerapkan garis perspektif dan arsir gelap-terang dengan lebih baik? Bisakah kamu menjelaskan mengapa sebuah objek yang jauh terlihat lebih kecil? Apakah kamu senang bisa mengapresiasi karya diri sendiri dan teman? Ingin terus berlatih agar gambar dimensimu semakin nyata?</p>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:1.6rem 0;" />
+
+      <h2 style="margin-top:0;">📖 Glosarium Istilah Seni Rupa</h2>
+      <div class="glosarium-list">
+        <div class="glos-item"><b>Sketsa</b><p>Goresan gambar kerangka awal yang tipis menggunakan pensil sebelum menggambar detail.</p></div>
+        <div class="glos-item"><b>Geometris Dasar</b><p>Bentuk dasar matematika (tabung, kubus, balok, bola) yang melandasi struktur setiap benda.</p></div>
+        <div class="glos-item"><b>Perspektif</b><p>Teknik menggambarkan ilusi kedalaman ruang tiga dimensi pada bidang datar sesuai pandangan mata.</p></div>
+        <div class="glos-item"><b>Titik Hilang (TH)</b><p>Satu titik pusat pertemuan seluruh garis ortogonal yang menjauh dari mata pada garis cakrawala.</p></div>
+        <div class="glos-item"><b>Garis Cakrawala</b><p>Garis lurus mendatar yang membatasi pandangan mata antara langit dan bumi.</p></div>
+        <div class="glos-item"><b>Gelap-Terang (Shading)</b><p>Unsur seni rupa berupa gradasi arsir tebal-tipis untuk memberikan kesan volume dan berat objek.</p></div>
+        <div class="glos-item"><b>High Light</b><p>Area permukaan benda yang paling dekat dan langsung terkena paparan cahaya, tampak terang.</p></div>
+        <div class="glos-item"><b>Core Shadow</b><p>Area permukaan benda yang membelakangi arah cahaya, tampak teduh gelap.</p></div>
+        <div class="glos-item"><b>Cast Shadow</b><p>Bayangan jatuh yang terbentuk di atas lantai/tanah akibat benda tersebut menghalangi cahaya.</p></div>
+      </div>
+
+      <h2>🎯 Kriteria Ketuntasan Tujuan Pembelajaran (KKTP)</h2>
+      <p style="font-size:calc(var(--content-fs) - 2px); color: var(--ink-2);">Siswa dapat memahami dan menerapkan konsep ilusi ruang tiga dimensi pada kertas dua dimensi melalui penggunaan kerangka sketsa geometris, teknik perspektif satu titik hilang, dan pengaturan bayangan gelap-terang (shading) secara fungsional berdasarkan arah cahaya.</p>
+      <table class="kktp-tabel">
+        <tr><th>Kriteria Penilaian</th><th>Deskriptor Perilaku Teramati</th><th>Predikat</th></tr>
+        <tr><td>Ketepatan Perspektif Garis Bantu</td><td>Siswa mampu mengidentifikasi letak Titik Hilang secara akurat, dibuktikan dengan tarikan seluruh garis bantu tepi jalan/lantai dan batang pohon/tepi meja searah memusat ke titik tersebut.</td><td>Level 1 s.d. 4</td></tr>
+        <tr><td>Teknik Gelap-Terang &amp; Shading</td><td>Menggambar gradasi arsir tebal-tipis secara konsisten berdasarkan arah datangnya cahaya matahari; memisahkan daerah terang, daerah teduh, dan bayangan jatuh secara logis.</td><td>Level 1 s.d. 4</td></tr>
+        <tr><td>Kemampuan Apresiasi (Merefleksikan)</td><td>Mampu menuliskan evaluasi diri yang jujur, menguraikan kelemahan dan kelebihan karya sendiri secara objektif menggunakan minimal 2 kosakata seni rupa.</td><td>Level 1 s.d. 4</td></tr>
+      </table>
+
+      <table class="kktp-tabel">
+        <tr><th>Interval Nilai</th><th>Predikat</th><th>Deskripsi Kompetensi</th></tr>
+        <tr><td>0–59</td><td>Belum Terlihat</td><td>Belum menunjukkan kemampuan dasar mengidentifikasi arah perspektif atau mengarsir gelap-terang pada gambar polos yang disediakan.</td></tr>
+        <tr><td>60–69</td><td>Mulai Terlihat</td><td>Mulai bisa mengarsir sebagian permukaan objek polos, namun arah gelap-terang belum logis dan tarikan garis perspektifnya masih perlu banyak bimbingan.</td></tr>
+        <tr><td>70–84</td><td>Berkembang Sesuai Harapan</td><td>Terampil menarik garis perspektif menuju satu Titik Hilang secara tepat, mengarsir gradasi tebal-tipis secara logis sesuai cahaya matahari, serta menuliskan evaluasi diri secara jujur.</td></tr>
+        <tr><td>85–100</td><td>Sangat Berkembang</td><td>Menunjukkan kepekaan spasial-artistik yang sangat tinggi, mampu menyusun arsir volume yang matang dan berdimensi kedalaman kuat, serta mengevaluasi karya diri secara kritis-reflektif.</td></tr>
+      </table>
+
+      <div class="contoh-box">
+        Kamu telah menyelesaikan seluruh unit "Menghidupkan Dimensi"! Terus berlatih mengamati cahaya dan ruang di sekitarmu — semakin sering diamati, semakin peka mata dan tanganmu dalam menggambarkannya. 🌟
+      </div>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
