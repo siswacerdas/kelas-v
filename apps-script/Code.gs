@@ -1230,6 +1230,14 @@ function doPost(e) {
       return doPostHitungGamifikasi_(body);
     }
 
+    if (body.type === "set_avatar") {
+      // SENGAJA TANPA gerbang guru — sama level keamanan dengan hitung_gamifikasi di atas:
+      // siswa cuma bisa menulis avatar milik NAMANYA SENDIRI (dikirim klien dari
+      // sessionStorage), dan avatarId divalidasi ketat lewat whitelist AVATAR_VALID_IDS_
+      // (lihat doPostSetAvatar_) — tidak bisa dipakai menyuntik nilai bebas ke Firestore.
+      return doPostSetAvatar_(body);
+    }
+
     if (body.type === "mpls_kognitif") {
       wajibKodeAkses_(body.kode);
       const sheet = getSheetKognitif_();
@@ -1916,6 +1924,54 @@ function setLevelSiswaFirestore_(nama, levelData) {
   if (r.code !== 200) throw new Error("Gagal menyimpan level siswa ke Firestore: " + r.text);
 }
 
+/** Baca SELURUH field level_siswa/{nama} APA ADANYA (beda dari ambilLevelSiswaSaatIni_
+ * yang cuma mengekstrak level/mahirTercapai) — dipakai kapan pun sebuah endpoint HANYA
+ * ingin mengubah SEBAGIAN field tapi harus tetap menulis lewat setLevelSiswaFirestore_
+ * (yang MENIMPA SELURUH dokumen tanpa updateMask, lihat komentar di atas). Tanpa baca-penuh
+ * ini dulu, field yang tidak disentuh endpoint yang sedang jalan akan HILANG begitu ditulis
+ * ulang. Dipakai oleh: doPostHitungGamifikasi_ (supaya `avatar` tidak hilang tiap kali level
+ * dihitung ulang) dan doPostSetAvatar_ (supaya level/rank/exp tidak hilang saat ganti avatar). */
+function ambilLevelSiswaLengkap_(nama) {
+  const r = firestoreFetch_("level_siswa/" + encodeURIComponent(nama), "get");
+  if (r.code !== 200) return {}; // belum pernah ada dokumen sama sekali -> aman, kembalikan kosong
+  return objFromFirestoreFields_(r.json.fields);
+}
+
+/** Avatar siswa (BARU, belum dirilis) — daftar ID yang SAH, dicocokkan ke gambar di klien
+ * (`profil-siswa.html`/`papan-peringkat.html`). SENGAJA whitelist tertutup (bukan terima ID
+ * bebas) supaya siswa yang mengulik DevTools tidak bisa menyuntik nilai avatar sembarangan
+ * ke Firestore. Kalau menambah avatar baru, WAJIB tambahkan ID-nya di sini DULU sebelum
+ * dipasang di klien, atau permintaan set_avatar untuk ID baru itu akan selalu ditolak. */
+const AVATAR_VALID_IDS_ = [
+  "rubah", "panda", "harimau", "burung-hantu", "kodok",
+  "singa", "koala", "unicorn", "kura-kura", "gurita",
+  "kucing", "anjing", "kelinci", "gajah", "pinguin", "rusa",
+];
+
+/** Dipanggil siswa dari panel pemilih avatar (profil-siswa.html) — fire-and-forget sederhana,
+ * TANPA gerbang guru, sama level keamanan dengan progres_materi/progres_modul (siswa hanya
+ * bisa menulis avatar MILIK NAMANYA SENDIRI berdasarkan sessionStorage, tidak ada mekanisme
+ * bagi siswa A untuk mengubah avatar siswa B kecuali tahu & mau memalsukan nama). Avatar
+ * disimpan di level_siswa (BUKAN koleksi siswa/{nisn} yang sengaja terkunci total dari klien)
+ * supaya bisa dibaca gratis lewat query yang sudah ada untuk Papan Peringkat & Profil, tidak
+ * perlu endpoint baca borongan baru. */
+function doPostSetAvatar_(body) {
+  const nama = String(body.nama || "").trim();
+  const avatarId = String(body.avatar || "").trim();
+  if (!nama) return jsonOut_({ status: "error", message: "Nama wajib diisi" });
+  if (AVATAR_VALID_IDS_.indexOf(avatarId) === -1) {
+    return jsonOut_({ status: "error", message: "Avatar tidak dikenali" });
+  }
+  try {
+    const existing = ambilLevelSiswaLengkap_(nama); // preservasi level/rank/exp yang sudah ada
+    const dataLengkap = Object.assign({}, existing, { avatar: avatarId });
+    setLevelSiswaFirestore_(nama, dataLengkap);
+    return jsonOut_({ status: "ok", avatar: avatarId });
+  } catch (err) {
+    return jsonOut_({ status: "error", message: String(err) });
+  }
+}
+
 /** Dipanggil klien SEGERA setelah: (a) 1 hasil kuis berhasil tersimpan
  * (uji-kemampuan.html), atau (b) 1 materi berhasil ditandai "Dibaca"
  * (materi-progress-tracker.js). Fire-and-forget dari sudut pandang siswa —
@@ -1942,6 +1998,7 @@ function doPostHitungGamifikasi_(body) {
   if (!nama) return jsonOut_({ status: "error", message: "Nama wajib diisi" });
   try {
     const sebelum = ambilLevelSiswaSaatIni_(nama);
+    const existingLengkap = ambilLevelSiswaLengkap_(nama); // supaya field `avatar` (kalau ada) tidak hilang tertimpa di bawah
     const riwayat = ambilRiwayatHasilLatihan_(nama);
     const levelData = hitungLevelDariRiwayat_(riwayat);
     const jumlahMateriDibaca = hitungJumlahMateriDibaca_(nama);
@@ -1950,7 +2007,11 @@ function doPostHitungGamifikasi_(body) {
     const level99Data = hitungLevel99DanRank_(exp);
     const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
       (levelData.mahirTercapai && !sebelum.mahirTercapai);
-    const dataLengkap = Object.assign({}, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, jumlahModulSelesai: jumlahModulSelesai, exp: exp }, level99Data);
+    // Urutan Object.assign PENTING: existingLengkap DULUAN (basis, termasuk `avatar` kalau
+    // ada), baru ditimpa field yang MEMANG dihitung ulang di panggilan ini — supaya field lain
+    // yang tidak disentuh (avatar) tetap terbawa, tapi field yang dihitung ulang selalu pakai
+    // nilai terbaru, bukan nilai basis yang mungkin sudah basi.
+    const dataLengkap = Object.assign({}, existingLengkap, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, jumlahModulSelesai: jumlahModulSelesai, exp: exp }, level99Data);
     setLevelSiswaFirestore_(nama, dataLengkap);
     return jsonOut_(Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap));
   } catch (err) {
