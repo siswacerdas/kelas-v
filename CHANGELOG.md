@@ -274,6 +274,62 @@ LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
   `badge-prompts-rank-kelas-v.md` (dibagikan ke pemilik proyek, BUKAN
   bagian dari repo situs — cuma referensi kerja).
 
+### Ditambahkan — Progres Modul & filter mapel di "Perkembangan Belajar Mandiri" (Pintu 2, belum dirilis)
+- **Progres Modul ditambahkan** (sebelumnya kotak "Segera Hadir" statis) — sekarang orang tua
+  bisa lihat modul mana yang sudah/belum diselesaikan anaknya, dari sheet "Data Progres
+  Modul" (§38). Ditampilkan sebagai daftar checklist (✅/⬜ per modul) di bawah subjudul
+  "🧩 Modul", terpisah dari subjudul "📖 Materi Ajar" — SENGAJA tidak digabung per-TP karena
+  skema kode TP di `materi-index.js` & `modul-index.js` untuk beberapa elemen (mis. Bahasa
+  Indonesia · Menulis) tidak cocok satu sama lain; join yang dipaksakan lebih rapuh daripada
+  2 subseksi terpisah.
+- `modul-index.js` menambah field baru `slug` di SEMUA 42 entri — dibutuhkan karena "Modul
+  Slug" yang tersimpan di server (dari `STORAGE_KEY` internal tiap file modul.html) TIDAK
+  bisa ditebak otomatis dari nama folder (ada pengecualian tidak beraturan, mis. folder
+  `kpk-fpb-tp4` tapi slugnya `mtk-kpkfpb-tp4`).
+- **Filter per mata pelajaran (chip)** ditambahkan — SEBELUMNYA seluruh mapel dirender
+  terbuka sekaligus (jadi sangat panjang begitu kontennya bertambah, terutama setelah
+  Pendidikan Pancasila didaftarkan lengkap di atas). Sekarang detail Materi+Modul HANYA
+  dirender untuk 1 mapel yang dipilih; mapel pertama yang ada datanya dipilih otomatis saat
+  laporan dibuka supaya tetap ada sesuatu yang langsung terlihat tanpa perlu tap dulu.
+- **"🕐 Aktivitas Terbaru" ditambahkan** — daftar 8 aktivitas (materi dibaca / modul
+  diselesaikan) TERBARU lintas SEMUA mapel sekaligus, dengan label waktu ramah ("Hari ini,
+  14:32" / "Kemarin, 09:10" / "3 hari lalu" / tanggal biasa kalau >6 hari) — SELALU
+  terlihat di atas, tidak terpengaruh filter mapel, supaya orang tua langsung tahu KAPAN
+  & APA yang terakhir dipelajari anaknya tanpa perlu memilih mapel dulu (kebutuhan yang
+  diminta eksplisit: memonitor belajar mandiri anak di rumah).
+- Server: endpoint `doGet` baru `?progresModul=1&nama=..&idToken=..` (sama pola & gerbang
+  akses `wajibAksesLaporan_` dengan `?progresMateri=1` yang sudah ada).
+- Ringkasan keseluruhan (kartu di atas) sekarang menampilkan 2 angka berdampingan: Materi
+  dibaca DAN Modul selesai, keduanya lintas semua mapel — tidak terpengaruh filter.
+
+### Diperbaiki — `modul-index.js` tidak sinkron dengan file modul.html nyata (belum dirilis)
+- **Temuan saat mengerjakan EXP Modul di atas**: 16 dari 41 file `modul.html` yang
+  SUDAH lengkap di repo TERNYATA TIDAK PERNAH terdaftar di `modul-index.js` —
+  akibatnya TIDAK PERNAH tampil di menu Modul siswa sama sekali (cuma bisa
+  diakses kalau tahu URL persis): SELURUH 10 modul **Pendidikan Pancasila**
+  (mapel ini sebelumnya 0 entri!) + 3 modul Matematika elemen Pengukuran
+  (`durasi-waktu-tp3`, `keliling-luas-tp1`, `segi-banyak-tp2`) + 3 modul Bahasa
+  Indonesia yang foldernya sudah diganti nama tapi entri lama masih menunjuk ke
+  nama folder lama (link mati): `menulis-imajinasi`, `menulis-pengalaman`,
+  `menulis-pengamatan`.
+- 1 entri lama (`menulis-gagasan-tp3`) DIHAPUS — menunjuk ke modul yang
+  ternyata tidak pernah dibuat sama sekali (TP-nya `TL-Gagasan` ada di
+  kurikulum, tapi file `modul.html`-nya tidak ada).
+- **`tp-kko-index.js` juga diperbaiki**: TP Bhinneka Tunggal Ika yang tadinya 1
+  kode (`BTI-C1`) dipecah jadi 3 kode baru (`BTI-C1a`/`BTI-C1b`/`BTI-C1c`) —
+  dikonfirmasi eksplisit oleh pemilik proyek bahwa TP ini memang sudah dipecah
+  jadi 3 sub-TP saat modulnya dibuat, tp-kko-index.js sebelumnya belum
+  disesuaikan. `cp-tp-atp.html` (halaman referensi kurikulum) ikut diperbarui
+  jadi 3 kartu TP terpisah supaya tidak sinkron lagi dengan tp-kko-index.js.
+- Semua 41 file `modul.html` sekarang terdaftar (0 hilang), 0 path rusak, 0
+  duplikat `tp`/`file` — diverifikasi lewat skrip pengecekan silang otomatis.
+- **Pelajaran untuk ke depan**: ini persis pola yang sama dengan insiden "38
+  file materi tidak terdaftar" yang pernah terjadi di `materi-index.js` —
+  index statis seperti ini rawan tidak sinkron kalau file ditambah langsung ke
+  repo tanpa mendaftarkannya. Perlu dibiasakan SELALU mendaftarkan modul/materi
+  baru ke index-nya di saat yang sama dengan menambah file-nya, bukan
+  belakangan.
+
 ### Ditambahkan — EXP dari Modul (menutup gap lama, belum dirilis)
 - **Menutup celah yang sudah lama diketahui**: sejak Fase 3 EXP, sumber EXP cuma Materi Ajar
   + Uji Kemampuan — progres Modul sendiri belum pernah terkirim ke server sama sekali

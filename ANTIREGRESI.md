@@ -1926,3 +1926,76 @@ progres Modul sekarang ikut menyumbang EXP, sama seperti Materi Ajar.
 - [ ] Redeploy Apps Script SELESAI dilakukan sebelum uji ini (endpoint
       `progres_modul` baru, sama seperti seluruh sistem gamifikasi lain,
       lihat §35 poin 2 kalau lupa langkah manual ini)
+
+---
+
+### 39. Perbaikan `modul-index.js` & Laporan "Perkembangan Belajar Mandiri"
+(`pages/modul/assets/modul-index.js`, `pages/materi/assets/tp-kko-index.js`,
+`pages/cp-tp-atp.html`, `pages/laporan-siswa/assets/belajar-mandiri.js`,
+`apps-script/Code.gs`, belum dirilis — belum pernah diuji live)
+
+**Bagian A — Perbaikan `modul-index.js` (temuan tidak terduga, Agustus 2026):**
+- 16 dari 41 file `modul.html` yang SUDAH lengkap di repo TERNYATA TIDAK
+  terdaftar (SELURUH 10 modul Pendidikan Pancasila + 3 modul Matematika
+  elemen Pengukuran + 3 modul Bahasa Indonesia yang foldernya sudah diganti
+  nama). Akibatnya modul-modul itu TIDAK PERNAH tampil di menu Modul siswa
+  (`pages/modul.html`) — bukan cuma masalah laporan orang tua, ini bug nyata
+  yang sudah lama tidak ketahuan.
+- 1 entri lama (`menulis-gagasan-tp3`) DIHAPUS — file-nya tidak pernah ada.
+- TP Bhinneka Tunggal Ika dipecah dari 1 kode (`BTI-C1`) jadi 3
+  (`BTI-C1a`/`b`/`c`) di `tp-kko-index.js` DAN `cp-tp-atp.html` — dikonfirmasi
+  eksplisit oleh pemilik proyek, BUKAN keputusan sepihak Claude.
+- **Field baru `slug` ditambahkan ke SEMUA 42 entri `modul-index.js`** — ini
+  adalah "Modul Slug" ASLI yang tersimpan di `STORAGE_KEY` tiap file
+  modul.html, BUKAN diturunkan otomatis dari `file`/nama folder (terbukti
+  TIDAK SELALU bisa ditebak mekanis — folder `kpk-fpb-tp4` punya slug
+  `mtk-kpkfpb-tp4`, tanda hubung antara "kpk" dan "fpb" hilang). **Kalau
+  menambah modul BARU ke `modul-index.js`, WAJIB isi field `slug` ini dengan
+  nilai PERSIS dari `STORAGE_KEY` di file modul.html-nya (bagian setelah titik
+  dua), JANGAN diasumsikan sama dengan nama folder.**
+- [ ] Buka `pages/modul.html` sebagai siswa → SEMUA mapel termasuk
+      **Pendidikan Pancasila** (sebelumnya tidak tampil sama sekali) muncul
+      dengan modul-modulnya
+- [ ] Klik salah satu modul Pendidikan Pancasila dari menu (bukan lewat URL
+      langsung) → terbuka dengan benar, bukan 404
+- [ ] Buka `pages/cp-tp-atp.html` → elemen Bhinneka Tunggal Ika menampilkan
+      3 kartu TP terpisah (BTI-C1a/b/c), bukan 1 kartu lama
+
+**Bagian B — Laporan "Perkembangan Belajar Mandiri" (Pintu 2):**
+- Keputusan desain kunci: Materi & Modul SENGAJA ditampilkan sebagai 2
+  subseksi terpisah dalam 1 mapel (bukan digabung per-TP) karena skema kode
+  `tp` di `materi-index.js` vs `modul-index.js` tidak selalu cocok untuk
+  elemen yang sama (mis. Bahasa Indonesia · Menulis: materi pakai
+  `TL-Pengalaman`, modul pakai `menulis-pengalaman-tp1`). Kalau nanti kedua
+  index ini diselaraskan skemanya, penggabungan per-TP bisa dipertimbangkan
+  lagi — TAPI JANGAN dipaksakan sebelum skemanya benar-benar konsisten.
+- "Aktivitas Terbaru" TIDAK bergantung pada kecocokan skema `tp` sama sekali
+  (makanya aman dibangun duluan) — cuma butuh lookup slug→judul dari
+  `MATERI_INDEX`/`MODUL_INDEX` masing-masing secara independen, lalu urutkan
+  berdasarkan `Timestamp` dari server.
+- Filter mapel (`mapelAktif`) di-reset ke mapel PERTAMA yang ada datanya
+  SETIAP KALI ganti siswa (di `loadReport()`, bukan `renderReport()`) — kalau
+  ini terbalik/hilang, orang tua yang ganti-ganti anak akan melihat filter
+  "nyangkut" dari anak sebelumnya yang mapelnya beda.
+- [ ] Buka Pintu 2 sebagai orang tua dengan anak yang sudah baca beberapa
+      materi DAN selesaikan beberapa modul → kartu ringkasan atas menampilkan
+      2 angka (Materi & Modul) yang benar, lintas semua mapel
+- [ ] "Aktivitas Terbaru" menampilkan gabungan materi+modul terbaru,
+      terurut dari yang PALING BARU, dengan label waktu yang masuk akal
+      (uji minimal 1 aktivitas hari ini + 1 aktivitas beberapa hari lalu)
+- [ ] Klik salah satu chip mapel → HANYA detail mapel itu yang muncul di
+      bawah (mapel lain tidak ikut ter-render, halaman jadi jauh lebih
+      pendek dibanding sebelum revisi ini)
+- [ ] Klik chip mapel yang SAMA sekali lagi → detail tertutup kembali (toggle
+      off), kembali ke pesan "Pilih salah satu mata pelajaran…"
+- [ ] Mapel yang CUMA punya Modul (belum ada Materi Ajar) atau CUMA punya
+      Materi (belum ada Modul) tetap muncul sebagai chip yang bisa dipilih,
+      subseksi yang kosong menampilkan pesan "Belum ada … untuk mapel ini"
+      (bukan kosong tanpa keterangan atau error)
+- [ ] Guru buka laporan ini untuk >1 siswa berturut-turut (ganti siswa lewat
+      "← Pilih siswa lain") → filter mapel ke-reset dengan benar tiap ganti
+      siswa, tidak nyangkut dari siswa sebelumnya
+- [ ] Materi/modul yang sudah dihapus dari index (kalau ada) tapi masih
+      punya baris lama di sheet progres → TIDAK bikin error di "Aktivitas
+      Terbaru" (dilewati diam-diam, lihat komentar `if (!info) return;` di
+      `belajar-mandiri.js`)
