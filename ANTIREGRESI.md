@@ -1999,3 +1999,69 @@ progres Modul sekarang ikut menyumbang EXP, sama seperti Materi Ajar.
       punya baris lama di sheet progres → TIDAK bikin error di "Aktivitas
       Terbaru" (dilewati diam-diam, lihat komentar `if (!info) return;` di
       `belajar-mandiri.js`)
+
+---
+
+### 40. Avatar Pilihan Siswa (`pages/profil-siswa.html`,
+`pages/papan-peringkat.html`, `apps-script/Code.gs`, belum dirilis — kode
+belum pernah diuji live, TAPI ke-16 gambar ilustrasi SUDAH ada di
+`assets/img/avatars/`)
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- Foto asli SENGAJA tidak dibangun — cuma avatar dari daftar tertutup 16
+  pilihan. Ini bukan keterbatasan teknis, ini keputusan produk soal
+  keamanan anak (lihat CHANGELOG.md). Kalau ada permintaan fitur upload
+  foto di masa depan, INGAT alasan ini dulu sebelum membangun.
+- Avatar disimpan di `level_siswa/{namaSiswa}`, BUKAN `siswa/{nisn}` —
+  dikonfirmasi eksplisit oleh pemilik proyek setelah saya jelaskan implikasi
+  keamanannya (koleksi `siswa` sengaja terkunci total dari klien).
+- **`AVATAR_LIST` di `profil-siswa.html`, `AVATAR_LIST` di
+  `papan-peringkat.html`, dan `AVATAR_VALID_IDS_` di `apps-script/Code.gs`
+  HARUS SAMA PERSIS (isi & urutan)** — ketiganya independen (tidak baca dari
+  satu sumber bersama), kalau salah satu diedit tanpa mengubah yang lain:
+  - `AVATAR_VALID_IDS_` (server) beda dari 2 lainnya → avatar baru muncul di
+    UI tapi selalu gagal disimpan (ditolak validasi server)
+  - Urutan `AVATAR_LIST` di `profil-siswa.html` beda dari
+    `papan-peringkat.html` → avatar yang sama tampil BEDA gambar di 2
+    halaman itu (nomor file diturunkan dari POSISI di array, bukan dari ID)
+- Nama file gambar WAJIB format `avatar-NN-<id>.webp` (NN = nomor urut
+  1-based dari posisi di `AVATAR_LIST`, 2 digit) di `assets/img/avatars/` —
+  lihat `avatar-prompts-siswa-kelas-v.md` (dibagikan terpisah ke Arif) untuk
+  daftar lengkap & prompt generatornya.
+- Setiap `<img>` avatar SELALU punya `onerror` fallback ke emoji — supaya
+  UI tetap berfungsi penuh SEBELUM gambar ilustrasi asli diupload (bukan
+  nunggu semua 10 gambar siap baru fitur ini bisa dites).
+- `setLevelSiswaFirestore_` MENIMPA SELURUH dokumen tiap dipanggil (tanpa
+  updateMask) — SIAPA PUN yang menambah field baru ke `level_siswa` di masa
+  depan WAJIB baca dulu lewat `ambilLevelSiswaLengkap_()` sebelum menimpa,
+  atau field itu akan hilang tiap kali endpoint lain (`hitung_gamifikasi`)
+  jalan. Pola ini sudah dipakai utk `avatar`, ikuti pola yang sama.
+
+**Uji manual yang WAJIB dilakukan:**
+- [ ] Upload minimal 1-2 gambar avatar asli (WebP) ke `assets/img/avatars/`
+      dengan nama PERSIS sesuai konvensi di atas, SISANYA biarkan belum ada
+      dulu → buka panel pemilih avatar → yang sudah ada gambar tampil
+      ilustrasinya, yang belum ada tampil emoji fallback (BUKAN ikon
+      gambar rusak/broken image)
+- [ ] Siswa BARU (belum pernah kerja apa pun, belum punya dokumen
+      `level_siswa`) buka Profil → header avatar tampil placeholder umum
+      (bukan error), panel pemilih tetap bisa dipakai
+- [ ] Pilih salah satu avatar → status "Menyimpan…" lalu "Tersimpan!" →
+      avatar besar di header ikut berubah seketika (tanpa reload halaman)
+- [ ] Reload halaman Profil → avatar yang dipilih tadi TETAP tampil (bukan
+      balik ke placeholder — datanya benar tersimpan di Firestore, bukan
+      cuma di memori klien)
+- [ ] SETELAH pilih avatar, kerjakan 1 kuis di Uji Kemampuan sampai selesai
+      (memicu `hitung_gamifikasi`) → BUKA ULANG Profil → avatar yang
+      dipilih sebelumnya MASIH ADA (tidak hilang tertimpa perhitungan
+      ulang level) — ini skenario BUG UTAMA yang harus dicegah
+      `ambilLevelSiswaLengkap_()` di atas
+- [ ] Buka Papan Peringkat → siswa yang sudah pilih avatar menampilkan
+      ilustrasinya kecil di samping nama; siswa yang belum pernah pilih
+      menampilkan emoji 🙂 fallback (bukan kosong/error)
+- [ ] Coba kirim `type: "set_avatar"` dengan `avatar` string sembarangan
+      (mis. lewat DevTools Network tab, ganti body request) → server
+      menolak dengan pesan "Avatar tidak dikenali", TIDAK tersimpan
+- [ ] Ganti avatar berkali-kali berturut-turut dengan cepat → tidak ada
+      race condition yang bikin avatar "nyangkut" di pilihan yang salah
+      (status akhir harus sesuai klik TERAKHIR)

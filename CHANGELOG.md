@@ -274,6 +274,41 @@ LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
   `badge-prompts-rank-kelas-v.md` (dibagikan ke pemilik proyek, BUKAN
   bagian dari repo situs — cuma referensi kerja).
 
+### Ditambahkan — Avatar pilihan siswa di Profil & Papan Peringkat (belum dirilis)
+- Siswa bisa memilih 1 dari **16 avatar** ilustrasi (rubah, panda, harimau, burung hantu,
+  kodok, singa, koala, unicorn, kura-kura, gurita, kucing, anjing, kelinci, gajah, pinguin,
+  rusa — 10 pertama + 6 tambahan) lewat panel baru di `profil-siswa.html` — dibuka lewat
+  ikon pensil di avatar besar pada header profil. Ke-16 gambar WebP SUDAH ada
+  (`assets/img/avatars/`, ~237KB total), dipotong & diverifikasi rapi dari lembar gambar
+  4×4 yang dibuat Arif via AI image generator (prompt: `avatar-prompts-siswa-kelas-v.md`).
+- **Foto asli TIDAK diimplementasikan** — direkomendasikan Claude untuk TIDAK dibangun sama
+  sekali (bukan cuma ditunda): platform ini dipakai anak SD dengan login anonim (tidak ada
+  identitas terverifikasi) dan arsitektur *fire-and-forget* tanpa antrean moderasi sama
+  sekali, jadi upload foto bebas berisiko dari sisi keamanan-anak & privasi tanpa
+  infrastruktur moderasi yang memang belum ada di proyek ini.
+- Avatar disimpan sebagai field baru `avatar` di `level_siswa/{namaSiswa}` (BUKAN di
+  koleksi `siswa/{nisn}` yang sengaja terkunci total dari klien) — supaya bisa dibaca
+  gratis lewat query yang sudah ada untuk Papan Peringkat & Profil, tidak perlu endpoint
+  baca borongan baru.
+- **Bug tersembunyi yang dicegah sebelum sempat terjadi**: `setLevelSiswaFirestore_` selalu
+  MENIMPA SELURUH dokumen (PATCH tanpa updateMask) — kalau tidak ditangani, field `avatar`
+  akan HILANG setiap kali `hitung_gamifikasi` jalan (tiap kali siswa baca materi/kerjakan
+  kuis/selesaikan modul). Diperbaiki dengan fungsi baru `ambilLevelSiswaLengkap_()` yang
+  membaca dokumen penuh dulu sebelum menimpa, dipakai baik oleh `doPostHitungGamifikasi_`
+  (supaya avatar tidak hilang) maupun `doPostSetAvatar_` (supaya level/rank/exp tidak
+  hilang saat ganti avatar).
+- Server: endpoint `doPost` baru `type: "set_avatar"` dengan whitelist tertutup 10 ID
+  avatar (`AVATAR_VALID_IDS_`) — menolak nilai avatar sembarangan (proteksi dari siswa
+  yang mengulik DevTools).
+- Papan Peringkat (`papan-peringkat.html`) menampilkan avatar kecil di tiap baris siswa
+  (fallback emoji 🙂 kalau siswa belum pernah memilih, atau kalau gambarnya gagal dimuat).
+- Ilustrasi avatar dibuat via AI image generator (sama gaya dengan 6 badge Rank yang sudah
+  ada) — prompt & instruksi lengkap dibagikan terpisah ke Arif
+  (`avatar-prompts-siswa-kelas-v.md`, BUKAN bagian repo). **Sudah selesai digenerate,
+  dipotong dari lembar 4×4, dan dipasang di `assets/img/avatars/`** — fallback emoji di
+  setiap `<img>` tetap dipertahankan sebagai jaring pengaman kalau ada nama file yang belum
+  konsisten, bukan berarti masih dibutuhkan untuk fitur ini berfungsi.
+
 ### Ditambahkan — Progres Modul & filter mapel di "Perkembangan Belajar Mandiri" (Pintu 2, belum dirilis)
 - **Progres Modul ditambahkan** (sebelumnya kotak "Segera Hadir" statis) — sekarang orang tua
   bisa lihat modul mana yang sudah/belum diselesaikan anaknya, dari sheet "Data Progres
