@@ -31,6 +31,7 @@ window.MODUL_INDEX = [
     judul: "Menyimak Informasi Penting dari Teks yang Dibacakan",
     ringkasan: "Menyimak dan mencatat informasi penting dari teks yang dibacakan atau didengar.",
     status: "selesai",
+    slug: "bi-menyimak-tp1",
     file: "bahasa-indonesia/menyimak-tp1/modul.html"
   },
   {
@@ -46,6 +47,7 @@ window.MODUL_INDEX = [
     judul: "Menyimak Hubungan Sebab-Akibat dan Urutan Peristiwa",
     ringkasan: "Menyimak dan memahami hubungan sebab-akibat serta urutan peristiwa dari teks aural.",
     status: "selesai",
+    slug: "bi-menyimak-tp2",
     file: "bahasa-indonesia/menyimak-tp2/modul.html"
   },
   {
@@ -61,6 +63,7 @@ window.MODUL_INDEX = [
     judul: "Menyampaikan Gagasan secara Lisan",
     ringkasan: "Menyampaikan gagasan dengan runtut dan percaya diri secara lisan.",
     status: "selesai",
+    slug: "bi-berbicara-tp1",
     file: "bahasa-indonesia/berbicara-tp1/modul.html"
   },
   {
@@ -76,6 +79,7 @@ window.MODUL_INDEX = [
     judul: "Presentasi Gagasan secara Terstruktur",
     ringkasan: "Mempresentasikan gagasan secara terstruktur di depan kelas.",
     status: "selesai",
+    slug: "bi-berbicara-tp2",
     file: "bahasa-indonesia/berbicara-tp2/modul.html"
   },
   {
@@ -91,6 +95,7 @@ window.MODUL_INDEX = [
     judul: "Membaca dan Memirsa Teks Multimoda",
     ringkasan: "Membaca dan memirsa teks multimoda (gabungan teks dan visual) secara kritis.",
     status: "selesai",
+    slug: "bi-membaca-memirsa-tp2",
     file: "bahasa-indonesia/membaca-memirsa-tp2/modul.html"
   },
   {
@@ -106,7 +111,8 @@ window.MODUL_INDEX = [
     judul: "Menulis Cerita Pengalaman Pribadi",
     ringkasan: "Menulis cerita pengalaman pribadi dengan struktur yang runtut.",
     status: "selesai",
-    file: "bahasa-indonesia/menulis-pengalaman-tp1/modul.html"
+    slug: "bi-menulis-pengalaman",
+    file: "bahasa-indonesia/menulis-pengalaman/modul.html"
   },
   {
     mapel: "Bahasa Indonesia",
@@ -121,23 +127,15 @@ window.MODUL_INDEX = [
     judul: "Menulis Laporan Hasil Pengamatan",
     ringkasan: "Menulis laporan hasil pengamatan secara sistematis dan objektif.",
     status: "selesai",
-    file: "bahasa-indonesia/menulis-pengamatan-tp2/modul.html"
+    slug: "bi-menulis-pengamatan",
+    file: "bahasa-indonesia/menulis-pengamatan/modul.html"
   },
-  {
-    mapel: "Bahasa Indonesia",
-    mapelSlug: "bahasa-indonesia",
-    mapelColor: "var(--m-bahasa-indonesia)",
-    mapelIcon: "📖",
-    icon: "💡",
-    elemen: "Menulis",
-    tp: "menulis-gagasan-tp3",
-    tema: "Menulis · Menulis Gagasan/Opini",
-    urutan: 3,
-    judul: "Menulis Teks Gagasan atau Opini",
-    ringkasan: "Menulis teks yang menyampaikan gagasan atau opini dengan alasan pendukung.",
-    status: "selesai",
-    file: "bahasa-indonesia/menulis-gagasan-tp3/modul.html"
-  },
+  // Entri lama "menulis-gagasan-tp3" DIHAPUS dari sini (Agustus 2026) — TP-nya
+  // (TL-Gagasan di tp-kko-index.js) ADA di kurikulum, tapi file modul.html-nya
+  // TIDAK PERNAH dibuat sama sekali (bukan rename, murni belum dibuat). Entri lama
+  // yang menunjuk ke file tak ada bikin link mati kalau tetap didaftarkan. Kalau
+  // modul ini dibuat nanti, daftarkan lagi ke sini (lihat pola entri lain di
+  // elemen Menulis sebagai contoh).
   {
     mapel: "Bahasa Indonesia",
     mapelSlug: "bahasa-indonesia",
@@ -151,7 +149,8 @@ window.MODUL_INDEX = [
     judul: "Menulis Cerita Imajinatif",
     ringkasan: "Menulis cerita imajinatif dengan unsur tokoh, latar, dan alur.",
     status: "selesai",
-    file: "bahasa-indonesia/menulis-imajinasi-tp4/modul.html"
+    slug: "bi-menulis-imajinasi",
+    file: "bahasa-indonesia/menulis-imajinasi/modul.html"
   },
 
   // ============ IPAS (8 entri - sudah ada di repo) ============
@@ -168,6 +167,7 @@ window.MODUL_INDEX = [
     judul: "Sifat dan Perambatan Bunyi serta Cahaya",
     ringkasan: "Memahami sifat-sifat bunyi dan cahaya serta cara perambatannya.",
     status: "selesai",
+    slug: "ipas-bunyi-cahaya-tp1",
     file: "ipas/bunyi-cahaya-tp1/modul.html"
   },
   {
@@ -183,6 +183,7 @@ window.MODUL_INDEX = [
     judul: "Komponen dan Interaksi dalam Ekosistem",
     ringkasan: "Memahami komponen biotik-abiotik dan interaksi dalam ekosistem.",
     status: "selesai",
+    slug: "ipas-ekosistem-tp1",
     file: "ipas/ekosistem-tp1/modul.html"
   },
   {
@@ -198,6 +199,7 @@ window.MODUL_INDEX = [
     judul: "Rantai Makanan dan Aliran Energi",
     ringkasan: "Memahami rantai makanan dan aliran energi dalam ekosistem.",
     status: "selesai",
+    slug: "ipas-ekosistem-tp2",
     file: "ipas/ekosistem-tp2/modul.html"
   },
   {
@@ -213,6 +215,7 @@ window.MODUL_INDEX = [
     judul: "Respons Tubuh terhadap Aktivitas Fisik",
     ringkasan: "Memahami bagaimana tubuh merespons aktivitas fisik.",
     status: "selesai",
+    slug: "ipas-organ-tubuh-tp1",
     file: "ipas/organ-tubuh-tp1/modul.html"
   },
   {
@@ -228,6 +231,7 @@ window.MODUL_INDEX = [
     judul: "Struktur dan Fungsi Dasar Organ",
     ringkasan: "Memahami struktur dan fungsi dasar organ tubuh manusia.",
     status: "selesai",
+    slug: "ipas-organ-tubuh-tp2",
     file: "ipas/organ-tubuh-tp2/modul.html"
   },
   {
@@ -243,6 +247,7 @@ window.MODUL_INDEX = [
     judul: "Kegiatan Ekonomi dalam Masyarakat",
     ringkasan: "Memahami kegiatan ekonomi produksi, distribusi, dan konsumsi.",
     status: "selesai",
+    slug: "ipas-ekonomi-tp1",
     file: "ipas/ekonomi-tp1/modul.html"
   },
   {
@@ -258,6 +263,7 @@ window.MODUL_INDEX = [
     judul: "Letak Geografis dan Kondisi Wilayah Indonesia",
     ringkasan: "Memahami letak geografis dan kondisi wilayah Indonesia.",
     status: "selesai",
+    slug: "ipas-geografis-tp1",
     file: "ipas/geografis-tp1/modul.html"
   },
   {
@@ -273,6 +279,7 @@ window.MODUL_INDEX = [
     judul: "Keragaman Sejarah dan Budaya Indonesia",
     ringkasan: "Memahami keragaman sejarah dan budaya di Indonesia.",
     status: "selesai",
+    slug: "ipas-budaya-tp1",
     file: "ipas/budaya-tp1/modul.html"
   },
 
@@ -290,6 +297,7 @@ window.MODUL_INDEX = [
     judul: "Nilai Tempat dan Perbandingan Bilangan Cacah",
     ringkasan: "Membaca, menulis, menentukan nilai tempat, membandingkan dan mengurutkan bilangan cacah sampai 100.000.",
     status: "selesai",
+    slug: "mtk-nilai-tempat-tp1",
     file: "matematika/nilai-tempat-tp1/modul.html"
   },
   {
@@ -305,6 +313,7 @@ window.MODUL_INDEX = [
     judul: "Pengurangan Bersusun dengan Peminjaman Berganda",
     ringkasan: "Melatih pengurangan bersusun dengan peminjaman berganda, termasuk kasus angka nol di tengah.",
     status: "selesai",
+    slug: "mtk-pengurangan-tp2",
     file: "matematika/pengurangan-tp2/modul.html"
   },
   {
@@ -320,6 +329,7 @@ window.MODUL_INDEX = [
     judul: "Pembagian Bersusun dengan Pembagi Multi-Digit",
     ringkasan: "Pembagian bersusun pembagi lebih dari satu digit dengan estimasi-coba-koreksi.",
     status: "selesai",
+    slug: "mtk-pembagian-tp3",
     file: "matematika/pembagian-tp3/modul.html"
   },
   {
@@ -335,6 +345,7 @@ window.MODUL_INDEX = [
     judul: "KPK dan FPB melalui Soal Cerita Kontekstual",
     ringkasan: "Menyelesaikan soal cerita KPK dan FPB, mengidentifikasi sendiri konsep yang relevan.",
     status: "selesai",
+    slug: "mtk-kpkfpb-tp4",
     file: "matematika/kpk-fpb-tp4/modul.html"
   },
   {
@@ -350,6 +361,7 @@ window.MODUL_INDEX = [
     judul: "Masalah Sehari-hari Berkaitan dengan Uang",
     ringkasan: "Transaksi, kembalian, dan perbandingan harga menggunakan operasi hitung bilangan cacah.",
     status: "selesai",
+    slug: "mtk-uang-tp5",
     file: "matematika/uang-tp5/modul.html"
   },
   {
@@ -365,6 +377,7 @@ window.MODUL_INDEX = [
     judul: "Pecahan: Representasi, Perbandingan, dan Operasi",
     ringkasan: "Pecahan sebagai bagian-dari-keseluruhan, perbandingan, dan operasi penjumlahan-pengurangan.",
     status: "selesai",
+    slug: "mtk-pecahan-tp6",
     file: "matematika/pecahan-tp6/modul.html"
   },
   {
@@ -380,6 +393,7 @@ window.MODUL_INDEX = [
     judul: "Perkalian, Pembagian Pecahan, dan Bentuk Pecahan",
     ringkasan: "Perkalian/pembagian pecahan dengan bilangan asli dan konversi bentuk pecahan.",
     status: "selesai",
+    slug: "mtk-pecahan-lanjutan-tp7",
     file: "matematika/pecahan-lanjutan-tp7/modul.html"
   },
 
@@ -397,6 +411,7 @@ window.MODUL_INDEX = [
     judul: 'Simbol "=" sebagai Relasi Kesetaraan',
     ringkasan: "Memahami '=' sebagai relasi kesetaraan dua sisi menggunakan alat peraga timbangan.",
     status: "selesai",
+    slug: "mtk-kesetaraan-tp1",
     file: "matematika/kesetaraan-tp1/modul.html"
   },
   {
@@ -412,6 +427,7 @@ window.MODUL_INDEX = [
     judul: "Menemukan Nilai Belum Diketahui — Notasi Simbolik",
     ringkasan: "Menemukan nilai belum diketahui, empat operasi, bilangan cacah sampai 1.000, termasuk soal cerita.",
     status: "selesai",
+    slug: "mtk-notasi-simbolik-tp2",
     file: "matematika/notasi-simbolik-tp2/modul.html"
   },
   {
@@ -427,6 +443,7 @@ window.MODUL_INDEX = [
     judul: "Menentukan Lokasi pada Sistem Berpetak (Koordinat Sederhana)",
     ringkasan: "TP resmi Elemen Geometri, disisipkan pengajarannya berdekatan dengan Aljabar TP2 karena konseptual aljabaris.",
     status: "selesai",
+    slug: "mtk-sistem-berpetak-tp3",
     file: "matematika/sistem-berpetak-tp3/modul.html"
   },
   {
@@ -442,6 +459,7 @@ window.MODUL_INDEX = [
     judul: "Pola Bilangan Membesar dan Mengecil",
     ringkasan: "Mengidentifikasi, meniru, mengembangkan pola bilangan multiplikatif (perkalian/pembagian).",
     status: "selesai",
+    slug: "mtk-pola-bilangan-tp3",
     file: "matematika/pola-bilangan-tp3/modul.html"
   },
   {
@@ -457,10 +475,15 @@ window.MODUL_INDEX = [
     judul: "Bernalar Proporsional dengan Rasio Satuan",
     ringkasan: "Menyelesaikan masalah sehari-hari (harga per satuan, kecepatan, resep) dengan rasio satuan.",
     status: "selesai",
+    slug: "mtk-rasio-satuan-tp4",
     file: "matematika/rasio-satuan-tp4/modul.html"
   },
 
-  // ============ MATEMATIKA - PENGUKURAN (4 entri BARU) ============
+  // ============ MATEMATIKA - PENGUKURAN (4 entri BARU, Agustus 2026) ============
+  // Ditemukan sudah ADA di repo (file modul.html lengkap) tapi TIDAK PERNAH
+  // terdaftar di sini — jadi TIDAK PERNAH tampil di menu Modul siswa sampai
+  // perbaikan ini. Kode "tp" mengikuti tp-kko-index.js elemen Pengukuran
+  // (pengukuran-tp1..tp4).
   {
     mapel: "Matematika",
     mapelSlug: "matematika",
@@ -469,11 +492,12 @@ window.MODUL_INDEX = [
     icon: "📐",
     elemen: "Pengukuran",
     tp: "pengukuran-tp1",
-    tema: "Pengukuran · Keliling-Luas Potong-Susun",
+    tema: "Pengukuran · Keliling dan Luas Bangun Datar",
     urutan: 13,
     judul: "Keliling dan Luas Persegi, Persegi Panjang, dan Segitiga",
-    ringkasan: "Menurunkan rumus luas lewat aktivitas potong-susun fisik, bukan dihafal.",
+    ringkasan: "Menentukan keliling dan luas persegi, persegi panjang, segitiga, serta gabungannya lewat potong-susun fisik.",
     status: "selesai",
+    slug: "mtk-keliling-luas-tp1",
     file: "matematika/keliling-luas-tp1/modul.html"
   },
   {
@@ -484,11 +508,12 @@ window.MODUL_INDEX = [
     icon: "🔷",
     elemen: "Pengukuran",
     tp: "pengukuran-tp2",
-    tema: "Pengukuran · Segi Banyak & Bangun Gabungan",
+    tema: "Pengukuran · Keliling dan Luas Segi Banyak",
     urutan: 14,
-    judul: "Keliling dan Luas Segi Banyak Beraturan & Bangun Gabungan",
-    ringkasan: "Segi lima-enam beraturan dan bangun gabungan, memecah menjadi bangun dasar.",
+    judul: "Keliling dan Luas Segi Banyak & Bangun Gabungan",
+    ringkasan: "Menentukan keliling dan luas segi banyak beraturan serta bangun gabungan.",
     status: "selesai",
+    slug: "mtk-segi-banyak-tp2",
     file: "matematika/segi-banyak-tp2/modul.html"
   },
   {
@@ -501,9 +526,10 @@ window.MODUL_INDEX = [
     tp: "pengukuran-tp3",
     tema: "Pengukuran · Durasi Waktu",
     urutan: 15,
-    judul: "Durasi Waktu (Konversi & Lintas Tengah Malam)",
-    ringkasan: "Konversi jam-menit-detik dan durasi yang melintasi tengah malam.",
+    judul: "Durasi Waktu",
+    ringkasan: "Menghitung durasi waktu, termasuk yang melintasi tengah malam.",
     status: "selesai",
+    slug: "mtk-durasi-waktu-tp3",
     file: "matematika/durasi-waktu-tp3/modul.html"
   },
   {
@@ -514,11 +540,178 @@ window.MODUL_INDEX = [
     icon: "📏",
     elemen: "Pengukuran",
     tp: "pengukuran-tp4",
-    tema: "Pengukuran · Sudut",
+    tema: "Pengukuran · Mengukur Sudut",
     urutan: 16,
     judul: "Mengukur Besar Sudut dengan Protractor",
-    ringkasan: "Klasifikasi jenis sudut dan pengukuran teknis dengan protractor fisik.",
+    ringkasan: "Mengukur besar sudut pada bangun datar atau yang dibentuk dari dua garis berpotongan.",
     status: "selesai",
+    slug: "mtk-sudut-protractor-tp4",
     file: "matematika/sudut-protractor-tp4/modul.html"
+  },
+
+  // ============ PENDIDIKAN PANCASILA (10 entri BARU, Agustus 2026) ============
+  // Sama seperti Pengukuran di atas — SELURUH mapel ini punya file modul.html
+  // lengkap di repo tapi NOL entri terdaftar di sini sebelumnya. Kode "tp"
+  // mengikuti tp-kko-index.js (PANC-C1a/b/c, UUD-C1/C2/C3, BTI-C1a/b/c, NKRI-C1/C2
+  // — BTI dipecah jadi 3 kode BARU Agustus 2026, lihat tp-kko-index.js).
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "📜",
+    elemen: "Pancasila",
+    tp: "PANC-C1a-b",
+    tema: "Pancasila · Kronologi & Meneladani Perumus",
+    urutan: 1,
+    judul: "Kronologi Pancasila & Meneladani Sikap Perumus",
+    ringkasan: "Memahami kronologi sejarah kelahiran Pancasila dan meneladani sikap para perumusnya dalam kehidupan sehari-hari.",
+    status: "selesai",
+    slug: "pp-pancasila-tp1-tp2",
+    file: "pendidikan-pancasila/pancasila-tp1-tp2/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "☀️",
+    elemen: "Pancasila",
+    tp: "PANC-C1c",
+    tema: "Pancasila · Sintesis Kelima Sila",
+    urutan: 2,
+    judul: "Sintesis Kelima Sila",
+    ringkasan: "Menghubungkan sila-sila Pancasila sebagai satu kesatuan nilai yang utuh sebagai dasar negara dan pandangan hidup bangsa.",
+    status: "selesai",
+    slug: "pp-pancasila-tp3",
+    file: "pendidikan-pancasila/pancasila-tp3/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "📖",
+    elemen: "UUD 1945",
+    tp: "UUD-C2",
+    tema: "UUD 1945 · Pembukaan UUD 1945",
+    urutan: 3,
+    judul: "Gagasan Pokok Pembukaan UUD 1945",
+    ringkasan: "Mengenal gagasan pokok dalam Pembukaan Undang-Undang Dasar Negara Republik Indonesia Tahun 1945.",
+    status: "selesai",
+    slug: "pp-uud1945-tp1",
+    file: "pendidikan-pancasila/uud1945-tp1/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "⚖️",
+    elemen: "UUD 1945",
+    tp: "UUD-C1",
+    tema: "UUD 1945 · Norma, Hak, dan Kewajiban",
+    urutan: 4,
+    judul: "Norma, Hak, dan Kewajiban sebagai Warga Negara",
+    ringkasan: "Mengimplementasikan bentuk-bentuk norma, hak, dan kewajiban dalam kedudukan sebagai warga negara.",
+    status: "selesai",
+    slug: "pp-uud1945-tp2",
+    file: "pendidikan-pancasila/uud1945-tp2/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🗳️",
+    elemen: "UUD 1945",
+    tp: "UUD-C3",
+    tema: "UUD 1945 · Musyawarah dan Kesepakatan",
+    urutan: 5,
+    judul: "Musyawarah dan Kesepakatan Kelas",
+    ringkasan: "Mempraktikkan musyawarah untuk membuat kesepakatan dan aturan bersama di lingkungan keluarga dan sekolah.",
+    status: "selesai",
+    slug: "pp-uud1945-tp3",
+    file: "pendidikan-pancasila/uud1945-tp3/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "👨‍👩‍👧‍👦",
+    elemen: "Bhinneka Tunggal Ika",
+    tp: "BTI-C1a",
+    tema: "Bhinneka Tunggal Ika · Keberagaman Asal Keluarga",
+    urutan: 6,
+    judul: "Keberagaman Asal Keluarga Kelas Kami",
+    ringkasan: "Mengumpulkan dan menyajikan hasil identifikasi keberagaman asal keluarga teman sekelas.",
+    status: "selesai",
+    slug: "pp-bti-tp1",
+    file: "pendidikan-pancasila/bti-tp1/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🤝",
+    elemen: "Bhinneka Tunggal Ika",
+    tp: "BTI-C1b",
+    tema: "Bhinneka Tunggal Ika · Menghormati & Menjaga",
+    urutan: 7,
+    judul: "Menghormati dan Menjaga Keberagaman",
+    ringkasan: "Membedakan sikap menghormati dan menjaga keberagaman, dipantau lewat jurnal mingguan berkelanjutan.",
+    status: "selesai",
+    slug: "pp-bti-tp2",
+    file: "pendidikan-pancasila/bti-tp2/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🏘️",
+    elemen: "Bhinneka Tunggal Ika",
+    tp: "BTI-C1c",
+    tema: "Bhinneka Tunggal Ika · Sejarah Lokal",
+    urutan: 8,
+    judul: "Sejarah Tempat Tinggal Kita",
+    ringkasan: "Modul reflektif tanpa nilai — menumbuhkan rasa ingin tahu terhadap sejarah lokal tempat tinggal.",
+    status: "selesai",
+    slug: "pp-bti-tp3",
+    file: "pendidikan-pancasila/bti-tp3/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🗺️",
+    elemen: "Negara Kesatuan Republik Indonesia",
+    tp: "NKRI-C1",
+    tema: "NKRI · Letak Wilayah",
+    urutan: 9,
+    judul: "Letak Kabupaten/Kota dan Provinsi",
+    ringkasan: "Mengenal wilayahnya dalam konteks kabupaten/kota dan provinsi sebagai bagian dari wilayah NKRI.",
+    status: "selesai",
+    slug: "pp-nkri-tp1",
+    file: "pendidikan-pancasila/nkri-tp1/modul.html"
+  },
+  {
+    mapel: "Pendidikan Pancasila",
+    mapelSlug: "pancasila",
+    mapelColor: "var(--m-pancasila)",
+    mapelIcon: "🗺️",
+    icon: "🫱🏽‍🫲🏾",
+    elemen: "Negara Kesatuan Republik Indonesia",
+    tp: "NKRI-C2",
+    tema: "NKRI · Gotong Royong & Bela Negara",
+    urutan: 10,
+    judul: "Gotong Royong sebagai Wujud Bela Negara",
+    ringkasan: "Menunjukkan perilaku gotong royong untuk menjaga persatuan sebagai wujud bela negara.",
+    status: "selesai",
+    slug: "pp-nkri-tp2",
+    file: "pendidikan-pancasila/nkri-tp2/modul.html"
   }
 ];
