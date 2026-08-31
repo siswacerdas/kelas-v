@@ -78,6 +78,46 @@
   .riwayat-item .ri-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 1px; }
 
   .loading-inline { padding: 1rem; text-align: center; color: var(--ink-3); font-size: 12.5px; }
+
+  /* ── HEADER PROFIL (avatar besar + nama) — BARU ── */
+  .profil-header { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1.5rem; }
+  .avatar-besar {
+    width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0; position: relative;
+    background: var(--paper-2); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--paper-3);
+    display: flex; align-items: center; justify-content: center; font-size: 2.2rem; overflow: hidden;
+  }
+  .avatar-besar img { width: 100%; height: 100%; object-fit: cover; }
+  .avatar-besar .edit-badge {
+    position: absolute; bottom: -2px; right: -2px; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; border: 2px solid var(--paper); cursor: pointer;
+  }
+  .profil-header-info h1 { margin-bottom: 2px; }
+  .profil-header-info .ph-hint { font-size: 12px; color: var(--ink-3); }
+
+  /* ── PANEL PEMILIH AVATAR — BARU (disembunyikan default, buka lewat tombol edit) ── */
+  .avatar-picker-section {
+    background: #fff; border: 1px solid var(--border); border-radius: 16px;
+    padding: 1.1rem 1.15rem; margin-bottom: 1.25rem;
+  }
+  .avatar-picker-title { font-size: 12.5px; font-weight: 700; margin-bottom: 3px; }
+  .avatar-picker-sub { font-size: 11px; color: var(--ink-3); margin-bottom: 0.85rem; }
+  .avatar-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 9px; }
+  .avatar-opsi {
+    aspect-ratio: 1; border-radius: 50%; overflow: hidden; cursor: pointer;
+    border: 3px solid transparent; position: relative; background: var(--paper-2);
+    display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+  }
+  .avatar-opsi img { width: 100%; height: 100%; object-fit: cover; }
+  .avatar-opsi.terpilih { border-color: var(--ok); }
+  .avatar-opsi.terpilih::after {
+    content: "✓"; position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px;
+    border-radius: 50%; background: var(--ok); color: #fff; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; border: 2px solid #fff;
+  }
+  .avatar-picker-status { font-size: 11.5px; margin-top: 8px; min-height: 15px; }
+  .avatar-picker-status.err { color: var(--err); }
+  .avatar-picker-status.ok { color: var(--ok); }
 </style>
 </head>
 <body>
@@ -91,7 +131,24 @@
   </div>
 
   <div class="container">
-    <h1 id="judul-profil">🎮 Profilmu</h1>
+    <div class="profil-header">
+      <div class="avatar-besar" id="avatar-besar">
+        <span id="avatar-besar-placeholder">🙂</span>
+        <div class="edit-badge" id="btn-toggle-avatar-picker" title="Ganti avatar">✎</div>
+      </div>
+      <div class="profil-header-info">
+        <h1 id="judul-profil">Profilmu</h1>
+        <div class="ph-hint">Ketuk ikon pensil untuk ganti avatar</div>
+      </div>
+    </div>
+
+    <div class="avatar-picker-section hidden" id="avatar-picker-section">
+      <div class="avatar-picker-title">🎨 Pilih Avatarmu</div>
+      <div class="avatar-picker-sub">Ketuk salah satu untuk mengganti tampilan profilmu. Teman-teman lain juga bisa lihat avatarmu di Papan Peringkat.</div>
+      <div class="avatar-grid" id="avatar-grid"></div>
+      <div class="avatar-picker-status" id="avatar-picker-status"></div>
+    </div>
+
     <p class="subtitle">Level naik lewat konsistensi lulus Uji Kemampuan — bukan cuma sekali beruntung. <a href="papan-peringkat.html" style="color: var(--purple); font-weight: 600;">Lihat Papan Peringkat →</a></p>
     <div id="isi-profil"><div class="loading-inline">Memuat…</div></div>
   </div>
@@ -104,6 +161,41 @@
   import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
   const db = getFirestore(getApps()[0]);
+
+  // Daftar avatar yang SAH — HARUS PERSIS SAMA dengan AVATAR_VALID_IDS_ di apps-script/Code.gs
+  // (server menolak avatarId di luar daftar itu). Kalau menambah avatar baru, tambahkan DI
+  // KEDUA TEMPAT (di sini untuk render + di server untuk validasi), atau avatar baru itu akan
+  // muncul di panel pemilih tapi selalu gagal disimpan.
+  const AVATAR_LIST = [
+    { id: "rubah",        emoji: "🦊", label: "Rubah" },
+    { id: "panda",        emoji: "🐼", label: "Panda" },
+    { id: "harimau",      emoji: "🐯", label: "Harimau" },
+    { id: "burung-hantu", emoji: "🦉", label: "Burung Hantu" },
+    { id: "kodok",        emoji: "🐸", label: "Kodok" },
+    { id: "singa",        emoji: "🦁", label: "Singa" },
+    { id: "koala",        emoji: "🐨", label: "Koala" },
+    { id: "unicorn",      emoji: "🦄", label: "Unicorn" },
+    { id: "kura-kura",    emoji: "🐢", label: "Kura-kura" },
+    { id: "gurita",       emoji: "🐙", label: "Gurita" },
+    { id: "kucing",       emoji: "🐱", label: "Kucing" },
+    { id: "anjing",       emoji: "🐶", label: "Anjing" },
+    { id: "kelinci",      emoji: "🐰", label: "Kelinci" },
+    { id: "gajah",        emoji: "🐘", label: "Gajah" },
+    { id: "pinguin",      emoji: "🐧", label: "Pinguin" },
+    { id: "rusa",         emoji: "🦌", label: "Rusa" },
+  ];
+  // Gambar ilustrasi AI asli (lihat avatar-prompts-siswa-kelas-v.md) — kalau file WebP-nya
+  // belum diunggah ke assets/img/avatars/, <img onerror> otomatis jatuh ke emoji placeholder
+  // di AVATAR_LIST di atas, jadi panel tetap bisa dipakai (cuma tampil emoji) sebelum
+  // ilustrasinya siap, TIDAK ngeblank/error.
+  function avatarGambarUrl(avatarId) {
+    const idx = AVATAR_LIST.findIndex((a) => a.id === avatarId);
+    const nomor = String(idx + 1).padStart(2, "0"); // 1-based, cocok dgn avatar-01-rubah.webp dst.
+    return "../assets/img/avatars/avatar-" + nomor + "-" + avatarId + ".webp";
+  }
+  function avatarInfo(avatarId) {
+    return AVATAR_LIST.find((a) => a.id === avatarId) || null;
+  }
 
   // Label/ikon/warna TAMPILAN saja — bukan sumber kebenaran (level SEBENARNYA
   // dihitung & disimpan server, lihat apps-script/Code.gs LEVEL_TAHAP_). Kalau
@@ -219,6 +311,7 @@
     const wrap = document.getElementById("isi-profil");
     try {
       const snap = await getDoc(doc(db, "level_siswa", nama));
+      muatAvatarUI(nama, snap.exists() ? snap.data().avatar : null); // sekalian render header/panel avatar, TIDAK bergantung apakah level sudah ada
       if (!snap.exists()) {
         wrap.innerHTML = `<div class="empty-state">Kamu belum punya data level — level muncul begitu kamu
           menyelesaikan Uji Kemampuan pertamamu. <a href="uji-kemampuan.html">Coba sekarang →</a></div>`;
@@ -235,6 +328,72 @@
     } catch (err) {
       wrap.innerHTML = `<div class="empty-state">Gagal memuat profil: ${esc(err.message)}</div>`;
     }
+  }
+
+  // ═══════════════════════ AVATAR (header + panel pemilih) ═══════════════════════
+  const APPS_SCRIPT_URL_AVATAR = "https://script.google.com/macros/s/AKfycbzM8gGleSPv-zBpjEQyDTOmia9h9ackGbJsKOexl7WPf8c0RHAx5LWEYeCvL4W-6RgLvg/exec";
+  let namaSiswaAktif = "";
+  let avatarAktif = null; // id avatar yang SEDANG tersimpan (null = belum pernah pilih)
+
+  function tampilkanAvatarBesar(avatarId) {
+    const el = document.getElementById("avatar-besar");
+    const info = avatarInfo(avatarId);
+    if (!info) { // belum pernah pilih avatar sama sekali -> placeholder generik
+      el.innerHTML = `<span id="avatar-besar-placeholder">🙂</span><div class="edit-badge" id="btn-toggle-avatar-picker" title="Ganti avatar">✎</div>`;
+    } else {
+      el.innerHTML = `<img src="${avatarGambarUrl(avatarId)}" alt="Avatar ${esc(info.label)}" onerror="this.outerHTML='<span style=&quot;font-size:2.2rem&quot;>${info.emoji}</span>'" />
+        <div class="edit-badge" id="btn-toggle-avatar-picker" title="Ganti avatar">✎</div>`;
+    }
+    document.getElementById("btn-toggle-avatar-picker").addEventListener("click", togglePanelAvatar);
+  }
+
+  function renderGridAvatar() {
+    const grid = document.getElementById("avatar-grid");
+    grid.innerHTML = AVATAR_LIST.map((a) => `
+      <div class="avatar-opsi ${avatarAktif === a.id ? "terpilih" : ""}" data-avatar="${a.id}" title="${esc(a.label)}">
+        <img src="${avatarGambarUrl(a.id)}" alt="${esc(a.label)}" onerror="this.outerHTML='<span>${a.emoji}</span>'" />
+      </div>`).join("");
+    grid.querySelectorAll(".avatar-opsi").forEach((el) => {
+      el.addEventListener("click", () => pilihAvatar(el.dataset.avatar));
+    });
+  }
+
+  function togglePanelAvatar() {
+    document.getElementById("avatar-picker-section").classList.toggle("hidden");
+  }
+
+  async function pilihAvatar(avatarId) {
+    const statusEl = document.getElementById("avatar-picker-status");
+    statusEl.className = "avatar-picker-status";
+    statusEl.textContent = "Menyimpan…";
+    try {
+      const res = await fetch(APPS_SCRIPT_URL_AVATAR, {
+        method: "POST",
+        body: JSON.stringify({ type: "set_avatar", nama: namaSiswaAktif, avatar: avatarId }),
+      });
+      const data = await res.json();
+      if (data.status !== "ok") {
+        statusEl.classList.add("err");
+        statusEl.textContent = "Gagal menyimpan: " + (data.message || "Coba lagi.");
+        return;
+      }
+      avatarAktif = avatarId;
+      tampilkanAvatarBesar(avatarAktif);
+      renderGridAvatar(); // render ulang supaya tanda ✓ pindah ke avatar yang baru dipilih
+      statusEl.classList.add("ok");
+      statusEl.textContent = "Tersimpan!";
+      setTimeout(() => { statusEl.textContent = ""; statusEl.className = "avatar-picker-status"; }, 2000);
+    } catch (err) {
+      statusEl.classList.add("err");
+      statusEl.textContent = "Gagal menyimpan: periksa koneksi internetmu.";
+    }
+  }
+
+  function muatAvatarUI(nama, avatarIdSaatIni) {
+    namaSiswaAktif = nama;
+    avatarAktif = avatarIdSaatIni || null;
+    tampilkanAvatarBesar(avatarAktif);
+    renderGridAvatar();
   }
 
   // Halaman ini KHUSUS siswa melihat profilnya SENDIRI (bukan guru mengecek siswa
