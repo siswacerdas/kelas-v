@@ -48,6 +48,7 @@
  *                supaya guru boleh lihat siapa saja TAPI akun "orangtua" hanya bisa lihat anaknya
  *                sendiri (field "anak" di Firestore users/{uid}). Lihat RANCANGAN-LAPORAN-SISWA.md.
  *                ?progresMateri=1&nama=..&idToken=.. -> SEMUA baris "Data Progres Materi" milik 1 siswa
+ *                ?progresModul=1&nama=..&idToken=..  -> SEMUA baris "Data Progres Modul" milik 1 siswa
  *                (untuk pages/laporan-siswa/belajar-mandiri.html) — gerbang SAMA dengan ?laporanSiswa=1
  *                (wajibAksesLaporan_(), bukan endpoint terpisah dari sisi keamanan, cuma sheet beda).
  * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal() / setupInfografisSheet():
@@ -1099,6 +1100,17 @@ function doGet(e) {
       if (!namaProgres) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
       wajibAksesLaporan_(params.idToken, namaProgres);
       const rows = sheetToObjects_(getProgresMateriSheet_()).filter((r) => r["Nama Siswa"] === namaProgres);
+      return jsonOut_({ data: rows });
+    }
+
+    if (params.progresModul) {
+      // Sama persis pola & gerbang akses dengan ?progresMateri=1 di atas — daftar Modul Slug
+      // yang SUDAH diselesaikan (mencapai halaman terakhir) siswa ybs, dipakai laporan
+      // "Perkembangan Belajar Mandiri" Pintu 2 untuk menampilkan progres Modul.
+      const namaProgresModul = params.nama;
+      if (!namaProgresModul) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
+      wajibAksesLaporan_(params.idToken, namaProgresModul);
+      const rows = sheetToObjects_(getProgresModulSheet_()).filter((r) => r["Nama Siswa"] === namaProgresModul);
       return jsonOut_({ data: rows });
     }
 
