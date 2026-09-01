@@ -87,11 +87,6 @@
     display: flex; align-items: center; justify-content: center; font-size: 2.2rem; overflow: hidden;
   }
   .avatar-besar img { width: 100%; height: 100%; object-fit: cover; }
-  .avatar-besar .edit-badge {
-    position: absolute; bottom: -2px; right: -2px; width: 24px; height: 24px; border-radius: 50%;
-    background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center;
-    font-size: 11px; border: 2px solid var(--paper); cursor: pointer;
-  }
   .profil-header-info h1 { margin-bottom: 2px; }
   .profil-header-info .ph-hint { font-size: 12px; color: var(--ink-3); }
 
@@ -134,15 +129,14 @@
     <div class="profil-header">
       <div class="avatar-besar" id="avatar-besar">
         <span id="avatar-besar-placeholder">🙂</span>
-        <div class="edit-badge" id="btn-toggle-avatar-picker" title="Ganti avatar">✎</div>
       </div>
       <div class="profil-header-info">
         <h1 id="judul-profil">Profilmu</h1>
-        <div class="ph-hint">Ketuk ikon pensil untuk ganti avatar</div>
+        <div class="ph-hint">Pilih avatarmu di bawah ini</div>
       </div>
     </div>
 
-    <div class="avatar-picker-section hidden" id="avatar-picker-section">
+    <div class="avatar-picker-section" id="avatar-picker-section">
       <div class="avatar-picker-title">🎨 Pilih Avatarmu</div>
       <div class="avatar-picker-sub">Ketuk salah satu untuk mengganti tampilan profilmu. Teman-teman lain juga bisa lihat avatarmu di Papan Peringkat.</div>
       <div class="avatar-grid" id="avatar-grid"></div>
@@ -339,12 +333,10 @@
     const el = document.getElementById("avatar-besar");
     const info = avatarInfo(avatarId);
     if (!info) { // belum pernah pilih avatar sama sekali -> placeholder generik
-      el.innerHTML = `<span id="avatar-besar-placeholder">🙂</span><div class="edit-badge" id="btn-toggle-avatar-picker" title="Ganti avatar">✎</div>`;
+      el.innerHTML = `<span id="avatar-besar-placeholder">🙂</span>`;
     } else {
-      el.innerHTML = `<img src="${avatarGambarUrl(avatarId)}" alt="Avatar ${esc(info.label)}" onerror="this.outerHTML='<span style=&quot;font-size:2.2rem&quot;>${info.emoji}</span>'" />
-        <div class="edit-badge" id="btn-toggle-avatar-picker" title="Ganti avatar">✎</div>`;
+      el.innerHTML = `<img src="${avatarGambarUrl(avatarId)}" alt="Avatar ${esc(info.label)}" onerror="this.outerHTML='<span style=&quot;font-size:2.2rem&quot;>${info.emoji}</span>'" />`;
     }
-    document.getElementById("btn-toggle-avatar-picker").addEventListener("click", togglePanelAvatar);
   }
 
   function renderGridAvatar() {
@@ -356,10 +348,6 @@
     grid.querySelectorAll(".avatar-opsi").forEach((el) => {
       el.addEventListener("click", () => pilihAvatar(el.dataset.avatar));
     });
-  }
-
-  function togglePanelAvatar() {
-    document.getElementById("avatar-picker-section").classList.toggle("hidden");
   }
 
   async function pilihAvatar(avatarId) {
