@@ -133,9 +133,16 @@
     dokumenLevel.forEach((d) => { byNamaLower[d.namaSiswa.trim().toLowerCase()] = d; });
     return (window.MPLS_STUDENTS || []).map((nama) => {
       const data = byNamaLower[nama.trim().toLowerCase()];
-      return data || {
+      // PENTING: dokumen level_siswa BISA ADA tapi cuma berisi `avatar` (siswa memilih
+      // avatar sebelum pernah menyelesaikan Uji Kemampuan/materi/modul apa pun — lihat
+      // ANTIREGRESI §40), jadi cek field `level` (SELALU diisi tiap kali gamifikasi
+      // dihitung), BUKAN cuma keberadaan dokumennya. Avatar yang sudah dipilih tetap
+      // ditampilkan meski siswanya masih berstatus "Belum mulai".
+      if (data && data.level !== undefined) return data;
+      return {
         namaSiswa: nama, level: "dasar", exp: 0, mahirTercapai: false,
         rank: "perintis", level99: 1, belumMulai: true,
+        avatar: data ? data.avatar : undefined,
       };
     });
   }

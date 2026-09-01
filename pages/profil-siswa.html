@@ -80,7 +80,7 @@
   .loading-inline { padding: 1rem; text-align: center; color: var(--ink-3); font-size: 12.5px; }
 
   /* ── HEADER PROFIL (avatar besar + nama) — BARU ── */
-  .profil-header { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1.5rem; }
+  .profil-header { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1rem; }
   .avatar-besar {
     width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0; position: relative;
     background: var(--paper-2); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--paper-3);
@@ -89,8 +89,16 @@
   .avatar-besar img { width: 100%; height: 100%; object-fit: cover; }
   .profil-header-info h1 { margin-bottom: 2px; }
   .profil-header-info .ph-hint { font-size: 12px; color: var(--ink-3); }
+  .btn-ganti-avatar {
+    font: inherit; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--ink-2);
+    background: var(--paper-2); border: 1px solid var(--border); border-radius: 20px;
+    padding: 5px 12px; margin-top: 5px;
+  }
+  .btn-ganti-avatar:hover { background: var(--paper-3); }
 
-  /* ── PANEL PEMILIH AVATAR — BARU (disembunyikan default, buka lewat tombol edit) ── */
+  /* ── PANEL PEMILIH AVATAR — terbuka OTOMATIS kalau siswa belum pernah pilih avatar
+     (supaya gampang ditemukan pertama kali), tertutup otomatis setelah memilih (supaya
+     tidak makan tempat terus), bisa dibuka lagi kapan saja lewat tombol "Ganti Avatar". ── */
   .avatar-picker-section {
     background: #fff; border: 1px solid var(--border); border-radius: 16px;
     padding: 1.1rem 1.15rem; margin-bottom: 1.25rem;
@@ -132,11 +140,11 @@
       </div>
       <div class="profil-header-info">
         <h1 id="judul-profil">Profilmu</h1>
-        <div class="ph-hint">Pilih avatarmu di bawah ini</div>
+        <button type="button" class="btn-ganti-avatar" id="btn-toggle-avatar-picker">✏️ Ganti Avatar</button>
       </div>
     </div>
 
-    <div class="avatar-picker-section" id="avatar-picker-section">
+    <div class="avatar-picker-section hidden" id="avatar-picker-section">
       <div class="avatar-picker-title">🎨 Pilih Avatarmu</div>
       <div class="avatar-picker-sub">Ketuk salah satu untuk mengganti tampilan profilmu. Teman-teman lain juga bisa lihat avatarmu di Papan Peringkat.</div>
       <div class="avatar-grid" id="avatar-grid"></div>
@@ -305,13 +313,21 @@
     const wrap = document.getElementById("isi-profil");
     try {
       const snap = await getDoc(doc(db, "level_siswa", nama));
-      muatAvatarUI(nama, snap.exists() ? snap.data().avatar : null); // sekalian render header/panel avatar, TIDAK bergantung apakah level sudah ada
-      if (!snap.exists()) {
+      const d = snap.exists() ? snap.data() : null;
+      muatAvatarUI(nama, d ? d.avatar : null); // sekalian render header/panel avatar, TIDAK bergantung apakah level sudah ada
+
+      // PENTING: dokumen level_siswa BISA ADA (snap.exists() true) tapi BELUM berisi data
+      // level/rank/exp sama sekali — ini terjadi kalau siswa memilih avatar SEBELUM pernah
+      // menyelesaikan Uji Kemampuan/materi/modul apa pun (doPostSetAvatar_ tetap membuat
+      // dokumen baru berisi avatar SAJA kalau dokumennya belum ada sebelumnya). Makanya
+      // cek field `level` (SELALU diisi hitungLevelDariRiwayat_ tiap kali gamifikasi
+      // dihitung), BUKAN cuma snap.exists() — kalau tidak, kartu Rank/Level/Statistik akan
+      // menampilkan "undefined" di mana-mana alih-alih pesan "belum ada data" yang jelas.
+      if (!d || d.level === undefined) {
         wrap.innerHTML = `<div class="empty-state">Kamu belum punya data level — level muncul begitu kamu
           menyelesaikan Uji Kemampuan pertamamu. <a href="uji-kemampuan.html">Coba sekarang →</a></div>`;
         return;
       }
-      const d = snap.data();
       wrap.innerHTML = `
         <p class="section-title">Rank &amp; EXP — dari keaktifan belajar</p>
         ${renderRankCard(d)}
@@ -325,7 +341,7 @@
   }
 
   // ═══════════════════════ AVATAR (header + panel pemilih) ═══════════════════════
-  const APPS_SCRIPT_URL_AVATAR = "https://script.google.com/macros/s/AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA/exec";
+  const APPS_SCRIPT_URL_AVATAR = "https://script.google.com/macros/s/AKfycbzM8gGleSPv-zBpjEQyDTOmia9h9ackGbJsKOexl7WPf8c0RHAx5LWEYeCvL4W-6RgLvg/exec";
   let namaSiswaAktif = "";
   let avatarAktif = null; // id avatar yang SEDANG tersimpan (null = belum pernah pilih)
 
@@ -370,11 +386,20 @@
       renderGridAvatar(); // render ulang supaya tanda ✓ pindah ke avatar yang baru dipilih
       statusEl.classList.add("ok");
       statusEl.textContent = "Tersimpan!";
-      setTimeout(() => { statusEl.textContent = ""; statusEl.className = "avatar-picker-status"; }, 2000);
+      // Tutup panel otomatis setelah berhasil memilih — supaya tidak makan tempat terus,
+      // tombol "Ganti Avatar" tetap ada kapan pun mau buka ulang.
+      setTimeout(() => {
+        document.getElementById("avatar-picker-section").classList.add("hidden");
+        statusEl.textContent = ""; statusEl.className = "avatar-picker-status";
+      }, 900);
     } catch (err) {
       statusEl.classList.add("err");
       statusEl.textContent = "Gagal menyimpan: periksa koneksi internetmu.";
     }
+  }
+
+  function togglePanelAvatar() {
+    document.getElementById("avatar-picker-section").classList.toggle("hidden");
   }
 
   function muatAvatarUI(nama, avatarIdSaatIni) {
@@ -382,6 +407,11 @@
     avatarAktif = avatarIdSaatIni || null;
     tampilkanAvatarBesar(avatarAktif);
     renderGridAvatar();
+    // Panel terbuka OTOMATIS kalau siswa belum pernah pilih avatar sama sekali (supaya
+    // gampang ditemukan pertama kali) — tertutup default kalau sudah pernah pilih (tinggal
+    // klik "Ganti Avatar" kapan saja mau ganti).
+    document.getElementById("avatar-picker-section").classList.toggle("hidden", avatarAktif !== null);
+    document.getElementById("btn-toggle-avatar-picker").addEventListener("click", togglePanelAvatar);
   }
 
   // Halaman ini KHUSUS siswa melihat profilnya SENDIRI (bukan guru mengecek siswa
