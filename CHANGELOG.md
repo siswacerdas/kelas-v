@@ -275,6 +275,12 @@ LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
   bagian dari repo situs — cuma referensi kerja).
 
 ### Ditambahkan — Avatar pilihan siswa di Profil & Papan Peringkat (belum dirilis)
+- **Perbaikan (setelah laporan Arif — panel avatar sempat "tidak muncul")**: panel pemilih
+  avatar sekarang SELALU TERLIHAT langsung di bawah header profil, TIDAK disembunyikan
+  di balik ikon pensil seperti versi awal. Versi awal saya sembunyikan panel ini secara
+  sepihak tanpa dikonfirmasi ulang ke Arif — beda dari pratinjau yang sudah disetujui
+  (yang selalu menampilkan panel langsung). Ikon pensil kecil juga berisiko sama tidak
+  disadarinya oleh siswa kelas 5, jadi dihapus sepenuhnya, bukan cuma diperbaiki.
 - Siswa bisa memilih 1 dari **16 avatar** ilustrasi (rubah, panda, harimau, burung hantu,
   kodok, singa, koala, unicorn, kura-kura, gurita, kucing, anjing, kelinci, gajah, pinguin,
   rusa — 10 pertama + 6 tambahan) lewat panel baru di `profil-siswa.html` — dibuka lewat
