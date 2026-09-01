@@ -131,7 +131,7 @@
   function gabungkanRoster(dokumenLevel) {
     const byNamaLower = {};
     dokumenLevel.forEach((d) => { byNamaLower[d.namaSiswa.trim().toLowerCase()] = d; });
-    return (window.MPLS_STUDENTS || []).map((nama) => {
+    return (typeof MPLS_STUDENTS !== "undefined" ? MPLS_STUDENTS : []).map((nama) => {
       const data = byNamaLower[nama.trim().toLowerCase()];
       // PENTING: dokumen level_siswa BISA ADA tapi cuma berisi `avatar` (siswa memilih
       // avatar sebelum pernah menyelesaikan Uji Kemampuan/materi/modul apa pun — lihat
