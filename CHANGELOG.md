@@ -8,7 +8,31 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
-### Konten — Pendidikan Pancasila Kelas 5 tuntas (sesi kerja konten terpisah, tidak terkait v0.11.0)
+### Diperbaiki — Bug `window.MPLS_STUDENTS` bikin Papan Peringkat SELALU kosong (belum dirilis)
+- **Laporan Arif**: Papan Peringkat menampilkan "Belum ada data." total, padahal salah satu
+  siswa (Fairel) sudah 2x mengerjakan Uji Kemampuan.
+- **Akar sebab**: `papan-peringkat.html` memakai `window.MPLS_STUDENTS` untuk mengambil
+  daftar 25 nama siswa, tapi `mpls-data.js` mendeklarasikan `const MPLS_STUDENTS = [...]`
+  — deklarasi `const`/`let` di level atas script klasik TIDAK PERNAH menjadi properti
+  `window` (beda dari `var`/deklarasi fungsi). Akibatnya `window.MPLS_STUDENTS` SELALU
+  `undefined`, roster SELALU kosong, **terlepas dari ada-tidaknya data asli di Firestore**.
+  Halaman lain (`index.html`, `daftar-orangtua.html`) sudah benar pakai pola
+  `typeof MPLS_STUDENTS !== "undefined" ? MPLS_STUDENTS : []` — cuma
+  `papan-peringkat.html` yang salah, murni bug dari sesi pembuatan fitur avatar
+  sebelumnya, bukan masalah deploy/data.
+- Diperbaiki dengan pola yang sama seperti file lain (`typeof` check, bukan `window.`).
+
+### Diselidiki (belum ketemu akar sebab pasti) — Profil Fairel tetap "belum ada data" meski
+sudah 2x kuis
+- Ditelusuri lewat baca kode `namaSiswa` di alur simpan hasil kuis (`uji-kemampuan.html`) vs
+  yang dibaca `profil-siswa.html` — keduanya konsisten sumbernya (event `role-verified`),
+  tidak ketemu bug dari baca kode saja.
+- Sesi berikutnya: cek dulu apakah Arif sudah lapor hasil 3 langkah diagnostik yang diminta
+  (isi dokumen `level_siswa/Fairel Atharizz Calief` di Firestore Console langsung, tab
+  Network saat submit kuis, tab Console saat submit/buka profil) — JANGAN menebak ulang
+  dari nol, lanjutkan dari hasil itu.
+
+
 > Dikerjakan lewat jalur sesi kerja konten (Claude + Arif, upload-ZIP), berjalan paralel
 > dan independen dari pengerjaan Sistem Login Baru di atas. Tidak menyentuh kode
 > aplikasi/Firebase/Apps Script sama sekali — murni penambahan file `.html` materi +
