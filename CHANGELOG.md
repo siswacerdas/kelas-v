@@ -275,6 +275,27 @@ LENGKAP sampai tahap ini: level, EXP, profil, DAN papan perbandingan)
   bagian dari repo situs — cuma referensi kerja).
 
 ### Ditambahkan — Avatar pilihan siswa di Profil & Papan Peringkat (belum dirilis)
+- **Bug nyata diperbaiki (laporan Arif — kartu Rank/Level/Statistik menampilkan
+  "undefined" di mana-mana)**: akar masalahnya `doPostSetAvatar_` (dari perbaikan
+  sebelumnya) TERNYATA bisa membuat dokumen `level_siswa` baru berisi CUMA field
+  `avatar` — terjadi kalau siswa memilih avatar SEBELUM pernah menyelesaikan Uji
+  Kemampuan/materi/modul apa pun. `profil-siswa.html` sebelumnya cuma mengecek
+  `snap.exists()` untuk memutuskan tampilkan kartu penuh vs pesan "belum ada data" —
+  dokumen avatar-saja itu LOLOS cek `exists()` (karena memang ada), tapi tidak punya
+  field level/rank/exp sama sekali, jadi seluruh kartu menampilkan "undefined".
+  Diperbaiki dengan mengecek keberadaan field `level` (SELALU diisi tiap kali
+  gamifikasi dihitung), bukan cuma `exists()`. `papan-peringkat.html` punya celah
+  serupa (kurang parah, sudah ada fallback `|| 0` di beberapa tempat) — ikut
+  diperbaiki supaya siswa yang baru pilih avatar tetap tampil "Belum mulai" yang
+  benar (avatarnya tetap kelihatan).
+- **Panel pemilih avatar dirombak jadi bisa disembunyikan/dibuka lagi** (perbaikan
+  ke-2 setelah laporan Arif) — dengan aturan yang lebih pintar dari versi
+  "selalu terbuka" maupun versi awal "selalu tertutup di balik ikon pensil":
+  panel terbuka OTOMATIS kalau siswa BELUM PERNAH pilih avatar (gampang
+  ditemukan pertama kali), lalu tertutup OTOMATIS begitu berhasil memilih
+  (tidak makan tempat terus). Tombol jelas "✏️ Ganti Avatar" (bukan ikon
+  pensil kecil yang sempat bikin bingung) selalu ada untuk membuka lagi
+  kapan saja.
 - **Perbaikan (setelah laporan Arif — panel avatar sempat "tidak muncul")**: panel pemilih
   avatar sekarang SELALU TERLIHAT langsung di bawah header profil, TIDAK disembunyikan
   di balik ikon pensil seperti versi awal. Versi awal saya sembunyikan panel ini secara
