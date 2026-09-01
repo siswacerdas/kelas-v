@@ -23,7 +23,7 @@
  * seperti pages/mpls/assets/config.js.
  */
 (function () {
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzM8gGleSPv-zBpjEQyDTOmia9h9ackGbJsKOexl7WPf8c0RHAx5LWEYeCvL4W-6RgLvg/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA/exec";
 
   function kirimProgres(namaSiswa, materiSlug) {
     try {
