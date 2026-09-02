@@ -5,25 +5,43 @@
  * lihat ANTIREGRESI.md §38) dan SETELAH auth-guard.js (urutan taruh sebenarnya tidak wajib
  * berdampingan, cuma untuk konsistensi visual dengan pola materi).
  *
- * Tugasnya SATU saja, mirip materi-progress-tracker.js: kalau yang membuka adalah SISWA
- * (bukan guru) dan MENCAPAI HALAMAN TERAKHIR modul, kirim penanda "modul selesai" ke server
- * lalu picu hitung ulang EXP. Dirancang SEPENUHNYA diam-diam (fire-and-forget) — kalau gagal
- * (offline, dsb), TIDAK menampilkan apa pun ke siswa, TIDAK mengganggu pengalaman belajar
- * modul sama sekali. Ini cuma pelacakan progres, bukan bagian inti dari modulnya.
+ * Tugasnya: kalau yang membuka adalah SISWA (bukan guru) DAN mencapai HALAMAN TERAKHIR
+ * modul DAN sudah menghabiskan MINIMAL `AMBANG_WAKTU_MS` di halaman ini (lihat "TIMER
+ * MINIMUM" di bawah — KEDUA syarat ini harus sama-sama terpenuhi, bukan salah satu saja),
+ * kirim penanda "modul selesai" ke server lalu picu hitung ulang EXP. Dirancang SEPENUHNYA
+ * diam-diam (fire-and-forget) — kalau gagal (offline, dsb), TIDAK menampilkan apa pun ke
+ * siswa, TIDAK mengganggu pengalaman belajar modul sama sekali. Ini cuma pelacakan progres,
+ * bukan bagian inti dari modulnya.
  *
- * KENAPA "selesai" = MENCAPAI HALAMAN TERAKHIR (BEDA dari materi yang cukup "dibuka" saja):
- * materi itu bacaan singkat 1 halaman, jadi membuka ≈ membaca sudah representatif. Modul jauh
- * lebih panjang (6-8 halaman + beberapa kuis tertanam di tiap bagian) — sekadar membuka
- * halaman pertama modul TIDAK cukup jadi bukti "sudah dipelajari". Deteksinya dengan
- * membungkus (monkey-patch) `window.goToPage` bawaan tiap file modul: begitu dipanggil dengan
- * n === TOTAL_PAGES - 1 (halaman terakhir, biasanya berjudul "Selesai" di stepper), dianggap
- * selesai.
+ * KENAPA "selesai" (SALAH SATU syaratnya) = MENCAPAI HALAMAN TERAKHIR (BEDA dari materi yang
+ * cukup "dibuka" saja): materi itu bacaan singkat 1 halaman, jadi membuka ≈ membaca sudah
+ * representatif. Modul jauh lebih panjang (6-8 halaman + beberapa kuis tertanam di tiap
+ * bagian) — sekadar membuka halaman pertama modul TIDAK cukup jadi bukti "sudah dipelajari".
+ * Deteksinya dengan membungkus (monkey-patch) `window.goToPage` bawaan tiap file modul:
+ * begitu dipanggil dengan n === TOTAL_PAGES - 1 (halaman terakhir, biasanya berjudul
+ * "Selesai" di stepper), syarat ini dianggap terpenuhi.
  *
- * AMAN DIPANGGIL BERULANG KALI: kalau siswa membuka ulang modul yang sudah pernah selesai
- * (progres tersimpan di localStorage per modul, dipulihkan otomatis ke halaman terakhir saat
- * dibuka lagi), `goToPage(TOTAL_PAGES-1)` akan terpanggil lagi setiap kali reload — TIDAK APA-
- * APA, server melakukan UPSERT per (Nama Siswa, Modul Slug) sama seperti progres materi,
- * BUKAN increment, jadi tidak menggandakan EXP.
+ * ═══ TIMER MINIMUM (fitur baru, CHANGELOG.md — permintaan eksplisit Arif) ═══
+ * Sebelumnya "mencapai halaman terakhir" SAJA sudah cukup — siswa bisa klik "Lanjut →"
+ * cepat-cepat tanpa membaca apa pun sampai halaman terakhir dan tetap dapat EXP penuh.
+ * Sekarang HARUS JUGA menghabiskan waktu MINIMAL `AMBANG_WAKTU_MS` (default 3 menit — lebih
+ * lama dari materi karena modul jauh lebih panjang/mendalam) di halaman ini, dihitung dari
+ * WAKTU HALAMAN BENAR-BENAR TERLIHAT (Page Visibility API, DIJEDA kalau pindah tab/aplikasi
+ * lain) — bukan sekadar wall-clock sejak dibuka. Sama alasan & mekanisme persis dengan
+ * materi-progress-tracker.js, lihat komentar panjang di file itu untuk detail lengkapnya.
+ * KEDUA syarat (halaman terakhir + waktu minimum) bisa terpenuhi dalam urutan APA PUN —
+ * fungsi `cobaKirim()` dicek ulang dari kedua sisi (tiap kali `goToPage` dipanggil, DAN tiap
+ * kali cek berkala waktu) supaya tidak masalah mana yang terpenuhi duluan.
+ *
+ * ═══ BUKA ULANG MODUL YANG SUDAH SELESAI = EXP KECIL, BUKAN EXP PENUH LAGI ═══
+ * Server (Code.gs) sekarang membedakan penyelesaian PERTAMA suatu modul (EXP penuh) dari
+ * penyelesaian BERIKUTNYA ke MODUL YANG SAMA (EXP kecil, cuma `EXP_ULANG_`) — TIDAK ada
+ * perubahan yang perlu dilakukan di file ini untuk itu, kirim penanda apa adanya, server yang
+ * menentukan besaran EXP dari riwayat. CATATAN: kalau siswa membuka ulang modul yang SUDAH
+ * pernah selesai, progres tersimpan di localStorage otomatis memulihkan ke halaman terakhir
+ * saat dibuka lagi — artinya syarat "halaman terakhir" langsung terpenuhi di awal, TAPI tetap
+ * harus menunggu `AMBANG_WAKTU_MS` (tab tetap terbuka & terlihat) sebelum penanda terkirim —
+ * jadi tidak bisa didapat instan hanya dengan membuka-tutup cepat.
  *
  * KENAPA PUNYA Firebase init SENDIRI (bukan pakai ulang auth-guard.js): sama alasan persis
  * dengan materi-progress-tracker.js — auth-guard.js SENGAJA tidak membaca Firestore
@@ -31,10 +49,12 @@
  *
  * KENAPA APPS_SCRIPT_URL DITULIS ULANG DI SINI: sama alasan persis dengan
  * materi-progress-tracker.js — kalau URL Apps Script pernah GANTI (bukan sekadar redeploy
- * versi baru), nilai di bawah ini WAJIB ikut diperbarui manual di KEDUA file.
+ * versi baru), nilai di bawah ini WAJIB ikut diperbarui manual di KEDUA file. **INSIDEN NYATA
+ * Agustus 2026**: URL ini sempat basi berhari-hari tanpa disadari — lihat CHANGELOG.md.
  */
 (function () {
   var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA/exec";
+  var AMBANG_WAKTU_MS = 3 * 60 * 1000; // 3 menit — lebih lama dari materi (1 menit), ubah di sini kalau dirasa kurang/lebih pas
 
   function slugDariStorageKey() {
     // STORAGE_KEY selalu berformat 'modulProgress:<slug>' di semua 41 file modul.html
@@ -116,14 +136,54 @@
     var slug = slugDariStorageKey();
     if (!slug) return;
 
-    var sudahDikirimSesiIni = false; // cukup 1x deteksi per pemuatan halaman, walau goToPage bisa terpanggil berkali-kali (mis. saat pemulihan progres dari localStorage)
+    // ── Akumulasi waktu TERLIHAT + status "sudah mencapai halaman terakhir" — dua syarat
+    // INDEPENDEN, penanda cuma terkirim kalau KEDUANYA true, terlepas urutan mana duluan. ──
+    var akumulasiMs = 0;
+    var mulaiTerlihat = (document.visibilityState === "visible") ? Date.now() : null;
+    var sudahMencapaiAkhir = false;
+    var sudahDikirim = false;
+
+    function totalWaktuTerlihatMs() {
+      var total = akumulasiMs;
+      if (mulaiTerlihat !== null) total += (Date.now() - mulaiTerlihat);
+      return total;
+    }
+
+    function cobaKirim() {
+      if (sudahDikirim) return;
+      if (!sudahMencapaiAkhir) return;
+      if (totalWaktuTerlihatMs() < AMBANG_WAKTU_MS) return;
+      sudahDikirim = true;
+      deteksiSiswaLaluKirim(slug);
+    }
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        if (mulaiTerlihat !== null) {
+          akumulasiMs += Date.now() - mulaiTerlihat;
+          mulaiTerlihat = null;
+        }
+      } else {
+        mulaiTerlihat = Date.now();
+        cobaKirim(); // jaga-jaga kalau ambang sudah lewat pas baru kembali terlihat
+      }
+    });
+
+    // Cek berkala selagi halaman terbuka — jaring pengaman kalau syarat waktu baru terpenuhi
+    // BELAKANGAN setelah goToPage(terakhir) sempat dipanggil (skenario: sampai halaman
+    // terakhir cepat, lalu diam saja menunggu di situ sampai ambang waktu terlewati).
+    var intervalId = setInterval(function () {
+      cobaKirim();
+      if (sudahDikirim) clearInterval(intervalId);
+    }, 5000);
+
     var _origGoToPage = window.goToPage;
     window.goToPage = function (n) {
       var hasil = _origGoToPage.apply(this, arguments);
       var halamanTerakhir = Math.max(0, Math.min(window.TOTAL_PAGES - 1, n)) === window.TOTAL_PAGES - 1;
-      if (halamanTerakhir && !sudahDikirimSesiIni) {
-        sudahDikirimSesiIni = true;
-        deteksiSiswaLaluKirim(slug);
+      if (halamanTerakhir) {
+        sudahMencapaiAkhir = true;
+        cobaKirim();
       }
       return hasil;
     };
