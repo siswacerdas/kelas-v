@@ -3,11 +3,36 @@
  * auth-guard.js + materi-index.js + materi-nav.js (butuh window.MateriNav.currentEntry()
  * dari materi-nav.js untuk tahu materi mana yang sedang dibuka).
  *
- * Tugasnya SATU saja: kalau yang membuka halaman ini adalah SISWA (bukan guru — guru sering
- * buka materi untuk mengecek isi, itu bukan "siswa sudah belajar"), kirim penanda "sudah
- * dibaca" ke server. Dirancang SEPENUHNYA diam-diam (fire-and-forget) — kalau gagal (offline,
- * dsb), TIDAK menampilkan apa pun ke siswa, TIDAK mengganggu pengalaman baca materi sama
- * sekali. Ini cuma pelacakan progres, bukan bagian inti dari materinya.
+ * Tugasnya: kalau yang membuka halaman ini adalah SISWA (bukan guru — guru sering buka
+ * materi untuk mengecek isi, itu bukan "siswa sudah belajar") DAN sudah menghabiskan
+ * MINIMAL AMBANG_WAKTU_MS di halaman ini (lihat "TIMER MINIMUM" di bawah), kirim penanda
+ * "sudah dibaca" ke server. Dirancang SEPENUHNYA diam-diam (fire-and-forget) — kalau gagal
+ * (offline, dsb), TIDAK menampilkan apa pun ke siswa, TIDAK mengganggu pengalaman baca
+ * materi sama sekali. Ini cuma pelacakan progres, bukan bagian inti dari materinya.
+ *
+ * ═══ TIMER MINIMUM (fitur baru, CHANGELOG.md — permintaan eksplisit Arif) ═══
+ * Sebelumnya EXP diberikan SEKETIKA halaman dibuka — siswa bisa membuka lalu langsung
+ * menutup materi (tanpa membaca sama sekali) dan tetap dapat EXP penuh. Sekarang perlu
+ * menghabiskan waktu MINIMAL `AMBANG_WAKTU_MS` (default 1 menit) sebelum penanda "sudah
+ * dibaca" terkirim.
+ *
+ * Yang dihitung adalah WAKTU HALAMAN BENAR-BENAR TERLIHAT (Page Visibility API),
+ * BUKAN sekadar "sudah berapa lama sejak dibuka" — kalau siswa pindah tab/aplikasi lain,
+ * hitungan waktu DIJEDA, baru lanjut lagi begitu kembali ke tab ini. Ini SENGAJA supaya
+ * siswa tidak bisa "mengakali" ambang waktu dengan membuka banyak tab materi sekaligus
+ * lalu menunggu 1 menit total sambil tidak benar-benar membaca satu pun.
+ *
+ * Kalau siswa MENUTUP/PERGI dari halaman SEBELUM ambang waktu tercapai: TIDAK ADA APA PUN
+ * yang terkirim (penanda cuma dikirim SAAT ambang tercapai, selagi halaman masih terbuka —
+ * bukan dijadwalkan lewat setTimeout yang tetap jalan walau halaman ditinggal/ditutup).
+ *
+ * ═══ BACA ULANG = EXP KECIL, BUKAN EXP PENUH LAGI (fitur baru, CHANGELOG.md) ═══
+ * Server (Code.gs) sekarang membedakan kunjungan PERTAMA ke suatu materi (EXP penuh) dari
+ * kunjungan BERIKUTNYA ke MATERI YANG SAMA (EXP kecil, cuma `EXP_ULANG_`) — TIDAK ada
+ * perubahan apa pun yang perlu dilakukan di file ini untuk itu; file ini tetap kirim
+ * penanda apa adanya tiap kali ambang waktu tercapai (termasuk saat materi yang SAMA dibuka
+ * lagi di kunjungan berikutnya), logika bedanya penuh/kecil sepenuhnya ditentukan di server
+ * dari riwayat kunjungan, bukan di sini.
  *
  * KENAPA PUNYA Firebase init SENDIRI (bukan pakai ulang auth-guard.js): auth-guard.js SENGAJA
  * tidak membaca Firestore users/{uid} (lihat komentar di file itu — supaya halaman yang tidak
@@ -20,10 +45,15 @@
  * lumayan banyak menyentuh 81 file materi cuma untuk memuat file INI saja). Konsekuensinya:
  * kalau URL Apps Script pernah GANTI (bukan sekadar redeploy versi baru — itu TIDAK mengubah
  * URL, lihat apps-script/README.md), nilai di bawah ini WAJIB ikut diperbarui manual, sama
- * seperti pages/mpls/assets/config.js.
+ * seperti pages/mpls/assets/config.js. **INSIDEN NYATA Agustus 2026**: URL ini sempat basi
+ * berhari-hari tanpa disadari (fitur ini "diam-diam" by design, jadi kegagalannya juga diam-
+ * diam — tidak ada error yang terlihat siswa/guru) — lihat CHANGELOG.md untuk kronologinya.
+ * Kalau EXP materi tidak pernah bertambah padahal siswa sudah baca lama, INI yang PERTAMA
+ * dicek: cocokkan URL di sini dengan Manage Deployments di Apps Script.
  */
 (function () {
   var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA/exec";
+  var AMBANG_WAKTU_MS = 60 * 1000; // 1 menit — ubah di sini kalau dirasa kurang/lebih pas
 
   function kirimProgres(namaSiswa, materiSlug) {
     try {
@@ -63,6 +93,49 @@
     if (!window.MateriNav) return; // materi-nav.js belum dimuat/gagal — jangan lanjut
     var entry = window.MateriNav.currentEntry();
     if (!entry) return; // halaman ini tidak dikenali materi-index.js, tidak ada yang dilacak
+    var materiSlug = entry.file.replace(/\.html$/i, "");
+
+    // ── Akumulasi waktu TERLIHAT (bukan wall-clock sejak dibuka) — lihat komentar
+    // panjang "TIMER MINIMUM" di atas file untuk alasan lengkapnya. ──
+    var akumulasiMs = 0;
+    var mulaiTerlihat = (document.visibilityState === "visible") ? Date.now() : null;
+    var namaSiswaTerdeteksi = null; // null = belum tahu siapa / bukan siswa yang perlu dilacak
+    var sudahDikirim = false;
+
+    function totalWaktuTerlihatMs() {
+      var total = akumulasiMs;
+      if (mulaiTerlihat !== null) total += (Date.now() - mulaiTerlihat);
+      return total;
+    }
+
+    function cobaKirim() {
+      if (sudahDikirim) return;
+      if (!namaSiswaTerdeteksi) return; // auth belum selesai dicek, atau memang bukan siswa
+      if (totalWaktuTerlihatMs() < AMBANG_WAKTU_MS) return; // belum cukup lama membaca
+      sudahDikirim = true;
+      kirimProgres(namaSiswaTerdeteksi, materiSlug);
+    }
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        if (mulaiTerlihat !== null) {
+          akumulasiMs += Date.now() - mulaiTerlihat;
+          mulaiTerlihat = null;
+        }
+      } else {
+        mulaiTerlihat = Date.now();
+        cobaKirim(); // jaga-jaga kalau ambang sudah lewat pas baru kembali terlihat (jarang, tapi aman)
+      }
+    });
+
+    // Cek berkala selagi halaman terbuka — SATU-SATUNYA cara penanda ini bisa terkirim
+    // (BUKAN dijadwalkan via setTimeout yang tetap jalan walau halaman ditinggal/ditutup).
+    // 5 detik dipilih supaya cukup responsif tapi tidak boros — toleransi meleset beberapa
+    // detik dari AMBANG_WAKTU_MS tidak masalah untuk kebutuhan ini.
+    var intervalId = setInterval(function () {
+      cobaKirim();
+      if (sudahDikirim) clearInterval(intervalId);
+    }, 5000);
 
     try {
       var { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
@@ -97,8 +170,8 @@
         if (user.isAnonymous) {
           var namaSiswaAnon = sessionStorage.getItem("kelas5_siswa_nama");
           if (!namaSiswaAnon) return; // sesi anonim nyasar tanpa nama, jangan lacak apa pun
-          var materiSlugAnon = entry.file.replace(/\.html$/i, "");
-          kirimProgres(namaSiswaAnon, materiSlugAnon);
+          namaSiswaTerdeteksi = namaSiswaAnon;
+          cobaKirim(); // jaga-jaga kalau ambang waktu sudah lewat duluan sebelum auth selesai dicek
           return;
         }
 
@@ -108,8 +181,8 @@
         var snap = await getDoc(doc(db, "users", user.uid));
         var data = snap.exists() ? snap.data() : {};
         if (data.role !== "siswa" || !data.nama) return; // cuma lacak siswa, bukan guru yang sedang mengecek materi
-        var materiSlug = entry.file.replace(/\.html$/i, "");
-        kirimProgres(data.nama, materiSlug);
+        namaSiswaTerdeteksi = data.nama;
+        cobaKirim();
       });
     } catch (e) { /* diamkan — kegagalan memuat Firebase tidak boleh mengganggu tampilan materi */ }
   }
