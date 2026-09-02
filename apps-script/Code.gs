@@ -1652,57 +1652,51 @@ function doPostInfografisHapus_(body) {
   return jsonOut_({ status: "ok" });
 }
 
-/** Upsert (bukan selalu tambah baris) berdasarkan kombinasi "Nama Siswa" + "Materi Slug" —
- * 1 siswa + 1 materi = MAKSIMAL 1 baris, ditimpa (Timestamp diperbarui) tiap kali materi itu
- * dibuka lagi, BUKAN menumpuk baris baru setiap kunjungan (kalau tidak, sheet ini akan
- * membengkak sangat cepat — 1 siswa bisa buka 1 materi berkali-kali). Dipanggil dari
- * materi-progress-tracker.js, fire-and-forget — SELALU balas "ok" bahkan kalau field kurang
- * lengkap (siswa yang membuka materi tidak boleh melihat efek apa pun dari endpoint ini,
- * sukses atau gagal; kegagalan cukup diam-diam diabaikan, bukan mengganggu baca materi). */
+/** SELALU tambah baris baru (BUKAN upsert lagi sejak fitur "baca ulang = 1 EXP", lihat
+ * CHANGELOG.md) — 1 baris = 1 KUNJUNGAN yang lolos syarat waktu minimum di klien
+ * (materi-progress-tracker.js), BUKAN 1 baris per siswa+materi. Sengaja diubah dari pola
+ * upsert lama karena EXP sekarang butuh membedakan kunjungan ke-1 (10 EXP) dari kunjungan
+ * berikutnya ke materi yang SAMA (1 EXP) — upsert tidak bisa merekam itu (cuma tahu "pernah
+ * dibaca atau belum", bukan "berapa kali"). Sama pola dengan hasil_latihan yang juga
+ * append-only + dihitung ulang penuh dari riwayat, bukan increment. TIDAK ada lagi masalah
+ * "sheet membengkak" karena klien SEKARANG punya syarat waktu minimum sebelum mengirim
+ * (lihat materi-progress-tracker.js) — jauh lebih jarang terkirim dibanding versi lama yang
+ * kirim tiap kali halaman dibuka. Dipanggil dari materi-progress-tracker.js, fire-and-
+ * forget — SELALU balas "ok" bahkan kalau field kurang lengkap (siswa yang membuka materi
+ * tidak boleh melihat efek apa pun dari endpoint ini, sukses atau gagal). */
 function doPostProgresMateri_(body) {
   const nama = String(body["Nama Siswa"] || "").trim();
   const slug = String(body["Materi Slug"] || "").trim();
   if (!nama || !slug) return jsonOut_({ status: "ok" }); // diam-diam abaikan, lihat komentar di atas
 
   const sheet = getProgresMateriSheet_();
-  const existingRow = findRowByTwoColumns_(sheet, "Nama Siswa", nama, "Materi Slug", slug);
   const record = {
     "Timestamp": new Date(),
     "Nama Siswa": nama,
     "Materi Slug": slug,
     "Status": "Dibaca",
   };
-  const rowValues = buildRowByHeaders_(sheet, record);
-  if (existingRow !== -1) {
-    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
-  } else {
-    sheet.appendRow(rowValues);
-  }
+  sheet.appendRow(buildRowByHeaders_(sheet, record));
   return jsonOut_({ status: "ok" });
 }
 
-/** Sama pola persis dengan doPostProgresMateri_() di atas — bedanya cuma dipanggil dari
- * modul-progress-tracker.js saat siswa MENCAPAI HALAMAN TERAKHIR modul (bukan sekadar
- * membuka), lihat komentar panjang di modul-progress-tracker.js untuk alasannya. */
+/** Sama pola persis dengan doPostProgresMateri_() di atas (append-only, alasan sama persis:
+ * "selesai ulang = 1 EXP" butuh tahu berapa kali, bukan cuma pernah/belum) — bedanya cuma
+ * dipanggil dari modul-progress-tracker.js saat siswa MENCAPAI HALAMAN TERAKHIR modul DAN
+ * sudah memenuhi syarat waktu minimum (bukan sekadar mencapai halaman terakhir secepatnya). */
 function doPostProgresModul_(body) {
   const nama = String(body["Nama Siswa"] || "").trim();
   const slug = String(body["Modul Slug"] || "").trim();
   if (!nama || !slug) return jsonOut_({ status: "ok" }); // diam-diam abaikan, sama alasan dgn doPostProgresMateri_
 
   const sheet = getProgresModulSheet_();
-  const existingRow = findRowByTwoColumns_(sheet, "Nama Siswa", nama, "Modul Slug", slug);
   const record = {
     "Timestamp": new Date(),
     "Nama Siswa": nama,
     "Modul Slug": slug,
     "Status": "Selesai",
   };
-  const rowValues = buildRowByHeaders_(sheet, record);
-  if (existingRow !== -1) {
-    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
-  } else {
-    sheet.appendRow(rowValues);
-  }
+  sheet.appendRow(buildRowByHeaders_(sheet, record));
   return jsonOut_({ status: "ok" });
 }
 
@@ -1740,29 +1734,46 @@ const LEVEL_AMBANG_LULUS_UMUM_ = 70; // ambang "lulus" generik untuk statistik t
  * 1 modul mencakup beberapa bagian + beberapa kuis tertanam, jauh lebih banyak usaha
  * dibanding 1 materi; angka ini direkomendasikan Claude, mudah diubah di sini kalau dirasa
  * kurang/lebih pas setelah dipakai beberapa waktu), dan Uji Kemampuan (5/kuis dikerjakan +
- * 10 bonus kalau lulus ≥70%). */
+ * 10 bonus kalau lulus ≥70%).
+ *
+ * "Baca/selesai ULANG materi/modul yang SAMA" (fitur baru, CHANGELOG.md): kunjungan ke-1
+ * dapat EXP penuh (EXP_PER_MATERI_/EXP_PER_MODUL_), kunjungan ke-2 dst ke MATERI/MODUL YANG
+ * SAMA cuma dapat EXP_ULANG_ kecil — supaya baca ulang untuk REVIEW tetap dihargai sedikit
+ * (baik secara pedagogis), tapi TIDAK BISA dipakai membanjiri EXP dengan buka-tutup materi
+ * yang sama berkali-kali. Ini BERBEDA dari materi/modul BERBEDA, yang masing-masing tetap
+ * dapat EXP PENUH di kunjungan pertamanya. */
 const EXP_PER_MATERI_ = 10;
 const EXP_PER_MODUL_ = 25;
+const EXP_ULANG_ = 1; // baca/selesai ulang MATERI/MODUL YANG SAMA (kunjungan ke-2 dst.)
 const EXP_PER_KUIS_DIKERJAKAN_ = 5;
 const EXP_BONUS_KUIS_LULUS_ = 10;
 
-/** Hitung jumlah materi yang sudah "Dibaca" 1 siswa dari sheet "Data Progres Materi".
- * 1 baris = 1 materi (upsert per Nama Siswa + Materi Slug, lihat doPostProgresMateri_),
- * jadi cukup hitung baris yang cocok namanya — tidak perlu deduplikasi lagi di sini. */
-function hitungJumlahMateriDibaca_(nama) {
+/** Hitung EXP dari sheet progres (Materi ATAU Modul, keduanya sekarang append-only — lihat
+ * doPostProgresMateri_/doPostProgresModul_) dengan aturan: kunjungan PERTAMA ke suatu
+ * materi/modul dapat `expPenuh`, kunjungan berikutnya ke MATERI/MODUL YANG SAMA cuma dapat
+ * `EXP_ULANG_`. Dipakai bersama untuk Materi (kolom "Materi Slug") maupun Modul (kolom
+ * "Modul Slug") — cukup beda nama kolom & besaran EXP penuhnya.
+ * Return: { jumlahDistinct, totalExp } — jumlahDistinct dipakai utk statistik "Materi
+ * Dibaca"/"Modul Selesai" (tetap cuma hitung SEKALI per materi/modul, bukan total kunjungan),
+ * totalExp sudah termasuk bonus kunjungan ulang. */
+function hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh) {
   const target = String(nama).trim().toLowerCase();
-  const rows = sheetToObjects_(getProgresMateriSheet_());
-  return rows.filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target).length;
+  const rows = sheetToObjects_(sheet).filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target);
+  const kunjunganPerSlug = {};
+  rows.forEach((r) => {
+    const slug = String(r[namaKolomSlug] || "").trim();
+    if (!slug) return;
+    kunjunganPerSlug[slug] = (kunjunganPerSlug[slug] || 0) + 1;
+  });
+  const slugList = Object.keys(kunjunganPerSlug);
+  let totalExp = 0;
+  slugList.forEach((slug) => {
+    const kunjungan = kunjunganPerSlug[slug];
+    totalExp += expPenuh + Math.max(0, kunjungan - 1) * EXP_ULANG_;
+  });
+  return { jumlahDistinct: slugList.length, totalExp: totalExp };
 }
 
-/** Sama pola persis dengan hitungJumlahMateriDibaca_() di atas, dari sheet "Data Progres
- * Modul" (1 baris = 1 modul yang sudah mencapai halaman terakhir, upsert per Nama Siswa +
- * Modul Slug, lihat doPostProgresModul_). */
-function hitungJumlahModulDiselesaikan_(nama) {
-  const target = String(nama).trim().toLowerCase();
-  const rows = sheetToObjects_(getProgresModulSheet_());
-  return rows.filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target).length;
-}
 
 /* ── LEVEL 1-99 & RANK — lapisan gimmick TAMBAHAN di atas EXP, terpisah dari
  * "Level Kemampuan" (dasar/menengah/atas/mahir) di atas. Bedanya: Level Kemampuan
@@ -2001,9 +2012,9 @@ function doPostHitungGamifikasi_(body) {
     const existingLengkap = ambilLevelSiswaLengkap_(nama); // supaya field `avatar` (kalau ada) tidak hilang tertimpa di bawah
     const riwayat = ambilRiwayatHasilLatihan_(nama);
     const levelData = hitungLevelDariRiwayat_(riwayat);
-    const jumlahMateriDibaca = hitungJumlahMateriDibaca_(nama);
-    const jumlahModulSelesai = hitungJumlahModulDiselesaikan_(nama);
-    const exp = jumlahMateriDibaca * EXP_PER_MATERI_ + jumlahModulSelesai * EXP_PER_MODUL_ + levelData.expDariKuis;
+    const materiData = hitungExpDenganBacaUlang_(getProgresMateriSheet_(), "Materi Slug", nama, EXP_PER_MATERI_);
+    const modulData = hitungExpDenganBacaUlang_(getProgresModulSheet_(), "Modul Slug", nama, EXP_PER_MODUL_);
+    const exp = materiData.totalExp + modulData.totalExp + levelData.expDariKuis;
     const level99Data = hitungLevel99DanRank_(exp);
     const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
       (levelData.mahirTercapai && !sebelum.mahirTercapai);
@@ -2011,7 +2022,7 @@ function doPostHitungGamifikasi_(body) {
     // ada), baru ditimpa field yang MEMANG dihitung ulang di panggilan ini — supaya field lain
     // yang tidak disentuh (avatar) tetap terbawa, tapi field yang dihitung ulang selalu pakai
     // nilai terbaru, bukan nilai basis yang mungkin sudah basi.
-    const dataLengkap = Object.assign({}, existingLengkap, levelData, { jumlahMateriDibaca: jumlahMateriDibaca, jumlahModulSelesai: jumlahModulSelesai, exp: exp }, level99Data);
+    const dataLengkap = Object.assign({}, existingLengkap, levelData, { jumlahMateriDibaca: materiData.jumlahDistinct, jumlahModulSelesai: modulData.jumlahDistinct, exp: exp }, level99Data);
     setLevelSiswaFirestore_(nama, dataLengkap);
     return jsonOut_(Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap));
   } catch (err) {
