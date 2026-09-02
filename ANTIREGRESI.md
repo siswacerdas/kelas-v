@@ -2065,3 +2065,65 @@ belum pernah diuji live, TAPI ke-16 gambar ilustrasi SUDAH ada di
 - [ ] Ganti avatar berkali-kali berturut-turut dengan cepat → tidak ada
       race condition yang bikin avatar "nyangkut" di pilihan yang salah
       (status akhir harus sesuai klik TERAKHIR)
+
+---
+
+### 41. Timer minimum & EXP baca/selesai ulang (`pages/materi/assets/materi-progress-tracker.js`,
+`pages/modul/assets/modul-progress-tracker.js`, `apps-script/Code.gs`, belum dirilis —
+belum pernah diuji live)
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- Ambang waktu: **Materi 1 menit, Modul 3 menit** (`AMBANG_WAKTU_MS`, konstanta terpisah
+  di masing-masing file tracker — TIDAK dibagi dari 1 sumber, karena keduanya sudah punya
+  "APPS_SCRIPT_URL sendiri-sendiri" sebagai pola yang sudah ada, konsisten dengan itu).
+- Yang dihitung: **waktu TERLIHAT** (Page Visibility API), bukan wall-clock sejak dibuka.
+  Ini PENTING — kalau nanti direfaktor jadi wall-clock biasa (mis. `setTimeout` sederhana),
+  siswa bisa mengakali dengan membuka banyak tab sekaligus.
+- Penanda progres HANYA terkirim selagi halaman MASIH TERBUKA (dicek berkala tiap 5 detik
+  + tiap event relevan seperti `visibilitychange`/`goToPage`) — TIDAK PERNAH dijadwalkan via
+  `setTimeout` yang tetap "menunggu" walau siswa sudah pergi/menutup halaman. Kalau ambang
+  waktu belum tercapai saat halaman ditutup, progres itu HILANG SELAMANYA (bukan cuma
+  tertunda) — ini SESUAI DESAIN ("hanya dibuka tanpa dibaca = tidak dapat eksperimen apa-
+  apa"), bukan bug.
+- Modul: syarat "mencapai halaman terakhir" DAN "ambang waktu" harus SAMA-SAMA terpenuhi,
+  boleh dalam urutan APA PUN (waktu duluan baru capai halaman terakhir, atau sebaliknya).
+- EXP baca/selesai ulang: kunjungan ke-1 = EXP penuh, kunjungan ke-2 dst KE MATERI/MODUL
+  YANG SAMA = `EXP_ULANG_` (1). Materi/modul BERBEDA masing-masing tetap dapat EXP penuh di
+  kunjungan pertamanya — jangan sampai salah paham jadi "EXP materi keseluruhan dibatasi",
+  yang dibatasi cuma pengulangan ke ITEM YANG SAMA.
+- **Perubahan skema BESAR**: "Data Progres Materi"/"Data Progres Modul" sekarang APPEND-ONLY
+  (1 baris = 1 kunjungan), BUKAN lagi upsert (1 baris = 1 siswa+materi). Data LAMA yang masih
+  berformat upsert (1 baris per siswa+materi dari sebelum fitur ini) TETAP KOMPATIBEL tanpa
+  migrasi — setiap baris lama otomatis dihitung sebagai "kunjungan ke-1" untuk materi/modul
+  itu, sistem baru cuma menambah baris BARU mulai sekarang, tidak perlu mengubah baris lama.
+
+**Uji manual yang WAJIB dilakukan sebelum fitur ini dianggap aman:**
+- [ ] Buka 1 materi, TUTUP dalam < 1 menit (jangan tunggu) → cek sheet "Data Progres
+      Materi" → TIDAK ADA baris baru, EXP TIDAK bertambah
+- [ ] Buka 1 materi, BIARKAN TERBUKA & TERLIHAT ≥ 1 menit tanpa pindah tab → cek sheet →
+      ADA 1 baris baru, EXP bertambah 10
+- [ ] Buka materi yang SAMA lagi di sesi lain, biarkan ≥ 1 menit lagi → cek sheet → ADA
+      baris KEDUA (bukan menimpa baris pertama), EXP bertambah cuma 1 (bukan 10 lagi),
+      statistik "Materi Dibaca" di Profil TETAP di angka yang sama (tidak ikut naik)
+- [ ] Buka materi, tunggu 20 detik, PINDAH TAB lain selama 2 menit, BALIK LAGI ke tab
+      materi, tunggu 40 detik lagi (total waktu TERLIHAT = 60 detik, tapi total waktu
+      SEJAK DIBUKA jauh lebih dari itu) → EXP HARUS bertambah (karena akumulasi waktu
+      terlihat sudah cukup), membuktikan timer benar-benar dijeda saat pindah tab, bukan
+      cuma wall-clock
+- [ ] Buka modul, klik "Lanjut →" cepat-cepat sampai halaman terakhir dalam < 3 menit,
+      lalu TUTUP halaman → cek sheet "Data Progres Modul" → TIDAK ADA baris baru (syarat
+      waktu belum terpenuhi walau sudah "selesai" secara halaman)
+- [ ] Buka modul yang SAMA, kali ini BIARKAN TERBUKA di halaman terakhir sampai total
+      waktu terlihat ≥ 3 menit → BARU SEKARANG baris tersimpan & EXP bertambah 25 (atau
+      1 kalau ini bukan kunjungan pertama ke modul itu)
+- [ ] Modul yang SUDAH pernah selesai dibuka ULANG (localStorage otomatis memulihkan ke
+      halaman terakhir) → syarat "halaman terakhir" langsung terpenuhi di awal, TAPI tetap
+      harus menunggu 3 menit lagi (tab terbuka & terlihat) sebelum EXP (1, bukan 25)
+      tercatat — TIDAK instan
+- [ ] Buka DevTools Console selama proses baca materi/modul → pastikan TIDAK ada error
+      JavaScript yang muncul akibat perubahan ini
+- [ ] Redeploy Apps Script SELESAI dilakukan sebelum uji ini (perubahan `Code.gs`:
+      `doPostProgresMateri_`, `doPostProgresModul_`, `doPostHitungGamifikasi_`, fungsi baru
+      `hitungExpDenganBacaUlang_`) — DAN pastikan URL Apps Script di KEDUA file tracker
+      + `uji-kemampuan.html` + `profil-siswa.html` semuanya konsisten (lihat insiden URL
+      basi Agustus 2026 di CHANGELOG.md — WAJIB dicek ulang tiap kali menyentuh 4 file itu)

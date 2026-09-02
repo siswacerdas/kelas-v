@@ -8,6 +8,57 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Ditambahkan — Timer minimum & EXP baca/selesai ulang untuk Materi & Modul (belum dirilis)
+- **Timer minimum** (permintaan eksplisit Arif): sebelumnya EXP materi diberikan SEKETIKA
+  halaman dibuka (tanpa syarat waktu apa pun) — sekarang siswa harus menghabiskan waktu
+  MINIMAL di halaman sebelum EXP diberikan: **1 menit untuk Materi**, **3 menit untuk
+  Modul** (lebih lama karena modul jauh lebih panjang/mendalam — nilai rekomendasi Claude,
+  gampang diubah lewat 1 konstanta `AMBANG_WAKTU_MS` di masing-masing file tracker). Untuk
+  Modul, syarat waktu ini TAMBAHAN di atas syarat lama (mencapai halaman terakhir) — KEDUA
+  syarat harus terpenuhi, bukan salah satu saja.
+- Waktu yang dihitung adalah waktu halaman BENAR-BENAR TERLIHAT (Page Visibility API),
+  DIJEDA otomatis kalau siswa pindah tab/aplikasi lain — supaya tidak bisa diakali dengan
+  membuka banyak tab materi sekaligus lalu menunggu total waktu tanpa benar-benar membaca.
+  Kalau siswa menutup/pergi dari halaman SEBELUM ambang waktu tercapai, TIDAK ADA APA PUN
+  yang terkirim ke server (bukan dijadwalkan via `setTimeout` yang tetap berjalan walau
+  halaman ditinggal).
+- **EXP baca/selesai ULANG jadi kecil**: kunjungan PERTAMA ke suatu materi/modul tetap dapat
+  EXP penuh (10/25), tapi kunjungan BERIKUTNYA ke MATERI/MODUL YANG SAMA cuma dapat 1 EXP
+  (konstanta `EXP_ULANG_`) — mencegah EXP dibanjiri dengan buka-tutup materi yang sama
+  berkali-kali, sekaligus tetap menghargai (sedikit) kebiasaan membaca ulang untuk review.
+  Materi/modul BERBEDA tetap dapat EXP PENUH masing-masing di kunjungan pertamanya.
+- **Perubahan skema server**: sheet "Data Progres Materi" & "Data Progres Modul" diubah dari
+  UPSERT (1 baris per siswa+materi, ditimpa tiap kunjungan) jadi APPEND-ONLY (1 baris per
+  KUNJUNGAN yang lolos syarat waktu) — WAJIB, karena upsert tidak bisa membedakan "sudah
+  dibaca berapa kali". Fungsi lama `hitungJumlahMateriDibaca_`/`hitungJumlahModulDiselesaikan_`
+  diganti 1 fungsi generik `hitungExpDenganBacaUlang_()` dipakai untuk keduanya. Statistik
+  "Materi Dibaca"/"Modul Selesai" (jumlah DISTINCT, bukan jumlah kunjungan) TIDAK berubah
+  caranya ditampilkan — cuma cara menghitungnya di server yang berubah.
+- `pages/laporan-siswa/assets/belajar-mandiri.js` (laporan orang tua) TIDAK PERLU diubah
+  sama sekali — sudah pakai `Set()` untuk deduplikasi materi/modul unik, otomatis kompatibel
+  dengan baris ganda dari kunjungan berulang. "Aktivitas Terbaru" malah jadi lebih informatif
+  (baca ulang tampil sebagai aktivitas terpisah).
+
+### Diperbaiki — AKAR SEBAB SEBENARNYA dari seluruh kebingungan "data tidak muncul"
+sebelumnya: URL Apps Script LAMA masih tertanam di 4 file
+- **Ini yang menjelaskan HAMPIR SEMUA laporan bug beberapa hari terakhir** (Papan Peringkat
+  kosong, Profil "belum ada data" meski sudah kuis, dst.) — bukan bug logika di kode, bukan
+  masalah deploy versi baru vs lama seperti dugaan awal, murni **URL Apps Script yang
+  tertanam di kode klien sudah tidak sama dengan URL yang sedang dipakai proyek**
+  (`AKfycbzM8gGleSPv...` lama → `AKfycbzF3Ln0L8rOkAl...` baru).
+- 4 file yang mengandung URL ini: `pages/uji-kemampuan.html`,
+  `pages/materi/assets/materi-progress-tracker.js`,
+  `pages/modul/assets/modul-progress-tracker.js`, `pages/profil-siswa.html`
+  (avatar) — SEMUA sudah diperbarui ke URL baru.
+- **Pelajaran untuk sesi mendatang**: setiap file punya salinan URL Apps Script SENDIRI
+  (SENGAJA tidak semua mengimpor dari `pages/mpls/assets/config.js`, lihat komentar
+  panjang di `materi-progress-tracker.js` soal alasannya). Konsekuensinya: kalau URL Apps
+  Script pernah BERUBAH (beda dari sekadar redeploy versi baru ke URL yang SAMA), WAJIB
+  diperbarui manual di SEMUA 4 tempat ini sekaligus, atau sebagian fitur akan diam-diam
+  gagal (fire-and-forget, tidak ada pesan error yang jelas ke siswa) sementara fitur lain
+  yang urlnya kebetulan sudah benar tetap jalan normal — pola gejala yang membingungkan
+  sekali kalau tidak tahu akar sebabnya.
+
 ### Diperbaiki — Bug `window.MPLS_STUDENTS` bikin Papan Peringkat SELALU kosong (belum dirilis)
 - **Laporan Arif**: Papan Peringkat menampilkan "Belum ada data." total, padahal salah satu
   siswa (Fairel) sudah 2x mengerjakan Uji Kemampuan.
@@ -22,15 +73,11 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   sebelumnya, bukan masalah deploy/data.
 - Diperbaiki dengan pola yang sama seperti file lain (`typeof` check, bukan `window.`).
 
-### Diselidiki (belum ketemu akar sebab pasti) — Profil Fairel tetap "belum ada data" meski
-sudah 2x kuis
-- Ditelusuri lewat baca kode `namaSiswa` di alur simpan hasil kuis (`uji-kemampuan.html`) vs
-  yang dibaca `profil-siswa.html` — keduanya konsisten sumbernya (event `role-verified`),
-  tidak ketemu bug dari baca kode saja.
-- Sesi berikutnya: cek dulu apakah Arif sudah lapor hasil 3 langkah diagnostik yang diminta
-  (isi dokumen `level_siswa/Fairel Atharizz Calief` di Firestore Console langsung, tab
-  Network saat submit kuis, tab Console saat submit/buka profil) — JANGAN menebak ulang
-  dari nol, lanjutkan dari hasil itu.
+### Terpecahkan — Profil Fairel tetap "belum ada data" meski sudah 2x kuis
+- **Akar sebabnya URL Apps Script lama** (lihat entri paling atas) — `uji-kemampuan.html`
+  memanggil URL yang sudah tidak dipakai lagi, jadi `hitung_gamifikasi` tidak pernah benar-
+  benar sampai ke server yang sedang aktif, dokumen `level_siswa` tidak pernah terisi.
+  Bukan bug logika seperti yang sempat diduga di sesi sebelumnya.
 
 
 > Dikerjakan lewat jalur sesi kerja konten (Claude + Arif, upload-ZIP), berjalan paralel
