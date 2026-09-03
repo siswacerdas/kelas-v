@@ -52,10 +52,11 @@
  * dicek: cocokkan URL di sini dengan Manage Deployments di Apps Script.
  */
 (function () {
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYhDvdqEZBTDMuBTSOwa0WpfXk-b3SmnV29pnqthCsWEf0bD0HUQ1xfR8hBt1gypWj7g/exec";
-  var AMBANG_WAKTU_MS = 60 * 1000; // 1 menit — ubah di sini kalau dirasa kurang/lebih pas
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA/exec";
+  var AMBANG_WAKTU_MS = 5 * 1000; // SEMENTARA 5 DETIK UNTUK DEBUG - JANGAN DIPAKAI PRODUKSI
 
   function kirimProgres(namaSiswa, materiSlug) {
+    console.log("[DEBUG tracker] kirimProgres() DIPANGGIL ->", { namaSiswa: namaSiswa, materiSlug: materiSlug });
     try {
       // KEDUA panggilan di bawah SENGAJA ditembak BERSAMAAN (bukan dirangkai .then()),
       // masing-masing dengan keepalive sendiri — supaya KEDUANYA sempat terkirim
@@ -79,7 +80,11 @@
           "Nama Siswa": namaSiswa,
           "Materi Slug": materiSlug,
         }),
-      }).catch(function () { /* diamkan */ });
+      }).then(function (r) { return r.text(); }).then(function (txt) {
+        console.log("[DEBUG tracker] Respons progres_materi:", txt);
+      }).catch(function (err) {
+        console.log("[DEBUG tracker] GAGAL fetch progres_materi:", err);
+      });
 
       fetch(APPS_SCRIPT_URL, {
         method: "POST",
@@ -92,7 +97,8 @@
   async function init() {
     if (!window.MateriNav) return; // materi-nav.js belum dimuat/gagal — jangan lanjut
     var entry = window.MateriNav.currentEntry();
-    if (!entry) return; // halaman ini tidak dikenali materi-index.js, tidak ada yang dilacak
+    if (!entry) { console.log("[DEBUG tracker] currentEntry() TIDAK KETEMU - halaman ini tidak dikenali materi-index.js, tracker BERHENTI di sini"); return; }
+    console.log("[DEBUG tracker] Materi terdeteksi:", entry.judul, "| file:", entry.file);
     var materiSlug = entry.file.replace(/\.html$/i, "");
 
     // ── Akumulasi waktu TERLIHAT (bukan wall-clock sejak dibuka) — lihat komentar
@@ -110,9 +116,11 @@
 
     function cobaKirim() {
       if (sudahDikirim) return;
-      if (!namaSiswaTerdeteksi) return; // auth belum selesai dicek, atau memang bukan siswa
-      if (totalWaktuTerlihatMs() < AMBANG_WAKTU_MS) return; // belum cukup lama membaca
+      if (!namaSiswaTerdeteksi) { console.log("[DEBUG tracker] cobaKirim(): namaSiswaTerdeteksi masih kosong (auth belum selesai / bukan siswa)"); return; }
+      var sisaMs = AMBANG_WAKTU_MS - totalWaktuTerlihatMs();
+      if (sisaMs > 0) { console.log("[DEBUG tracker] cobaKirim(): masih kurang " + Math.ceil(sisaMs/1000) + " detik lagi (waktu terlihat sejauh ini: " + Math.floor(totalWaktuTerlihatMs()/1000) + " detik)"); return; }
       sudahDikirim = true;
+      console.log("[DEBUG tracker] Ambang waktu TERCAPAI & nama siswa terdeteksi -> mengirim sekarang");
       kirimProgres(namaSiswaTerdeteksi, materiSlug);
     }
 
@@ -167,9 +175,11 @@
         // baca Firestore sama sekali, cek dulu apakah ini akun anonim + ada
         // nama tersimpan di sessionStorage (diisi index.html saat login siswa)
         // — kalau iya, itu sudah cukup jadi bukti "ini siswa", langsung lacak.
+        console.log("[DEBUG tracker] onAuthStateChanged -> user login terdeteksi, isAnonymous:", user.isAnonymous);
         if (user.isAnonymous) {
           var namaSiswaAnon = sessionStorage.getItem("kelas5_siswa_nama");
-          if (!namaSiswaAnon) return; // sesi anonim nyasar tanpa nama, jangan lacak apa pun
+          console.log("[DEBUG tracker] Akun anonim, sessionStorage kelas5_siswa_nama =", JSON.stringify(namaSiswaAnon));
+          if (!namaSiswaAnon) { console.log("[DEBUG tracker] BERHENTI: sessionStorage nama kosong"); return; }
           namaSiswaTerdeteksi = namaSiswaAnon;
           cobaKirim(); // jaga-jaga kalau ambang waktu sudah lewat duluan sebelum auth selesai dicek
           return;
@@ -184,7 +194,7 @@
         namaSiswaTerdeteksi = data.nama;
         cobaKirim();
       });
-    } catch (e) { /* diamkan — kegagalan memuat Firebase tidak boleh mengganggu tampilan materi */ }
+    } catch (e) { console.log("[DEBUG tracker] GAGAL total memuat Firebase / auth:", e); }
   }
 
   if (document.readyState === "loading") {
