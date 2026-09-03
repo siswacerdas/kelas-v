@@ -97,7 +97,7 @@
   async function init() {
     if (!window.MateriNav) return; // materi-nav.js belum dimuat/gagal — jangan lanjut
     var entry = window.MateriNav.currentEntry();
-    if (!entry) { console.log("[DEBUG tracker] currentEntry() TIDAK KETEMU - halaman ini tidak dikenali materi-index.js, tracker BERHENTI di sini"); return; }
+    if (!entry) { console.log("[DEBUG tracker] currentEntry() TIDAK KETEMU"); return; }
     console.log("[DEBUG tracker] Materi terdeteksi:", entry.judul, "| file:", entry.file);
     var materiSlug = entry.file.replace(/\.html$/i, "");
 
@@ -116,9 +116,9 @@
 
     function cobaKirim() {
       if (sudahDikirim) return;
-      if (!namaSiswaTerdeteksi) { console.log("[DEBUG tracker] cobaKirim(): namaSiswaTerdeteksi masih kosong (auth belum selesai / bukan siswa)"); return; }
+      if (!namaSiswaTerdeteksi) { console.log("[DEBUG tracker] cobaKirim(): namaSiswaTerdeteksi masih kosong"); return; }
       var sisaMs = AMBANG_WAKTU_MS - totalWaktuTerlihatMs();
-      if (sisaMs > 0) { console.log("[DEBUG tracker] cobaKirim(): masih kurang " + Math.ceil(sisaMs/1000) + " detik lagi (waktu terlihat sejauh ini: " + Math.floor(totalWaktuTerlihatMs()/1000) + " detik)"); return; }
+      if (sisaMs > 0) { console.log("[DEBUG tracker] cobaKirim(): masih kurang " + Math.ceil(sisaMs/1000) + " detik"); return; }
       sudahDikirim = true;
       console.log("[DEBUG tracker] Ambang waktu TERCAPAI & nama siswa terdeteksi -> mengirim sekarang");
       kirimProgres(namaSiswaTerdeteksi, materiSlug);
@@ -146,7 +146,7 @@
     }, 5000);
 
     try {
-      var { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+      var { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
       var { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
       var { getFirestore, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
@@ -158,14 +158,27 @@
         messagingSenderId: "918314271457",
         appId:             "1:918314271457:web:04df91f8cd856be49dada0"
       };
-      var app  = initializeApp(firebaseConfig, "materi-progress-tracker"); // nama app terpisah,
-        // supaya tidak bentrok kalau halaman ini SUATU SAAT juga memuat instance Firebase lain
-        // (mis. auth-guard.js) — initializeApp() dengan config sama tapi tanpa nama unik akan
-        // melempar error "duplicate app" pada instance kedua.
+      // v1.2 (bug ditemukan Sept 2026, lihat CHANGELOG.md): SEBELUMNYA selalu
+      // initializeApp(firebaseConfig, "materi-progress-tracker") — instance TERPISAH dari
+      // yang dipakai auth-guard.js. TERNYATA instance terpisah itu TIDAK BISA melihat sesi
+      // Anonymous Auth siswa (kemungkinan beda persistence: browserSessionPersistence yang
+      // dipakai saat login vs default browserLocalPersistence pada instance baru) —
+      // onAuthStateChanged pada instance terpisah SELALU resolve ke user=null, membuat
+      // TIDAK ADA satu pun progres materi yang pernah tercatat sejak fitur ini dibuat,
+      // sekalipun URL Apps Script sudah benar. Diperbaiki dengan PAKAI ULANG instance yang
+      // SUDAH diinisialisasi auth-guard.js (lewat getApps()[0]) — auth-guard.js dimuat LEBIH
+      // DULU di setiap halaman materi dan sudah pasti melihat sesi login dengan benar (pola
+      // yang sama persis dengan profil-siswa.html/papan-peringkat.html, yang TERBUKTI jalan).
+      // initializeApp() dengan nama unik cuma dipakai sebagai FALLBACK kalau karena suatu
+      // sebab belum ada app terinisialisasi sama sekali (seharusnya tidak pernah terjadi
+      // kalau auth-guard.js dimuat lebih dulu, tapi jaga-jaga).
+      var app  = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig, "materi-progress-tracker");
       var auth = getAuth(app);
       var db   = getFirestore(app);
 
+      console.log("[DEBUG tracker] Firebase app dipakai:", app.name, "| jumlah app aktif:", getApps().length);
       onAuthStateChanged(auth, async function (user) {
+        console.log("[DEBUG tracker] onAuthStateChanged terpanggil, user:", user ? (user.uid + (user.isAnonymous ? " (anonim)" : " (email/password)")) : "null (tidak ada yang login)");
         if (!user) return; // auth-guard.js yang mengurus redirect kalau belum login, bukan tugas file ini
 
         // v1.1 (CHANGELOG.md (v0.11.0) Fase 3): siswa login pakai Firebase
@@ -181,7 +194,7 @@
           console.log("[DEBUG tracker] Akun anonim, sessionStorage kelas5_siswa_nama =", JSON.stringify(namaSiswaAnon));
           if (!namaSiswaAnon) { console.log("[DEBUG tracker] BERHENTI: sessionStorage nama kosong"); return; }
           namaSiswaTerdeteksi = namaSiswaAnon;
-          cobaKirim(); // jaga-jaga kalau ambang waktu sudah lewat duluan sebelum auth selesai dicek
+          cobaKirim();
           return;
         }
 
