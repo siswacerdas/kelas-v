@@ -8,6 +8,49 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki — AKAR SEBAB SESUNGGUHNYA: instance Firebase terpisah tidak bisa lihat sesi
+login siswa (kemungkinan bug sejak fitur EXP Materi/Modul pertama dibuat)
+- **Ditemukan lewat file debug ber-`console.log` yang dibuatkan khusus untuk sesi
+  troubleshooting ini** — setelah URL Apps Script, cache CDN, dan versi file semua
+  dipastikan benar, `progres_materi`/`progres_modul` MASIH TIDAK PERNAH terkirim. Log
+  menunjukkan `onAuthStateChanged` TIDAK PERNAH resolve ke user yang valid.
+- **Akar sebab**: `materi-progress-tracker.js` & `modul-progress-tracker.js` masing-masing
+  SELALU membuat instance Firebase App TERPISAH (`initializeApp(config, "nama-unik")`) dari
+  yang dipakai `auth-guard.js`. Instance terpisah ini TERNYATA TIDAK BISA melihat sesi
+  Firebase Anonymous Auth siswa (kemungkinan besar karena beda persistence — login siswa
+  pakai `browserSessionPersistence` eksplisit, sedangkan instance baru pakai default SDK
+  `browserLocalPersistence`) — `onAuthStateChanged` pada instance terpisah SELALU resolve ke
+  `user: null`, walau siswa jelas-jelas sedang login di instance UTAMA.
+- **Kemungkinan besar ini bug yang SUDAH ADA sejak fitur EXP Materi pertama dibuat**
+  (Fase 3), cuma selama ini tertutup oleh masalah lain (URL basi, dll.) yang membuatnya
+  tidak pernah kelihatan sebagai penyebab terpisah.
+- **Diperbaiki**: kedua tracker sekarang PAKAI ULANG instance Firebase yang SUDAH
+  diinisialisasi `auth-guard.js` (lewat `getApps()[0]`), TIDAK bikin instance terpisah lagi
+  — pola yang sama persis dengan `profil-siswa.html`/`papan-peringkat.html` yang TERBUKTI
+  bekerja. `initializeApp()` dengan nama unik cuma jadi fallback kalau (secara teori) belum
+  ada app terinisialisasi sama sekali.
+- **Pelajaran penting**: kalau menambah tracker/skrip BARU di masa depan yang butuh
+  mendeteksi siapa yang login, JANGAN buat instance Firebase App terpisah — SELALU pakai
+  `getApps()[0]` untuk pakai ulang instance yang sudah ada dari `auth-guard.js`.
+
+### Diperbaiki — File ke-5 dengan URL Apps Script BEDA ditemukan: `pages/mpls/assets/config.js`
+- Saat menjawab pertanyaan Arif "file apa saja yang perlu update URL manual", ditemukan
+  `pages/mpls/assets/config.js` TERNYATA punya URL Apps Script yang BEDA dari 4 file lain
+  yang sudah diperbaiki sebelumnya (`AKfycbwwd5T0jVqgE18N...` — bukan sekadar URL lama yang
+  sama, tapi URL LAIN LAGI, kemungkinan sisa dari deployment paling awal proyek ini).
+- File ini dipakai 8 halaman: `index.html`, `pages/infografis.html`,
+  `pages/infografis/kelola-tp.html`, `pages/infografis/galeri.html`, `pages/kelas/index.html`,
+  `pages/laporan-siswa/latihan-mandiri.html`, `pages/laporan-siswa/belajar-mandiri.html`
+  (laporan orang tua yang baru dibangun!), `pages/laporan-siswa/mpls.html` — SEMUA halaman
+  ini kemungkinan besar terdampak (permintaan ke Apps Script gagal diam-diam) sampai
+  perbaikan ini.
+- Sudah disamakan ke URL yang sama dengan 4 file lain (satu Apps Script project melayani
+  SEMUA jenis permintaan, jadi seharusnya memang satu URL yang sama di semua tempat).
+- **Total sekarang 5 file yang menyimpan URL Apps Script masing-masing** (bukan 4 seperti
+  catatan sebelumnya): `materi-progress-tracker.js`, `modul-progress-tracker.js`,
+  `uji-kemampuan.html`, `profil-siswa.html`, `pages/mpls/assets/config.js`. WAJIB dicek
+  SEMUA 5 kalau URL Apps Script berubah lagi di masa depan.
+
 ### Ditambahkan — Timer minimum & EXP baca/selesai ulang untuk Materi & Modul (belum dirilis)
 - **Timer minimum** (permintaan eksplisit Arif): sebelumnya EXP materi diberikan SEKETIKA
   halaman dibuka (tanpa syarat waktu apa pun) — sekarang siswa harus menghabiskan waktu
