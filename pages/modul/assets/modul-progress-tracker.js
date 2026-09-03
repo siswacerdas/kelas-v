@@ -53,7 +53,7 @@
  * Agustus 2026**: URL ini sempat basi berhari-hari tanpa disadari — lihat CHANGELOG.md.
  */
 (function () {
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYhDvdqEZBTDMuBTSOwa0WpfXk-b3SmnV29pnqthCsWEf0bD0HUQ1xfR8hBt1gypWj7g/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA/exec";
   var AMBANG_WAKTU_MS = 3 * 60 * 1000; // 3 menit — lebih lama dari materi (1 menit), ubah di sini kalau dirasa kurang/lebih pas
 
   function slugDariStorageKey() {
@@ -89,7 +89,7 @@
 
   async function deteksiSiswaLaluKirim(slug) {
     try {
-      var { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
+      var { initializeApp, getApps } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js");
       var { getAuth, onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js");
       var { getFirestore, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
 
@@ -101,11 +101,13 @@
         messagingSenderId: "918314271457",
         appId:             "1:918314271457:web:04df91f8cd856be49dada0"
       };
-      // Nama app instance TERPISAH dari materi-progress-tracker.js ("modul-progress-tracker"
-      // vs "materi-progress-tracker") — initializeApp() dengan config sama tapi nama sama akan
-      // melempar error "duplicate app" kalau suatu saat 2 tracker ini pernah dimuat bersamaan
-      // di 1 halaman (tidak terjadi sekarang, tapi jaga-jaga).
-      var app  = initializeApp(firebaseConfig, "modul-progress-tracker");
+      // v1.2 (bug ditemukan Sept 2026, lihat CHANGELOG.md & materi-progress-tracker.js untuk
+      // kronologi lengkap): SEBELUMNYA selalu initializeApp(firebaseConfig, "modul-progress-
+      // tracker") — instance TERPISAH yang TERNYATA TIDAK BISA melihat sesi Anonymous Auth
+      // siswa (onAuthStateChanged selalu resolve ke user=null). Diperbaiki dengan PAKAI ULANG
+      // instance yang sudah diinisialisasi auth-guard.js (getApps()[0]) — pola yang sama
+      // dengan perbaikan materi-progress-tracker.js.
+      var app  = getApps().length > 0 ? getApps()[0] : initializeApp(firebaseConfig, "modul-progress-tracker");
       var auth = getAuth(app);
       var db   = getFirestore(app);
 
