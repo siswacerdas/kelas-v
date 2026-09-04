@@ -8,6 +8,65 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diubah — Rename menu "Modul Pembelajaran" → "Ayo Belajar!" & "Materi Ajar" → "Ingat Lagi", dibuka untuk orangtua (Fase 1 dari 4 permintaan Arif)
+- **Latar belakang**: Arif ingin nama menu lebih ramah-anak DAN menunjukkan jelas urutan
+  belajar (mulai dari Modul, baru Materi Ajar untuk mengingat/menguatkan ulang). Setelah
+  didiskusikan (3 opsi nama diajukan), Arif memilih opsi paling berani: ganti nama total,
+  bukan sekadar ubah deskripsi.
+- **Modul Pembelajaran → 🚀 Ayo Belajar!** (badge "Langkah 1") — diubah di kartu beranda
+  (`index.html`), hub (`pages/modul.html`: title/topbar/H1/subtitle), dan breadcrumb "Modul"
+  di SEMUA 43 file `pages/modul/**/modul.html`.
+- **Materi Ajar → 🔁 Ingat Lagi** (badge "Langkah 2") — diubah di kartu beranda, hub
+  (`pages/materi.html`), dan SEMUA 193 file `pages/materi/**/*.html` (title, brand div,
+  breadcrumb, link "Kembali ke daftar ..."). Juga disamakan di halaman lain yang menyebut
+  nama ini ke orangtua/guru: `papan-peringkat.html` (subtitle), `laporan-siswa.html` (deskripsi
+  pintu "Perkembangan Belajar Mandiri" — sekalian menghapus catatan usang "(Modul menyusul)"
+  karena laporan itu SUDAH menampilkan progres Modul sejak sebelumnya, cuma labelnya lupa
+  diperbarui), dan `pages/laporan-siswa/assets/belajar-mandiri.js` + `.html`-nya (subsection
+  "📖 Materi Ajar"/"🧩 Modul" jadi "🔁 Ingat Lagi"/"🚀 Ayo Belajar!").
+- **Uji Kemampuan** dapat badge tambahan "Langkah 3 · Latihan" (sebelumnya cuma "Latihan")
+  supaya urutan 1→2→3 terlihat lengkap di beranda. **Galeri Visual** badge diubah dari "Siswa"
+  jadi "Pelengkap" (nama tetap, karena tidak dipermasalahkan di diskusi) — sekaligus deskripsi
+  diperjelas untuk menegaskan fungsinya membantu ORANG TUA mencetak di rumah, bukan pengganti
+  Modul/Materi.
+- **Dibuka untuk akun orangtua** (permintaan eksplisit Arif poin 4): `guardRolePage([...])` di
+  `pages/modul.html`, `pages/materi.html`, `pages/infografis.html` ditambah `'orangtua'`, dan
+  `data-akses` ketiga kartu di `index.html` jadi `"siswa guru orangtua"`. **TIDAK ADA
+  perubahan tracker EXP** — `modul-progress-tracker.js`/`materi-progress-tracker.js` SUDAH
+  memfilter `data.role !== "siswa"` sebelum mengirim progres (lihat kode lama), dan
+  `infografis.html` memang tidak punya tracker sama sekali — jadi membuka akses ini tidak
+  berisiko EXP salah kirim ke akun orangtua.
+- **SENGAJA TIDAK diubah**: nama file/folder/URL, `id`/kunci data di `materi-index.js` &
+  `modul-index.js`, label teknis di `admin.html`/`cp-tp-atp.html`/komentar kode (istilah
+  "Materi Ajar"/"Modul" di situ dipakai sebagai istilah kurikulum umum untuk guru, bukan nama
+  fitur yang di-rebrand) — sesuai batasan yang disepakati supaya tidak menyentuh sistem yang
+  sudah stabil.
+- **Masih menyusul** (1 permintaan Arif lainnya dari sesi yang sama): fitur Linimasa
+  Materi (kalender bulanan per semester). Tab "Rekap Lengkap" di Papan Peringkat sudah
+  selesai — lihat entri "Ditambahkan" di bawah.
+
+### Ditambahkan — Tab "Rekap Lengkap" di Papan Peringkat untuk guru (`pages/papan-peringkat.html`)
+- **Latar belakang**: guru sebelumnya TIDAK punya cara melihat Level/EXP seluruh siswa
+  sekaligus dalam satu layar — harus buka Profil & Level satu-satu (dan itu pun siswa-only,
+  guru malah tidak bisa buka sama sekali). Setelah didiskusikan (3 opsi lokasi diajukan:
+  halaman baru, gabung ke Papan Peringkat, atau pintu baru di Laporan Siswa), Arif memilih
+  digabung ke Papan Peringkat sebagai tab kedua.
+- **Tidak ada fetch/endpoint baru** — tab "Rekap Lengkap" pakai ULANG `rosterCache` yang
+  sama persis dengan tab "Papan Peringkat" (satu kali `getDocs(collection(db,
+  "level_siswa"))`), cuma dirender ulang jadi bentuk tabel. Kolom: Nama, Rank & Level,
+  Level Kemampuan, EXP, Kuis Dikerjakan, Lulus, Skor Tertinggi, Rata-rata, Ingat Lagi
+  Dibaca, Ayo Belajar! Selesai — semua field ini SUDAH ada di dokumen `level_siswa`
+  (ditulis `Code.gs` tiap kali gamifikasi dihitung ulang), jadi tinggal ditampilkan.
+- **Bisa dicari** (nama) dan **diurutkan** (ketuk judul kolom mana pun, klik lagi untuk
+  balik arah). Siswa yang belum pernah mengerjakan apa pun tetap muncul (dari
+  `gabungkanRoster()` yang sudah ada) dengan angka 0/— di semua statistik, bukan
+  "undefined".
+- **Tab ini SENGAJA hanya muncul untuk role `guru`** (dicek dari event `role-verified`) —
+  siswa & orangtua yang buka Papan Peringkat tetap melihat tampilan lama tanpa tab sama
+  sekali, tidak ada perubahan visual untuk mereka.
+- Subtitle halaman & subsection di "Perkembangan Belajar Mandiri" ikut disamakan
+  istilahnya jadi "Ingat Lagi"/"Ayo Belajar!" (lihat entri rename di atas).
+
 ### Diperbaiki — AKAR SEBAB SESUNGGUHNYA: instance Firebase terpisah tidak bisa lihat sesi
 login siswa (kemungkinan bug sejak fitur EXP Materi/Modul pertama dibuat)
 - **Ditemukan lewat file debug ber-`console.log` yang dibuatkan khusus untuk sesi

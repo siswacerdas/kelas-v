@@ -2127,3 +2127,89 @@ belum pernah diuji live)
       `hitungExpDenganBacaUlang_`) — DAN pastikan URL Apps Script di KEDUA file tracker
       + `uji-kemampuan.html` + `profil-siswa.html` semuanya konsisten (lihat insiden URL
       basi Agustus 2026 di CHANGELOG.md — WAJIB dicek ulang tiap kali menyentuh 4 file itu)
+
+### 42. Rename "Modul Pembelajaran"→"Ayo Belajar!" & "Materi Ajar"→"Ingat Lagi", dibuka
+untuk orangtua (`index.html`, `pages/modul.html`, `pages/materi.html`,
+`pages/infografis.html`, 43 file `pages/modul/**/modul.html`, 193 file
+`pages/materi/**/*.html`, `pages/papan-peringkat.html`,
+`pages/laporan-siswa/assets/belajar-mandiri.js` + `.html`, `pages/laporan-siswa.html`)
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- Ini PENGGANTIAN NAMA TAMPILAN SAJA. Nama file, folder, URL, `id`, dan kunci data di
+  `materi-index.js`/`modul-index.js` (mis. field `judul`, `slug`, `mapel`) **TIDAK berubah**
+  — kalau nanti mencari kode yang berhubungan dengan "Ayo Belajar!"/"Ingat Lagi" di file JS,
+  cari `modul`/`materi` seperti biasa, JANGAN cari string baru itu di sana.
+- Istilah "Materi Ajar"/"Modul" yang masih tersisa di `cp-tp-atp.html`, `admin.html`, dan
+  komentar kode (`auth-guard.js`, `infografis-*.js`, kedua file tracker) **SENGAJA TIDAK
+  diubah** — di situ istilahnya dipakai sebagai istilah kurikulum umum untuk guru (konten
+  internal/dev), bukan nama fitur yang di-rebrand untuk siswa/orangtua.
+- Tracker EXP (`materi-progress-tracker.js`, `modul-progress-tracker.js`) SUDAH memfilter
+  `data.role !== "siswa"` SEBELUM perubahan ini — jadi membuka akses orangtua ke 3 hub page
+  ini TIDAK butuh perubahan apa pun di kedua tracker itu. Kalau suatu saat menambah tracker
+  BARU di halaman lain yang juga mau dibuka untuk orangtua, filter role ini WAJIB disalin.
+- `infografis.html` memang tidak pernah punya tracker EXP sama sekali (Galeri Visual murni
+  lihat-lihat gambar) — jangan bingung mencari tracker yang "hilang" di situ.
+
+**Uji manual yang WAJIB dilakukan sebelum dianggap aman:**
+- [ ] Login sebagai **siswa** → beranda menampilkan kartu "🚀 Ayo Belajar!" (badge "Langkah
+      1"), "🔁 Ingat Lagi" (badge "Langkah 2"), "🖼️ Galeri Visual" (badge "Pelengkap"), "💪
+      Uji Kemampuan" (badge "Langkah 3 · Latihan") — urutan dan nama sesuai
+- [ ] Klik kartu "Ayo Belajar!" → hub terbuka, title tab browser & H1 juga sudah "Ayo
+      Belajar!" (bukan lagi "Modul Pembelajaran")
+- [ ] Buka salah satu modul dari hub itu → breadcrumb atas bertuliskan "Ayo Belajar!" (bukan
+      "Modul"), progres & EXP tetap jalan seperti biasa
+- [ ] Klik kartu "Ingat Lagi" → hub, title, H1 sudah "Ingat Lagi"; buka salah satu materi →
+      breadcrumb, brand div, dan link "Kembali ke daftar Ingat Lagi" semua konsisten
+- [ ] Login sebagai **orangtua** → SEKARANG kartu "Ayo Belajar!", "Ingat Lagi", "Galeri
+      Visual" MUNCUL di beranda (sebelumnya tersembunyi) — kartu MPLS/CP-TP-ATP/Jadwal
+      (guru-only) TETAP tersembunyi
+- [ ] Sebagai orangtua, buka salah satu modul & materi apa saja sampai selesai dibaca lama →
+      cek sheet "Data Progres Materi"/"Data Progres Modul" di Google Sheets → TIDAK ADA
+      baris baru tercatat, EXP anak TIDAK berubah (buktikan filter role di tracker benar-
+      benar menahan, bukan cuma asumsi dari baca kode)
+- [ ] Login sebagai **guru** → semua kartu tetap terlihat semua seperti biasa (guru tidak
+      pernah dibatasi `data-akses`)
+- [ ] Buka "Perkembangan Belajar Mandiri" (Laporan Siswa Pintu 2) sebagai guru DAN sebagai
+      orangtua → subtitle & subsection report sudah bilang "Ingat Lagi"/"Ayo Belajar!" (bukan
+      "Materi Ajar"/"Modul" lagi), dan catatan usang "(Modul menyusul)" di deskripsi pintu
+      pada `laporan-siswa.html` sudah hilang
+- [ ] Buka Papan Peringkat sebagai siswa & guru → subtitle sudah bilang "Ingat Lagi" (bukan
+      "Materi Ajar")
+
+### 43. Tab "Rekap Lengkap" di Papan Peringkat untuk guru (`pages/papan-peringkat.html`)
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- Sumber data tab Rekap SAMA PERSIS dengan tab Papan Peringkat — satu kali
+  `getDocs(collection(db, "level_siswa"))` disimpan di `rosterCache`, dipakai ulang oleh
+  KEDUANYA. Jangan tambah fetch kedua untuk tab Rekap — kalau butuh data baru yang belum
+  ada di `level_siswa`, tambahkan field itu ke `Code.gs` (bagian yang menulis dokumen
+  `level_siswa`) dulu, baru field baru itu otomatis ikut kebawa ke `rosterCache`.
+- Tab "Rekap Lengkap" HANYA muncul untuk `role === "guru"` — kondisinya ada DUA lapis:
+  `tabsRow` (elemen HTML pembungkus 2 tombol tab) disembunyikan default lewat class
+  `hidden` di HTML, baru dilepas via JS kalau role guru. Siswa/orangtua yang masuk halaman
+  ini TIDAK PERNAH melihat tab sama sekali (bukan cuma tab Rekap-nya yang disembunyikan,
+  seluruh baris tab-nya tidak ada).
+- Siswa "belum mulai" (dari `gabungkanRoster()`, lihat §-nya di atas soal avatar) TETAP
+  muncul di tabel Rekap dengan angka 0/— di semua kolom statistik — field
+  `totalKuisDikerjakan` dkk memang tidak ada sama sekali di objek sintetis itu, jadi SEMUA
+  akses field statistik di `renderRekap()` WAJIB pakai fallback `|| 0` (sudah diterapkan,
+  jangan dihapus saat refactor).
+- Sort & search murni client-side di atas `rosterCache` (25 siswa, sangat ringan) — TIDAK
+  perlu paginasi atau query Firestore terpisah, JANGAN over-engineer ini kalau jumlah siswa
+  masih sekelas.
+
+**Uji manual yang WAJIB dilakukan sebelum dianggap aman:**
+- [ ] Login sebagai **siswa** → buka Papan Peringkat → TIDAK ADA tab sama sekali (tampilan
+      grouped-by-rank seperti biasa)
+- [ ] Login sebagai **guru** → buka Papan Peringkat → tab "🏅 Papan Peringkat" (aktif
+      default) dan "📊 Rekap Lengkap" MUNCUL di atas
+- [ ] Klik tab "Rekap Lengkap" → tabel muncul berisi SEMUA ~25 siswa (termasuk yang belum
+      pernah mengerjakan apa pun — tampil dengan 0/— bukan "undefined")
+- [ ] Ketik nama sebagian di kotak cari → tabel otomatis tersaring cuma yang cocok
+- [ ] Klik judul kolom "EXP" → tabel terurut EXP terbesar dulu; klik lagi → terbalik jadi
+      terkecil dulu; klik kolom "Nama" → balik ke urutan alfabet
+- [ ] Klik balik ke tab "🏅 Papan Peringkat" → tampilan lama tetap seperti semula, TIDAK
+      ada fetch ulang ke Firestore (cek Network tab: cuma 1 request `level_siswa` sejak
+      halaman dibuka, biar pindah tab bolak-balik berkali-kali)
+- [ ] Buka DevTools Console selagi pindah-pindah tab & sortir → pastikan tidak ada error
+      JavaScript

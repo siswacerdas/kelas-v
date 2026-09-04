@@ -472,29 +472,35 @@
         <div class="card-desc">Capaian Pembelajaran, Tujuan Pembelajaran, dan Alur Tujuan Pembelajaran</div>
         <div class="card-badge">Kurikulum</div>
       </a>
-      <a href="pages/modul.html" class="card" data-akses="siswa guru" style="--card-accent: #2a9d6f">
-        <div class="card-icon">📚</div>
-        <div class="card-title">Modul Pembelajaran</div>
-        <div class="card-desc">Modul scaffolding per tema dan mata pelajaran</div>
-        <div class="card-badge">Pembelajaran</div>
+      <!-- Nama & badge kartu ini SENGAJA menunjukkan urutan belajar (Langkah 1/2/3) —
+           permintaan eksplisit Arif supaya siswa & orang tua paham harus mulai dari
+           "Ayo Belajar!" dulu, "Ingat Lagi" untuk mengulang, baru Uji Kemampuan untuk
+           menguji diri (lihat CHANGELOG.md untuk latar belakang rename dari "Modul
+           Pembelajaran"/"Materi Ajar"). Dibuka untuk orangtua juga sejak rename ini —
+           lihat catatan guardRolePage di pages/modul.html/materi.html/infografis.html. -->
+      <a href="pages/modul.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #2a9d6f">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Ayo Belajar!</div>
+        <div class="card-desc">Mulai dari sini — belajar langkah demi langkah sampai satu topik selesai</div>
+        <div class="card-badge">Langkah 1</div>
       </a>
-      <a href="pages/materi.html" class="card" data-akses="siswa guru" style="--card-accent: #e8a020">
-        <div class="card-icon">📖</div>
-        <div class="card-title">Materi Ajar</div>
-        <div class="card-desc">Buku Belajar Mandiri untuk siswa, bisa dibaca langsung</div>
-        <div class="card-badge">Siswa</div>
+      <a href="pages/materi.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #e8a020">
+        <div class="card-icon">🔁</div>
+        <div class="card-title">Ingat Lagi</div>
+        <div class="card-desc">Baca ulang apa yang sudah dipelajari biar makin nempel di kepala</div>
+        <div class="card-badge">Langkah 2</div>
       </a>
-      <a href="pages/infografis.html" class="card" data-akses="siswa guru" style="--card-accent: #16a086">
+      <a href="pages/infografis.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #16a086">
         <div class="card-icon">🖼️</div>
         <div class="card-title">Galeri Visual</div>
-        <div class="card-desc">Gambar, poster, infografis & video singkat pendukung belajar per mata pelajaran</div>
-        <div class="card-badge">Siswa</div>
+        <div class="card-desc">Gambar & poster ringkas — enak dicetak orang tua buat ditempel dan dipelajari lagi di rumah</div>
+        <div class="card-badge">Pelengkap</div>
       </a>
       <a href="pages/uji-kemampuan.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
         <div class="card-icon">💪</div>
         <div class="card-title">Uji Kemampuan</div>
         <div class="card-desc">Latihan soal mandiri untuk menguji pemahamanmu per Tujuan Pembelajaran</div>
-        <div class="card-badge">Latihan</div>
+        <div class="card-badge">Langkah 3 · Latihan</div>
       </a>
       <!-- Profil & Level: SENGAJA siswa-only (bukan "siswa guru") — ini profil PRIBADI
            siswa yang login, guru sudah punya jalur lain untuk melihat siswa lain (Riwayat
