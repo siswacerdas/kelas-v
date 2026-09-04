@@ -53,7 +53,7 @@
  * Agustus 2026**: URL ini sempat basi berhari-hari tanpa disadari — lihat CHANGELOG.md.
  */
 (function () {
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYhDvdqEZBTDMuBTSOwa0WpfXk-b3SmnV29pnqthCsWEf0bD0HUQ1xfR8hBt1gypWj7g/exec";
   var AMBANG_WAKTU_MS = 3 * 60 * 1000; // 3 menit — lebih lama dari materi (1 menit), ubah di sini kalau dirasa kurang/lebih pas
 
   function slugDariStorageKey() {
