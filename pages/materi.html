@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Materi Ajar · Kelas 5</title>
+<title>Ingat Lagi · Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
@@ -22,13 +22,13 @@
 
 <div id="app-materi" class="ma-hidden">
   <div class="ma-topbar">
-    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <div class="ma-brand">Ingat Lagi <span>·</span> Kelas 5</div>
     <a class="ma-back" href="../index.html">← Kembali ke Beranda</a>
   </div>
 
   <div class="ma-page-container">
-    <h1>📖 Materi Ajar</h1>
-    <p class="ma-subtitle">Buku Belajar Mandiri — pilih mata pelajaran, lalu ketuk judul untuk membaca materinya.</p>
+    <h1>🔁 Ingat Lagi</h1>
+    <p class="ma-subtitle">Sudah belajar dari Ayo Belajar!? Baca ulang di sini biar makin ingat — pilih mata pelajaran, lalu ketuk judul.</p>
 
     <div id="filter-row" class="ma-filter-row"></div>
     <div id="list-materi"><div class="ma-empty">Memuat materi…</div></div>
@@ -135,7 +135,10 @@
     renderFilters();
     renderList();
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
+  // v1.3: dibuka untuk orangtua juga (permintaan eksplisit Arif) — TIDAK berisiko
+  // tracker EXP salah kirim, karena materi-progress-tracker.js di tiap file konten
+  // SUDAH memfilter `data.role !== "siswa"` sebelum mengirim progres apa pun.
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru','orangtua'], '../index.html'));
 </script>
 </body>
 </html>

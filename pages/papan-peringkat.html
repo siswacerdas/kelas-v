@@ -58,6 +58,35 @@
   .siswa-row .sr-exp { font-size: 12.5px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
   .siswa-row.belum-mulai { opacity: 0.55; }
   .siswa-row.belum-mulai .sr-exp { color: var(--ink-3); font-weight: 500; }
+
+  /* ── TAB GURU: Papan Peringkat vs Rekap Lengkap ── */
+  .tabs-row { display: flex; gap: 6px; margin-bottom: 1rem; border-bottom: 1.5px solid var(--paper-3); }
+  .tab-btn {
+    appearance: none; border: none; background: none; cursor: pointer; font-family: inherit;
+    padding: 8px 4px 10px; margin-right: 14px; font-size: 13.5px; font-weight: 600;
+    color: var(--ink-3); border-bottom: 2.5px solid transparent; transition: color .15s, border-color .15s;
+  }
+  .tab-btn.active { color: var(--ink); border-color: var(--purple); }
+
+  /* ── REKAP LENGKAP (tabel guru) ── */
+  .rekap-toolbar { display: flex; gap: 8px; margin-bottom: 0.75rem; }
+  .rekap-search {
+    flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+    font-family: inherit; font-size: 13px; background: #fff;
+  }
+  .rekap-scroll { overflow-x: auto; background: #fff; border: 1px solid var(--border); border-radius: var(--r); }
+  table.rekap-table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 12.5px; }
+  table.rekap-table th, table.rekap-table td { padding: 8px 10px; text-align: left; white-space: nowrap; }
+  table.rekap-table th {
+    position: sticky; top: 0; background: var(--paper-2); color: var(--ink-2); font-weight: 700;
+    cursor: pointer; user-select: none; border-bottom: 1.5px solid var(--paper-3);
+  }
+  table.rekap-table th .sort-arrow { font-size: 10px; margin-left: 3px; color: var(--ink-3); }
+  table.rekap-table td { border-bottom: 1px solid var(--paper-2); }
+  table.rekap-table tbody tr:hover { background: var(--paper); }
+  table.rekap-table td.rk-nama { font-weight: 600; white-space: normal; min-width: 130px; }
+  table.rekap-table td.rk-num { text-align: right; }
+  .rekap-hint { font-size: 11.5px; color: var(--ink-3); margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -72,8 +101,18 @@
 
   <div class="container">
     <h1>🏅 Papan Peringkat Kelas</h1>
-    <p class="subtitle">Rank & Level (1-99) seluruh teman sekelas, dari Uji Kemampuan & Materi Ajar.</p>
+    <p class="subtitle">Rank & Level (1-99) seluruh teman sekelas, dari Uji Kemampuan & Ingat Lagi.</p>
+
+    <!-- Tab ini SENGAJA disembunyikan default (class "hidden") dan HANYA dimunculkan untuk
+         guru lewat JS (lihat event role-verified) — siswa/orangtua tetap lihat tampilan lama
+         tanpa tab sama sekali, supaya tidak ada perubahan visual yang tidak perlu buat mereka. -->
+    <div class="tabs-row hidden" id="tabsRow">
+      <button class="tab-btn active" id="tabPapan" type="button">🏅 Papan Peringkat</button>
+      <button class="tab-btn" id="tabRekap" type="button">📊 Rekap Lengkap</button>
+    </div>
+
     <div id="isi-papan"><div class="loading-inline">Memuat…</div></div>
+    <div id="isi-rekap" class="hidden"></div>
   </div>
 </div>
 
@@ -182,14 +221,126 @@
     wrap.innerHTML = html || '<div class="empty-state">Belum ada data.</div>';
   }
 
+  // Label teks Level Kemampuan untuk kolom tabel Rekap (LEVEL_KEMAMPUAN_ICON di atas
+  // cuma emoji-nya saja) — sama persis dengan LEVEL_INFO di profil-siswa.html.
+  const LEVEL_KEMAMPUAN_LABEL = { dasar: "Dasar", menengah: "Menengah", atas: "Atas", mahir: "Mahir" };
+
+  let rosterCache = [];      // hasil fetch terakhir, dipakai ulang oleh kedua tab (Papan & Rekap)
+  let rekapSortKey = "namaSiswa";
+  let rekapSortDir = "asc";  // "asc" | "desc"
+  let rekapSearch = "";
+
+  const REKAP_KOLOM = [
+    { key: "namaSiswa",           label: "Nama",              numeric: false },
+    { key: "level99",             label: "Rank & Level",      numeric: true  },
+    { key: "level",               label: "Level Kemampuan",   numeric: false },
+    { key: "exp",                 label: "EXP",               numeric: true  },
+    { key: "totalKuisDikerjakan", label: "Kuis Dikerjakan",   numeric: true  },
+    { key: "totalLulusUmum",      label: "Lulus",             numeric: true  },
+    { key: "skorTertinggi",       label: "Skor Tertinggi",    numeric: true  },
+    { key: "rataRataSkor",        label: "Rata-rata",         numeric: true  },
+    { key: "jumlahMateriDibaca",  label: "Ingat Lagi Dibaca", numeric: true  },
+    { key: "jumlahModulSelesai",  label: "Ayo Belajar! Selesai", numeric: true },
+  ];
+
+  /** Rekap Lengkap: tabel satu layar berisi SEMUA siswa sekaligus (bukan satu-satu
+   * seperti Profil & Level per siswa) — permintaan Arif supaya guru bisa memantau
+   * seluruh kelas tanpa buka satu-satu. Sumber data SAMA PERSIS dengan Papan
+   * Peringkat (`rosterCache`, dari `level_siswa`) — TIDAK ada fetch/endpoint baru.
+   * Siswa yang "belum mulai" (lihat gabungkanRoster()) tidak punya field statistik
+   * (totalKuisDikerjakan dkk) sama sekali, makanya semua angka di sini pakai
+   * fallback `|| 0` supaya tidak muncul "undefined" di sel tabel. */
+  function renderRekap() {
+    const wrap = document.getElementById("isi-rekap");
+    const q = rekapSearch.trim().toLowerCase();
+    let rows = rosterCache.filter((s) => !q || s.namaSiswa.toLowerCase().includes(q));
+
+    rows = rows.slice().sort((a, b) => {
+      let va, vb;
+      if (rekapSortKey === "level99") {
+        va = a.level99 || 1; vb = b.level99 || 1;
+      } else if (rekapSortKey === "level") {
+        va = LEVEL_KEMAMPUAN_LABEL[a.level] || ""; vb = LEVEL_KEMAMPUAN_LABEL[b.level] || "";
+      } else if (rekapSortKey === "namaSiswa") {
+        va = a.namaSiswa.toLowerCase(); vb = b.namaSiswa.toLowerCase();
+      } else {
+        va = a[rekapSortKey] || 0; vb = b[rekapSortKey] || 0;
+      }
+      const cmp = va < vb ? -1 : va > vb ? 1 : 0;
+      return rekapSortDir === "asc" ? cmp : -cmp;
+    });
+
+    const theadHtml = REKAP_KOLOM.map((k) => {
+      const arrow = rekapSortKey === k.key ? (rekapSortDir === "asc" ? "▲" : "▼") : "";
+      return `<th data-key="${k.key}">${esc(k.label)} <span class="sort-arrow">${arrow}</span></th>`;
+    }).join("");
+
+    const tbodyHtml = rows.map((s) => {
+      const rankInfo = RANK_INFO[s.rank] || RANK_INFO.perintis;
+      const levelKemampuanCell = s.belumMulai ? "—" :
+        `${LEVEL_KEMAMPUAN_ICON[s.level] || "🌱"} ${esc(LEVEL_KEMAMPUAN_LABEL[s.level] || s.level)}`;
+      return `
+        <tr>
+          <td class="rk-nama">${esc(s.namaSiswa)}</td>
+          <td>${esc(rankInfo.label)} · Lv.${s.level99 || 1}</td>
+          <td>${levelKemampuanCell}</td>
+          <td class="rk-num">${s.exp || 0}</td>
+          <td class="rk-num">${s.totalKuisDikerjakan || 0}</td>
+          <td class="rk-num">${s.totalLulusUmum || 0}</td>
+          <td class="rk-num">${s.skorTertinggi ? s.skorTertinggi + "%" : "—"}</td>
+          <td class="rk-num">${s.rataRataSkor ? s.rataRataSkor + "%" : "—"}</td>
+          <td class="rk-num">${s.jumlahMateriDibaca || 0}</td>
+          <td class="rk-num">${s.jumlahModulSelesai || 0}</td>
+        </tr>`;
+    }).join("");
+
+    wrap.innerHTML = `
+      <div class="rekap-toolbar">
+        <input type="search" class="rekap-search" id="rekapSearchInput" placeholder="🔍 Cari nama siswa…" value="${esc(rekapSearch)}" />
+      </div>
+      <div class="rekap-scroll">
+        <table class="rekap-table">
+          <thead><tr>${theadHtml}</tr></thead>
+          <tbody>${tbodyHtml || '<tr><td colspan="10" style="text-align:center;color:var(--ink-3);padding:1.5rem;">Tidak ada siswa yang cocok.</td></tr>'}</tbody>
+        </table>
+      </div>
+      <p class="rekap-hint">Ketuk judul kolom untuk mengurutkan. Geser ke samping untuk lihat kolom lain di layar kecil.</p>`;
+
+    document.getElementById("rekapSearchInput").addEventListener("input", (e) => {
+      rekapSearch = e.target.value;
+      renderRekap();
+    });
+    wrap.querySelectorAll("th[data-key]").forEach((th) => {
+      th.addEventListener("click", () => {
+        const key = th.getAttribute("data-key");
+        if (rekapSortKey === key) {
+          rekapSortDir = rekapSortDir === "asc" ? "desc" : "asc";
+        } else {
+          rekapSortKey = key;
+          rekapSortDir = key === "namaSiswa" ? "asc" : "desc"; // angka default terbesar dulu, nama default A-Z
+        }
+        renderRekap();
+      });
+    });
+  }
+
+  function pindahTab(tab) {
+    const isPapan = tab === "papan";
+    document.getElementById("tabPapan").classList.toggle("active", isPapan);
+    document.getElementById("tabRekap").classList.toggle("active", !isPapan);
+    document.getElementById("isi-papan").classList.toggle("hidden", !isPapan);
+    document.getElementById("isi-rekap").classList.toggle("hidden", isPapan);
+    if (!isPapan) renderRekap();
+  }
+
   async function muatPapan(namaSaya) {
     const wrap = document.getElementById("isi-papan");
     try {
       const snap = await getDocs(collection(db, "level_siswa"));
       const dokumenLevel = [];
       snap.forEach((d) => dokumenLevel.push(d.data()));
-      const roster = gabungkanRoster(dokumenLevel);
-      renderPapan(roster, namaSaya ? namaSaya.trim().toLowerCase() : null);
+      rosterCache = gabungkanRoster(dokumenLevel);
+      renderPapan(rosterCache, namaSaya ? namaSaya.trim().toLowerCase() : null);
     } catch (err) {
       wrap.innerHTML = `<div class="empty-state">Gagal memuat papan peringkat: ${esc(err.message)}</div>`;
     }
@@ -199,9 +350,17 @@
   // untuk siapa saja yang login — lihat firestore.rules — beda dari hasil_latihan
   // yang detail jawabannya privat). Kalau yang login siswa, baris namanya sendiri
   // disorot; kalau guru, tidak ada yang disorot (guru tidak punya level).
+  //
+  // Tab "Rekap Lengkap" (v1.3, permintaan Arif) SENGAJA cuma untuk guru — siswa/
+  // orangtua tetap lihat tampilan Papan Peringkat biasa tanpa tab sama sekali.
   document.addEventListener("role-verified", (e) => {
     document.getElementById("checking").remove();
     document.getElementById("app-papan").classList.remove("hidden");
+    if (e.detail.role === "guru") {
+      document.getElementById("tabsRow").classList.remove("hidden");
+      document.getElementById("tabPapan").addEventListener("click", () => pindahTab("papan"));
+      document.getElementById("tabRekap").addEventListener("click", () => pindahTab("rekap"));
+    }
     muatPapan(e.detail.role === "siswa" ? e.detail.nama : null);
   });
   document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));

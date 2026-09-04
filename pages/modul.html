@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Modul Pembelajaran · Kelas 5</title>
+<title>Ayo Belajar! · Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
@@ -93,13 +93,13 @@
 
 <div id="app-modul" class="hidden">
   <div id="topbar">
-    <div class="brand">Modul Pembelajaran <span>·</span> Kelas 5</div>
+    <div class="brand">Ayo Belajar! <span>·</span> Kelas 5</div>
     <a class="back" href="../index.html">← Kembali ke Beranda</a>
   </div>
 
   <div class="container">
-    <h1>📚 Modul Pembelajaran</h1>
-    <p class="subtitle">Modul belajar mandiri interaktif per tujuan pembelajaran. Pilih mata pelajaran, lalu ketuk judul untuk mulai belajar.</p>
+    <h1>🚀 Ayo Belajar!</h1>
+    <p class="subtitle">Mulai dari sini — belajar mandiri interaktif per tujuan pembelajaran, langkah demi langkah. Pilih mata pelajaran, lalu ketuk judul untuk mulai.</p>
 
     <div id="filter-row" class="filter-row"></div>
     <div id="list-modul"><div class="empty-state">Memuat modul…</div></div>
@@ -282,7 +282,10 @@
     document.getElementById("app-modul").classList.remove("hidden");
     loadModul();
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
+  // v1.3: dibuka untuk orangtua juga (permintaan eksplisit Arif) — TIDAK berisiko
+  // tracker EXP salah kirim, karena modul-progress-tracker.js di tiap file konten
+  // SUDAH memfilter `data.role !== "siswa"` sebelum mengirim progres apa pun.
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru','orangtua'], '../index.html'));
 </script>
 </body>
 </html>

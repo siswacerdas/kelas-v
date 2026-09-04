@@ -88,7 +88,10 @@
     document.getElementById("app-infografis").classList.remove("ma-hidden");
     loadCounts();
   });
-  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
+  // v1.3: dibuka untuk orangtua juga (permintaan eksplisit Arif — Galeri Visual memang
+  // ditujukan antara lain untuk orang tua yang mau mencetak infografis di rumah). Tidak
+  // ada tracker EXP sama sekali di halaman ini, jadi tidak ada risiko progres salah kirim.
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru','orangtua'], '../index.html'));
 </script>
 </body>
 </html>
