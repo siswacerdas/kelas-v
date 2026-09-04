@@ -223,7 +223,7 @@ function renderReport(nama) {
           </div>
           <div class="lap-tp-bar-track"><div class="lap-tp-bar-fill" style="width:${pct}%"></div></div>
         </div>`;
-    }).join("") : '<div class="lap-kosong">Belum ada Materi Ajar untuk mapel ini.</div>';
+    }).join("") : '<div class="lap-kosong">Belum ada Ingat Lagi untuk mapel ini.</div>';
 
     const modulSectionHtml = mdg ? mdg.items.map((it) => {
       const selesai = sudahSelesaiModul.has(it.slug);
@@ -232,13 +232,13 @@ function renderReport(nama) {
           <span class="lap-modul-check">${selesai ? "✅" : "⬜"}</span>
           <span class="lap-modul-judul">${esc(it.judul)}</span>
         </div>`;
-    }).join("") : '<div class="lap-kosong">Belum ada Modul untuk mapel ini.</div>';
+    }).join("") : '<div class="lap-kosong">Belum ada Ayo Belajar! untuk mapel ini.</div>';
 
     detailHtml = `
       <div class="lap-detail-mapel">
-        <div class="lap-subsection-title">📖 Materi Ajar</div>
+        <div class="lap-subsection-title">🔁 Ingat Lagi</div>
         ${materiSectionHtml}
-        <div class="lap-subsection-title" style="margin-top:1rem;">🧩 Modul</div>
+        <div class="lap-subsection-title" style="margin-top:1rem;">🚀 Ayo Belajar!</div>
         ${modulSectionHtml}
       </div>`;
   }
@@ -275,7 +275,7 @@ function renderReport(nama) {
   const gantiBtn = document.getElementById("lap-ganti-btn");
   if (gantiBtn) gantiBtn.addEventListener("click", () => {
     wrap.innerHTML = "";
-    document.getElementById("lap-subtitle").textContent = "Ketuntasan Materi Ajar & Modul yang sudah dipelajari siswa.";
+    document.getElementById("lap-subtitle").textContent = "Ketuntasan Ingat Lagi & Ayo Belajar! yang sudah dipelajari siswa.";
     if (ctx.role === "orangtua") {
       document.querySelectorAll(".lap-anak-chip").forEach((b) => b.classList.remove("lap-active"));
     } else {
