@@ -2124,9 +2124,15 @@ belum pernah diuji live)
       JavaScript yang muncul akibat perubahan ini
 - [ ] Redeploy Apps Script SELESAI dilakukan sebelum uji ini (perubahan `Code.gs`:
       `doPostProgresMateri_`, `doPostProgresModul_`, `doPostHitungGamifikasi_`, fungsi baru
-      `hitungExpDenganBacaUlang_`) — DAN pastikan URL Apps Script di KEDUA file tracker
-      + `uji-kemampuan.html` + `profil-siswa.html` semuanya konsisten (lihat insiden URL
-      basi Agustus 2026 di CHANGELOG.md — WAJIB dicek ulang tiap kali menyentuh 4 file itu)
+      `hitungExpDenganBacaUlang_`) — DAN pastikan URL Apps Script di SEMUA 5 file yang
+      menyimpan salinannya sendiri-sendiri sudah konsisten: `pages/materi/assets/materi-
+      progress-tracker.js`, `pages/modul/assets/modul-progress-tracker.js`,
+      `pages/uji-kemampuan.html`, `pages/profil-siswa.html`, `pages/mpls/assets/config.js`
+      (lihat insiden URL basi Agustus 2026 DAN insiden kedua Sept 2026 — kedua tracker
+      sempat balik pakai URL lama lagi setelah deploy baru — di CHANGELOG.md. WAJIB dicek
+      ulang tiap kali redeploy Apps Script, JANGAN cuma andalkan ingatan file mana saja
+      yang perlu diubah — jalankan `grep -rn "script.google.com/macros" --include="*.html"
+      --include="*.js" .` dari root repo dan pastikan SEMUA hasilnya satu URL yang sama)
 
 ### 42. Rename "Modul Pembelajaran"→"Ayo Belajar!" & "Materi Ajar"→"Ingat Lagi", dibuka
 untuk orangtua (`index.html`, `pages/modul.html`, `pages/materi.html`,
@@ -2213,3 +2219,52 @@ untuk orangtua (`index.html`, `pages/modul.html`, `pages/materi.html`,
       halaman dibuka, biar pindah tab bolak-balik berkali-kali)
 - [ ] Buka DevTools Console selagi pindah-pindah tab & sortir → pastikan tidak ada error
       JavaScript
+
+### 44. Linimasa Materi — kalender bulanan (`pages/linimasa.html`, tab "Linimasa" di
+`pages/admin.html`, `Code.gs`: `LINIMASA_SHEET_NAME`, `getLinimasaSheet_()`,
+`doPostLinimasa_()`, `doPostLinimasaHapus_()`)
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- **WAJIB redeploy Apps Script** setelah menambah fungsi baru di `Code.gs` — sheet "Data
+  Linimasa" TIDAK akan pernah terbuat otomatis kalau deployment lama masih dipakai (sama
+  kelas masalah dengan insiden URL basi di atas, tapi ini soal KODE-nya yang basi, bukan
+  URL-nya). Uji `?linimasa=1` di browser dulu sebelum menuduh frontend-nya rusak.
+- Field "Bulan" di sheet SELALU angka 1-12 (1=Januari), BUKAN nama bulan — kalau lihat
+  angka aneh di sheet (mis. "07" ke-parse jadi string), pastikan `Number(body["Bulan"])` di
+  `doPostLinimasa_()` benar-benar menghasilkan angka, bukan string "7".
+- Semester (Semester 1/2) **TIDAK ADA kolom-nya di sheet sama sekali** — SELALU diturunkan
+  dari Bulan di sisi klien (`pages/linimasa.html`: Bulan 7-12 = Semester 1, Bulan 1-6 =
+  Semester 2). Kalau nanti ingin menambah kolom Semester manual di sheet, JANGAN — itu akan
+  jadi dua sumber kebenaran yang bisa tidak sinkron kalau guru salah isi.
+- Status (✅/🔵/⚪) juga **TIDAK ADA kolom-nya** — selalu dihitung ulang dari `Date()`
+  sungguhan tiap kali halaman dibuka, bukan disimpan. Kalau tanggal di HP/laptop guru salah
+  (jam sistem keliru), status yang tampil ikut salah — itu bukan bug kode.
+- Topik/Keterangan TEKS BEBAS, sengaja TIDAK divalidasi terhadap `tp-kko-index.js` — jangan
+  tambahkan validasi "harus cocok kode TP" di kemudian hari tanpa diskusi ulang dengan Arif
+  (ini keputusan eksplisit, bukan keterbatasan yang lupa dikerjakan).
+- Halaman `linimasa.html` READ-ONLY untuk SEMUA role termasuk guru — tombol tambah/edit/
+  hapus HANYA ada di `admin.html`. Jangan taruh form input di `linimasa.html`.
+
+**Uji manual yang WAJIB dilakukan sebelum dianggap aman:**
+- [ ] Redeploy Apps Script dulu, lalu buka `<APPS_SCRIPT_URL>?linimasa=1` langsung di
+      browser → harus balas `{"data": []}` (array kosong, sheet baru belum ada isi) — BUKAN
+      error 500 atau halaman HTML error Google
+- [ ] Login guru → admin.html → tab "🗓️ Linimasa" → isi 1 entri contoh (mis. Matematika,
+      bulan sekarang, topik apa saja) → klik Simpan → entri muncul di daftar bawah form
+      TANPA reload halaman
+- [ ] Cek Google Sheets langsung → sheet "Data Linimasa" muncul otomatis dengan 1 baris
+      data yang barusan diisi, header sesuai `LINIMASA_HEADERS`
+- [ ] Klik "Edit" pada entri itu → form terisi ulang datanya, judul form berubah jadi "Edit
+      Entri Linimasa" → ubah Topik → Simpan Perubahan → baris di Sheet TERTIMPA (bukan jadi
+      baris baru/duplikat)
+- [ ] Klik "Hapus" pada satu entri → konfirmasi → baris hilang dari daftar DAN dari Sheet
+- [ ] Login sebagai **siswa** → kartu "🗓️ Linimasa Materi" muncul di beranda → buka →
+      accordion bulan yang sedang berjalan SEKARANG otomatis terbuka, entri yang barusan
+      diisi guru muncul dengan ikon status yang benar
+- [ ] Login sebagai **orangtua** → kartu Linimasa Materi juga muncul & bisa dibuka (bukan
+      cuma siswa/guru)
+- [ ] Klik chip filter salah satu mapel → cuma entri mapel itu yang tampil di semua bulan;
+      klik "Semua" lagi → kembali semua tampil
+- [ ] Isi entri dengan Bulan bulan LALU (mis. kalau sekarang September, isi Juli) → buka
+      linimasa.html → entri itu berstatus ✅ Selesai (hijau), BUKAN 🔵/⚪
+- [ ] Isi entri dengan Bulan bulan DEPAN → berstatus ⚪ Akan datang (abu-abu)

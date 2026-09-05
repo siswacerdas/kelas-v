@@ -8,6 +8,54 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Ditambahkan — Linimasa Materi: kalender bulanan per semester (`pages/linimasa.html`, tab "Linimasa" di `pages/admin.html`, backend `Code.gs`)
+- **Latar belakang**: permintaan Arif poin 2 — siswa & orang tua perlu tahu materi apa yang
+  sudah, sedang, dan akan dipelajari per mata pelajaran, supaya bisa menyiapkan diri
+  menghadapi asesmen sumatif. Referensi layout awal dari PDF "PlanIt Maths — Steps to
+  Progression" (grid mingguan per term), tapi diterjemahkan jadi accordion BULANAN vertikal
+  (bukan grid horizontal mingguan) karena grid ala PDF tidak akan terbaca di layar HP.
+- **Halaman baca** (`pages/linimasa.html`, dibuka untuk **siswa, guru, DAN orangtua**
+  sekaligus): accordion 12 bulan dikelompokkan Semester 1 (Juli–Desember) & Semester 2
+  (Januari–Juni) mengikuti tahun ajaran (bukan kalender Masehi Jan–Des biasa). Ada chip
+  filter per mata pelajaran, dan status per entri (✅ Selesai / 🔵 Berjalan / ⚪ Akan datang)
+  dihitung OTOMATIS dari tanggal hari ini — guru tidak perlu update status manual. Bulan yang
+  sedang berjalan otomatis terbuka duluan saat halaman dibuka.
+- **Backend** (`Code.gs`): sheet baru "Data Linimasa" (self-healing lewat
+  `getLinimasaSheet_()`, pola sama persis `getInfografisSheet_()`), endpoint baca publik
+  `?linimasa=1` (boleh difilter `&mapel=`), dan `doPostLinimasa_()`/`doPostLinimasaHapus_()`
+  yang digerbangi `wajibGuru_()` untuk tulis/hapus. Field: Mapel, Bulan (angka 1-12, BUKAN
+  nama bulan), Tahun, Topik, Keterangan (opsional).
+- **Input data**: tab "Linimasa" baru di `admin.html` — form tambah/edit/hapus, dropdown
+  Mapel dari `INFOGRAFIS_MAPEL` (sumber tunggal yang sama dengan Galeri Visual), sama pola
+  fetch/idToken dengan `infografis-kelola-tp.js`.
+- **Keputusan sengaja**: Topik/Keterangan TEKS BEBAS, TIDAK ditaut ke kode TP resmi
+  `tp-kko-index.js` — supaya mapel yang belum lengkap TP resminya (Seni Budaya, Pendidikan
+  Pancasila) tetap bisa diisi tanpa hambatan. Semester juga TIDAK disimpan sebagai kolom
+  sendiri, murni diturunkan dari angka Bulan di klien — mencegah dua sumber kebenaran yang
+  bisa tidak sinkron.
+- Kartu baru "🗓️ Linimasa Materi" ditambahkan di beranda (`index.html`), badge "Info" (di
+  luar urutan Langkah 1/2/3 karena sifatnya informasional, bukan aktivitas belajar).
+
+### Diperbaiki — Insiden kedua: URL Apps Script basi di 2 file tracker (Sept 2026)
+- **Kejadian**: setelah deploy Apps Script baru, `pages/materi/assets/materi-progress-
+  tracker.js` dan `pages/modul/assets/modul-progress-tracker.js` ternyata masih menyimpan
+  URL deployment LAMA (`AKfycbzF3Ln0L8rOkAl48YsJKeXCiV7CUS8mu37xAyIMQUdkFf1puCiOInHyA0ONyXwkYJlWdA`)
+  — bukan yang baru (`AKfycbzYhDvdqEZBTDMuBTSOwa0WpfXk-b3SmnV29pnqthCsWEf0bD0HUQ1xfR8hBt1gypWj7g`).
+  Ini KEDUA KALINYA kejadian sejenis (lihat insiden Agustus 2026 di atas) — kedua file itu
+  memang SENGAJA menyimpan salinan URL sendiri (bukan pakai `MPLS_CONFIG` dari `config.js`,
+  lihat komentar "KENAPA APPS_SCRIPT_URL DITULIS ULANG DI SINI" di kedua file), jadi rawan
+  luput ter-update kalau lupa satu-satu.
+- **Perbaikan**: Arif memperbaiki manual kedua file di repo asli; disamakan juga di sini.
+  `pages/profil-siswa.html`, `pages/uji-kemampuan.html`, `pages/mpls/assets/config.js`
+  dikonfirmasi SUDAH pakai URL baru sejak awal (tidak ikut basi).
+- **Verifikasi menyeluruh**: `grep -rn "script.google.com/macros" --include="*.html"
+  --include="*.js" --include="*.md" .` dari root repo dijalankan untuk memastikan TIDAK
+  ADA file lain (di luar 5 yang sudah dikenal) yang menyimpan URL Apps Script sendiri —
+  hasilnya bersih, cuma 5 file itu + `apps-script/README.md` (placeholder contoh
+  `xxxxx`, bukan URL asli, aman diabaikan).
+- **Lihat §41 ANTIREGRESI.md** (diperbarui) untuk daftar 5 file itu + perintah grep siap-
+  pakai supaya pengecekan ini tidak lagi mengandalkan ingatan tiap kali redeploy.
+
 ### Diubah — Rename menu "Modul Pembelajaran" → "Ayo Belajar!" & "Materi Ajar" → "Ingat Lagi", dibuka untuk orangtua (Fase 1 dari 4 permintaan Arif)
 - **Latar belakang**: Arif ingin nama menu lebih ramah-anak DAN menunjukkan jelas urutan
   belajar (mulai dari Modul, baru Materi Ajar untuk mengingat/menguatkan ulang). Setelah
@@ -41,9 +89,10 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   "Materi Ajar"/"Modul" di situ dipakai sebagai istilah kurikulum umum untuk guru, bukan nama
   fitur yang di-rebrand) — sesuai batasan yang disepakati supaya tidak menyentuh sistem yang
   sudah stabil.
-- **Masih menyusul** (1 permintaan Arif lainnya dari sesi yang sama): fitur Linimasa
-  Materi (kalender bulanan per semester). Tab "Rekap Lengkap" di Papan Peringkat sudah
-  selesai — lihat entri "Ditambahkan" di bawah.
+- **Masih menyusul**: tidak ada lagi — Linimasa Materi sudah selesai (lihat entri
+  "Ditambahkan" di atas). Keempat permintaan Arif dari sesi ini (rename+akses orangtua,
+  Rekap Lengkap, Linimasa Materi) sudah tuntas semua, tinggal diuji manual sesuai
+  ANTIREGRESI.md §42-44.
 
 ### Ditambahkan — Tab "Rekap Lengkap" di Papan Peringkat untuk guru (`pages/papan-peringkat.html`)
 - **Latar belakang**: guru sebelumnya TIDAK punya cara melihat Level/EXP seluruh siswa
