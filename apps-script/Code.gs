@@ -71,6 +71,10 @@ const SISWA_SHEET_NAME = "Data Siswa";
 const FOTO_FOLDER_ID = "1b-ENsEQJeUFoVKKA6htZbVAxf7zr1IzG";
 
 const INFOGRAFIS_SHEET_NAME = "Data Infografis";
+const LINIMASA_SHEET_NAME = "Data Linimasa"; // fitur "Linimasa Materi" (v1.3, permintaan
+// Arif) — kalender bulanan per semester, isinya teks bebas (TIDAK ditaut ke kode TP resmi
+// tp-kko-index.js, keputusan sengaja diambil supaya mapel yang belum punya TP resmi seperti
+// Seni Budaya/Pendidikan Pancasila tetap bisa diisi bebas).
 // ID folder Drive KHUSUS untuk gambar/poster/infografis — SATU FOLDER PER MATA PELAJARAN
 // (bukan 1 folder untuk semuanya), supaya guru bisa menelusuri file langsung dari Drive per
 // mapel kalau perlu. Nama key di sini HARUS PERSIS SAMA dengan field "mapel" pada
@@ -450,7 +454,24 @@ const INFOGRAFIS_HEADERS = [
   "Diunggah Oleh",
 ];
 
-const PROGRES_MATERI_SHEET_NAME = "Data Progres Materi";
+// "ID" jadi kunci hapus/edit (sama alasan dengan INFOGRAFIS_HEADERS di atas). "Bulan"
+// disimpan sebagai ANGKA 1-12 (1=Januari … 12=Desember) — BUKAN nama bulan — supaya sortir &
+// perbandingan "sudah lewat/belum" di klien (linimasa.html) gampang dilakukan tanpa perlu
+// tabel terjemahan nama↔angka bulan lagi di banyak tempat. Semester DITURUNKAN dari Bulan di
+// KLIEN (Bulan 7-12 = Semester 1, Bulan 1-6 = Semester 2 — tahun ajaran dimulai Juli),
+// BUKAN kolom terpisah di sheet — supaya tidak ada dua sumber kebenaran yang bisa tidak
+// sinkron (mis. Bulan diisi 3 tapi Semester keliru diisi 1 secara manual oleh guru).
+const LINIMASA_HEADERS = [
+  "Timestamp",
+  "ID",
+  "Mapel",
+  "Bulan",       // angka 1-12
+  "Tahun",       // angka 4 digit, mis. 2026
+  "Topik",       // teks bebas, TIDAK ditaut ke kode TP resmi (keputusan sengaja, lihat
+                 // komentar LINIMASA_SHEET_NAME di atas)
+  "Keterangan",  // opsional
+  "Diunggah Oleh",
+];
 // "Materi Slug" = field "file" di materi-index.js TANPA akhiran ".html" — sama persis pola
 // yang dipakai INFOGRAFIS_HEADERS di atas, konsisten satu sumber kebenaran untuk identitas
 // materi di seluruh sistem (bukan skema ID baru).
@@ -732,6 +753,26 @@ function setupInfografisSheet() {
   const sheet = getInfografisSheet_();
   sheet.setFrozenRows(1);
   Logger.log("Sheet siap: " + sheet.getName());
+}
+
+/** Sama pola self-healing persis dengan getInfografisSheet_() di atas (lihat komentar
+ * panjang di sana untuk alasannya) — dibuat untuk fitur "Linimasa Materi" (v1.3). */
+function getLinimasaSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(LINIMASA_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(LINIMASA_SHEET_NAME);
+    sheet.getRange(1, 1, 1, LINIMASA_HEADERS.length).setValues([LINIMASA_HEADERS]);
+    sheet.setFrozenRows(1);
+    return sheet;
+  }
+  const currentHeaders = readHeaderRow_(sheet);
+  const missing = LINIMASA_HEADERS.filter((h) => currentHeaders.indexOf(h) === -1);
+  if (missing.length > 0) {
+    sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
+    Logger.log('Kolom baru ditambahkan otomatis ke "Data Linimasa": ' + missing.join(", "));
+  }
+  return sheet;
 }
 
 /** Sama pola self-healing dengan getInfografisSheet_() (lihat komentar panjang di sana untuk
@@ -1055,6 +1096,16 @@ function doGet(e) {
       return jsonOut_({ data: data });
     }
 
+    if (params.linimasa) {
+      // SENGAJA TANPA wajibGuru_/wajibAksesLaporan_ — Linimasa Materi memang dirancang
+      // publik untuk siapa saja yang login (siswa/orangtua/guru), sama level keterbukaan
+      // dengan Papan Peringkat & Galeri Visual di atas (bukan data pribadi per-siswa).
+      // Filter ?mapel= opsional, sama pola dengan ?infografis= di atas.
+      const rows = sheetToObjects_(getLinimasaSheet_());
+      const data = params.mapel ? rows.filter((r) => r["Mapel"] === params.mapel) : rows;
+      return jsonOut_({ data: data });
+    }
+
     if (params.siswa) {
       wajibGuru_(params.idToken);
       // Sejak migrasi Firestore (RANCANGAN-MIGRASI-FIRESTORE.md): baca koleksi
@@ -1199,6 +1250,17 @@ function doPost(e) {
     if (body.type === "infografis_hapus") {
       wajibGuru_(body.idToken);
       return doPostInfografisHapus_(body);
+    }
+
+    if (body.type === "linimasa") {
+      // LAPIS GURU — hanya guru yang boleh menambah/mengubah entri Linimasa Materi.
+      wajibGuru_(body.idToken);
+      return doPostLinimasa_(body);
+    }
+
+    if (body.type === "linimasa_hapus") {
+      wajibGuru_(body.idToken);
+      return doPostLinimasaHapus_(body);
     }
 
     if (body.type === "progres_materi") {
@@ -1646,6 +1708,59 @@ function doPostInfografisHapus_(body) {
   const id = String(body["ID"] || "").trim();
   if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });
   const sheet = getInfografisSheet_();
+  const row = findRowByColumn_(sheet, "ID", id);
+  if (row === -1) return jsonOut_({ status: "error", message: "Data tidak ditemukan (mungkin sudah dihapus)" });
+  sheet.deleteRow(row);
+  return jsonOut_({ status: "ok" });
+}
+
+/** Tambah ATAU perbarui 1 baris "Data Linimasa" (fitur Linimasa Materi, v1.3). Kalau body
+ * berisi "ID" dan barisnya DITEMUKAN, baris itu DITIMPA (mode edit dari admin.html) —
+ * kalau tidak, baris baru ditambahkan. Sama pola upsert-opsional dengan doPostInfografis_
+ * (mode B di sana), tapi kuncinya "ID" langsung (bukan "Materi Slug") karena admin.html
+ * SELALU tahu ID pasti kalau sedang mengedit (dikirim balik dari loadLinimasa()).
+ * TIDAK ADA validasi rentang Tahun (mis. "harus 2020-2030") — SENGAJA dibiarkan longgar,
+ * guru yang paling tahu tahun ajaran berjalan, bukan kode ini. */
+function doPostLinimasa_(body) {
+  const mapel = String(body["Mapel"] || "").trim();
+  const bulan = Number(body["Bulan"]);
+  const tahun = Number(body["Tahun"]);
+  const topik = String(body["Topik"] || "").trim();
+  if (!mapel) return jsonOut_({ status: "error", message: "Mapel wajib diisi" });
+  if (!bulan || bulan < 1 || bulan > 12) return jsonOut_({ status: "error", message: "Bulan harus angka 1-12" });
+  if (!tahun || tahun < 2000) return jsonOut_({ status: "error", message: "Tahun wajib diisi dengan benar" });
+  if (!topik) return jsonOut_({ status: "error", message: "Topik wajib diisi" });
+
+  const sheet = getLinimasaSheet_();
+  const editId = String(body["ID"] || "").trim();
+  const existingRow = editId ? findRowByColumn_(sheet, "ID", editId) : -1;
+  const id = editId && existingRow !== -1 ? editId : "lm" + new Date().getTime() + Math.floor(Math.random() * 1000);
+
+  const record = {
+    "Timestamp": new Date(),
+    "ID": id,
+    "Mapel": mapel,
+    "Bulan": bulan,
+    "Tahun": tahun,
+    "Topik": topik,
+    "Keterangan": body["Keterangan"] || "",
+    "Diunggah Oleh": body["Diunggah Oleh"] || "",
+  };
+  const rowValues = buildRowByHeaders_(sheet, record);
+  if (existingRow !== -1) {
+    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
+  } else {
+    sheet.appendRow(rowValues);
+  }
+  return jsonOut_({ status: "ok", id: id });
+}
+
+/** Hapus 1 baris "Data Linimasa" berdasarkan ID — sama pola persis dengan
+ * doPostInfografisHapus_() di atas. */
+function doPostLinimasaHapus_(body) {
+  const id = String(body["ID"] || "").trim();
+  if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });
+  const sheet = getLinimasaSheet_();
   const row = findRowByColumn_(sheet, "ID", id);
   if (row === -1) return jsonOut_({ status: "error", message: "Data tidak ditemukan (mungkin sudah dihapus)" });
   sheet.deleteRow(row);
