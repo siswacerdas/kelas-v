@@ -2268,3 +2268,47 @@ untuk orangtua (`index.html`, `pages/modul.html`, `pages/materi.html`,
 - [ ] Isi entri dengan Bulan bulan LALU (mis. kalau sekarang September, isi Juli) → buka
       linimasa.html → entri itu berstatus ✅ Selesai (hijau), BUKAN 🔵/⚪
 - [ ] Isi entri dengan Bulan bulan DEPAN → berstatus ⚪ Akan datang (abu-abu)
+
+### 45. CHECKLIST RUTIN — sinkronisasi URL Apps Script setelah deploy baru
+Arif SELALU pakai "New deployment" (bukan "Manage deployments") tiap deploy Apps Script,
+karena Manage Deployments sering bermasalah — konsekuensinya, URL Web App SELALU berubah
+tiap deploy (beda dari kalau pakai Manage Deployments yang bisa pertahankan URL lama).
+Ini bukan bug, ini konsekuensi dari pilihan cara deploy — makanya langkah sinkronisasi di
+bawah ini WAJIB, bukan opsional, SETIAP kali habis deploy baru.
+
+**5 file yang menyimpan salinan URL SENDIRI-SENDIRI (harus disamakan manual):**
+1. `pages/materi/assets/materi-progress-tracker.js` — var `APPS_SCRIPT_URL`
+2. `pages/modul/assets/modul-progress-tracker.js` — var `APPS_SCRIPT_URL`
+3. `pages/profil-siswa.html` — const `APPS_SCRIPT_URL_AVATAR`
+4. `pages/uji-kemampuan.html` — const `APPS_SCRIPT_URL_LEVEL`
+5. `pages/mpls/assets/config.js` — `MPLS_CONFIG.APPS_SCRIPT_URL`
+
+**Semua file LAIN** (termasuk `pages/admin.html` & `pages/linimasa.html` yang ditambahkan
+di fitur v1.3) mengambil URL dari `MPLS_CONFIG.APPS_SCRIPT_URL` di `config.js` — jadi ikut
+sinkron otomatis begitu file #5 di atas diupdate. JANGAN tambahkan salinan literal baru di
+file mana pun kalau bisa pakai `MPLS_CONFIG` — daftar "5 file nakal" di atas SENGAJA tidak
+ditambah lagi, sudah cukup menyusahkan untuk diingat.
+
+**Perintah siap-pakai** (jalankan dari ROOT REPO, ganti `URL_BARU` dengan URL hasil deploy
+—  URL LENGKAP dari `https://` sampai `/exec`, TANPA tanda kutip):
+```bash
+find . -type f \( -name "*.html" -o -name "*.js" \) -exec grep -l "script.google.com/macros/s/" {} \; | xargs sed -i "s#https://script.google.com/macros/s/[A-Za-z0-9_-]*/exec#URL_BARU#g"
+```
+Perintah ini otomatis menemukan SEMUA file yang menyimpan URL (5 file di atas +
+`config.js`-nya sendiri) dan mengganti sekaligus — tidak mengandalkan ingatan file mana
+saja yang perlu disentuh.
+
+**Verifikasi setelah menjalankan perintah di atas** (WAJIB, jangan lewati):
+```bash
+grep -rn "script.google.com/macros/s/" --include="*.html" --include="*.js" . | grep -v "URL_BARU_PERSIS_YANG_DIPAKAI"
+```
+Hasil KOSONG = semua file sudah konsisten dengan URL baru. Kalau masih ada baris yang
+muncul, berarti ada URL lama yang tertinggal — cek file itu satu-satu.
+
+**Kenapa ini penting diulang tiap deploy**: sudah 2 kali kejadian (Agustus 2026 & September
+2026, lihat CHANGELOG.md) tracker materi/modul diam-diam masih memanggil deployment LAMA
+setelah deploy baru — akibatnya EXP siswa tidak tercatat tanpa ada error yang kelihatan
+(request tetap "berhasil" ke server LAMA, cuma datanya tidak pernah nyampai ke Sheet yang
+sekarang dibuka). Ini kelas bug yang PALING gampang luput karena tidak ada pesan error sama
+sekali di console — satu-satunya cara ketahuan adalah cek Sheet langsung dan sadar datanya
+tidak bertambah.
