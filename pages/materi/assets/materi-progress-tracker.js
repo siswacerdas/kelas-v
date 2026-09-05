@@ -52,7 +52,7 @@
  * dicek: cocokkan URL di sini dengan Manage Deployments di Apps Script.
  */
 (function () {
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYhDvdqEZBTDMuBTSOwa0WpfXk-b3SmnV29pnqthCsWEf0bD0HUQ1xfR8hBt1gypWj7g/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxdbmKVxG1EaD5jkRbRTg9p-PTDJtx-TR4H5iE8vJf_JMcIsMjMwB8J8WmDvC1LKho5mA/exec";
   var AMBANG_WAKTU_MS = 5 * 1000; // SEMENTARA 5 DETIK UNTUK DEBUG - JANGAN DIPAKAI PRODUKSI
 
   function kirimProgres(namaSiswa, materiSlug) {
