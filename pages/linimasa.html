@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Linimasa Materi · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
+    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
+    --teal: #1a7a8a; --teal-l: #e4f2f4; --border: rgba(26,26,46,0.10); --r: 10px;
+    --gold: #b8860b; --gold-l: #fdf6e3; --red: #c0392b; --red-l: #fbeaea; --green: #2d7055; --green-l: #e6f2ec;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+  #topbar {
+    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--teal);
+  }
+  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
+  #topbar .brand span { color: var(--teal); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
+  #topbar a.back:hover { color: #fff; }
+  .container { max-width: 820px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.1rem; line-height: 1.6; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  .hidden { display: none !important; }
+
+  /* ── Legenda status ── */
+  .legenda { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11.5px; color: var(--ink-3); margin-bottom: 1.1rem; }
+  .legenda span { display: inline-flex; align-items: center; gap: 5px; }
+
+  /* ── Chip filter mapel ── */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.4rem; }
+  .chip {
+    font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+    padding: 6px 13px; border-radius: 20px; border: 1.5px solid var(--border);
+    background: #fff; color: var(--ink-2); white-space: nowrap; transition: all .15s;
+  }
+  .chip:hover { border-color: var(--teal); }
+  .chip.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  h2.semester-title {
+    font-family: 'Playfair Display', serif; font-size: 1.15rem; margin: 1.6rem 0 0.7rem;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  h2.semester-title:first-of-type { margin-top: 0; }
+  h2.semester-title .sem-tahun { font-size: 12px; font-weight: 500; color: var(--ink-3); font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  /* ── Accordion bulan ── */
+  details.bulan-block {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 8px; overflow: hidden;
+  }
+  details.bulan-block[data-status="berjalan"] { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal-l); }
+  details.bulan-block > summary {
+    list-style: none; cursor: pointer; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 13.5px; user-select: none;
+  }
+  details.bulan-block > summary::-webkit-details-marker { display: none; }
+  details.bulan-block > summary::before { content: '▸'; color: var(--teal); font-size: 12px; transition: transform .15s; flex-shrink: 0; }
+  details.bulan-block[open] > summary::before { transform: rotate(90deg); }
+  details.bulan-block > summary .status-pill {
+    margin-left: auto; font-size: 10.5px; font-weight: 600; padding: 2px 9px; border-radius: 20px; white-space: nowrap;
+  }
+  .status-pill.selesai { background: var(--green-l); color: var(--green); }
+  .status-pill.berjalan { background: var(--teal-l); color: var(--teal); }
+  .status-pill.akan { background: var(--paper-2); color: var(--ink-3); }
+  .status-pill.kosong { background: var(--paper-2); color: var(--ink-3); }
+
+  .bulan-body { padding: 0 1rem 1rem 2.1rem; }
+  .entri-row { padding: 8px 0; border-top: 1px solid var(--paper-2); }
+  .entri-row:first-child { border-top: none; }
+  .entri-head { display: flex; align-items: baseline; gap: 7px; font-size: 12.5px; }
+  .entri-icon { flex-shrink: 0; }
+  .entri-mapel { font-weight: 700; color: var(--ink); }
+  .entri-topik { color: var(--ink-2); }
+  .entri-ket { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; padding-left: 20px; line-height: 1.5; }
+  .bulan-kosong { font-size: 12px; color: var(--ink-3); font-style: italic; padding: 4px 0; }
+
+  .loading-inline { text-align: center; color: var(--ink-3); font-size: 13px; padding: 2rem 0; }
+  .empty-global { text-align: center; color: var(--ink-3); font-size: 13px; padding: 2.5rem 1rem; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memuat…</div>
+
+<div id="app-linimasa" class="hidden">
+  <div id="topbar">
+    <div class="brand">🗓️ Linimasa Materi <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
+  </div>
+
+  <div class="container">
+    <h1>🗓️ Linimasa Materi</h1>
+    <p class="subtitle">Rencana & perjalanan belajar per mata pelajaran, bulan demi bulan — biar siswa & orang tua bisa menyiapkan diri sebelum asesmen.</p>
+
+    <div class="legenda">
+      <span>✅ Sudah selesai</span>
+      <span>🔵 Sedang berjalan</span>
+      <span>⚪ Akan datang</span>
+    </div>
+
+    <div class="chip-row" id="chipRow"></div>
+
+    <div id="hasil">
+      <div class="loading-inline">Memuat linimasa…</div>
+    </div>
+  </div>
+</div>
+
+<script src="mpls/assets/config.js"></script>
+<script src="infografis/assets/infografis-data.js"></script>
+<script type="module" src="../assets/js/role-guard.js"></script>
+<script>
+  const BULAN_NAMA = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  // Urutan tampil linimasa mengikuti TAHUN AJARAN (mulai Juli), BUKAN urutan kalender
+  // Masehi (mulai Januari) — Semester 1 = Juli-Desember, Semester 2 = Januari-Juni.
+  const SEM1_BULAN = [7, 8, 9, 10, 11, 12];
+  const SEM2_BULAN = [1, 2, 3, 4, 5, 6];
+
+  const now = new Date();
+  const nowBulan = now.getMonth() + 1;
+  const nowTahun = now.getFullYear();
+  const nowYM = nowTahun * 12 + nowBulan;
+  // Tahun ajaran berjalan dimulai Juli — kalau sekarang Jan-Jun, berarti sedang di
+  // Semester 2 dari tahun ajaran yang MULAI tahun sebelumnya.
+  const tahunAjaranMulai = nowBulan >= 7 ? nowTahun : nowTahun - 1;
+
+  let semuaData = [];   // hasil fetch mentah dari Apps Script
+  let mapelAktif = "";  // "" = Semua
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+  function mapelInfo(nama) {
+    return (window.INFOGRAFIS_MAPEL || []).find((m) => m.mapel === nama) || { mapel: nama, mapelIcon: "📘" };
+  }
+
+  function renderChip() {
+    const wrap = document.getElementById("chipRow");
+    const daftar = window.INFOGRAFIS_MAPEL || [];
+    wrap.innerHTML = `<button class="chip ${mapelAktif === "" ? "active" : ""}" data-mapel="">Semua</button>` +
+      daftar.map((m) => `<button class="chip ${mapelAktif === m.mapel ? "active" : ""}" data-mapel="${esc(m.mapel)}">${m.mapelIcon} ${esc(m.mapel)}</button>`).join("");
+    wrap.querySelectorAll(".chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        mapelAktif = btn.getAttribute("data-mapel");
+        renderChip();
+        renderSemuaSemester();
+      });
+    });
+  }
+
+  /** Status dihitung dari perbandingan (Tahun,Bulan) entri vs bulan berjalan
+   * SEKARANG (Date() nyata) — bukan dari field manapun di sheet, supaya guru
+   * tidak perlu mengubah status manual tiap bulan berganti. */
+  function statusEntri(tahun, bulan) {
+    const ym = Number(tahun) * 12 + Number(bulan);
+    if (ym < nowYM) return "selesai";
+    if (ym === nowYM) return "berjalan";
+    return "akan";
+  }
+
+  function renderBulanBlock(bulanNum, tahunSlot, isBulanIni) {
+    const cocok = semuaData.filter((d) => Number(d["Bulan"]) === bulanNum && (!mapelAktif || d["Mapel"] === mapelAktif));
+    // Kalau ada data beneran, pakai Tahun dari data itu (jaga-jaga guru input tahun
+    // yang beda dari asumsi tahunSlot); kalau kosong, pakai tahunSlot hasil hitungan.
+    const tahunTampil = cocok.length ? cocok[0]["Tahun"] : tahunSlot;
+    const statusList = cocok.map((d) => statusEntri(d["Tahun"], d["Bulan"]));
+    let pillLabel, pillClass;
+    if (cocok.length === 0) {
+      pillLabel = "Belum ada rencana"; pillClass = "kosong";
+    } else if (statusList.includes("berjalan")) {
+      pillLabel = "🔵 Berjalan"; pillClass = "berjalan";
+    } else if (statusList.every((s) => s === "selesai")) {
+      pillLabel = "✅ Selesai"; pillClass = "selesai";
+    } else {
+      pillLabel = "⚪ Akan datang"; pillClass = "akan";
+    }
+
+    const isiHtml = cocok.length === 0
+      ? `<div class="bulan-kosong">Belum ada rencana materi untuk bulan ini.</div>`
+      : cocok.map((d) => {
+          const st = statusEntri(d["Tahun"], d["Bulan"]);
+          const ikon = st === "selesai" ? "✅" : st === "berjalan" ? "🔵" : "⚪";
+          const mi = mapelInfo(d["Mapel"]);
+          return `
+            <div class="entri-row">
+              <div class="entri-head">
+                <span class="entri-icon">${ikon}</span>
+                <span class="entri-icon">${mi.mapelIcon}</span>
+                <span class="entri-mapel">${esc(d["Mapel"])}</span>
+                <span class="entri-topik">— ${esc(d["Topik"])}</span>
+              </div>
+              ${d["Keterangan"] ? `<div class="entri-ket">${esc(d["Keterangan"])}</div>` : ""}
+            </div>`;
+        }).join("");
+
+    return `
+      <details class="bulan-block" data-status="${pillClass}" ${isBulanIni ? "open" : ""}>
+        <summary>${BULAN_NAMA[bulanNum]} ${tahunTampil}<span class="status-pill ${pillClass}">${pillLabel}</span></summary>
+        <div class="bulan-body">${isiHtml}</div>
+      </details>`;
+  }
+
+  function renderSemuaSemester() {
+    const wrap = document.getElementById("hasil");
+    const s1Html = SEM1_BULAN.map((b) => renderBulanBlock(b, tahunAjaranMulai, b === nowBulan && nowYM === tahunAjaranMulai * 12 + b)).join("");
+    const s2Html = SEM2_BULAN.map((b) => renderBulanBlock(b, tahunAjaranMulai + 1, b === nowBulan && nowYM === (tahunAjaranMulai + 1) * 12 + b)).join("");
+    wrap.innerHTML = `
+      <h2 class="semester-title">Semester 1 · Juli–Desember <span class="sem-tahun">${tahunAjaranMulai}</span></h2>
+      ${s1Html}
+      <h2 class="semester-title">Semester 2 · Januari–Juni <span class="sem-tahun">${tahunAjaranMulai + 1}</span></h2>
+      ${s2Html}`;
+  }
+
+  async function muatLinimasa() {
+    const wrap = document.getElementById("hasil");
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?linimasa=1");
+      const json = await res.json();
+      semuaData = json.data || [];
+      renderChip();
+      renderSemuaSemester();
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-global">Gagal memuat linimasa: ${esc(err.message)}</div>`;
+    }
+  }
+
+  // Siswa, orangtua, DAN guru semua boleh lihat halaman ini (permintaan eksplisit
+  // Arif — linimasa penting diketahui siswa & orang tua untuk persiapan asesmen).
+  // Hanya guru yang bisa MENGISI datanya, lewat tab "Linimasa" di admin.html — halaman
+  // ini sendiri read-only untuk semua role, termasuk guru.
+  document.addEventListener("role-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-linimasa").classList.remove("hidden");
+    muatLinimasa();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa', 'guru', 'orangtua'], '../index.html'));
+</script>
+</body>
+</html>

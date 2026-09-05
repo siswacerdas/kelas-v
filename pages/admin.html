@@ -148,6 +148,7 @@
       <button class="tab-btn active" data-tab="pengumuman" onclick="switchTab('pengumuman')">📢 Pengumuman</button>
       <button class="tab-btn" data-tab="modul" onclick="switchTab('modul')">📚 Modul</button>
       <button class="tab-btn" data-tab="soal" onclick="switchTab('soal')">💪 Uji Kemampuan</button>
+      <button class="tab-btn" data-tab="linimasa" onclick="switchTab('linimasa')">🗓️ Linimasa</button>
       <button class="tab-btn" data-tab="ortu" onclick="switchTab('ortu')">👪 Persetujuan Orang Tua</button>
       <button class="tab-btn" data-tab="impor" onclick="switchTab('impor')">📥 Impor Massal</button>
     </div>
@@ -409,6 +410,64 @@
       </div>
     </div>
 
+    <!-- ══════════════ TAB: LINIMASA MATERI (v1.3, permintaan Arif poin 2) ══════════════
+         Backend Sheet "Data Linimasa" via Apps Script (POLA SAMA dengan Kelola Galeri
+         Visual, BUKAN Firestore seperti tab Pengumuman/Modul di atas — keputusan sengaja
+         Arif). Halaman baca-nya (siswa/orangtua/guru) ada di pages/linimasa.html — di sini
+         CUMA untuk guru menambah/ubah/hapus entrinya. Topik/Keterangan teks bebas, TIDAK
+         ditaut ke kode TP resmi tp-kko-index.js (keputusan sengaja, lihat komentar
+         LINIMASA_SHEET_NAME di Code.gs). -->
+    <div id="tab-linimasa" class="tab-panel">
+      <div class="panel-card">
+        <h2 id="linimasa-form-title">Tambah Entri Linimasa</h2>
+        <form id="form-linimasa" onsubmit="return false;">
+          <input type="hidden" id="linimasa-edit-id" value="" />
+          <div class="form-grid-2">
+            <div class="form-row">
+              <label for="linimasa-mapel">Mata Pelajaran</label>
+              <select id="linimasa-mapel"></select>
+            </div>
+            <div class="form-row">
+              <label for="linimasa-bulan">Bulan</label>
+              <select id="linimasa-bulan">
+                <option value="7">Juli</option>
+                <option value="8">Agustus</option>
+                <option value="9">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+                <option value="1">Januari</option>
+                <option value="2">Februari</option>
+                <option value="3">Maret</option>
+                <option value="4">April</option>
+                <option value="5">Mei</option>
+                <option value="6">Juni</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="linimasa-tahun">Tahun</label>
+            <input type="number" id="linimasa-tahun" placeholder="mis. 2026" />
+            <div class="hint">Tahun kalender saat bulan itu berlangsung (mis. Juli 2026, tapi Januari 2027).</div>
+          </div>
+          <div class="form-row">
+            <label for="linimasa-topik">Topik / Judul Materi</label>
+            <input type="text" id="linimasa-topik" placeholder="mis. Pecahan Sederhana" />
+          </div>
+          <div class="form-row">
+            <label for="linimasa-keterangan">Keterangan (opsional)</label>
+            <textarea id="linimasa-keterangan" placeholder="mis. Ada asesmen sumatif di akhir bulan"></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="linimasa-submit-btn" onclick="simpanLinimasa()">Simpan Entri</button>
+            <button class="btn btn-secondary hidden" id="linimasa-cancel-btn" onclick="batalEditLinimasa()">Batal Edit</button>
+          </div>
+          <div id="linimasa-status" class="status-msg"></div>
+        </form>
+      </div>
+      <div id="list-linimasa"><div class="empty-state">Memuat…</div></div>
+    </div>
+
     <!-- ══════════════ TAB: PERSETUJUAN ORANG TUA (Fase 4, lihat CHANGELOG.md v0.11.0) ══════════════ -->
     <div id="tab-ortu" class="tab-panel">
       <div class="panel-card">
@@ -473,6 +532,8 @@
 
 
 <script src="materi/assets/tp-kko-index.js"></script>
+<script src="mpls/assets/config.js"></script>
+<script src="infografis/assets/infografis-data.js"></script>
 <script type="module" src="../assets/js/guru-guard.js"></script>
 <script type="module">
   import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, serverTimestamp, writeBatch }
@@ -671,6 +732,133 @@
             </div>`;
           wrap.appendChild(item);
         });
+      });
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  // ═══════════════════════ TAB: LINIMASA MATERI (v1.3) ═══════════════════════
+  // Sheet/Apps-Script (BUKAN Firestore) — pola persis infografis-kelola-tp.js
+  // (lihat komentar HTML tab ini soal kenapa berbeda dari Pengumuman/Modul di atas).
+  const BULAN_NAMA_ADMIN = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  let linimasaCache = []; // hasil fetch terakhir, dipakai ulang saat render & saat cari data untuk tombol Edit
+
+  function isiDropdownMapelLinimasa() {
+    const sel = document.getElementById("linimasa-mapel");
+    sel.innerHTML = (window.INFOGRAFIS_MAPEL || [])
+      .map((m) => `<option value="${escHtml(m.mapel)}">${m.mapelIcon} ${escHtml(m.mapel)}</option>`)
+      .join("");
+  }
+
+  async function parseJsonAmanLinimasa_(res) {
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch (e) { throw new Error("Respons tidak dikenali dari server: " + text.slice(0, 150)); }
+  }
+
+  window.simpanLinimasa = async function () {
+    const statusEl = document.getElementById("linimasa-status");
+    const btn = document.getElementById("linimasa-submit-btn");
+    const payload = {
+      type: "linimasa",
+      "ID": document.getElementById("linimasa-edit-id").value || undefined,
+      "Mapel": document.getElementById("linimasa-mapel").value,
+      "Bulan": Number(document.getElementById("linimasa-bulan").value),
+      "Tahun": Number(document.getElementById("linimasa-tahun").value),
+      "Topik": document.getElementById("linimasa-topik").value.trim(),
+      "Keterangan": document.getElementById("linimasa-keterangan").value.trim(),
+      "Diunggah Oleh": window.__guruNama || "",
+    };
+    if (!payload["Tahun"] || !payload["Topik"]) {
+      statusEl.textContent = "Tahun dan Topik wajib diisi.";
+      statusEl.className = "status-msg err";
+      return;
+    }
+    btn.disabled = true;
+    statusEl.textContent = "Menyimpan…";
+    statusEl.className = "status-msg";
+    try {
+      const idToken = await window.getFreshGuruIdToken();
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify({ ...payload, idToken }) });
+      const json = await parseJsonAmanLinimasa_(res);
+      if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
+      statusEl.textContent = "✅ Tersimpan.";
+      window.batalEditLinimasa();
+      loadLinimasa();
+    } catch (err) {
+      statusEl.textContent = "⚠️ Gagal: " + err.message;
+      statusEl.className = "status-msg err";
+    } finally {
+      btn.disabled = false;
+    }
+  };
+
+  window.editLinimasa = function (data) {
+    document.getElementById("linimasa-edit-id").value = data["ID"];
+    document.getElementById("linimasa-mapel").value = data["Mapel"];
+    document.getElementById("linimasa-bulan").value = data["Bulan"];
+    document.getElementById("linimasa-tahun").value = data["Tahun"];
+    document.getElementById("linimasa-topik").value = data["Topik"];
+    document.getElementById("linimasa-keterangan").value = data["Keterangan"] || "";
+    document.getElementById("linimasa-form-title").textContent = "Edit Entri Linimasa";
+    document.getElementById("linimasa-submit-btn").textContent = "Simpan Perubahan";
+    document.getElementById("linimasa-cancel-btn").classList.remove("hidden");
+    document.getElementById("form-linimasa").scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  window.batalEditLinimasa = function () {
+    document.getElementById("form-linimasa").reset();
+    document.getElementById("linimasa-edit-id").value = "";
+    document.getElementById("linimasa-form-title").textContent = "Tambah Entri Linimasa";
+    document.getElementById("linimasa-submit-btn").textContent = "Simpan Entri";
+    document.getElementById("linimasa-cancel-btn").classList.add("hidden");
+    document.getElementById("linimasa-status").textContent = "";
+  };
+
+  window.hapusLinimasa = async function (id) {
+    if (!confirm("Hapus entri linimasa ini? Tindakan ini tidak bisa dibatalkan.")) return;
+    try {
+      const idToken = await window.getFreshGuruIdToken();
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ type: "linimasa_hapus", "ID": id, idToken }),
+      });
+      const json = await parseJsonAmanLinimasa_(res);
+      if (json.status !== "ok") throw new Error(json.message || "Gagal menghapus");
+      loadLinimasa();
+    } catch (err) {
+      alert("Gagal menghapus: " + err.message);
+    }
+  };
+
+  async function loadLinimasa() {
+    const wrap = document.getElementById("list-linimasa");
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?linimasa=1");
+      const json = await res.json();
+      linimasaCache = json.data || [];
+      if (linimasaCache.length === 0) { wrap.innerHTML = '<div class="empty-state">Belum ada entri linimasa.</div>'; return; }
+
+      // Urut tampil: tahun ajaran (Juli dulu), bukan urutan kalender Masehi biasa.
+      const urutanBulan = (b) => (b >= 7 ? b - 7 : b + 5); // Juli(7)->0 ... Juni(6)->11
+      const sorted = linimasaCache.slice().sort((a, b) => urutanBulan(Number(a["Bulan"])) - urutanBulan(Number(b["Bulan"])) || a["Mapel"].localeCompare(b["Mapel"]));
+
+      wrap.innerHTML = "";
+      sorted.forEach((it) => {
+        const item = document.createElement("div");
+        item.className = "list-item";
+        item.innerHTML = `
+          <div class="li-body">
+            <div class="li-title">${escHtml(it["Mapel"])} — ${escHtml(it["Topik"])}</div>
+            <div class="li-meta">${escHtml(BULAN_NAMA_ADMIN[Number(it["Bulan"])])} ${escHtml(it["Tahun"])}${it["Keterangan"] ? " · " + escHtml(it["Keterangan"]) : ""}</div>
+          </div>
+          <div class="li-actions">
+            <button class="btn btn-secondary btn-sm" onclick='editLinimasa(${JSON.stringify(it)})'>Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="hapusLinimasa('${it["ID"]}')">Hapus</button>
+          </div>`;
+        wrap.appendChild(item);
       });
     } catch (err) {
       wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
@@ -1345,13 +1533,15 @@
     loadModul();
     loadSoal();
     loadSemuaOrtu();
+    isiDropdownMapelLinimasa();
+    loadLinimasa();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../index.html"));
 
-  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #soal / #ortu
+  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #soal / #ortu / #linimasa
   window.addEventListener("load", () => {
     const hash = window.location.hash.replace("#", "");
-    if (["pengumuman", "modul", "soal", "ortu", "impor"].includes(hash)) switchTab(hash);
+    if (["pengumuman", "modul", "soal", "ortu", "impor", "linimasa"].includes(hash)) switchTab(hash);
   });
 </script>
 </body>
