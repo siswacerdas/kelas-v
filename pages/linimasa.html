@@ -35,8 +35,26 @@
   .legenda { display: flex; flex-wrap: wrap; gap: 14px; font-size: 11.5px; color: var(--ink-3); margin-bottom: 1.1rem; }
   .legenda span { display: inline-flex; align-items: center; gap: 5px; }
 
-  /* ── Chip filter mapel ── */
-  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.4rem; }
+  /* ── Bar navigasi lompat-ke-bulan ── */
+  .nav-label { font-size: 11px; font-weight: 600; color: var(--ink-3); margin-bottom: 6px; }
+  .bulan-nav {
+    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 1.1rem;
+    scrollbar-width: thin; -webkit-overflow-scrolling: touch;
+  }
+  .bulan-nav::-webkit-scrollbar { height: 4px; }
+  .bulan-nav::-webkit-scrollbar-thumb { background: var(--paper-3); border-radius: 4px; }
+  .bulan-nav button {
+    flex-shrink: 0; font-family: inherit; font-size: 11.5px; font-weight: 600; cursor: pointer;
+    padding: 6px 11px; border-radius: 8px; border: 1.5px solid var(--border);
+    background: #fff; color: var(--ink-2); white-space: nowrap; transition: all .15s;
+  }
+  .bulan-nav button:hover { border-color: var(--teal); }
+  .bulan-nav button.nav-sekarang { border-color: var(--teal); color: var(--teal); background: var(--teal-l); }
+  .bulan-nav .nav-sep { flex-shrink: 0; width: 1px; background: var(--border); margin: 2px 2px; }
+
+  /* ── Chip filter mapel & status ── */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 0.7rem; }
+  .chip-row:last-of-type { margin-bottom: 1.4rem; }
   .chip {
     font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
     padding: 6px 13px; border-radius: 20px; border: 1.5px solid var(--border);
@@ -46,15 +64,23 @@
   .chip.active { background: var(--ink); border-color: var(--ink); color: #fff; }
 
   h2.semester-title {
-    font-family: 'Playfair Display', serif; font-size: 1.15rem; margin: 1.6rem 0 0.7rem;
+    font-family: 'Playfair Display', serif; font-size: 1.15rem; margin: 1.6rem 0 0.15rem;
     display: flex; align-items: baseline; gap: 8px;
   }
   h2.semester-title:first-of-type { margin-top: 0; }
   h2.semester-title .sem-tahun { font-size: 12px; font-weight: 500; color: var(--ink-3); font-family: 'Plus Jakarta Sans', sans-serif; }
+  .semester-ringkasan { font-size: 11.5px; color: var(--ink-3); margin-bottom: 0.8rem; }
+  .semester-kosong-filter { font-size: 12px; color: var(--ink-3); font-style: italic; padding: 0.5rem 0 1rem; }
 
   /* ── Accordion bulan ── */
   details.bulan-block {
     background: #fff; border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 8px; overflow: hidden;
+    scroll-margin-top: 64px;
+  }
+  details.bulan-block.sorot { animation: sorotBulan 1.6s ease; }
+  @keyframes sorotBulan {
+    0% { box-shadow: 0 0 0 3px var(--teal); }
+    100% { box-shadow: none; }
   }
   details.bulan-block[data-status="berjalan"] { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal-l); }
   details.bulan-block > summary {
@@ -84,6 +110,16 @@
 
   .loading-inline { text-align: center; color: var(--ink-3); font-size: 13px; padding: 2rem 0; }
   .empty-global { text-align: center; color: var(--ink-3); font-size: 13px; padding: 2.5rem 1rem; }
+
+  /* ── Tombol mengambang "Bulan Ini" ── */
+  #btnBulanIni {
+    position: fixed; bottom: 20px; right: 20px; z-index: 90;
+    display: none; align-items: center; gap: 6px;
+    font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+    background: var(--ink); color: #fff; border: none; padding: 10px 16px 10px 14px;
+    border-radius: 30px; box-shadow: 0 4px 16px rgba(26,26,46,0.28);
+  }
+  #btnBulanIni:active { transform: scale(0.97); }
 </style>
 </head>
 <body>
@@ -106,13 +142,19 @@
       <span>⚪ Akan datang</span>
     </div>
 
+    <div class="nav-label">Lompat ke bulan</div>
+    <div class="bulan-nav" id="bulanNav"></div>
+
     <div class="chip-row" id="chipRow"></div>
+    <div class="chip-row" id="statusRow"></div>
 
     <div id="hasil">
       <div class="loading-inline">Memuat linimasa…</div>
     </div>
   </div>
 </div>
+
+<button id="btnBulanIni" type="button">🔵 Bulan Ini</button>
 
 <script src="mpls/assets/config.js"></script>
 <script src="infografis/assets/infografis-data.js"></script>
@@ -133,8 +175,19 @@
   // Semester 2 dari tahun ajaran yang MULAI tahun sebelumnya.
   const tahunAjaranMulai = nowBulan >= 7 ? nowTahun : nowTahun - 1;
 
-  let semuaData = [];   // hasil fetch mentah dari Apps Script
-  let mapelAktif = "";  // "" = Semua
+  const LABEL_BULAN_PENDEK = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+    "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+  const STATUS_FILTER_LIST = [
+    { key: "", label: "Semua status" },
+    { key: "selesai", label: "✅ Selesai" },
+    { key: "berjalan", label: "🔵 Berjalan" },
+    { key: "akan", label: "⚪ Akan datang" },
+  ];
+
+  let semuaData = [];    // hasil fetch mentah dari Apps Script
+  let mapelAktif = "";   // "" = Semua
+  let statusAktif = "";  // "" = Semua status ("selesai"/"berjalan"/"akan")
+  let observerBulanIni = null; // IntersectionObserver untuk tombol mengambang "Bulan Ini"
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 
@@ -156,6 +209,74 @@
     });
   }
 
+  /** Filter status TERPISAH dari filter mapel di atas — mempersempit bulan mana saja yang
+   * ditampilkan berdasarkan status agregatnya (pakai pillClass yang sama dengan status-pill
+   * di summary <details>, lihat hitungStatusBulan()). "kosong" (belum ada rencana) SENGAJA
+   * tidak dijadikan pilihan filter karena bukan itu yang biasanya dicari siswa/orangtua. */
+  function renderStatusChip() {
+    const wrap = document.getElementById("statusRow");
+    wrap.innerHTML = STATUS_FILTER_LIST.map((s) =>
+      `<button class="chip ${statusAktif === s.key ? "active" : ""}" data-status="${s.key}">${s.label}</button>`).join("");
+    wrap.querySelectorAll(".chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        statusAktif = btn.getAttribute("data-status");
+        renderStatusChip();
+        renderSemuaSemester();
+      });
+    });
+  }
+
+  /** Bar horizontal 12 bulan (urutan tahun ajaran) untuk lompat cepat ke accordion bulan
+   * tertentu tanpa scroll manual — kepakai terutama di HP saat linimasa sudah panjang berisi
+   * banyak bulan. Bulan berjalan (nowBulan) ditandai beda supaya gampang dikenali. */
+  function renderBulanNav() {
+    const wrap = document.getElementById("bulanNav");
+    const urutan = [...SEM1_BULAN, ...SEM2_BULAN];
+    wrap.innerHTML = urutan.map((b, i) => {
+      const sekarang = b === nowBulan;
+      const sep = i === SEM1_BULAN.length ? '<span class="nav-sep"></span>' : "";
+      return `${sep}<button type="button" data-bulan="${b}" class="${sekarang ? "nav-sekarang" : ""}">${LABEL_BULAN_PENDEK[b]}</button>`;
+    }).join("");
+    wrap.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => lompatKeBulan(Number(btn.getAttribute("data-bulan"))));
+    });
+  }
+
+  /** Lompat & buka accordion bulan tertentu. Kalau bulannya sedang disembunyikan oleh filter
+   * status aktif, filter status DIRESET dulu (supaya navigasi selalu berhasil — pengguna tidak
+   * perlu sadar dulu bahwa itu tersembunyi karena filter) baru dicoba lagi sekali. */
+  function lompatKeBulan(bulanNum) {
+    const cariDanBuka = () => {
+      const el = document.getElementById("bulan-" + bulanNum);
+      if (!el) return false;
+      el.setAttribute("open", "");
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      el.classList.add("sorot");
+      setTimeout(() => el.classList.remove("sorot"), 1600);
+      return true;
+    };
+    if (cariDanBuka()) return;
+    statusAktif = "";
+    renderStatusChip();
+    renderSemuaSemester();
+    requestAnimationFrame(cariDanBuka);
+  }
+
+  /** Pasang ulang IntersectionObserver tiap kali #hasil dirender ulang (elemen lama sudah
+   * dibuang lewat innerHTML, observer lama jadi tidak berguna). Kalau accordion bulan berjalan
+   * sedang tersembunyi oleh filter, tombol disembunyikan (tidak ada yang bisa dituju). */
+  function setupObserverBulanIni() {
+    const btn = document.getElementById("btnBulanIni");
+    if (observerBulanIni) observerBulanIni.disconnect();
+    const el = document.getElementById("bulan-" + nowBulan);
+    if (!el) { btn.style.display = "none"; return; }
+    observerBulanIni = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => { btn.style.display = entry.isIntersecting ? "none" : "flex"; });
+    }, { rootMargin: "-56px 0px 0px 0px", threshold: 0 });
+    observerBulanIni.observe(el);
+  }
+  document.getElementById("btnBulanIni").addEventListener("click", () => lompatKeBulan(nowBulan));
+
   /** Status dihitung dari perbandingan (Tahun,Bulan) entri vs bulan berjalan
    * SEKARANG (Date() nyata) — bukan dari field manapun di sheet, supaya guru
    * tidak perlu mengubah status manual tiap bulan berganti. */
@@ -166,7 +287,13 @@
     return "akan";
   }
 
-  function renderBulanBlock(bulanNum, tahunSlot, isBulanIni) {
+  /** Hitung status agregat 1 bulan (dipakai bareng oleh renderBulanBlock, ringkasan semester,
+   * DAN bar navigasi bulan) — dipecah dari renderBulanBlock supaya angka di ringkasan semester
+   * selalu konsisten 1:1 dengan pill yang tampil di tiap accordion, tidak ada logika ganda yang
+   * bisa berbeda hasil. Filter MAPEL ikut dipertimbangkan di sini (tampilan yang sedang aktif),
+   * filter STATUS SENGAJA TIDAK — itu baru diterapkan belakangan di renderSemesterBlok(), untuk
+   * memutuskan blok bulan mana yang ditampilkan sama sekali. */
+  function hitungStatusBulan(bulanNum, tahunSlot) {
     const cocok = semuaData.filter((d) => Number(d["Bulan"]) === bulanNum && (!mapelAktif || d["Mapel"] === mapelAktif));
     // Kalau ada data beneran, pakai Tahun dari data itu (jaga-jaga guru input tahun
     // yang beda dari asumsi tahunSlot); kalau kosong, pakai tahunSlot hasil hitungan.
@@ -182,7 +309,11 @@
     } else {
       pillLabel = "⚪ Akan datang"; pillClass = "akan";
     }
+    return { cocok, tahunTampil, pillClass, pillLabel };
+  }
 
+  function renderBulanBlock(bulanNum, isBulanIni, info) {
+    const { cocok, tahunTampil, pillClass, pillLabel } = info;
     const isiHtml = cocok.length === 0
       ? `<div class="bulan-kosong">Belum ada rencana materi untuk bulan ini.</div>`
       : cocok.map((d) => {
@@ -202,21 +333,49 @@
         }).join("");
 
     return `
-      <details class="bulan-block" data-status="${pillClass}" ${isBulanIni ? "open" : ""}>
+      <details class="bulan-block" id="bulan-${bulanNum}" data-status="${pillClass}" ${isBulanIni ? "open" : ""}>
         <summary>${BULAN_NAMA[bulanNum]} ${tahunTampil}<span class="status-pill ${pillClass}">${pillLabel}</span></summary>
         <div class="bulan-body">${isiHtml}</div>
       </details>`;
   }
 
+  /** Kalimat ringkas di atas tiap semester, mis. "4 selesai · 1 berjalan · 1 akan datang" —
+   * dihitung dari pillClass per bulan (bukan per entri satu-satu), jadi 1 bulan = 1 hitungan
+   * sama seperti yang dilihat orang di daftar accordion di bawahnya. */
+  function ringkasanSemester(bulanList, tahunSlot) {
+    const jumlah = { selesai: 0, berjalan: 0, akan: 0, kosong: 0 };
+    bulanList.forEach((b) => { jumlah[hitungStatusBulan(b, tahunSlot).pillClass]++; });
+    const bagian = [];
+    if (jumlah.selesai) bagian.push(`${jumlah.selesai} selesai`);
+    if (jumlah.berjalan) bagian.push(`${jumlah.berjalan} berjalan`);
+    if (jumlah.akan) bagian.push(`${jumlah.akan} akan datang`);
+    if (jumlah.kosong) bagian.push(`${jumlah.kosong} belum ada rencana`);
+    return bagian.join(" · ") || "Belum ada rencana sama sekali.";
+  }
+
+  /** Daftar accordion 1 semester, DIPERSEMPIT oleh filter status aktif (kalau ada). Bulan yang
+   * tidak cocok status-nya tidak dirender sama sekali (bukan ditampilkan kosong) — konsisten
+   * dengan cara filter mapel bekerja di tempat lain: menyembunyikan yang tidak relevan. */
+  function renderSemesterBlok(bulanList, tahunSlot) {
+    const daftar = bulanList
+      .map((b) => ({ b, info: hitungStatusBulan(b, tahunSlot) }))
+      .filter(({ info }) => !statusAktif || info.pillClass === statusAktif);
+    if (daftar.length === 0) {
+      return `<div class="semester-kosong-filter">Tidak ada bulan dengan status ini di semester ini.</div>`;
+    }
+    return daftar.map(({ b, info }) => renderBulanBlock(b, b === nowBulan && tahunSlot === nowTahun, info)).join("");
+  }
+
   function renderSemuaSemester() {
     const wrap = document.getElementById("hasil");
-    const s1Html = SEM1_BULAN.map((b) => renderBulanBlock(b, tahunAjaranMulai, b === nowBulan && nowYM === tahunAjaranMulai * 12 + b)).join("");
-    const s2Html = SEM2_BULAN.map((b) => renderBulanBlock(b, tahunAjaranMulai + 1, b === nowBulan && nowYM === (tahunAjaranMulai + 1) * 12 + b)).join("");
     wrap.innerHTML = `
       <h2 class="semester-title">Semester 1 · Juli–Desember <span class="sem-tahun">${tahunAjaranMulai}</span></h2>
-      ${s1Html}
+      <div class="semester-ringkasan">${ringkasanSemester(SEM1_BULAN, tahunAjaranMulai)}</div>
+      ${renderSemesterBlok(SEM1_BULAN, tahunAjaranMulai)}
       <h2 class="semester-title">Semester 2 · Januari–Juni <span class="sem-tahun">${tahunAjaranMulai + 1}</span></h2>
-      ${s2Html}`;
+      <div class="semester-ringkasan">${ringkasanSemester(SEM2_BULAN, tahunAjaranMulai + 1)}</div>
+      ${renderSemesterBlok(SEM2_BULAN, tahunAjaranMulai + 1)}`;
+    setupObserverBulanIni();
   }
 
   async function muatLinimasa() {
@@ -225,7 +384,9 @@
       const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?linimasa=1");
       const json = await res.json();
       semuaData = json.data || [];
+      renderBulanNav();
       renderChip();
+      renderStatusChip();
       renderSemuaSemester();
     } catch (err) {
       wrap.innerHTML = `<div class="empty-global">Gagal memuat linimasa: ${esc(err.message)}</div>`;
