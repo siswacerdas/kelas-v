@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mengenal Komponen Biotik dan Abiotik · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .ciri-grid { display: grid; grid-template-columns: 1fr; gap: 0.7rem; margin: 1rem 0 1.4rem; }
+  @media (min-width: 560px) { .ciri-grid { grid-template-columns: 1fr 1fr; } }
+  .ciri-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; font-size: calc(var(--content-fs) - 2px); line-height: 1.6; }
+  .ciri-box.hidup { background: #f4f8ef; }
+  .ciri-box.takhidup { background: #f4f2ee; }
+  .ciri-tag { display: inline-block; font-size: 11px; font-weight: 700; margin-bottom: 0.5rem; padding: 2px 9px; border-radius: 20px; color: #fff; }
+  .ciri-tag.hidup { background: #5a8a3a; }
+  .ciri-tag.takhidup { background: #8a7a68; }
+  .ciri-box ul { margin: 0.3em 0 0 1.1em; padding: 0; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box { border: 1px solid #dcead0; border-left: 5px solid #3f7d4a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f4f8ef; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #3f7d4a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #3f7d4a; color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #3f7d4a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
 
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🌱</span>
+      <div class="ma-cover-eyebrow">Ekosistem · Hubungan Timbal Balik dan Aliran Energi · Materi 1 dari 7</div>
+      <div class="ma-cover-title">Mengenal Komponen Biotik dan Abiotik</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Setiap lingkungan hidup di muka bumi terbentuk dari jalinan erat antara dua jenis komponen utama, yaitu <strong>Komponen Biotik</strong> dan <strong>Komponen Abiotik</strong>. Kedua komponen ini tidak dapat dipisahkan dan terus-menerus berinteraksi setiap saat.</p>
+
+      <div class="ciri-grid">
+        <div class="ciri-box hidup">
+          <span class="ciri-tag hidup">Komponen Biotik (Unsur Hidup)</span>
+          <p>Merupakan semua makhluk hidup yang tinggal di dalam lingkungan tersebut — contohnya tanaman pot, rumput liar, semut tanah, cacing, kupu-kupu, dan burung.</p>
+          <p><strong>Ciri-ciri kehidupan:</strong></p>
+          <ul>
+            <li>Bernapas (respirasi)</li>
+            <li>Memerlukan makanan (nutrisi)</li>
+            <li>Tumbuh dan berkembang (ireversibel)</li>
+            <li>Bergerak aktif/pasif</li>
+            <li>Peka terhadap rangsang</li>
+            <li>Berkembang biak (reproduksi)</li>
+          </ul>
+        </div>
+        <div class="ciri-box takhidup">
+          <span class="ciri-tag takhidup">Komponen Abiotik (Unsur Tidak Hidup)</span>
+          <p>Merupakan benda-benda tidak hidup di lingkungan sekitar yang menjadi penyokong langsung kelangsungan hidup komponen biotik. Abiotik menentukan kondisi fisik dan kimiawi lingkungan:</p>
+          <ul>
+            <li><strong>Air</strong> — zat pelarut hara dalam tanah agar bisa diserap akar, serta penyusun cairan tubuh makhluk hidup.</li>
+            <li><strong>Tanah</strong> — media tempat tumbuh, jangkar akar tanaman, dan sumber mineral (zat hara).</li>
+            <li><strong>Cahaya Matahari</strong> — sumber energi utama bumi, digunakan produsen untuk fotosintesis.</li>
+            <li><strong>Udara</strong> — mengandung oksigen (untuk bernapas) dan karbon dioksida (untuk fotosintesis tumbuhan).</li>
+            <li><strong>Suhu &amp; Kelembapan</strong> — memengaruhi kerja sel dan kecepatan penguapan cairan tubuh.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🌾 Nilai Karakter: Syukur</span>
+        Allah SWT menciptakan alam semesta ini dengan tatanan dan ukuran yang sangat seimbang. Unsur abiotik seperti air yang mengalir dan cahaya matahari yang terbit setiap pagi diciptakan secara teliti untuk memastikan kebutuhan makhluk hidup terpenuhi dengan sempurna. Kita sebagai manusia harus senantiasa bersyukur kepada Allah SWT atas nikmat alam ini dengan cara merawatnya, tidak merusaknya, dan memanfaatkannya secara bijak serta bertanggung jawab.
+      </div>
+
+      <div class="contoh-box">
+        <strong>Coba amati:</strong> Cahaya matahari → tumbuhan. Air + tanah → tumbuhan. Tumbuhan → hewan. Udara → makhluk hidup. Makhluk hidup → lingkungan. Semua panah ini menunjukkan bahwa biotik dan abiotik saling berinteraksi dan saling bergantung satu sama lain — jika salah satu terganggu, kehidupan yang lain juga akan ikut terganggu.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan biotik dan abiotik seperti pemain sepak bola dan lapangannya. Pemain (biotik) tidak bisa bermain tanpa lapangan, garis, dan gawang (abiotik) — tapi lapangan yang kosong tanpa pemain juga tidak akan pernah menjadi pertandingan yang hidup. Keduanya WAJIB ada bersama-sama agar "permainan" (ekosistem) bisa berjalan.</span></p>
+        <p>Cara termudah membedakan: tanya pada dirimu, "apakah benda ini bernapas, makan, tumbuh, dan berkembang biak?" Kalau jawabannya ya, itu biotik. Kalau tidak — meskipun benda itu bergerak seperti air mengalir atau angin bertiup — itu tetap abiotik.</p>
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Kelompokkan benda-benda berikut ke dalam Biotik atau Abiotik: batu kerikil, cacing tanah, air hujan, jentik nyamuk, udara, jamur kayu.</div>
+          <div class="soal-a"><b>Pembahasan:</b> <strong>Biotik:</strong> cacing tanah, jentik nyamuk, jamur kayu (ketiganya bernapas, tumbuh, dan berkembang biak — jamur termasuk makhluk hidup meski bukan tumbuhan/hewan). <strong>Abiotik:</strong> batu kerikil, air hujan, udara (ketiganya tidak bernapas, tidak tumbuh, dan tidak berkembang biak, meskipun air dan udara bisa "bergerak").</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Mengapa tanaman pot yang diletakkan di dalam ruangan gelap gulita lambat laun akan menguning lalu mati lemas?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena tanaman kehilangan akses ke komponen abiotik penting, yaitu cahaya matahari, yang digunakan untuk proses fotosintesis (membuat makanan sendiri). Tanpa cahaya, tanaman tidak bisa menghasilkan energi untuk tumbuh, sehingga daunnya menguning dan akhirnya mati — ini membuktikan bahwa komponen biotik (tanaman) sangat bergantung pada komponen abiotik (cahaya) untuk bertahan hidup.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Berdirilah di dekat jendela kelasmu atau perhatikan tanaman pot yang ada di koridor sekolah. Sebutkan tiga hal hidup yang kamu lihat bergerak, bernapas, atau tumbuh di sana, lalu sebutkan juga tiga benda mati yang berada tepat di sekeliling makhluk hidup tersebut.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu menjelajahi berbagai jenis ekosistem di bumi — dari hutan hujan tropis yang lembap sampai gurun pasir yang gersang — dan memahami mengapa setiap ekosistem punya penghuni yang berbeda-beda.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

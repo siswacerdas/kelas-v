@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aliran Energi: Rantai Makanan dan Tingkat Trofik · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .tekstur-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.6rem; margin: 0.9rem 0; }
+  @media (max-width: 640px) { .tekstur-grid { grid-template-columns: 1fr; } }
+  .tekstur-card { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.8rem 0.9rem; background: var(--paper-2); }
+  .tekstur-card .nama { font-weight: 700; color: #3f7d4a; font-size: calc(var(--content-fs) - 1px); margin-bottom: 0.3rem; }
+  .tekstur-card p { margin: 0.2em 0; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; color: var(--ink-2); }
+  .rantai-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin: 0.9rem 0; font-size: calc(var(--content-fs) - 2px); }
+  .rantai-node { background: #eef6ea; border: 1px solid #cfe4bf; border-radius: 10px; padding: 0.4em 0.8em; font-weight: 600; color: #2f5c33; }
+  .rantai-arrow { color: #3f7d4a; font-weight: 700; }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box { border: 1px solid #dcead0; border-left: 5px solid #3f7d4a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f4f8ef; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #3f7d4a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #3f7d4a; color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #3f7d4a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🍃</span>
+      <div class="ma-cover-eyebrow">Ekosistem · Hubungan Timbal Balik dan Aliran Energi · Materi 3 dari 7</div>
+      <div class="ma-cover-title">Aliran Energi: Rantai Makanan dan Tingkat Trofik</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Makhluk hidup tidak dapat bertahan hidup sendirian tanpa energi. Di materi ini, kalian akan mempelajari bagaimana energi matahari ditangkap, diolah, dan dipindahkan dari satu makhluk hidup ke makhluk hidup lainnya dalam suatu ekosistem, lewat jalur makan dan dimakan yang terstruktur secara berjenjang.</p>
+
+      <h3>Tiga Kelompok Berdasarkan Perannya</h3>
+      <div class="tekstur-grid">
+        <div class="tekstur-card">
+          <div class="nama">🌾 Produsen</div>
+          <p><strong>(Pembuat Makanan / Tingkat Trofik I)</strong> — Tumbuhan hijau adalah produsen utama bumi (autotrof). Mereka memiliki klorofil untuk menangkap energi cahaya matahari, menyerap air dari tanah dan gas karbon dioksida dari udara, lalu melakukan fotosintesis untuk mengubahnya menjadi energi makanan bagi dirinya sendiri dan cadangan bagi hewan.</p>
+        </div>
+        <div class="tekstur-card">
+          <div class="nama">🐛 Konsumen</div>
+          <p><strong>(Penerima Energi)</strong> — Makhluk hidup yang tidak bisa membuat makanan sendiri (heterotrof). Hewan memperoleh energi dengan memakan organisme lain: Konsumen I (herbivor, pemakan tumbuhan), Konsumen II (karnivor, pemakan Konsumen I), Konsumen Puncak (pemangsa utama).</p>
+        </div>
+        <div class="tekstur-card">
+          <div class="nama">🍄 Pengurai / Dekomposer</div>
+          <p><strong>(Daur Ulang Nutrisi)</strong> — Mikroorganisme seperti bakteri tanah dan jamur kayu yang bertugas mengurai sisa-sisa tubuh makhluk hidup yang telah mati menjadi zat hara tanah (abiotik). Zat hara ini diserap kembali oleh akar produsen sebagai nutrisi tumbuh.</p>
+        </div>
+      </div>
+
+      <h3>Rantai Makanan</h3>
+      <div class="rantai-flow">
+        <span class="rantai-node">Padi (Produsen)</span><span class="rantai-arrow">→</span>
+        <span class="rantai-node">Tikus (Konsumen I)</span><span class="rantai-arrow">→</span>
+        <span class="rantai-node">Ular Sawah (Konsumen II)</span><span class="rantai-arrow">→</span>
+        <span class="rantai-node">Pemangsa (Konsumen Puncak)</span>
+      </div>
+      <p>Di alam nyata, satu makhluk hidup biasanya dimakan oleh lebih dari satu jenis pemangsa, dan satu pemangsa juga bisa memakan lebih dari satu jenis mangsa — kumpulan beberapa rantai makanan yang saling berhubungan ini disebut <strong>jaring-jaring makanan</strong>.</p>
+
+      <h3>Hukum Aliran Energi 10%</h3>
+      <p>Mengapa rantai makanan di alam rata-rata hanya terdiri dari 4–5 tingkatan saja? Jawabannya dijelaskan dalam Hukum Aliran Energi: ketika energi makanan berpindah dari satu tingkatan trofik ke tingkatan berikutnya, hanya sekitar <strong>10% energi</strong> saja yang diubah menjadi daging baru di tubuh pemangsa. Sisa 90% energi digunakan hewan tersebut untuk respirasi, bergerak, atau hilang sebagai panas tubuh. Akibatnya, energi yang tersedia menyusut drastis membentuk piramida energi, sehingga di puncak paling atas energi tidak cukup lagi untuk menghidupi konsumen baru.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🌾 Nilai Karakter: Amanah</span>
+        Menjaga keseimbangan ekosistem adalah salah satu wujud nyata dari sikap memegang amanah tanggung jawab sebagai manusia di bumi. Setiap bagian di dalam rantai makanan memiliki peran pentingnya masing-masing. Apabila kita melanggar amanah dengan merusak lingkungan — misalnya memburu burung secara liar atau membuang sampah racun ke tanah — kita sedang memutus rantai aliran energi, menyebabkan hama belalang meledak jumlahnya, merusak tanaman petani, dan akhirnya merugikan kehidupan sesama manusia.
+      </div>
+
+      <div class="contoh-box">
+        <strong>Bayangkan skenario nyata di sawah:</strong> jika para petani memburu habis seluruh ular sawah (Konsumen III) karena takut tergigit, maka populasi tikus (Konsumen II) akan meledak tak terkendali, tanaman padi (Produsen) akan rusak parah dimakan tikus, dan hasil panen beras masyarakat akan menyusut drastis. Inilah yang disebut <strong>trophic cascade</strong> — rantai akibat berantai yang terjadi ketika perubahan pada satu jenis makhluk hidup menyebabkan perubahan pada makhluk hidup lain di tingkat berbeda dalam ekosistem.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan energi seperti uang jajan yang dibagi-bagi. Kamu dapat Rp10.000 dari orang tua (matahari → produsen). Kamu belanjakan 90% untuk jajan (dipakai untuk "hidup") dan hanya sisa Rp1.000 yang kamu tabung dan berikan ke adikmu (berpindah ke tingkat berikutnya). Adikmu juga hanya bisa menabung 10% dari yang ia terima untuk diberikan ke adik berikutnya lagi. Semakin jauh rantainya, semakin sedikit "tabungan" yang tersisa — sampai akhirnya tidak cukup lagi untuk dibagi ke orang berikutnya.</span></p>
+        <p>Itulah sebabnya rantai makanan tidak bisa panjang tak terbatas — energinya keburu habis di tengah jalan.</p>
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Susunlah rantai makanan yang logis dari komponen berikut: Ulat Daun, Elang, Pohon Cabai, Burung Pipit, Bakteri Pengurai.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Pohon Cabai (Produsen) → Ulat Daun (Konsumen I, pemakan tumbuhan) → Burung Pipit (Konsumen II, pemakan ulat) → Elang (Konsumen Puncak, pemangsa burung). Bakteri Pengurai bertugas mengurai sisa tubuh makhluk hidup yang sudah mati dari SEMUA tingkatan tersebut, bukan bagian dari urutan rantai makan-memakan.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Mengapa tidak semua energi dari makanan dapat diteruskan ke tingkatan trofik berikutnya?</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena hanya sekitar 10% energi yang diubah menjadi jaringan tubuh baru (daging) yang bisa dimakan oleh pemangsa berikutnya. Sisa 90% energi digunakan hewan tersebut untuk aktivitas hidupnya sendiri, seperti bernapas, bergerak, dan menjaga suhu tubuh — energi ini hilang sebagai panas dan tidak bisa diwariskan ke tingkat trofik selanjutnya.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">3</span>Jika seluruh burung pipit menghilang dari suatu ekosistem sawah, jelaskan kemungkinan dampaknya terhadap organisme lain dalam jaring-jaring makanan tersebut!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Populasi ulat (yang biasa dimakan burung pipit) kemungkinan akan meledak jumlahnya karena kehilangan pemangsa alaminya, sehingga tanaman/daun yang menjadi makanan ulat akan rusak parah. Di sisi lain, elang atau pemangsa lain yang biasa memakan burung pipit akan kehilangan salah satu sumber makanannya, sehingga populasinya bisa ikut menurun. Ini menunjukkan bahwa hilangnya satu spesies bisa memicu efek berantai (trophic cascade) ke banyak organisme lain.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Amati lingkungan sekitarmu (kebun sekolah, sawah, atau taman). Temukan contoh hubungan makan-dimakan antara dua makhluk hidup yang kamu amati, lalu tuliskan jenis hubungannya dan dampaknya pada masing-masing pihak.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu memahami jenis hubungan lain antar-makhluk hidup yang tidak selalu soal makan-memakan — yaitu simbiosis, serta apa yang terjadi jika hubungan itu terganggu.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>

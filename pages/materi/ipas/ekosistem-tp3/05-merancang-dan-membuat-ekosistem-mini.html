@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Merancang dan Membuat Ekosistem Mini · Materi Ajar Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/materi.css" />
+<style>
+  .opsi-grid { display: grid; grid-template-columns: 1fr; gap: 0.8rem; margin: 0.9rem 0; }
+  @media (min-width: 560px) { .opsi-grid { grid-template-columns: 1fr 1fr; } }
+  .opsi-card { border: 1.5px dashed #3f7d4a; border-radius: var(--r-lg); padding: 0.9rem 1rem; background: var(--paper-2); }
+  .opsi-card .opsi-tag { display: inline-block; font-size: 11px; font-weight: 700; color: #fff; background: #3f7d4a; border-radius: 999px; padding: 0.15em 0.7em; margin-bottom: 0.5rem; }
+  .opsi-card h4 { margin: 0 0 0.4rem; font-size: calc(var(--content-fs) - 1px); }
+  .opsi-card p { margin: 0.2em 0; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; color: var(--ink-2); }
+  .langkah-list { margin: 1rem 0; }
+  .langkah-item { display: flex; gap: 0.8rem; padding: 0.65rem 0; border-bottom: 1px dashed var(--border); }
+  .langkah-item:last-child { border-bottom: none; }
+  .langkah-no { flex: 0 0 auto; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: #3f7d4a; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-family: 'Playfair Display', serif; font-size:0.9em; }
+  .langkah-text b { display: block; margin-bottom: 0.2rem; color: var(--ink); }
+  .langkah-text p { margin: 0; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; color: var(--ink-2); }
+  .contoh-box { border: 1px solid var(--border); border-radius: var(--r-lg); padding: 0.9rem 1.05rem; margin: 0.9rem 0; background: var(--paper-2); font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box { border: 1px solid #dcead0; border-left: 5px solid #3f7d4a; border-radius: var(--r-lg); padding: 0.95rem 1.1rem; margin: 1.1rem 0; background: #f4f8ef; }
+  .bingung-label { display: block; font-weight: 700; font-size: 12.5px; color: #3f7d4a; margin-bottom: 0.45rem; letter-spacing: 0.2px; }
+  .bingung-box p { margin: 0.4em 0; font-size: calc(var(--content-fs) - 2px); line-height: 1.65; }
+  .bingung-box .analogi { font-style: italic; color: var(--ink-2); }
+  .soal-box { border: 1px solid var(--border); border-radius: var(--r-lg); margin: 1.1rem 0; overflow: hidden; }
+  .soal-head { background: var(--paper-2); padding: 0.7rem 1.05rem; font-weight: 700; font-size: 13px; color: var(--ink-2); border-bottom: 1px solid var(--border); }
+  .soal-item { padding: 0.9rem 1.05rem; border-bottom: 1px dashed var(--border); }
+  .soal-item:last-child { border-bottom: none; }
+  .soal-q { font-weight: 600; font-size: calc(var(--content-fs) - 2px); color: var(--ink); margin-bottom: 0.5rem; }
+  .soal-q .no2 { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: #3f7d4a; color: #fff; font-size: 11px; font-weight: 700; margin-right: 0.4rem; flex-shrink: 0; }
+  .soal-a { background: #f7fbfa; border-radius: 10px; padding: 0.65rem 0.8rem; font-size: calc(var(--content-fs) - 3px); line-height: 1.6; }
+  .soal-a b { color: #3f7d4a; }
+</style>
+</head>
+<body class="ma-root ma-mapel-ipas">
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-detail" class="ma-hidden">
+  <div class="ma-topbar">
+    <div class="ma-brand">Materi Ajar <span>·</span> Kelas 5</div>
+    <a class="ma-back" href="../../../../index.html">← Beranda</a>
+  </div>
+
+  <div class="ma-crumb">
+    <a href="../../../materi.html">📖 Materi Ajar</a> › IPAS
+  </div>
+
+  <div class="ma-cover">
+    <div class="ma-cover-inner">
+      <span class="ma-cover-icon">🫙</span>
+      <div class="ma-cover-eyebrow">Ekosistem · Hubungan Timbal Balik dan Aliran Energi · Materi 5 dari 7 · Proyek Akhir Unit</div>
+      <div class="ma-cover-title">Merancang dan Membuat Ekosistem Mini</div>
+    </div>
+  </div>
+
+  <div class="ma-container">
+    <div class="ma-toolbar">
+      <span class="ma-toolbar-label">Ukuran huruf</span>
+      <button class="ma-fsbtn" data-level="normal">A</button>
+      <button class="ma-fsbtn" data-level="besar">A+</button>
+      <button class="ma-fsbtn" data-level="ekstra">A++</button>
+    </div>
+
+    <div class="ma-content">
+      <p>Kita mengaplikasikan pemahaman dari materi-materi sebelumnya dengan membuat ekosistem buatan berukuran kecil di dalam wadah transparan yang ditutup rapat atau menggunakan kasa penutup. Kita akan membuat dunia kecil yang menunjukkan hubungan antara komponen biotik dan abiotik.</p>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">🔨 Yang Akan Kamu Buktikan</span>
+        <strong>1. Komponen Biotik</strong> — tumbuhan dan, pada Vivarium, hewan kecil. <strong>2. Komponen Abiotik</strong> — tanah, air, udara, cahaya, dan bahan penyusun lingkungan mini yang relevan. <strong>3. Interaksi dalam Ekosistem</strong> — komponen biotik dan abiotik saling berhubungan.
+      </div>
+
+      <h3>Pilih Proyekmu</h3>
+      <div class="opsi-grid">
+        <div class="opsi-card">
+          <span class="opsi-tag">PROYEK A</span>
+          <h4>🫙 Terrarium Toples</h4>
+          <p>Ekosistem darat tertutup di dalam wadah transparan. Siklus air, oksigen, dan karbon dioksida terjadi secara tertutup.</p>
+          <p><strong>Alat &amp; bahan:</strong> toples kaca/botol plastik bekas, kerikil/pasir kasar (lapisan drainase), serpihan arang kayu (mencegah bau), tanah subur (media tanam), tanaman kecil (kecambah kacang hijau/lumut/rumput liar kecil), air bersih.</p>
+        </div>
+        <div class="opsi-card">
+          <span class="opsi-tag">PROYEK B</span>
+          <h4>🦗 Vivarium Akuarium Akrilik</h4>
+          <p>Ekosistem darat berhewan dengan tanaman dan hewan darat kecil di dalamnya, memakai penutup kasa/jaring udara.</p>
+          <p><strong>Alat &amp; bahan:</strong> sama seperti Proyek A, ditambah hewan kecil (1–2 belalang/ulat daun, 2–3 cacing tanah), dedaunan segar (pakan belalang), dan penutup kasa/jaring.</p>
+        </div>
+      </div>
+
+      <h3>Langkah-Langkah Pembuatan (Susunan Lapisan)</h3>
+      <div class="langkah-list">
+        <div class="langkah-item"><div class="langkah-no">1</div><div class="langkah-text"><b>Bersihkan Wadah</b><p>Bersihkan bagian dalam wadah dari noda menggunakan lap kering hingga jernih.</p></div></div>
+        <div class="langkah-item"><div class="langkah-no">2</div><div class="langkah-text"><b>Masukkan Kerikil</b><p>Masukkan kerikil kecil/pasir kasar setebal ±2 cm di dasar wadah sebagai area penampungan air berlebih (drainase).</p></div></div>
+        <div class="langkah-item"><div class="langkah-no">3</div><div class="langkah-text"><b>Tambahkan Arang</b><p>Taburkan serpihan arang tipis di atas kerikil — arang membantu mencegah bau pembusukan.</p></div></div>
+        <div class="langkah-item"><div class="langkah-no">4</div><div class="langkah-text"><b>Masukkan Tanah</b><p>Masukkan tanah subur setebal ±4–5 cm di atas arang sebagai media tumbuh.</p></div></div>
+        <div class="langkah-item"><div class="langkah-no">5</div><div class="langkah-text"><b>Tanam Tanaman</b><p>Tanam tanaman kecil di atas tanah. Atur agar berdiri tegak dan terlihat rapi.</p></div></div>
+        <div class="langkah-item"><div class="langkah-no">6</div><div class="langkah-text"><b>Semprotkan Air</b><p>Semprotkan air secukupnya pada tanah menggunakan sprayer, sebanyak 3–4 kali semprotan. Jangan terlalu banyak air.</p></div></div>
+        <div class="langkah-item"><div class="langkah-no">7</div><div class="langkah-text"><b>Khusus Proyek B: Masukkan Hewan</b><p>Masukkan beberapa ekor cacing tanah dan belalang kecil/ulat daun sebagai komponen makhluk hidup tambahan.</p></div></div>
+        <div class="langkah-item"><div class="langkah-no">8</div><div class="langkah-text"><b>Tutup &amp; Tempatkan</b><p>Tutup wadah rapat (Proyek A) atau pasang kasa/jaring (Proyek B). Letakkan di tempat yang terang tetapi tidak terkena sinar matahari langsung.</p></div></div>
+      </div>
+
+      <div class="contoh-box">
+        <strong>Ingat:</strong> gunakan bahan sesuai urutan agar setiap lapisan berfungsi baik — kerikil untuk drainase, arang untuk mencegah bau, tanah untuk media tumbuh. Jangan terlalu banyak air, dan amati serta rawat ekosistem mini secara rutin.
+      </div>
+
+      <div class="bingung-box">
+        <span class="bingung-label">🧩 KALAU MASIH BINGUNG</span>
+        <p><span class="analogi">Bayangkan menyusun terrarium seperti membuat kue lapis. Setiap lapisan (kerikil, arang, tanah) punya fungsi berbeda dan harus disusun berurutan dari bawah ke atas — kalau urutannya terbalik (misalnya tanah diletakkan sebelum kerikil), air tidak bisa mengalir dengan baik dan akarnya bisa membusuk karena tergenang.</span></p>
+        <p>Bedanya Terrarium dan Vivarium: Terrarium (Proyek A) wadahnya tertutup rapat dan hanya berisi tanaman; Vivarium (Proyek B) memakai penutup kasa/jaring (bukan tertutup rapat, karena hewan perlu udara) dan berisi tanaman PLUS hewan kecil.</p>
+      </div>
+
+      <div class="soal-box">
+        <div class="soal-head">📝 Contoh Soal &amp; Pembahasan</div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">1</span>Mengapa dalam pembuatan ekosistem mini, kita tidak boleh hanya memasukkan tanaman saja tanpa memasukkan tanah dan air ke dalam wadah? Hubungkan dengan fungsi air dan tanah sebagai penopang hidup.</div>
+          <div class="soal-a"><b>Pembahasan:</b> Karena tanaman (komponen biotik) membutuhkan tanah sebagai media tumbuh dan sumber mineral/zat hara, serta air sebagai zat pelarut hara yang diserap akar dan penyusun cairan tubuh tanaman. Tanpa tanah dan air (komponen abiotik), tanaman tidak akan bisa berdiri tegak, menyerap nutrisi, atau bertahan hidup — membuktikan bahwa komponen biotik dan abiotik saling bergantung satu sama lain.</div>
+        </div>
+        <div class="soal-item">
+          <div class="soal-q"><span class="no2">2</span>Wadah manakah yang seharusnya ditutup RAPAT sepenuhnya: Terrarium (Proyek A) atau Vivarium (Proyek B)? Jelaskan alasannya!</div>
+          <div class="soal-a"><b>Pembahasan:</b> Terrarium (Proyek A) ditutup rapat, karena hanya berisi tanaman yang siklus air-oksigen-karbondioksidanya bisa terjadi secara tertutup (uap air menempel di dinding lalu menetes kembali). Vivarium (Proyek B) TIDAK ditutup rapat, melainkan memakai kasa/jaring udara, karena berisi hewan (belalang, cacing) yang tetap membutuhkan sirkulasi udara segar untuk bernapas.</div>
+        </div>
+      </div>
+
+      <div class="ma-callout">
+        <span class="ma-callout-label">✏️ Yuk Coba Sendiri</span>
+        Siapkan alat dan bahan sesuai proyek pilihanmu, lalu rakit ekosistem minimu bersama kelompok mengikuti urutan langkah di atas.
+      </div>
+
+      <p>Materi berikutnya akan mengajakmu merawat dan mengamati ekosistem mini yang sudah kamu buat, serta mencatatnya secara berkala dalam jurnal pengamatan.</p>
+    </div>
+
+    <div id="ma-related" class="ma-related"></div>
+    <div id="ma-prevnext" class="ma-prevnext"></div>
+    <a class="ma-backlist" href="../../../materi.html">← Kembali ke daftar Materi Ajar</a>
+  </div>
+</div>
+
+<script type="module" src="../../../../assets/js/auth-guard.js"></script>
+<script src="../../assets/materi-index.js"></script>
+<script src="../../assets/materi-nav.js"></script>
+<script src="../../assets/materi-progress-tracker.js"></script>
+<script>
+  document.addEventListener("user-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-detail").classList.remove("ma-hidden");
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardLoggedInPage("../../../../index.html"));
+</script>
+</body>
+</html>
