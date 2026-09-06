@@ -8,6 +8,30 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Ditambahkan — Linimasa Materi: navigasi & ringkasan tampilan (`pages/linimasa.html`, murni frontend)
+- **Latar belakang**: setelah Linimasa Materi (lihat entri di bawah) selesai fungsi dasarnya,
+  Arif minta ditingkatkan sisi tampilan & navigasinya — terutama karena diakses lewat HP di
+  mana scroll manual antar-bulan/semester cukup melelahkan kalau datanya sudah banyak.
+- **Bar "Lompat ke bulan"**: strip horizontal 12 chip bulan (urutan tahun ajaran, bisa
+  digeser di HP) di atas filter mapel. Klik salah satu bulan langsung men-scroll & membuka
+  accordion bulan itu, dengan efek sorot sebentar supaya jelas ke mana pengguna dibawa.
+- **Ringkasan progres per semester**: kalimat kecil di bawah judul "Semester 1"/"Semester 2",
+  mis. "4 selesai · 1 berjalan · 1 akan datang", dihitung dari status agregat tiap bulan
+  (fungsi `hitungStatusBulan()` baru, dipakai bareng oleh accordion, ringkasan, dan bar
+  navigasi supaya ketiganya selalu konsisten satu sama lain).
+- **Tombol mengambang "🔵 Bulan Ini"**: muncul otomatis (via `IntersectionObserver`) begitu
+  accordion bulan yang sedang berjalan sudah discroll keluar layar, supaya sekali tap bisa
+  balik ke sana tanpa scroll manual.
+- **Filter status baru** (Semua/✅ Selesai/🔵 Berjalan/⚪ Akan datang) — baris chip terpisah
+  di bawah filter mapel yang sudah ada, bisa dikombinasikan (mis. mapel="Matematika" +
+  status="akan" sekaligus). Bulan yang tidak cocok status disembunyikan sepenuhnya (bukan
+  ditampilkan kosong), konsisten dengan cara filter mapel sudah bekerja.
+- **Detail teknis**: kalau filter status aktif menyembunyikan bulan tujuan navigasi, klik bar
+  bulan/tombol mengambang otomatis me-reset filter status dulu supaya navigasi selalu
+  berhasil. Logika status/ringkasan sudah divalidasi dengan test murni Node.js sebelum
+  diserahkan (skenario: status per bulan, ringkasan semester, filter mapel, filter status).
+- **Lihat §46 ANTIREGRESI.md** untuk checklist uji manual lengkap.
+
 ### Ditambahkan — Linimasa Materi: kalender bulanan per semester (`pages/linimasa.html`, tab "Linimasa" di `pages/admin.html`, backend `Code.gs`)
 - **Latar belakang**: permintaan Arif poin 2 — siswa & orang tua perlu tahu materi apa yang
   sudah, sedang, dan akan dipelajari per mata pelajaran, supaya bisa menyiapkan diri

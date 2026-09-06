@@ -2312,3 +2312,63 @@ setelah deploy baru — akibatnya EXP siswa tidak tercatat tanpa ada error yang 
 sekarang dibuka). Ini kelas bug yang PALING gampang luput karena tidak ada pesan error sama
 sekali di console — satu-satunya cara ketahuan adalah cek Sheet langsung dan sadar datanya
 tidak bertambah.
+
+### 46. Linimasa Materi — navigasi & ringkasan tampilan (`pages/linimasa.html`, MURNI
+frontend, TIDAK ada perubahan `Code.gs`)
+
+**Fitur baru yang ditambahkan (permintaan Arif, tahap "tingkatkan fungsi Linimasa"):**
+1. Bar horizontal "Lompat ke bulan" (12 chip bulan urutan tahun ajaran) di atas filter mapel
+   — klik chip = scroll ke accordion bulan itu + otomatis dibuka + disorot sebentar.
+2. Ringkasan progres per semester (mis. "4 selesai · 1 berjalan · 1 akan datang") di bawah
+   tiap judul "Semester 1"/"Semester 2".
+3. Tombol mengambang "🔵 Bulan Ini" (pojok kanan bawah) — muncul otomatis via
+   `IntersectionObserver` kalau accordion bulan berjalan sudah discroll keluar layar, klik
+   untuk balik ke sana langsung.
+4. Chip filter status (Semua/✅ Selesai/🔵 Berjalan/⚪ Akan datang) — baris chip BARU di
+   bawah chip filter mapel yang sudah ada, terpisah & independen (boleh dikombinasi, mis.
+   mapel="Matematika" + status="akan" sekaligus).
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- Filter STATUS bekerja di level BULAN (pillClass agregat, sama dengan status-pill yang
+  tampil di summary accordion), BUKAN di level entri satu-satu. Kalau 1 bulan berisi
+  campuran beberapa entri dengan status berbeda, pillClass bulan itu ikut aturan lama
+  (`hitungStatusBulan()`: ada "berjalan" menang duluan, baru "semua selesai" baru "akan").
+  Ini SENGAJA supaya tombol navigasi bulan & ringkasan semester selalu 1:1 konsisten dengan
+  status-pill yang terlihat di accordion — jangan pecah jadi filter per-entri, nanti bisa
+  beda hasil antara ringkasan dan accordion.
+- `hitungStatusBulan()` adalah SATU-SATUNYA sumber kebenaran pillClass/pillLabel — dipakai
+  bareng oleh `renderBulanBlock()`, `ringkasanSemester()`, dan `renderSemesterBlok()`. Kalau
+  mau ubah aturan status di masa depan, cukup ubah fungsi ini, jangan duplikasi logikanya di
+  tempat lain.
+- ID `bulan-{angka 1-12}` pada tiap `<details>` dipakai sebagai target scroll oleh bar
+  navigasi & tombol mengambang — kalau mengubah struktur accordion di masa depan, PERTAHANKAN
+  pola ID ini (unik karena Semester 1 pakai 7-12, Semester 2 pakai 1-6, tidak pernah tabrakan).
+- Kalau filter status aktif menyembunyikan bulan yang mau dituju bar navigasi, `lompatKeBulan()`
+  otomatis RESET filter status ke "Semua" dulu baru scroll — supaya navigasi selalu berhasil,
+  pengguna tidak perlu sadar dulu kenapa bulannya "hilang".
+- Filter status TIDAK punya opsi "kosong" (belum ada rencana) — sengaja, karena itu bukan
+  yang biasanya dicari siswa/orangtua. Kalau nanti ingin ditambah, tambahkan ke
+  `STATUS_FILTER_LIST` di script.
+
+**Uji manual yang WAJIB dilakukan sebelum dianggap aman:**
+- [ ] Buka `linimasa.html` → bar "Lompat ke bulan" tampil 12 chip, bulan berjalan ditandai
+      beda warna (teal) — klik salah satu bulan LAIN (bukan bulan berjalan) → halaman scroll
+      ke accordion itu, accordion otomatis terbuka, ada efek sorot sebentar lalu hilang
+- [ ] Ringkasan semester tampil di bawah "Semester 1"/"Semester 2" dan angkanya cocok kalau
+      dihitung manual dari accordion di bawahnya (mis. hitung sendiri berapa ✅/🔵/⚪)
+- [ ] Scroll halaman ke bawah sampai accordion bulan berjalan keluar layar → tombol
+      mengambang "🔵 Bulan Ini" muncul di pojok kanan bawah — klik → balik ke accordion bulan
+      berjalan, tombol hilang lagi setelah accordion itu kelihatan
+- [ ] Klik chip status "✅ Selesai" → hanya bulan-bulan berstatus Selesai yang tampil di
+      kedua semester, bulan lain hilang (bukan tampil kosong); klik "Semua status" lagi →
+      semua bulan kembali muncul
+- [ ] Kombinasikan filter mapel + filter status sekaligus (mis. Matematika + Berjalan) →
+      hasil cocok keduanya
+- [ ] Klik chip status ke status yang TIDAK ADA bulannya sama sekali di salah satu semester
+      (mis. "✅ Selesai" kalau semester itu baru mulai) → semester itu menampilkan pesan
+      "Tidak ada bulan dengan status ini di semester ini." (bukan kosong tanpa keterangan)
+- [ ] Set filter status ke sesuatu yang menyembunyikan bulan berjalan, LALU klik tombol
+      mengambang "Bulan Ini" ATAU klik bar navigasi ke bulan berjalan → filter status
+      otomatis reset ke "Semua" dan berhasil scroll ke sana
+- [ ] Cek di HP (≤480px): bar navigasi bulan bisa digeser horizontal (scroll), tombol
+      mengambang tidak menutupi konten penting, semua chip tetap bisa dipencet dengan nyaman
