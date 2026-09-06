@@ -128,6 +128,31 @@
   #soal-pool-summary { margin: 0.5rem 0 0.25rem; }
   .pool-warning { background: rgba(232,160,32,0.12); border: 1px solid rgba(232,160,32,0.4); border-radius: var(--r); padding: 0.7rem 1rem; font-size: 12.5px; color: #8a5a00; margin-bottom: 0.75rem; }
   .pool-ok { background: rgba(42,157,111,0.1); border: 1px solid rgba(42,157,111,0.35); border-radius: var(--r); padding: 0.7rem 1rem; font-size: 12.5px; color: #1d6b4d; margin-bottom: 0.75rem; }
+
+  /* ── LINIMASA: toggle mode Satuan / Isi Cepat ─────────── */
+  .mode-toggle { display: flex; gap: 6px; margin-bottom: 1rem; }
+  .mode-btn {
+    background: #fff; border: 1.5px solid var(--border); border-radius: 999px;
+    padding: 6px 14px; font-size: 12px; font-weight: 600; color: var(--ink-3); cursor: pointer;
+  }
+  .mode-btn.active { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  /* ── LINIMASA: tabel mode Isi Cepat ─────────── */
+  .isicepat-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .isicepat-table th {
+    text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--ink-3); padding: 4px 6px 8px; border-bottom: 1px solid var(--border);
+  }
+  .isicepat-table td { padding: 5px 6px; vertical-align: top; border-bottom: 1px solid var(--paper-2); }
+  .isicepat-table td.bulan-label { font-weight: 700; white-space: nowrap; padding-top: 12px; width: 78px; }
+  .isicepat-table td.bulan-label .th-tahun { display: block; font-weight: 500; color: var(--ink-3); font-size: 10.5px; }
+  .isicepat-table input[type=text] {
+    width: 100%; padding: 7px 9px; border: 1px solid var(--paper-3); border-radius: 6px;
+    font-size: 12.5px; font-family: inherit; color: var(--ink); outline: none;
+  }
+  .isicepat-table input[type=text]:focus { border-color: var(--accent); }
+  .isicepat-table td.col-topik { width: 46%; }
+  .isicepat-progress { font-size: 12px; color: var(--ink-3); margin-top: 0.6rem; min-height: 16px; }
 </style>
 </head>
 <body>
@@ -410,26 +435,35 @@
       </div>
     </div>
 
-    <!-- ══════════════ TAB: LINIMASA MATERI (v1.3, permintaan Arif poin 2) ══════════════
-         Backend Sheet "Data Linimasa" via Apps Script (POLA SAMA dengan Kelola Galeri
-         Visual, BUKAN Firestore seperti tab Pengumuman/Modul di atas — keputusan sengaja
-         Arif). Halaman baca-nya (siswa/orangtua/guru) ada di pages/linimasa.html — di sini
-         CUMA untuk guru menambah/ubah/hapus entrinya. Topik/Keterangan teks bebas, TIDAK
-         ditaut ke kode TP resmi tp-kko-index.js (keputusan sengaja, lihat komentar
-         LINIMASA_SHEET_NAME di Code.gs). -->
+    <!-- ══════════════ TAB: LINIMASA MATERI (v1.3, permintaan Arif poin 2; v1.4 kemudahan
+         input) ══════════════ Backend Sheet "Data Linimasa" via Apps Script (POLA SAMA
+         dengan Kelola Galeri Visual, BUKAN Firestore seperti tab Pengumuman/Modul di atas —
+         keputusan sengaja Arif). Halaman baca-nya (siswa/orangtua/guru) ada di
+         pages/linimasa.html — di sini CUMA untuk guru menambah/ubah/hapus entrinya.
+         Topik/Keterangan teks bebas, TIDAK divalidasi/diwajibkan cocok kode TP resmi
+         tp-kko-index.js (keputusan sengaja, lihat komentar LINIMASA_SHEET_NAME di Code.gs)
+         — TP_KKO_INDEX di sini CUMA dipakai sebagai SARAN opsional lewat <datalist>, tetap
+         bisa diketik bebas untuk mapel yang belum ada TP resminya (Seni Budaya, Pendidikan
+         Pancasila). -->
     <div id="tab-linimasa" class="tab-panel">
-      <div class="panel-card">
+      <div class="mode-toggle">
+        <button type="button" class="mode-btn active" id="mode-btn-satuan" onclick="gantiModeLinimasa('satuan')">✏️ Satu per Satu</button>
+        <button type="button" class="mode-btn" id="mode-btn-cepat" onclick="gantiModeLinimasa('cepat')">⚡ Isi Cepat (1 Mapel, Banyak Bulan)</button>
+      </div>
+
+      <!-- ── MODE: SATU PER SATU (form lama, tetap dipakai untuk EDIT) ── -->
+      <div id="linimasa-mode-satuan" class="panel-card">
         <h2 id="linimasa-form-title">Tambah Entri Linimasa</h2>
         <form id="form-linimasa" onsubmit="return false;">
           <input type="hidden" id="linimasa-edit-id" value="" />
           <div class="form-grid-2">
             <div class="form-row">
               <label for="linimasa-mapel">Mata Pelajaran</label>
-              <select id="linimasa-mapel"></select>
+              <select id="linimasa-mapel" onchange="isiSaranTopikLinimasa()"></select>
             </div>
             <div class="form-row">
               <label for="linimasa-bulan">Bulan</label>
-              <select id="linimasa-bulan">
+              <select id="linimasa-bulan" onchange="autoIsiTahunLinimasa()">
                 <option value="7">Juli</option>
                 <option value="8">Agustus</option>
                 <option value="9">September</option>
@@ -448,23 +482,58 @@
           <div class="form-row">
             <label for="linimasa-tahun">Tahun</label>
             <input type="number" id="linimasa-tahun" placeholder="mis. 2026" />
-            <div class="hint">Tahun kalender saat bulan itu berlangsung (mis. Juli 2026, tapi Januari 2027).</div>
+            <div class="hint">Terisi otomatis mengikuti Bulan yang dipilih (tahun ajaran berjalan) — silakan ubah manual kalau mengisi untuk tahun ajaran lain.</div>
           </div>
           <div class="form-row">
             <label for="linimasa-topik">Topik / Judul Materi</label>
-            <input type="text" id="linimasa-topik" placeholder="mis. Pecahan Sederhana" />
+            <input type="text" id="linimasa-topik" list="linimasa-topik-saran" placeholder="mis. Pecahan Sederhana" />
+            <datalist id="linimasa-topik-saran"></datalist>
+            <div class="hint">Saran muncul dari daftar TP resmi kalau mapelnya sudah punya (boleh diabaikan, tetap teks bebas).</div>
           </div>
           <div class="form-row">
             <label for="linimasa-keterangan">Keterangan (opsional)</label>
             <textarea id="linimasa-keterangan" placeholder="mis. Ada asesmen sumatif di akhir bulan"></textarea>
           </div>
           <div class="form-actions">
-            <button class="btn btn-primary" id="linimasa-submit-btn" onclick="simpanLinimasa()">Simpan Entri</button>
+            <button class="btn btn-primary" id="linimasa-submit-btn" onclick="simpanLinimasa('reset')">Simpan Entri</button>
+            <button class="btn btn-secondary" id="linimasa-lanjut-btn" onclick="simpanLinimasa('lanjut')">Simpan & Tambah Lagi</button>
             <button class="btn btn-secondary hidden" id="linimasa-cancel-btn" onclick="batalEditLinimasa()">Batal Edit</button>
           </div>
+          <div class="hint" id="linimasa-lanjut-hint">"Simpan & Tambah Lagi" tetap di Mapel yang sama, lompat ke bulan berikutnya, dan mengosongkan Topik/Keterangan — cocok untuk isi 1 mapel berurutan.</div>
           <div id="linimasa-status" class="status-msg"></div>
         </form>
       </div>
+
+      <!-- ── MODE: ISI CEPAT (1 mapel, tabel 12 bulan sekaligus) ── -->
+      <div id="linimasa-mode-cepat" class="panel-card hidden">
+        <h2>Isi Cepat — 1 Mapel untuk Satu Tahun Ajaran</h2>
+        <p class="hint" style="margin-bottom:0.85rem; display:block;">
+          Pilih mapel, isi Topik di bulan mana saja yang sudah kamu tahu rencananya (boleh
+          lompat-lompat, boleh dikosongkan yang belum pasti), lalu simpan sekaligus. Baris
+          yang Topik-nya kosong TIDAK akan disimpan.
+        </p>
+        <div class="form-row">
+          <label for="cepat-mapel">Mata Pelajaran</label>
+          <select id="cepat-mapel" onchange="renderTabelIsiCepat()"></select>
+        </div>
+        <div class="form-row">
+          <label for="cepat-tahun-ajaran">Tahun Ajaran Mulai (Juli)</label>
+          <input type="number" id="cepat-tahun-ajaran" onchange="renderTabelIsiCepat()" />
+          <div class="hint">Terisi otomatis dengan tahun ajaran yang sedang berjalan — ubah kalau mau isi untuk tahun ajaran lain.</div>
+        </div>
+        <datalist id="cepat-topik-saran"></datalist>
+        <table class="isicepat-table">
+          <thead>
+            <tr><th>Bulan</th><th>Topik / Judul Materi</th><th>Keterangan (opsional)</th></tr>
+          </thead>
+          <tbody id="cepat-tbody"></tbody>
+        </table>
+        <div class="form-actions" style="margin-top:0.9rem;">
+          <button class="btn btn-primary" id="cepat-submit-btn" onclick="simpanIsiCepat()">Simpan Semua ke Linimasa</button>
+        </div>
+        <div class="isicepat-progress" id="cepat-progress"></div>
+      </div>
+
       <div id="list-linimasa"><div class="empty-state">Memuat…</div></div>
     </div>
 
@@ -738,18 +807,28 @@
     }
   }
 
-  // ═══════════════════════ TAB: LINIMASA MATERI (v1.3) ═══════════════════════
+  // ═══════════════════════ TAB: LINIMASA MATERI (v1.3 dasar, v1.4 kemudahan input) ═══
   // Sheet/Apps-Script (BUKAN Firestore) — pola persis infografis-kelola-tp.js
   // (lihat komentar HTML tab ini soal kenapa berbeda dari Pengumuman/Modul di atas).
   const BULAN_NAMA_ADMIN = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  // Urutan tampil & urutan "Simpan & Tambah Lagi" ikut TAHUN AJARAN (mulai Juli), sama
+  // persis pola linimasa.html — supaya guru mengisi mengikuti alur belajar yang sebenarnya.
+  const BULAN_URUTAN_TAHUN_AJARAN = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6];
+  const nowAdmin = new Date();
+  const nowBulanAdmin = nowAdmin.getMonth() + 1;
+  const nowTahunAdmin = nowAdmin.getFullYear();
+  // Sama logika dengan linimasa.html: kalau sekarang Jan-Jun, tahun ajaran berjalan MULAI
+  // tahun sebelumnya (semester 2 dari tahun ajaran itu).
+  const TAHUN_AJARAN_MULAI_ADMIN = nowBulanAdmin >= 7 ? nowTahunAdmin : nowTahunAdmin - 1;
   let linimasaCache = []; // hasil fetch terakhir, dipakai ulang saat render & saat cari data untuk tombol Edit
 
   function isiDropdownMapelLinimasa() {
-    const sel = document.getElementById("linimasa-mapel");
-    sel.innerHTML = (window.INFOGRAFIS_MAPEL || [])
+    const opsi = (window.INFOGRAFIS_MAPEL || [])
       .map((m) => `<option value="${escHtml(m.mapel)}">${m.mapelIcon} ${escHtml(m.mapel)}</option>`)
       .join("");
+    document.getElementById("linimasa-mapel").innerHTML = opsi;
+    document.getElementById("cepat-mapel").innerHTML = opsi;
   }
 
   async function parseJsonAmanLinimasa_(res) {
@@ -758,14 +837,36 @@
     catch (e) { throw new Error("Respons tidak dikenali dari server: " + text.slice(0, 150)); }
   }
 
-  window.simpanLinimasa = async function () {
+  /** Tahun otomatis mengikuti Bulan yang dipilih & tahun ajaran BERJALAN (bukan tahun ajaran
+   * lain) — guru tinggal ubah manual kalau memang sedang input untuk tahun ajaran lain
+   * (mis. menyiapkan linimasa tahun depan lebih awal). Dipanggil tiap kali Bulan berubah,
+   * DAN sekali di awal supaya nilai default form sudah benar sebelum disentuh sama sekali. */
+  window.autoIsiTahunLinimasa = function () {
+    const b = Number(document.getElementById("linimasa-bulan").value);
+    document.getElementById("linimasa-tahun").value = b >= 7 ? TAHUN_AJARAN_MULAI_ADMIN : TAHUN_AJARAN_MULAI_ADMIN + 1;
+  };
+
+  /** Saran Topik dari TP_KKO_INDEX (SUDAH dimuat lebih dulu di admin.html untuk kebutuhan tab
+   * Uji Kemampuan) — CUMA saran lewat <datalist>, bukan validasi wajib. Mapel yang belum
+   * punya TP resmi (Seni Budaya, Pendidikan Pancasila) otomatis dapat daftar kosong, guru
+   * tetap bisa ketik bebas seperti biasa. */
+  window.isiSaranTopikLinimasa = function () {
+    const mapel = document.getElementById("linimasa-mapel").value;
+    const list = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel);
+    document.getElementById("linimasa-topik-saran").innerHTML =
+      list.map((e) => `<option value="${escHtml(e.judul)}"></option>`).join("");
+  };
+
+  window.simpanLinimasa = async function (mode) {
     const statusEl = document.getElementById("linimasa-status");
-    const btn = document.getElementById("linimasa-submit-btn");
+    const btnSimpan = document.getElementById("linimasa-submit-btn");
+    const btnLanjut = document.getElementById("linimasa-lanjut-btn");
+    const bulanTerpilih = Number(document.getElementById("linimasa-bulan").value);
     const payload = {
       type: "linimasa",
       "ID": document.getElementById("linimasa-edit-id").value || undefined,
       "Mapel": document.getElementById("linimasa-mapel").value,
-      "Bulan": Number(document.getElementById("linimasa-bulan").value),
+      "Bulan": bulanTerpilih,
       "Tahun": Number(document.getElementById("linimasa-tahun").value),
       "Topik": document.getElementById("linimasa-topik").value.trim(),
       "Keterangan": document.getElementById("linimasa-keterangan").value.trim(),
@@ -776,7 +877,7 @@
       statusEl.className = "status-msg err";
       return;
     }
-    btn.disabled = true;
+    btnSimpan.disabled = true; btnLanjut.disabled = true;
     statusEl.textContent = "Menyimpan…";
     statusEl.className = "status-msg";
     try {
@@ -784,14 +885,29 @@
       const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify({ ...payload, idToken }) });
       const json = await parseJsonAmanLinimasa_(res);
       if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
-      statusEl.textContent = "✅ Tersimpan.";
-      window.batalEditLinimasa();
       loadLinimasa();
+      if (mode === "lanjut") {
+        // TIDAK reset total (beda dari batalEditLinimasa()) — Mapel dipertahankan, Bulan
+        // lompat ke bulan BERIKUTNYA dalam urutan tahun ajaran, Topik/Keterangan dikosongkan
+        // supaya guru bisa lanjut isi bulan depannya tanpa pilih ulang Mapel/Bulan dari nol.
+        const idxSaatIni = BULAN_URUTAN_TAHUN_AJARAN.indexOf(bulanTerpilih);
+        const bulanBerikut = BULAN_URUTAN_TAHUN_AJARAN[(idxSaatIni + 1) % 12];
+        document.getElementById("linimasa-edit-id").value = "";
+        document.getElementById("linimasa-bulan").value = bulanBerikut;
+        window.autoIsiTahunLinimasa();
+        document.getElementById("linimasa-topik").value = "";
+        document.getElementById("linimasa-keterangan").value = "";
+        statusEl.textContent = `✅ Tersimpan. Lanjut ke ${BULAN_NAMA_ADMIN[bulanBerikut]}.`;
+        document.getElementById("linimasa-topik").focus();
+      } else {
+        statusEl.textContent = "✅ Tersimpan.";
+        window.batalEditLinimasa();
+      }
     } catch (err) {
       statusEl.textContent = "⚠️ Gagal: " + err.message;
       statusEl.className = "status-msg err";
     } finally {
-      btn.disabled = false;
+      btnSimpan.disabled = false; btnLanjut.disabled = false;
     }
   };
 
@@ -802,9 +918,13 @@
     document.getElementById("linimasa-tahun").value = data["Tahun"];
     document.getElementById("linimasa-topik").value = data["Topik"];
     document.getElementById("linimasa-keterangan").value = data["Keterangan"] || "";
+    window.isiSaranTopikLinimasa();
     document.getElementById("linimasa-form-title").textContent = "Edit Entri Linimasa";
     document.getElementById("linimasa-submit-btn").textContent = "Simpan Perubahan";
     document.getElementById("linimasa-cancel-btn").classList.remove("hidden");
+    document.getElementById("linimasa-lanjut-btn").classList.add("hidden"); // "Tambah Lagi" tidak relevan saat mode edit 1 entri
+    document.getElementById("linimasa-lanjut-hint").classList.add("hidden");
+    window.gantiModeLinimasa("satuan");
     document.getElementById("form-linimasa").scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -814,7 +934,11 @@
     document.getElementById("linimasa-form-title").textContent = "Tambah Entri Linimasa";
     document.getElementById("linimasa-submit-btn").textContent = "Simpan Entri";
     document.getElementById("linimasa-cancel-btn").classList.add("hidden");
+    document.getElementById("linimasa-lanjut-btn").classList.remove("hidden");
+    document.getElementById("linimasa-lanjut-hint").classList.remove("hidden");
     document.getElementById("linimasa-status").textContent = "";
+    window.isiSaranTopikLinimasa();
+    window.autoIsiTahunLinimasa();
   };
 
   window.hapusLinimasa = async function (id) {
@@ -830,6 +954,100 @@
       loadLinimasa();
     } catch (err) {
       alert("Gagal menghapus: " + err.message);
+    }
+  };
+
+  /** Ganti tampilan antara mode "Satu per Satu" dan "Isi Cepat" — murni tampilan (CSS
+   * hidden), tidak ada data yang hilang di form satuan kalau berpindah mode lalu balik lagi
+   * (kecuali direset manual). Dipanggil juga otomatis oleh editLinimasa() supaya klik Edit
+   * selalu membawa guru balik ke mode satuan (mode cepat tidak punya konsep "edit"). */
+  window.gantiModeLinimasa = function (mode) {
+    document.getElementById("linimasa-mode-satuan").classList.toggle("hidden", mode !== "satuan");
+    document.getElementById("linimasa-mode-cepat").classList.toggle("hidden", mode !== "cepat");
+    document.getElementById("mode-btn-satuan").classList.toggle("active", mode === "satuan");
+    document.getElementById("mode-btn-cepat").classList.toggle("active", mode === "cepat");
+    if (mode === "cepat") window.renderTabelIsiCepat();
+  };
+
+  /** Bangun ulang 12 baris tabel Isi Cepat berdasarkan Mapel & Tahun Ajaran yang dipilih.
+   * SENGAJA membangun ulang seluruh tabel (bukan cuma update datalist) tiap kali Mapel/Tahun
+   * berubah — kalau tidak, isian Topik yang sudah diketik guru untuk mapel/tahun SEBELUMNYA
+   * bisa salah ikut terkirim ke mapel/tahun yang baru dipilih. Ini trade-off sengaja: guru
+   * disarankan isi 1 mapel sampai selesai baru pindah mapel lain (sesuai judul mode ini). */
+  window.renderTabelIsiCepat = function () {
+    const mapel = document.getElementById("cepat-mapel").value;
+    const tahunAjaran = Number(document.getElementById("cepat-tahun-ajaran").value) || TAHUN_AJARAN_MULAI_ADMIN;
+    document.getElementById("cepat-topik-saran").innerHTML =
+      (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel)
+        .map((e) => `<option value="${escHtml(e.judul)}"></option>`).join("");
+
+    const tbody = document.getElementById("cepat-tbody");
+    tbody.innerHTML = BULAN_URUTAN_TAHUN_AJARAN.map((b) => {
+      const tahunBaris = b >= 7 ? tahunAjaran : tahunAjaran + 1;
+      return `
+        <tr data-bulan="${b}" data-tahun="${tahunBaris}">
+          <td class="bulan-label">${BULAN_NAMA_ADMIN[b]}<span class="th-tahun">${tahunBaris}</span></td>
+          <td class="col-topik"><input type="text" class="cepat-topik" list="cepat-topik-saran" placeholder="mis. Pecahan Sederhana" /></td>
+          <td><input type="text" class="cepat-keterangan" placeholder="opsional" /></td>
+        </tr>`;
+    }).join("");
+  };
+
+  /** Kirim semua baris yang Topik-nya terisi, SATU PER SATU secara berurutan (await dalam
+   * loop, BUKAN Promise.all) ke endpoint "linimasa" yang SAMA dengan mode satuan — TIDAK ADA
+   * endpoint batch baru di Code.gs, supaya fitur ini TIDAK butuh redeploy Apps Script sama
+   * sekali (lihat ANTIREGRESI.md soal betapa merepotkannya sinkronisasi ulang URL tiap
+   * redeploy). Berurutan (bukan paralel) dipilih sengaja supaya progress "N/M" akurat & tidak
+   * membanjiri Apps Script dengan request bersamaan (Apps Script terkenal gampang kena
+   * limit kalau digempur paralel). */
+  window.simpanIsiCepat = async function () {
+    const mapel = document.getElementById("cepat-mapel").value;
+    const baris = Array.from(document.querySelectorAll("#cepat-tbody tr")).map((tr) => ({
+      bulan: Number(tr.getAttribute("data-bulan")),
+      tahun: Number(tr.getAttribute("data-tahun")),
+      topik: tr.querySelector(".cepat-topik").value.trim(),
+      keterangan: tr.querySelector(".cepat-keterangan").value.trim(),
+      tr,
+    })).filter((b) => b.topik);
+
+    const progressEl = document.getElementById("cepat-progress");
+    if (baris.length === 0) {
+      progressEl.textContent = "Isi Topik di minimal 1 bulan dulu sebelum menyimpan.";
+      return;
+    }
+    const btn = document.getElementById("cepat-submit-btn");
+    btn.disabled = true;
+    let berhasil = 0;
+    const gagal = [];
+    try {
+      const idToken = await window.getFreshGuruIdToken();
+      for (const b of baris) {
+        progressEl.textContent = `Menyimpan… ${berhasil + gagal.length + 1}/${baris.length} (${BULAN_NAMA_ADMIN[b.bulan]})`;
+        try {
+          const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({
+              type: "linimasa", "Mapel": mapel, "Bulan": b.bulan, "Tahun": b.tahun,
+              "Topik": b.topik, "Keterangan": b.keterangan, "Diunggah Oleh": window.__guruNama || "", idToken,
+            }),
+          });
+          const json = await parseJsonAmanLinimasa_(res);
+          if (json.status !== "ok") throw new Error(json.message || "Gagal");
+          berhasil++;
+          b.tr.querySelector(".cepat-topik").value = "";
+          b.tr.querySelector(".cepat-keterangan").value = "";
+        } catch (errBaris) {
+          gagal.push(`${BULAN_NAMA_ADMIN[b.bulan]}: ${errBaris.message}`);
+        }
+      }
+      progressEl.textContent = gagal.length === 0
+        ? `✅ Selesai — ${berhasil} entri tersimpan.`
+        : `⚠️ ${berhasil} tersimpan, ${gagal.length} gagal (baris yang gagal TIDAK dikosongkan, tinggal coba simpan lagi): ${gagal.join("; ")}`;
+      loadLinimasa();
+    } catch (err) {
+      progressEl.textContent = "⚠️ Gagal total: " + err.message;
+    } finally {
+      btn.disabled = false;
     }
   };
 
@@ -864,6 +1082,7 @@
       wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
     }
   }
+
 
   // ═══════════════════════ UJI KEMAMPUAN (BANK SOAL) ═══════════════════════
   const JENIS_LABEL = {
@@ -1534,6 +1753,9 @@
     loadSoal();
     loadSemuaOrtu();
     isiDropdownMapelLinimasa();
+    document.getElementById("cepat-tahun-ajaran").value = TAHUN_AJARAN_MULAI_ADMIN;
+    window.autoIsiTahunLinimasa();
+    window.isiSaranTopikLinimasa();
     loadLinimasa();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../index.html"));
