@@ -8,6 +8,36 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Ditambahkan — Linimasa Materi: kemudahan input di Panel Guru (`pages/admin.html`, murni frontend)
+- **Latar belakang**: setelah navigasi & ringkasan tampilan selesai (lihat entri di bawah),
+  Arif memperhatikan tab "Linimasa" di `admin.html` masih kosong sama sekali — form isi
+  1-per-1 (pilih Mapel → pilih Bulan → **ketik Tahun manual**, harus mikir dulu "Juli =
+  tahun ini, Januari = tahun depan" → ketik Topik → ketik Keterangan → Simpan → form reset
+  total) terlalu banyak gesekan untuk isi puluhan entri (5 mapel × ~12 bulan) di awal
+  penyusunan tahun ajaran.
+- **Auto-isi Tahun otomatis**: begitu Bulan dipilih (di form satuan MAUPUN tabel Isi Cepat),
+  Tahun terisi sendiri mengikuti tahun ajaran yang sedang berjalan (dihitung dari tanggal
+  hari ini) — tetap bisa diubah manual untuk kasus mengisi tahun ajaran lain.
+- **"Simpan & Tambah Lagi"**: tombol baru di samping "Simpan Entri" — setelah tersimpan,
+  form TIDAK reset total; Mapel dipertahankan, Bulan otomatis lompat ke bulan berikutnya
+  mengikuti urutan tahun ajaran (Juli→Agustus→…→Juni→balik ke Juli), Topik/Keterangan
+  dikosongkan, fokus otomatis pindah ke kolom Topik. Cocok untuk isi 1 mapel berurutan
+  sepanjang tahun tanpa pilih ulang Mapel/Bulan tiap kali.
+- **Mode "Isi Cepat" (tabel banyak baris sekaligus)**: toggle baru di atas form — pilih 1
+  Mapel + Tahun Ajaran, muncul tabel 12 baris (1 baris/bulan, urutan tahun ajaran), isi
+  Topik yang sudah diketahui saja (boleh lompat-lompat/dikosongkan), klik "Simpan Semua ke
+  Linimasa". Baris kosong otomatis diabaikan. Dikirim SATU PER SATU (berurutan, bukan
+  paralel) ke endpoint `linimasa` yang SAMA persis dengan mode satuan — **TIDAK ADA endpoint
+  batch baru di `Code.gs`, jadi TIDAK BUTUH redeploy Apps Script** untuk fitur ini.
+- **Saran Topik dari TP resmi**: `<datalist>` opsional di kolom Topik (form satuan & tabel
+  Isi Cepat), terisi dari `TP_KKO_INDEX` (sudah dimuat lebih dulu untuk tab Uji Kemampuan)
+  sesuai Mapel yang dipilih. Mapel yang belum ada TP resminya (Seni Budaya, Pendidikan
+  Pancasila) otomatis dapat daftar saran kosong — Topik TETAP teks bebas, TIDAK ada validasi
+  wajib cocok TP (keputusan lama di §Linimasa `Code.gs` tidak berubah).
+- **Detail teknis**: logika auto-isi tahun, urutan "tambah lagi", dan filter baris kosong
+  Isi Cepat sudah divalidasi test murni Node.js sebelum diserahkan.
+- **Lihat §47 ANTIREGRESI.md** untuk checklist uji manual lengkap.
+
 ### Ditambahkan — Linimasa Materi: navigasi & ringkasan tampilan (`pages/linimasa.html`, murni frontend)
 - **Latar belakang**: setelah Linimasa Materi (lihat entri di bawah) selesai fungsi dasarnya,
   Arif minta ditingkatkan sisi tampilan & navigasinya — terutama karena diakses lewat HP di

@@ -2372,3 +2372,64 @@ frontend, TIDAK ada perubahan `Code.gs`)
       otomatis reset ke "Semua" dan berhasil scroll ke sana
 - [ ] Cek di HP (≤480px): bar navigasi bulan bisa digeser horizontal (scroll), tombol
       mengambang tidak menutupi konten penting, semua chip tetap bisa dipencet dengan nyaman
+
+### 47. Linimasa Materi — kemudahan input di Panel Guru (`pages/admin.html`, MURNI
+frontend, TIDAK ada perubahan `Code.gs`, TIDAK BUTUH redeploy Apps Script)
+
+**Fitur baru:**
+1. Auto-isi Tahun otomatis mengikuti Bulan yang dipilih (form satuan & tabel Isi Cepat).
+2. Tombol "Simpan & Tambah Lagi" — form tidak reset total, Mapel dipertahankan, Bulan lompat
+   ke bulan berikutnya (urutan tahun ajaran), fokus otomatis ke Topik.
+3. Toggle mode "Isi Cepat" — tabel 12 baris (1 mapel, 1 tahun ajaran), kirim SATU PER SATU
+   berurutan ke endpoint `linimasa` yang sama, baris Topik kosong diabaikan.
+4. Saran Topik dari `TP_KKO_INDEX` lewat `<datalist>` (opsional, Topik tetap teks bebas).
+
+**Keputusan desain kunci (JANGAN diubah tanpa alasan kuat):**
+- `TAHUN_AJARAN_MULAI_ADMIN` dihitung SEKALI dari tanggal hari ini saat halaman dibuka (`new
+  Date()` di level modul) — TIDAK auto-refresh kalau tab dibiarkan terbuka lewat tengah
+  malam pergantian tahun ajaran (kasus ekstrem, diterima sebagai trade-off, cukup refresh
+  halaman kalau kejadian).
+- Isi Cepat mengirim ke endpoint `linimasa` yang SAMA dengan mode satuan (bukan endpoint
+  batch baru) — SENGAJA, supaya fitur ini tidak pernah butuh redeploy Apps Script. Kalau
+  suatu saat mau dibuat endpoint batch demi performa, itu perubahan `Code.gs` yang WAJIB
+  lewat proses redeploy + sinkronisasi URL biasa (lihat §45).
+- Isi Cepat mengirim SATU PER SATU berurutan (`await` dalam loop), BUKAN `Promise.all` —
+  supaya progress "N/M" akurat dan tidak membanjiri Apps Script dengan request bersamaan.
+  Kalau baris tertentu gagal, baris itu TIDAK dikosongkan (supaya tidak hilang), sisanya
+  tetap lanjut disimpan.
+- `renderTabelIsiCepat()` MEMBANGUN ULANG seluruh tabel (bukan cuma ganti datalist) tiap kali
+  Mapel atau Tahun Ajaran di mode Isi Cepat diganti — SENGAJA, supaya isian Topik yang sudah
+  diketik untuk mapel/tahun SEBELUMNYA tidak salah ikut terkirim ke mapel/tahun yang baru.
+  Konsekuensinya: ganti Mapel di tengah mengisi = isian yang belum disimpan HILANG. Guru
+  disarankan simpan dulu sebelum pindah mapel (sudah ditulis di keterangan tab).
+- `editLinimasa()` memanggil `gantiModeLinimasa("satuan")` — mode Edit SELALU membawa balik
+  ke mode Satu per Satu, karena mode Isi Cepat tidak punya konsep "edit 1 entri". Tombol
+  "Simpan & Tambah Lagi" ikut disembunyikan saat sedang mode Edit (tidak relevan untuk edit
+  1 entri), dan dimunculkan lagi oleh `batalEditLinimasa()`.
+- Saran Topik (`<datalist>`) HANYA saran, bukan validasi — mapel tanpa TP resmi (Seni
+  Budaya, Pendidikan Pancasila) sengaja dapat daftar kosong dan tetap bisa diisi bebas.
+
+**Uji manual yang WAJIB dilakukan sebelum dianggap aman:**
+- [ ] Buka tab Linimasa → mode default "✏️ Satu per Satu" — pilih Bulan apa saja → kolom
+      Tahun otomatis terisi (Juli-Des = tahun ajaran ini, Jan-Jun = tahun ajaran ini + 1)
+- [ ] Isi 1 entri lengkap → klik "Simpan & Tambah Lagi" → entri tersimpan (cek muncul di
+      daftar bawah), form TIDAK reset total: Mapel sama, Bulan sudah lompat ke bulan
+      berikutnya, Tahun ikut ter-update, Topik & Keterangan kosong, kursor di kolom Topik
+- [ ] Ulangi "Simpan & Tambah Lagi" dari bulan Juni → Bulan lompat balik ke Juli (bukan
+      Juli tahun yang sama, tapi Juli tahun ajaran BERIKUTNYA — cek Tahun-nya benar +1)
+- [ ] Klik toggle "⚡ Isi Cepat" → form satuan tersembunyi, muncul tabel 12 baris dengan
+      label bulan+tahun sudah benar sesuai tahun ajaran berjalan
+- [ ] Ketik Topik di beberapa baris saja (lompat-lompat, sisanya dikosongkan), klik "Simpan
+      Semua ke Linimasa" → progress "Menyimpan… N/M" berjalan, HANYA baris berisi Topik yang
+      tersimpan (cek di daftar bawah & di Google Sheet), baris yang tadi kosong tidak ada
+      entri barunya
+- [ ] Ketik di kolom Topik (mode satuan ATAU Isi Cepat) untuk Mapel Matematika/Bahasa
+      Indonesia/IPAS → muncul saran dari TP resmi mapel itu; ganti Mapel ke Seni Budaya →
+      saran kosong tapi tetap bisa mengetik bebas
+- [ ] Klik "Edit" pada salah satu entri di daftar bawah, SAAT sedang di mode Isi Cepat →
+      halaman otomatis pindah balik ke mode Satu per Satu, form terisi data entri itu,
+      tombol "Simpan & Tambah Lagi" ikut tersembunyi selama masih mode Edit
+- [ ] Klik "Batal Edit" → tombol "Simpan & Tambah Lagi" muncul lagi, form kembali ke mode
+      Tambah Baru dengan Tahun otomatis terisi lagi
+- [ ] Cek di HP (≤480px): tabel Isi Cepat tetap bisa digeser/dibaca, tombol toggle mode
+      tidak terpotong, semua input tetap nyaman disentuh
