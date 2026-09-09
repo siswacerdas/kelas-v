@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Pustaka Belajar · Kelas 5</title>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link rel="stylesheet" href="assets/pustaka-belajar.css" />
+<style>
+  body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+  #checking {
+    position: fixed; inset: 0; background: #15151f; color: #fff; display: flex;
+    align-items: center; justify-content: center; font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-baca" class="pb-viewer-root" style="display:none">
+  <div class="pb-viewer-topbar">
+    <a class="pb-viewer-back" href="../pustaka-belajar.html">← Pustaka Belajar</a>
+    <div class="pb-viewer-title" id="pb-title"></div>
+  </div>
+
+  <div class="pb-viewer-stage" id="pb-stage" oncontextmenu="return false">
+    <button type="button" class="pb-viewer-arrow pb-viewer-arrow-left" id="pb-prev" aria-label="Halaman sebelumnya">‹</button>
+    <div class="pb-viewer-canvas-wrap" id="pb-canvas-wrap">
+      <div class="pb-viewer-loading" id="pb-loading">Memuat dokumen…</div>
+    </div>
+    <button type="button" class="pb-viewer-arrow pb-viewer-arrow-right" id="pb-next" aria-label="Halaman berikutnya">›</button>
+  </div>
+
+  <div class="pb-viewer-footer" id="pb-footer"></div>
+</div>
+
+<script type="module" src="../../assets/js/role-guard.js"></script>
+<script src="../mpls/assets/config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="assets/pustaka-belajar-baca.js"></script>
+<script>
+  document.addEventListener("role-verified", () => {
+    document.getElementById("checking").remove();
+    document.getElementById("app-baca").style.display = "flex";
+    window.PustakaBelajarBaca.init();
+  });
+  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru','orangtua'], '../../index.html'));
+</script>
+</body>
+</html>
