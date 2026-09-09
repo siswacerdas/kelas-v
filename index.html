@@ -450,6 +450,7 @@
         <a href="pages/kelas/index.html" class="btn btn-primary">Kelola Data Siswa & Foto</a>
         <a href="pages/mpls/rekap.html" class="btn btn-secondary">Rekap Hasil MPLS</a>
         <a href="pages/infografis/kelola-tp.html" class="btn btn-secondary">🖼️ Kelola Galeri Visual</a>
+        <a href="pages/admin.html#pustaka-belajar" class="btn btn-secondary">📄 Kelola Pustaka Belajar</a>
       </div>
     </div>
 
@@ -477,7 +478,8 @@
            "Ayo Belajar!" dulu, "Ingat Lagi" untuk mengulang, baru Uji Kemampuan untuk
            menguji diri (lihat CHANGELOG.md untuk latar belakang rename dari "Modul
            Pembelajaran"/"Materi Ajar"). Dibuka untuk orangtua juga sejak rename ini —
-           lihat catatan guardRolePage di pages/modul.html/materi.html/infografis.html. -->
+           lihat catatan guardRolePage di pages/modul.html/materi.html/infografis.html/
+           pustaka-belajar.html. -->
       <a href="pages/modul.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #2a9d6f">
         <div class="card-icon">🚀</div>
         <div class="card-title">Ayo Belajar!</div>
@@ -510,6 +512,16 @@
         <div class="card-title">Linimasa Materi</div>
         <div class="card-desc">Kalender bulanan: materi apa yang sudah, sedang, dan akan dipelajari per mata pelajaran</div>
         <div class="card-badge">Info</div>
+      </a>
+      <!-- Pustaka Belajar (menggantikan Galeri Visual — lihat RANCANGAN-PUSTAKA-BELAJAR.md):
+           file PDF materi presentasi bebas dari guru pendamping, TIDAK terikat TP resmi.
+           Sama pola akses dengan Linimasa/Galeri Visual (siswa/guru/orangtua, read-only di
+           sini; pengisian lewat tab "Pustaka Belajar" di admin.html). -->
+      <a href="pages/pustaka-belajar.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #5b6ee1">
+        <div class="card-icon">📄</div>
+        <div class="card-title">Pustaka Belajar</div>
+        <div class="card-desc">Materi presentasi (PDF) yang dibagikan guru pendamping — dibaca langsung, tidak untuk diunduh</div>
+        <div class="card-badge">Pelengkap</div>
       </a>
       <!-- Profil & Level: SENGAJA siswa-only (bukan "siswa guru") — ini profil PRIBADI
            siswa yang login, guru sudah punya jalur lain untuk melihat siswa lain (Riwayat
