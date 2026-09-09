@@ -21,6 +21,12 @@
  *                nama), di sini SELALU menambah baris baru karena 1 mapel bisa punya banyak media.
  *                { type: "infografis_hapus" } -> hapus 1 baris Galeri Visual berdasarkan ID (lihat catatan
  *                di doPostInfografisHapus_() soal kenapa file Drive-nya SENGAJA tidak ikut dihapus).
+ *                { type: "pustaka_belajar" }   -> TAMBAH 1 baris baru file PDF ke fitur "Pustaka Belajar"
+ *                (lihat RANCANGAN-PUSTAKA-BELAJAR.md) — PDF diunggah ke subfolder Drive sesuai Mapel-nya
+ *                (dibuat OTOMATIS kalau belum ada, lihat getOrCreateMapelSubfolder_()). SELALU tambah
+ *                baris baru (bukan upsert) — 1 mapel wajar punya banyak file PDF dari guru pendamping.
+ *                { type: "pustaka_belajar_hapus" } -> hapus 1 baris "Data Pustaka Belajar" berdasarkan ID
+ *                (pola sama dengan "infografis_hapus" — file Drive SENGAJA tidak ikut dihapus).
  *                { type: "progres_materi" }   -> upsert 1 baris "sudah dibaca" (Nama Siswa + Materi Slug)
  *                di sheet "Data Progres Materi" — dikirim materi-progress-tracker.js, fire-and-forget,
  *                TANPA gerbang (siswa mengirim sendiri saat baca materi, bukan lewat guru/orang tua).
@@ -43,6 +49,12 @@
  *                yang sama di serveInfografisBinary_().
  *                ?infografisFoto=<id atau URL Drive> -> PROXY byte gambar Galeri Visual, sama seperti
  *                ?foto= tapi TANPA gerbang wajibGuru_ (lihat serveInfografisBinary_()).
+ *                ?pustakaBelajar=1 -> SEMUA baris "Data Pustaka Belajar" (untuk pages/pustaka-belajar.html),
+ *                TIDAK digerbang wajibGuru_ — sama alasan dengan ?infografis=1/?linimasa=1 di atas (materi
+ *                belajar untuk dibaca siswa juga). Filter ?mapel= opsional di server.
+ *                ?pustakaBinary=<Drive File ID> -> PROXY byte PDF Pustaka Belajar, TANPA gerbang wajibGuru_
+ *                (lihat servePustakaBinary_()) — dibaca pdf.js di klien (pages/pustaka-belajar/baca.html),
+ *                BUKAN diunduh sebagai file (tidak ada Content-Disposition: attachment).
  *                ?laporanSiswa=1&nama=..&idToken=.. -> gabungan Profil+MPLS+Kognitif+Jurnal 1 siswa
  *                (untuk pages/laporan-siswa/mpls.html) — digerbang wajibAksesLaporan_() (BUKAN wajibGuru_),
  *                supaya guru boleh lihat siapa saja TAPI akun "orangtua" hanya bisa lihat anaknya
@@ -93,6 +105,15 @@ const INFOGRAFIS_FOLDER_IDS = {
   "PJOK": "GANTI_DENGAN_ID_FOLDER_DRIVE_PJOK",
   "Bahasa Inggris": "GANTI_DENGAN_ID_FOLDER_DRIVE_BAHASA_INGGRIS",
 };
+
+const PUSTAKA_SHEET_NAME = "Data Pustaka Belajar"; // fitur "Pustaka Belajar" (RANCANGAN-PUSTAKA-BELAJAR.md)
+// — pengganti Galeri Visual: file PDF bebas (materi presentasi guru pendamping), TIDAK terikat TP resmi.
+// SATU folder induk di Drive, BEDA dari INFOGRAFIS_FOLDER_IDS (yang butuh 1 ID per mapel diisi manual) —
+// di sini subfolder per mapel dibuat OTOMATIS oleh getOrCreateMapelSubfolder_() di dalam folder induk ini,
+// jadi Arif cukup isi SATU ID folder induk saja (buat 1 folder baru di Drive, share "Anyone with link -
+// Editor", salin ID-nya dari URL). Lihat juga apps-script/README.md bagian "Folder Drive untuk Pustaka
+// Belajar".
+const PUSTAKA_FOLDER_ID = "GANTI_DENGAN_ID_FOLDER_DRIVE_PUSTAKA_BELAJAR";
 
 // ── KUNCI AKSES (v0.7.0) ─────────────────────────────────────────────────
 // Sebelum ini, SEMUA endpoint di bawah bisa diakses siapa pun yang tahu URL Web
@@ -472,6 +493,22 @@ const LINIMASA_HEADERS = [
   "Keterangan",  // opsional
   "Diunggah Oleh",
 ];
+
+// "ID" jadi kunci hapus (sama alasan dengan INFOGRAFIS_HEADERS/LINIMASA_HEADERS di atas).
+// BEDA dari Galeri Visual: "Mapel" WAJIB diisi (dipakai memilih/membuat subfolder Drive,
+// lihat getOrCreateMapelSubfolder_()), dan TIDAK ADA kolom "Materi Slug" — Pustaka Belajar
+// sengaja TIDAK terikat ke TP resmi (bisa berisi file PDF apa saja dari guru pendamping).
+const PUSTAKA_HEADERS = [
+  "Timestamp",
+  "ID",
+  "Mapel",
+  "Judul",
+  "Deskripsi",       // opsional
+  "Nama File Asli",  // untuk tampilan admin saja, tidak dipakai proxy/viewer
+  "Drive File ID",   // dibaca servePustakaBinary_() lewat ?pustakaBinary=
+  "Jumlah Halaman",  // dihitung di klien (pdf.js) saat upload, dikirim apa adanya
+  "Diunggah Oleh",
+];
 // "Materi Slug" = field "file" di materi-index.js TANPA akhiran ".html" — sama persis pola
 // yang dipakai INFOGRAFIS_HEADERS di atas, konsisten satu sumber kebenaran untuk identitas
 // materi di seluruh sistem (bukan skema ID baru).
@@ -775,6 +812,27 @@ function getLinimasaSheet_() {
   return sheet;
 }
 
+/** Sama pola self-healing persis dengan getInfografisSheet_()/getLinimasaSheet_() di atas
+ * — dibuat untuk fitur "Pustaka Belajar" (RANCANGAN-PUSTAKA-BELAJAR.md), pengganti Galeri
+ * Visual. */
+function getPustakaBelajarSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(PUSTAKA_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(PUSTAKA_SHEET_NAME);
+    sheet.getRange(1, 1, 1, PUSTAKA_HEADERS.length).setValues([PUSTAKA_HEADERS]);
+    sheet.setFrozenRows(1);
+    return sheet;
+  }
+  const currentHeaders = readHeaderRow_(sheet);
+  const missing = PUSTAKA_HEADERS.filter((h) => currentHeaders.indexOf(h) === -1);
+  if (missing.length > 0) {
+    sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
+    Logger.log('Kolom baru ditambahkan otomatis ke "Data Pustaka Belajar": ' + missing.join(", "));
+  }
+  return sheet;
+}
+
 /** Sama pola self-healing dengan getInfografisSheet_() (lihat komentar panjang di sana untuk
  * alasannya) — dibuat sebagai sheet baru untuk fitur "Perkembangan Belajar Mandiri"
  * (RANCANGAN-LAPORAN-SISWA.md §7.1). Belum diekstrak jadi 1 helper generik dipakai bersama
@@ -1050,6 +1108,56 @@ function otorisasiAksesDriveInfografis() {
   });
 }
 
+/** Proxy byte PDF Pustaka Belajar — sama pola & alasan persis dengan serveInfografisBinary_()
+ * (hindari hotlink Drive anonim yang tidak konsisten diblokir Google), TANPA wajibGuru_ (PDF
+ * ini materi belajar untuk dibaca siswa juga). BEDA satu hal dari serveInfografisBinary_():
+ * dipanggil lewat fetch() oleh pdf.js di baca.html (bukan langsung sebagai <img src>/<a href>),
+ * jadi Content-Type diset eksplisit ke "application/pdf" supaya pdf.js bisa mem-parsingnya. */
+function servePustakaBinary_(fileId) {
+  try {
+    if (!fileId) throw new Error("ID file tidak valid");
+    const file = DriveApp.getFileById(String(fileId).trim());
+    return file.getBlob().setContentType("application/pdf");
+  } catch (err) {
+    return ContentService.createTextOutput("File tidak ditemukan/gagal dibaca: " + String(err))
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+}
+
+/** Cari subfolder bernama PERSIS `mapelNama` di dalam folder induk PUSTAKA_FOLDER_ID;
+ * kalau belum ada, buat baru. Dipakai doPostPustakaBelajar_() supaya guru tidak perlu bikin
+ * folder per mapel secara manual satu-satu di Drive (beda dari Galeri Visual yang folder
+ * per-mapelnya harus diisi manual ke INFOGRAFIS_FOLDER_IDS) — cukup 1 folder induk yang
+ * diisi Arif sekali ke PUSTAKA_FOLDER_ID.
+ * DriveApp.getFoldersByName() mencari HANYA di dalam folder pemanggil (`induk.getFoldersByName`),
+ * BUKAN pencarian global, jadi aman dari folder lain di Drive yang kebetulan nama sama. */
+function getOrCreateMapelSubfolder_(mapelNama) {
+  if (!PUSTAKA_FOLDER_ID || PUSTAKA_FOLDER_ID.indexOf("GANTI_") === 0) {
+    throw new Error(
+      "Folder Drive induk Pustaka Belajar belum dikonfigurasi. Minta admin mengisi ID " +
+      "folder Drive-nya di PUSTAKA_FOLDER_ID pada Code.gs terlebih dulu (lihat " +
+      "apps-script/README.md)."
+    );
+  }
+  const induk = DriveApp.getFolderById(PUSTAKA_FOLDER_ID);
+  const existing = induk.getFoldersByName(mapelNama);
+  if (existing.hasNext()) return existing.next();
+  return induk.createFolder(mapelNama);
+}
+
+/** Sama seperti otorisasiAksesDrive()/otorisasiAksesDriveInfografis() tapi untuk folder induk
+ * Pustaka Belajar — jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi ini,
+ * klik Run, klik Allow/Izinkan) kalau muncul error "Access denied: DriveApp" saat mengunggah
+ * PDF pertama kali dari admin.html. */
+function otorisasiAksesDrivePustaka() {
+  if (!PUSTAKA_FOLDER_ID || PUSTAKA_FOLDER_ID.indexOf("GANTI_") === 0) {
+    Logger.log("PUSTAKA_FOLDER_ID belum dikonfigurasi — isi dulu ID folder induknya di Code.gs.");
+    return;
+  }
+  const folder = DriveApp.getFolderById(PUSTAKA_FOLDER_ID);
+  Logger.log("Berhasil! Nama folder induk Pustaka Belajar: " + folder.getName());
+}
+
 function sheetToObjects_(sheet) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];
@@ -1086,6 +1194,11 @@ function doGet(e) {
     return serveInfografisBinary_(params.infografisFoto);
   }
 
+  // Proxy PDF Pustaka Belajar — SENGAJA TANPA wajibGuru_ (lihat servePustakaBinary_()).
+  if (params.pustakaBinary) {
+    return servePustakaBinary_(params.pustakaBinary);
+  }
+
   try {
     if (params.infografis) {
       // SENGAJA TANPA wajibGuru_ — lihat catatan di komentar header file & serveInfografisBinary_().
@@ -1102,6 +1215,14 @@ function doGet(e) {
       // dengan Papan Peringkat & Galeri Visual di atas (bukan data pribadi per-siswa).
       // Filter ?mapel= opsional, sama pola dengan ?infografis= di atas.
       const rows = sheetToObjects_(getLinimasaSheet_());
+      const data = params.mapel ? rows.filter((r) => r["Mapel"] === params.mapel) : rows;
+      return jsonOut_({ data: data });
+    }
+
+    if (params.pustakaBelajar) {
+      // SENGAJA TANPA wajibGuru_ — sama alasan dengan ?infografis=/?linimasa= di atas (materi
+      // belajar untuk dibaca siswa juga, bukan data pribadi). Filter ?mapel= opsional.
+      const rows = sheetToObjects_(getPustakaBelajarSheet_());
       const data = params.mapel ? rows.filter((r) => r["Mapel"] === params.mapel) : rows;
       return jsonOut_({ data: data });
     }
@@ -1261,6 +1382,17 @@ function doPost(e) {
     if (body.type === "linimasa_hapus") {
       wajibGuru_(body.idToken);
       return doPostLinimasaHapus_(body);
+    }
+
+    if (body.type === "pustaka_belajar") {
+      // LAPIS GURU — hanya guru yang boleh menambah PDF ke Pustaka Belajar.
+      wajibGuru_(body.idToken);
+      return doPostPustakaBelajar_(body);
+    }
+
+    if (body.type === "pustaka_belajar_hapus") {
+      wajibGuru_(body.idToken);
+      return doPostPustakaBelajarHapus_(body);
     }
 
     if (body.type === "progres_materi") {
@@ -1761,6 +1893,77 @@ function doPostLinimasaHapus_(body) {
   const id = String(body["ID"] || "").trim();
   if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });
   const sheet = getLinimasaSheet_();
+  const row = findRowByColumn_(sheet, "ID", id);
+  if (row === -1) return jsonOut_({ status: "error", message: "Data tidak ditemukan (mungkin sudah dihapus)" });
+  sheet.deleteRow(row);
+  return jsonOut_({ status: "ok" });
+}
+
+/** Simpan 1 baris baru ke "Data Pustaka Belajar" (fitur Pustaka Belajar, pengganti Galeri
+ * Visual — RANCANGAN-PUSTAKA-BELAJAR.md). SELALU tambah baris baru (TIDAK upsert) — beda
+ * dari mode B doPostInfografis_(), di sini tidak ada konsep "1 materi = 1 file" karena
+ * Pustaka Belajar sengaja tidak terikat TP resmi; guru pendamping bisa share banyak PDF
+ * untuk mapel yang sama.
+ * body.pdfBase64/body.pdfMime WAJIB ada (beda dari Galeri Visual yang punya mode "video"
+ * tanpa upload — Pustaka Belajar HANYA menerima PDF, tidak ada tautan luar). Diunggah ke
+ * subfolder Drive sesuai body["Mapel"], dibuat otomatis kalau belum ada
+ * (getOrCreateMapelSubfolder_()). */
+function doPostPustakaBelajar_(body) {
+  const mapel = String(body["Mapel"] || "").trim();
+  const judul = String(body["Judul"] || "").trim();
+  if (!mapel) return jsonOut_({ status: "error", message: "Mapel wajib diisi" });
+  if (!judul) return jsonOut_({ status: "error", message: "Judul wajib diisi" });
+  if (!body.pdfBase64) return jsonOut_({ status: "error", message: "File PDF wajib diunggah" });
+
+  let folder;
+  try {
+    folder = getOrCreateMapelSubfolder_(mapel);
+  } catch (err) {
+    return jsonOut_({ status: "error", message: String(err.message || err) });
+  }
+
+  const namaFileAsli = String(body["Nama File Asli"] || "materi.pdf").trim();
+  let driveFileId;
+  try {
+    const bytes = Utilities.base64Decode(body.pdfBase64);
+    const namaFileDrive = (mapel + "_" + judul).replace(/[^a-zA-Z0-9]+/g, "_") + "_" + new Date().getTime() + ".pdf";
+    const blob = Utilities.newBlob(bytes, body.pdfMime || "application/pdf", namaFileDrive);
+    const file = folder.createFile(blob);
+    driveFileId = file.getId();
+    // Sengaja TIDAK setSharing() sama sekali di sini (beda dari simpanFotoKeDrive_() yang
+    // masih coba "anyone with link" sebagai cadangan hotlink) — Pustaka Belajar SELALU
+    // dibaca lewat proxy servePustakaBinary_() (script berjalan sebagai pemilik, akses
+    // penuh ke file walau tidak dishare publik), jadi file boleh tetap privat sepenuhnya.
+    // Ini juga sejalan dengan niat "tidak mendukung download" (RANCANGAN-PUSTAKA-BELAJAR.md
+    // §0 poin 5) — tidak ada link publik sama sekali yang bisa dibagikan orang lain.
+  } catch (err) {
+    return jsonOut_({ status: "error", message: "Gagal mengunggah PDF ke Drive: " + String(err) });
+  }
+
+  const id = "pb" + new Date().getTime() + Math.floor(Math.random() * 1000);
+  const sheet = getPustakaBelajarSheet_();
+  const record = {
+    "Timestamp": new Date(),
+    "ID": id,
+    "Mapel": mapel,
+    "Judul": judul,
+    "Deskripsi": body["Deskripsi"] || "",
+    "Nama File Asli": namaFileAsli,
+    "Drive File ID": driveFileId,
+    "Jumlah Halaman": body["Jumlah Halaman"] || "",
+    "Diunggah Oleh": body["Diunggah Oleh"] || "",
+  };
+  sheet.appendRow(buildRowByHeaders_(sheet, record));
+  return jsonOut_({ status: "ok", id: id });
+}
+
+/** Hapus 1 baris "Data Pustaka Belajar" berdasarkan ID — sama pola persis dengan
+ * doPostInfografisHapus_()/doPostLinimasaHapus_() di atas: file Drive SENGAJA TIDAK ikut
+ * dihapus (bisa dipulihkan/dibersihkan manual oleh guru langsung dari Drive kalau perlu). */
+function doPostPustakaBelajarHapus_(body) {
+  const id = String(body["ID"] || "").trim();
+  if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });
+  const sheet = getPustakaBelajarSheet_();
   const row = findRowByColumn_(sheet, "ID", id);
   if (row === -1) return jsonOut_({ status: "error", message: "Data tidak ditemukan (mungkin sudah dihapus)" });
   sheet.deleteRow(row);
