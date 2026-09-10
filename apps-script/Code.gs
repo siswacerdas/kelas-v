@@ -113,7 +113,7 @@ const PUSTAKA_SHEET_NAME = "Data Pustaka Belajar"; // fitur "Pustaka Belajar" (R
 // jadi Arif cukup isi SATU ID folder induk saja (buat 1 folder baru di Drive, share "Anyone with link -
 // Editor", salin ID-nya dari URL). Lihat juga apps-script/README.md bagian "Folder Drive untuk Pustaka
 // Belajar".
-const PUSTAKA_FOLDER_ID = "GANTI_DENGAN_ID_FOLDER_DRIVE_PUSTAKA_BELAJAR";
+const PUSTAKA_FOLDER_ID = "15Gv1apEOBeyhbwFeVyjovr_Dm7mOPtvm";
 
 // ── KUNCI AKSES (v0.7.0) ─────────────────────────────────────────────────
 // Sebelum ini, SEMUA endpoint di bawah bisa diakses siapa pun yang tahu URL Web
