@@ -76,9 +76,13 @@
   .btn-sm { padding: 5px 10px; font-size: 11px; }
   .form-actions { display: flex; gap: 8px; margin-top: 0.5rem; }
 
-  #status-msg { font-size: 12px; margin-top: 8px; min-height: 16px; }
-  #status-msg.ok { color: var(--accent-3); }
-  #status-msg.err { color: var(--danger); }
+  /* PERBAIKAN (sebelumnya salah pakai selector ID "#status-msg" padahal elemennya
+     class="status-msg" di semua tab — pengumuman/modul/soal/linimasa/pustaka-belajar
+     — akibatnya warna ok/err TIDAK PERNAH tampil sejak awal, pesan status selalu
+     polos hitam. Ketahuan saat menelusuri laporan pesan error yang "susah kebaca". */
+  .status-msg { font-size: 12px; margin-top: 8px; min-height: 16px; }
+  .status-msg.ok { color: var(--accent-3); font-weight: 600; }
+  .status-msg.err { color: var(--danger); font-weight: 600; }
 
   /* ── LIST ─────────────────────────────── */
   .list-group-title {
@@ -1275,7 +1279,14 @@
     const el = document.getElementById("pb-status");
     el.textContent = msg;
     el.className = "status-msg " + (isErr ? "err" : "ok");
-    if (msg) setTimeout(() => { el.textContent = ""; el.className = "status-msg"; }, 4000);
+    clearTimeout(setPustakaStatus_._t);
+    // Pesan SUKSES boleh hilang sendiri (4 detik cukup dibaca, singkat).
+    // Pesan ERROR SENGAJA dibiarkan sampai guru mencoba lagi (ditimpa
+    // panggilan berikutnya) — sebelumnya ikut hilang 4 detik, jadi pesan
+    // error yang agak panjang tidak sempat terbaca (laporan Arif).
+    if (msg && !isErr) {
+      setPustakaStatus_._t = setTimeout(() => { el.textContent = ""; el.className = "status-msg"; }, 4000);
+    }
   }
 
   window.simpanPustaka = async function () {
