@@ -153,6 +153,61 @@
   .isicepat-table input[type=text]:focus { border-color: var(--accent); }
   .isicepat-table td.col-topik { width: 46%; }
   .isicepat-progress { font-size: 12px; color: var(--ink-3); margin-top: 0.6rem; min-height: 16px; }
+
+  /* ── PUSTAKA BELAJAR (tab admin, desain baru — lihat RANCANGAN-PUSTAKA-BELAJAR.md §3.1) ── */
+  .pb-adm-layout { display: grid; grid-template-columns: 360px 1fr; gap: 1.25rem; align-items: start; }
+  @media (max-width: 780px) { .pb-adm-layout { grid-template-columns: 1fr; } }
+
+  .pb-adm-field-err { font-size: 11px; color: var(--danger); margin-top: 4px; display: none; }
+  .pb-adm-field-err.show { display: block; }
+  .form-row.pb-adm-invalid input, .form-row.pb-adm-invalid select { border-color: var(--danger); }
+
+  .pb-adm-progress-wrap {
+    height: 7px; border-radius: 999px; background: var(--paper-2); overflow: hidden;
+    margin-top: 10px; display: none;
+  }
+  .pb-adm-progress-wrap.show { display: block; }
+  .pb-adm-progress-bar { height: 100%; width: 0%; background: var(--accent-3); transition: width 0.15s; }
+
+  .pb-adm-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
+  .pb-adm-chip {
+    font-size: 11.5px; font-weight: 600; padding: 6px 12px; border-radius: 999px;
+    border: 1px solid var(--border); background: #fff; color: var(--ink-2); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .pb-adm-chip.active { color: #fff; border-color: transparent; }
+
+  .pb-adm-list { display: flex; flex-direction: column; gap: 10px; }
+  .pb-adm-card {
+    background: #fff; border: 1px solid var(--border); border-left: 4px solid var(--ink-3);
+    border-radius: var(--r); padding: 0.85rem 0.95rem; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .pb-adm-card-body { flex: 1; min-width: 0; }
+  .pb-adm-card-badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 2px 8px; border-radius: 999px; display: inline-block; margin-bottom: 5px; color: #fff;
+  }
+  .pb-adm-card-title { font-weight: 700; font-size: 13.5px; line-height: 1.35; }
+  .pb-adm-card-desc { font-size: 12px; color: var(--ink-2); margin-top: 3px; line-height: 1.45; }
+  .pb-adm-card-meta { font-size: 11px; color: var(--ink-3); margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .pb-adm-icon-btn {
+    flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border);
+    background: #fff; color: var(--danger); cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pb-adm-icon-btn:hover { background: rgba(201,64,64,0.08); }
+
+  .pb-adm-modal-backdrop {
+    position: fixed; inset: 0; background: rgba(26,26,46,0.45); z-index: 200;
+    display: flex; align-items: center; justify-content: center; padding: 1.25rem;
+  }
+  .pb-adm-modal-box {
+    background: #fff; border-radius: 12px; padding: 1.25rem; max-width: 340px; width: 100%;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.18);
+  }
+  .pb-adm-modal-box h3 { font-size: 14.5px; margin-bottom: 0.5rem; }
+  .pb-adm-modal-box p { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; margin-bottom: 1rem; }
+  .pb-adm-modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
 </style>
 </head>
 <body>
@@ -174,6 +229,7 @@
       <button class="tab-btn" data-tab="modul" onclick="switchTab('modul')">📚 Modul</button>
       <button class="tab-btn" data-tab="soal" onclick="switchTab('soal')">💪 Uji Kemampuan</button>
       <button class="tab-btn" data-tab="linimasa" onclick="switchTab('linimasa')">🗓️ Linimasa</button>
+      <button class="tab-btn" data-tab="pustaka-belajar" onclick="switchTab('pustaka-belajar')">📄 Pustaka Belajar</button>
       <button class="tab-btn" data-tab="ortu" onclick="switchTab('ortu')">👪 Persetujuan Orang Tua</button>
       <button class="tab-btn" data-tab="impor" onclick="switchTab('impor')">📥 Impor Massal</button>
     </div>
@@ -537,6 +593,52 @@
       <div id="list-linimasa"><div class="empty-state">Memuat…</div></div>
     </div>
 
+    <!-- ══════════════ TAB: PUSTAKA BELAJAR (pengganti Galeri Visual — lihat
+         RANCANGAN-PUSTAKA-BELAJAR.md). Desain 2-kolom (form kiri, daftar kanan
+         di layar lebar; bertumpuk di HP), kartu per-file, modal konfirmasi
+         hapus, validasi & progress inline — lihat §3.1 rancangan. ══════════════ -->
+    <div id="tab-pustaka-belajar" class="tab-panel">
+      <div class="pb-adm-layout">
+        <div class="panel-card">
+          <h2>Unggah PDF Baru</h2>
+          <form id="form-pustaka" onsubmit="return false;">
+            <div class="form-row" id="row-pb-mapel">
+              <label for="pb-mapel">Mata Pelajaran</label>
+              <select id="pb-mapel"></select>
+              <div class="pb-adm-field-err" id="err-pb-mapel">Mapel wajib dipilih.</div>
+            </div>
+            <div class="form-row" id="row-pb-judul">
+              <label for="pb-judul">Judul</label>
+              <input type="text" id="pb-judul" placeholder="mis. Presentasi Pecahan Senilai" />
+              <div class="pb-adm-field-err" id="err-pb-judul">Judul wajib diisi.</div>
+            </div>
+            <div class="form-row">
+              <label for="pb-deskripsi">Deskripsi (opsional)</label>
+              <textarea id="pb-deskripsi" placeholder="Ringkasan singkat isi file, kalau perlu"></textarea>
+            </div>
+            <div class="form-row" id="row-pb-file">
+              <label for="pb-file">File PDF</label>
+              <input type="file" id="pb-file" accept="application/pdf,.pdf" />
+              <div class="hint">Dibaca langsung di situs sebagai slideshow — bukan diunduh.</div>
+              <div class="pb-adm-field-err" id="err-pb-file">File PDF wajib dipilih.</div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="pb-submit-btn" onclick="simpanPustaka()">Unggah</button>
+            </div>
+            <div class="pb-adm-progress-wrap" id="pb-progress-wrap">
+              <div class="pb-adm-progress-bar" id="pb-progress-bar"></div>
+            </div>
+            <div id="pb-status" class="status-msg"></div>
+          </form>
+        </div>
+
+        <div>
+          <div class="pb-adm-chip-row" id="pb-list-chips"></div>
+          <div id="list-pustaka"><div class="empty-state">Memuat…</div></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ══════════════ TAB: PERSETUJUAN ORANG TUA (Fase 4, lihat CHANGELOG.md v0.11.0) ══════════════ -->
     <div id="tab-ortu" class="tab-panel">
       <div class="panel-card">
@@ -603,6 +705,8 @@
 <script src="materi/assets/tp-kko-index.js"></script>
 <script src="mpls/assets/config.js"></script>
 <script src="infografis/assets/infografis-data.js"></script>
+<script src="pustaka-belajar/assets/pustaka-belajar-data.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script type="module" src="../assets/js/guru-guard.js"></script>
 <script type="module">
   import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, where, orderBy, serverTimestamp, writeBatch }
@@ -1082,6 +1186,236 @@
       wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
     }
   }
+
+
+  // ═══════════════════════ PUSTAKA BELAJAR (lihat RANCANGAN-PUSTAKA-BELAJAR.md) ═══════════════════════
+  let pustakaCache = [];
+  let pbFilterSlug = "semua";
+
+  function populatePustakaMapelSelect() {
+    const sel = document.getElementById("pb-mapel");
+    sel.innerHTML = '<option value="">— Pilih Mapel —</option>' +
+      (window.PUSTAKA_BELAJAR_MAPEL || []).map((m) => `<option value="${escHtml(m.mapel)}">${m.mapelIcon} ${escHtml(m.mapel)}</option>`).join("");
+  }
+
+  function cariMapelPustaka_(nama) {
+    return (window.PUSTAKA_BELAJAR_MAPEL || []).find((m) => m.mapel === nama);
+  }
+
+  function pbFieldErr_(fieldId, show) {
+    document.getElementById("row-pb-" + fieldId).classList.toggle("pb-adm-invalid", show);
+    document.getElementById("err-pb-" + fieldId).classList.toggle("show", show);
+  }
+
+  /** Baca file PDF di klien SEKALIGUS untuk 2 kebutuhan: (1) base64 untuk dikirim
+   * ke Code.gs, (2) jumlah halaman lewat pdf.js (disimpan ke kolom "Jumlah
+   * Halaman" — dipakai viewer baca.html untuk info & di landing sebagai info
+   * "X halaman"). Dibaca sekali saja, tidak dua kali fetch/parse. */
+  function bacaPdfUntukUpload_(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Gagal membaca file."));
+      reader.onload = async () => {
+        try {
+          const dataUrl = reader.result;
+          const base64 = dataUrl.split(",")[1];
+          const buffer = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+          const doc = await pdfjsLib.getDocument({ data: buffer }).promise;
+          resolve({ base64, jumlahHalaman: doc.numPages });
+        } catch (err) {
+          // Tetap lanjut unggah walau gagal baca jumlah halaman (bukan blocker) —
+          // cukup catat kosong, viewer tetap bisa baca filenya lewat pdf.js sendiri.
+          const base64 = reader.result.split(",")[1];
+          resolve({ base64, jumlahHalaman: "" });
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /** XHR (bukan fetch) SENGAJA dipakai di sini — supaya progress bar upload
+   * (event "progress" dari xhr.upload) bisa ditampilkan nyata, file PDF bisa
+   * cukup besar dan fetch() tidak punya API progress upload bawaan. */
+  function postDenganProgress_(url, payload, onProgress) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", url);
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
+      };
+      xhr.onload = () => {
+        try { resolve(JSON.parse(xhr.responseText)); }
+        catch (e) { reject(new Error("Respons tidak dikenali dari server.")); }
+      };
+      xhr.onerror = () => reject(new Error("Gagal terhubung ke server."));
+      xhr.send(JSON.stringify(payload));
+    });
+  }
+
+  function setPustakaStatus_(msg, isErr) {
+    const el = document.getElementById("pb-status");
+    el.textContent = msg;
+    el.className = "status-msg " + (isErr ? "err" : "ok");
+    if (msg) setTimeout(() => { el.textContent = ""; el.className = "status-msg"; }, 4000);
+  }
+
+  window.simpanPustaka = async function () {
+    const mapel = document.getElementById("pb-mapel").value.trim();
+    const judul = document.getElementById("pb-judul").value.trim();
+    const deskripsi = document.getElementById("pb-deskripsi").value.trim();
+    const fileInput = document.getElementById("pb-file");
+    const file = fileInput.files[0];
+
+    // Validasi inline per field (bukan alert()) — semua dicek dulu sebelum
+    // berhenti di error pertama, supaya guru langsung lihat SEMUA yang kurang.
+    pbFieldErr_("mapel", !mapel);
+    pbFieldErr_("judul", !judul);
+    pbFieldErr_("file", !file);
+    if (!mapel || !judul || !file) return;
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      pbFieldErr_("file", true);
+      document.getElementById("err-pb-file").textContent = "File harus berformat PDF.";
+      return;
+    }
+
+    const submitBtn = document.getElementById("pb-submit-btn");
+    const progressWrap = document.getElementById("pb-progress-wrap");
+    const progressBar = document.getElementById("pb-progress-bar");
+    submitBtn.disabled = true;
+    setPustakaStatus_("Membaca file…");
+    progressWrap.classList.add("show");
+    progressBar.style.width = "0%";
+
+    try {
+      const { base64, jumlahHalaman } = await bacaPdfUntukUpload_(file);
+      setPustakaStatus_("Mengunggah…");
+      const idToken = await window.getFreshGuruIdToken();
+      const payload = {
+        type: "pustaka_belajar",
+        "Mapel": mapel,
+        "Judul": judul,
+        "Deskripsi": deskripsi,
+        "Nama File Asli": file.name,
+        "Jumlah Halaman": jumlahHalaman,
+        "Diunggah Oleh": window.__guruNama || "",
+        pdfBase64: base64,
+        pdfMime: "application/pdf",
+        idToken,
+      };
+      const json = await postDenganProgress_(MPLS_CONFIG.APPS_SCRIPT_URL, payload, (pct) => {
+        progressBar.style.width = pct + "%";
+      });
+      if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
+
+      setPustakaStatus_("✓ \"" + judul + "\" berhasil diunggah.");
+      document.getElementById("form-pustaka").reset();
+      ["mapel", "judul", "file"].forEach((f) => pbFieldErr_(f, false));
+      loadPustaka();
+    } catch (err) {
+      setPustakaStatus_("⚠️ Gagal: " + err.message, true);
+    } finally {
+      submitBtn.disabled = false;
+      progressWrap.classList.remove("show");
+    }
+  };
+
+  function renderPustakaChips_() {
+    const wrap = document.getElementById("pb-list-chips");
+    const chips = [{ mapel: "Semua", mapelSlug: "semua", mapelIcon: "📚", warna: "var(--ink)" }].concat(window.PUSTAKA_BELAJAR_MAPEL || []);
+    wrap.innerHTML = chips.map((m) => {
+      const active = m.mapelSlug === pbFilterSlug;
+      const style = active ? `style="background:${m.warna};border-color:${m.warna}"` : "";
+      return `<button type="button" class="pb-adm-chip ${active ? "active" : ""}" ${style} data-slug="${m.mapelSlug}">${m.mapelIcon} ${escHtml(m.mapel)}</button>`;
+    }).join("");
+    wrap.querySelectorAll(".pb-adm-chip").forEach((btn) => {
+      btn.addEventListener("click", () => { pbFilterSlug = btn.dataset.slug; renderPustakaChips_(); renderPustakaList_(); });
+    });
+  }
+
+  function renderPustakaList_() {
+    const wrap = document.getElementById("list-pustaka");
+    const filtered = pbFilterSlug === "semua"
+      ? pustakaCache
+      : pustakaCache.filter((it) => { const m = cariMapelPustaka_(it["Mapel"]); return m && m.mapelSlug === pbFilterSlug; });
+
+    if (filtered.length === 0) {
+      wrap.innerHTML = `<div class="empty-state">Belum ada file untuk ${pbFilterSlug === "semua" ? "Pustaka Belajar" : "mapel ini"}.</div>`;
+      return;
+    }
+
+    const sorted = filtered.slice().sort((a, b) => new Date(b["Timestamp"] || 0) - new Date(a["Timestamp"] || 0));
+    wrap.innerHTML = `<div class="pb-adm-list">${sorted.map((it) => {
+      const m = cariMapelPustaka_(it["Mapel"]) || { warna: "#7b7b9a" };
+      const tanggal = it["Timestamp"] ? new Date(it["Timestamp"]).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : "";
+      const halaman = it["Jumlah Halaman"] ? it["Jumlah Halaman"] + " halaman" : "";
+      return `
+        <div class="pb-adm-card" style="border-left-color:${m.warna}">
+          <div class="pb-adm-card-body">
+            <span class="pb-adm-card-badge" style="background:${m.warna}">${escHtml(it["Mapel"])}</span>
+            <div class="pb-adm-card-title">${escHtml(it["Judul"])}</div>
+            ${it["Deskripsi"] ? `<div class="pb-adm-card-desc">${escHtml(it["Deskripsi"])}</div>` : ""}
+            <div class="pb-adm-card-meta">
+              ${halaman ? `<span>${halaman}</span>` : ""}
+              ${tanggal ? `<span>${tanggal}</span>` : ""}
+              ${it["Diunggah Oleh"] ? `<span>oleh ${escHtml(it["Diunggah Oleh"])}</span>` : ""}
+            </div>
+          </div>
+          <button type="button" class="pb-adm-icon-btn" title="Hapus" onclick='bukaModalHapusPustaka(${JSON.stringify(it["ID"])}, ${JSON.stringify(it["Judul"])})'>🗑</button>
+        </div>`;
+    }).join("")}</div>`;
+  }
+
+  async function loadPustaka() {
+    const wrap = document.getElementById("list-pustaka");
+    try {
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1");
+      const json = await res.json();
+      pustakaCache = json.data || [];
+      renderPustakaChips_();
+      renderPustakaList_();
+    } catch (err) {
+      wrap.innerHTML = `<div class="empty-state">Gagal memuat: ${escHtml(err.message)}</div>`;
+    }
+  }
+
+  // Modal konfirmasi hapus in-app — SENGAJA bukan confirm() bawaan browser
+  // (permintaan Arif, lihat RANCANGAN-PUSTAKA-BELAJAR.md §3.1).
+  window.bukaModalHapusPustaka = function (id, judul) {
+    const el = document.createElement("div");
+    el.className = "pb-adm-modal-backdrop";
+    el.id = "pb-modal-hapus";
+    el.innerHTML = `
+      <div class="pb-adm-modal-box">
+        <h3>Hapus file ini?</h3>
+        <p>"${escHtml(judul)}" akan hilang dari Pustaka Belajar untuk siswa & orang tua. File di Google Drive TIDAK ikut terhapus (tersimpan untuk jaga-jaga).</p>
+        <div class="pb-adm-modal-actions">
+          <button class="btn btn-secondary btn-sm" onclick="tutupModalHapusPustaka()">Batal</button>
+          <button class="btn btn-danger btn-sm" onclick="hapusPustaka('${id}')">Ya, Hapus</button>
+        </div>
+      </div>`;
+    document.body.appendChild(el);
+  };
+
+  window.tutupModalHapusPustaka = function () {
+    const el = document.getElementById("pb-modal-hapus");
+    if (el) el.remove();
+  };
+
+  window.hapusPustaka = async function (id) {
+    tutupModalHapusPustaka();
+    try {
+      const idToken = await window.getFreshGuruIdToken();
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ type: "pustaka_belajar_hapus", "ID": id, idToken }),
+      });
+      const json = await res.json();
+      if (json.status !== "ok") throw new Error(json.message || "Gagal menghapus");
+      loadPustaka();
+    } catch (err) {
+      alert("Gagal menghapus: " + err.message);
+    }
+  };
 
 
   // ═══════════════════════ UJI KEMAMPUAN (BANK SOAL) ═══════════════════════
@@ -1757,13 +2091,15 @@
     window.autoIsiTahunLinimasa();
     window.isiSaranTopikLinimasa();
     loadLinimasa();
+    populatePustakaMapelSelect();
+    loadPustaka();
   });
   document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../index.html"));
 
-  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #soal / #ortu / #linimasa
+  // Buka tab tertentu langsung kalau diakses lewat #pengumuman / #modul / #soal / #ortu / #linimasa / #pustaka-belajar
   window.addEventListener("load", () => {
     const hash = window.location.hash.replace("#", "");
-    if (["pengumuman", "modul", "soal", "ortu", "impor", "linimasa"].includes(hash)) switchTab(hash);
+    if (["pengumuman", "modul", "soal", "ortu", "impor", "linimasa", "pustaka-belajar"].includes(hash)) switchTab(hash);
   });
 </script>
 </body>
