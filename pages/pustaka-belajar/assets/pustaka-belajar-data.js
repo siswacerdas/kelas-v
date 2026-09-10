@@ -12,18 +12,19 @@
 
    mapelSlug & warnanya SENGAJA disamakan persis dengan materi-index.js /
    materi.css (variabel --m-{slug}) supaya 1 mapel selalu punya warna yang
-   sama di Materi Ajar maupun di Pustaka Belajar — file ini TIDAK
-   mendefinisikan warna baru, hanya memakai ulang var(--m-{slug}) yang
-   sudah di-load dari materi.css.
+   sama di Materi Ajar maupun di Pustaka Belajar. Landing (pustaka-belajar.html)
+   memakai var(--m-{slug}) dari materi.css langsung (sudah di-load di halaman
+   itu); field "warna" (hex) di bawah ini disediakan untuk dipakai tempat yang
+   TIDAK memuat materi.css, misalnya tab "Pustaka Belajar" di admin.html.
    ============================================================ */
 
 window.PUSTAKA_BELAJAR_MAPEL = [
-  { mapel: "Bahasa Indonesia", mapelSlug: "bahasa-indonesia", mapelIcon: "📝" },
-  { mapel: "Matematika", mapelSlug: "matematika", mapelIcon: "🔢" },
-  { mapel: "IPAS", mapelSlug: "ipas", mapelIcon: "🔬" },
-  { mapel: "Pendidikan Agama Islam", mapelSlug: "pai", mapelIcon: "🕌" },
-  { mapel: "Pendidikan Pancasila", mapelSlug: "pancasila", mapelIcon: "🇮🇩" },
-  { mapel: "Seni Budaya", mapelSlug: "seni-budaya", mapelIcon: "🎨" },
-  { mapel: "PJOK", mapelSlug: "pjok", mapelIcon: "⚽" },
-  { mapel: "Bahasa Inggris", mapelSlug: "bahasa-inggris", mapelIcon: "🔤" },
+  { mapel: "Bahasa Indonesia", mapelSlug: "bahasa-indonesia", mapelIcon: "📝", warna: "#8c3d5f" },
+  { mapel: "Matematika", mapelSlug: "matematika", mapelIcon: "🔢", warna: "#1f6f78" },
+  { mapel: "IPAS", mapelSlug: "ipas", mapelIcon: "🔬", warna: "#3f7d4a" },
+  { mapel: "Pendidikan Agama Islam", mapelSlug: "pai", mapelIcon: "🕌", warna: "#0f6b52" },
+  { mapel: "Pendidikan Pancasila", mapelSlug: "pancasila", mapelIcon: "🇮🇩", warna: "#a13d3d" },
+  { mapel: "Seni Budaya", mapelSlug: "seni-budaya", mapelIcon: "🎨", warna: "#c9861f" },
+  { mapel: "PJOK", mapelSlug: "pjok", mapelIcon: "⚽", warna: "#d9541c" },
+  { mapel: "Bahasa Inggris", mapelSlug: "bahasa-inggris", mapelIcon: "🔤", warna: "#4a5d8c" },
 ];
