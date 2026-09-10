@@ -164,10 +164,20 @@
 
   .pb-adm-progress-wrap {
     height: 7px; border-radius: 999px; background: var(--paper-2); overflow: hidden;
-    margin-top: 10px; display: none;
+    margin-top: 10px; display: none; position: relative;
   }
   .pb-adm-progress-wrap.show { display: block; }
-  .pb-adm-progress-bar { height: 100%; width: 0%; background: var(--accent-3); transition: width 0.15s; }
+  /* Indeterminate (bukan persentase asli — lihat catatan di postKeAppsScript_ soal
+     kenapa XHR upload-progress TIDAK dipakai: memicu CORS preflight yang gagal di
+     Apps Script). Batang kecil bergerak bolak-balik selama proses berlangsung. */
+  .pb-adm-progress-bar {
+    position: absolute; top: 0; left: 0; height: 100%; width: 35%; border-radius: 999px;
+    background: var(--accent-3); animation: pbAdmIndeterminate 1.1s ease-in-out infinite;
+  }
+  @keyframes pbAdmIndeterminate {
+    0% { left: -35%; }
+    100% { left: 100%; }
+  }
 
   .pb-adm-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; }
   .pb-adm-chip {
@@ -1189,6 +1199,14 @@
 
 
   // ═══════════════════════ PUSTAKA BELAJAR (lihat RANCANGAN-PUSTAKA-BELAJAR.md) ═══════════════════════
+  // Wajib diset SEKALI sebelum pdfjsLib.getDocument() dipanggil di manapun (lihat
+  // bacaPdfUntukUpload_ di bawah) — tanpa ini pdf.js menampilkan peringatan
+  // "Deprecated API usage" di console dan rendering jadi lebih lambat karena
+  // fallback ke main thread alih-alih Web Worker.
+  if (typeof pdfjsLib !== "undefined") {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
   let pustakaCache = [];
   let pbFilterSlug = "semua";
 
@@ -1233,23 +1251,24 @@
     });
   }
 
-  /** XHR (bukan fetch) SENGAJA dipakai di sini — supaya progress bar upload
-   * (event "progress" dari xhr.upload) bisa ditampilkan nyata, file PDF bisa
-   * cukup besar dan fetch() tidak punya API progress upload bawaan. */
-  function postDenganProgress_(url, payload, onProgress) {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", url);
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
-      };
-      xhr.onload = () => {
-        try { resolve(JSON.parse(xhr.responseText)); }
-        catch (e) { reject(new Error("Respons tidak dikenali dari server.")); }
-      };
-      xhr.onerror = () => reject(new Error("Gagal terhubung ke server."));
-      xhr.send(JSON.stringify(payload));
-    });
+  /** SENGAJA pakai fetch() biasa (BUKAN XMLHttpRequest dengan xhr.upload.onprogress).
+   * Memasang listener di xhr.upload otomatis membuat browser mengirim CORS preflight
+   * (OPTIONS) lebih dulu — dan Google Apps Script Web App TIDAK bisa merespons
+   * preflight dengan benar (tidak mengirim header Access-Control-Allow-Origin untuk
+   * OPTIONS), jadi request langsung diblokir browser sebelum sempat terkirim. Semua
+   * POST lain di fitur ini (dan di seluruh codebase — lihat infografis-kelola-tp.js)
+   * SELALU pakai fetch() polos tanpa listener upload persis karena alasan ini —
+   * itu terhitung "simple request" yang tidak memicu preflight sama sekali.
+   * Konsekuensinya: progress bar TIDAK bisa menunjukkan persentase asli (lihat CSS
+   * .pb-adm-progress-bar — dibuat indeterminate/animasi bolak-balik saja, jujur
+   * tidak berpura-pura tahu persentase pasti). */
+  async function postKeAppsScript_(url, payload) {
+    const res = await fetch(url, { method: "POST", body: JSON.stringify(payload) });
+    try {
+      return await res.json();
+    } catch (e) {
+      throw new Error("Respons tidak dikenali dari server.");
+    }
   }
 
   function setPustakaStatus_(msg, isErr) {
@@ -1280,11 +1299,9 @@
 
     const submitBtn = document.getElementById("pb-submit-btn");
     const progressWrap = document.getElementById("pb-progress-wrap");
-    const progressBar = document.getElementById("pb-progress-bar");
     submitBtn.disabled = true;
     setPustakaStatus_("Membaca file…");
     progressWrap.classList.add("show");
-    progressBar.style.width = "0%";
 
     try {
       const { base64, jumlahHalaman } = await bacaPdfUntukUpload_(file);
@@ -1302,9 +1319,7 @@
         pdfMime: "application/pdf",
         idToken,
       };
-      const json = await postDenganProgress_(MPLS_CONFIG.APPS_SCRIPT_URL, payload, (pct) => {
-        progressBar.style.width = pct + "%";
-      });
+      const json = await postKeAppsScript_(MPLS_CONFIG.APPS_SCRIPT_URL, payload);
       if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
 
       setPustakaStatus_("✓ \"" + judul + "\" berhasil diunggah.");
@@ -1405,11 +1420,7 @@
     tutupModalHapusPustaka();
     try {
       const idToken = await window.getFreshGuruIdToken();
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ type: "pustaka_belajar_hapus", "ID": id, idToken }),
-      });
-      const json = await res.json();
+      const json = await postKeAppsScript_(MPLS_CONFIG.APPS_SCRIPT_URL, { type: "pustaka_belajar_hapus", "ID": id, idToken });
       if (json.status !== "ok") throw new Error(json.message || "Gagal menghapus");
       loadPustaka();
     } catch (err) {
