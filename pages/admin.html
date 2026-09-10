@@ -1394,7 +1394,7 @@
   async function loadPustaka() {
     const wrap = document.getElementById("list-pustaka");
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1");
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
       const json = await res.json();
       pustakaCache = json.data || [];
       renderPustakaChips_();
