@@ -74,7 +74,7 @@ window.PustakaBelajarBaca = (function () {
       const page = await pdfDoc.getPage(num);
       const stage = document.getElementById("pb-stage");
       const dpr = window.devicePixelRatio || 1;
-      const targetWidth = Math.min(stage.clientWidth - 24, 900);
+      const targetWidth = Math.min(stage.clientWidth - 24, 1400);
       const unscaledViewport = page.getViewport({ scale: 1 });
       const scale = (targetWidth / unscaledViewport.width) * dpr;
       const viewport = page.getViewport({ scale });
@@ -137,6 +137,71 @@ window.PustakaBelajarBaca = (function () {
     }, { passive: true });
   }
 
+  /** Layar penuh — 2 lapis SENGAJA dipakai bersamaan:
+   * (1) Fullscreen API asli (requestFullscreen) kalau didukung browser — bekerja
+   *     baik di Chrome/Edge Android & desktop.
+   * (2) Mode CSS ".pb-focus-mode" yang menyembunyikan topbar/footer — ini yang
+   *     jadi ANDALAN UTAMA di Safari iOS/iPhone, karena Fullscreen API TIDAK
+   *     didukung Safari untuk elemen sembarang (cuma untuk <video>). Tanpa lapis
+   *     kedua ini, tombol layar penuh akan terasa tidak berfungsi sama sekali
+   *     di iPhone — padahal banyak siswa/orang tua kemungkinan besar pakai iPhone.
+   * Kedua lapis SELALU dicoba bersamaan tanpa mengecek dukungan browser dulu —
+   * kalau lapis (1) gagal/tidak didukung, browser mengabaikannya diam-diam
+   * (di-catch), dan lapis (2) tetap jalan sebagai fallback yang selalu berhasil. */
+  function mintaLayarPenuh_(el) {
+    const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+    if (fn) { try { fn.call(el).catch(() => {}); } catch (e) { /* diamkan — lapis CSS tetap jalan */ } }
+  }
+
+  function keluarLayarPenuh_() {
+    const fn = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+    const sedangFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+    if (fn && sedangFullscreen) { try { fn.call(document).catch(() => {}); } catch (e) {} }
+  }
+
+  function setModeFokus_(aktif) {
+    const root = document.getElementById("app-baca");
+    const btn = document.getElementById("pb-fullscreen-btn");
+    root.classList.toggle("pb-focus-mode", aktif);
+    btn.textContent = aktif ? "⤡" : "⛶";
+    btn.setAttribute("aria-label", aktif ? "Keluar layar penuh" : "Layar penuh");
+  }
+
+  function toggleLayarPenuh_() {
+    const root = document.getElementById("app-baca");
+    const aktifSekarang = root.classList.contains("pb-focus-mode");
+    setModeFokus_(!aktifSekarang);
+    if (!aktifSekarang) mintaLayarPenuh_(root);
+    else keluarLayarPenuh_();
+  }
+
+  function pasangLayarPenuh_() {
+    document.getElementById("pb-fullscreen-btn").addEventListener("click", toggleLayarPenuh_);
+
+    // Sinkronkan tombol kalau pengguna keluar fullscreen lewat tombol Esc/gestur
+    // bawaan browser (bukan lewat tombol kita) — supaya ikonnya tidak "nyangkut".
+    ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
+      document.addEventListener(evt, () => {
+        const sedangFullscreen = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        if (!sedangFullscreen) setModeFokus_(false);
+      });
+    });
+
+    // Render ulang halaman saat ini setiap kali ukuran layar berubah (masuk/keluar
+    // layar penuh, atau HP diputar ke landscape) — canvas SEBELUMNYA dirender pada
+    // resolusi lama, kalau cuma diperbesar lewat CSS hasilnya jadi buram. Di-debounce
+    // 200ms supaya tidak render berkali-kali selama animasi transisi berlangsung.
+    let timerResize = null;
+    const jadwalkanRenderUlang = () => {
+      clearTimeout(timerResize);
+      timerResize = setTimeout(() => { if (pdfDoc) renderPage(currentPage); }, 200);
+    };
+    window.addEventListener("resize", jadwalkanRenderUlang);
+    ["fullscreenchange", "webkitfullscreenchange", "MSFullscreenChange"].forEach((evt) => {
+      document.addEventListener(evt, jadwalkanRenderUlang);
+    });
+  }
+
   async function ambilMetadataDanFile_() {
     const id = qs("id");
     if (!id) throw new Error("ID materi tidak ditemukan di tautan.");
@@ -193,6 +258,7 @@ window.PustakaBelajarBaca = (function () {
 
   async function init() {
     pasangNavigasi();
+    pasangLayarPenuh_();
     try {
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
