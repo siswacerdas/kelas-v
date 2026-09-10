@@ -99,7 +99,7 @@ window.PustakaBelajarLanding = (function () {
       return;
     }
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1");
+      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
       const json = await res.json();
       if (json.status === "error") throw new Error(json.message || "Gagal memuat");
       allRows = json.data || [];

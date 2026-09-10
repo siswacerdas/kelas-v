@@ -144,7 +144,7 @@ window.PustakaBelajarBaca = (function () {
       throw new Error("Fitur ini belum siap dikonfigurasi.");
     }
 
-    const resMeta = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1");
+    const resMeta = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
     const jsonMeta = await resMeta.json();
     if (jsonMeta.status === "error") throw new Error(jsonMeta.message || "Gagal memuat data");
     const row = (jsonMeta.data || []).find((r) => r["ID"] === id);
