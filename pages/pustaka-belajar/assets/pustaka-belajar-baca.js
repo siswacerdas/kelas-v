@@ -145,6 +145,7 @@ window.PustakaBelajarBaca = (function () {
     }
 
     const resMeta = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
+    if (!resMeta.ok) throw new Error("Server tidak merespons (kode " + resMeta.status + "). Coba muat ulang halaman.");
     const jsonMeta = await resMeta.json();
     if (jsonMeta.status === "error") throw new Error(jsonMeta.message || "Gagal memuat data");
     const row = (jsonMeta.data || []).find((r) => r["ID"] === id);
@@ -152,17 +153,41 @@ window.PustakaBelajarBaca = (function () {
 
     setTitle(row["Judul"] || "Pustaka Belajar");
 
+    // cache: "no-store" WAJIB di sini — URL relay yang dipakai Apps Script untuk
+    // mengirim isi file (script.googleusercontent.com/macros/echo?user_content_key=...)
+    // SEKALI PAKAI dan berubah setiap request. Kalau browser sempat meng-cache
+    // respons ini, permintaan berikutnya akan terarah ke URL relay basi yang
+    // sudah tidak berlaku (404) — persis pola yang bikin daftar file sempat tidak
+    // muncul sebelumnya, cuma kali ini kena di file biner-nya, bukan daftarnya.
     const resBin = await fetch(
-      MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBinary=" + encodeURIComponent(row["Drive File ID"])
+      MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBinary=" + encodeURIComponent(row["Drive File ID"]),
+      { cache: "no-store" }
     );
-    const jsonBin = await resBin.json();
+    if (!resBin.ok) throw new Error("Gagal mengambil file PDF (kode " + resBin.status + "). Coba muat ulang halaman.");
+    let jsonBin;
+    try {
+      jsonBin = await resBin.json();
+    } catch (e) {
+      throw new Error("Respons server tidak dikenali. Coba muat ulang halaman.");
+    }
     if (jsonBin.status === "error") throw new Error(jsonBin.message || "Gagal membaca file PDF");
+
     // Dibungkus base64 di JSON (BUKAN Blob mentah) — lihat catatan panjang di
     // servePustakaBinary_() (Code.gs) soal kenapa: Apps Script tidak konsisten
     // menambahkan header CORS saat doGet mengembalikan Blob langsung, sedangkan
     // ContentService JSON SELALU dapat header itu. Decode di sini sebelum
     // diserahkan ke pdf.js.
     const buffer = Uint8Array.from(atob(jsonBin.base64), (c) => c.charCodeAt(0));
+
+    // Pengaman tambahan: PDF asli SELALU diawali tanda "%PDF-" (magic bytes).
+    // Kalau tidak ada, berarti yang kebaca bukan PDF asli (mis. sisa cache/relay
+    // basi yang lolos dari pengecekan di atas) — hentikan di sini dengan pesan
+    // jelas, jangan lanjut ke pdf.js supaya tidak keluar warning membingungkan.
+    const header = String.fromCharCode.apply(null, buffer.slice(0, 5));
+    if (header !== "%PDF-") {
+      throw new Error("File yang diterima bukan PDF yang valid. Coba muat ulang halaman (Ctrl+Shift+R).");
+    }
+
     return buffer;
   }
 
