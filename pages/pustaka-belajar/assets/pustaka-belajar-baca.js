@@ -155,7 +155,14 @@ window.PustakaBelajarBaca = (function () {
     const resBin = await fetch(
       MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBinary=" + encodeURIComponent(row["Drive File ID"])
     );
-    const buffer = await resBin.arrayBuffer();
+    const jsonBin = await resBin.json();
+    if (jsonBin.status === "error") throw new Error(jsonBin.message || "Gagal membaca file PDF");
+    // Dibungkus base64 di JSON (BUKAN Blob mentah) — lihat catatan panjang di
+    // servePustakaBinary_() (Code.gs) soal kenapa: Apps Script tidak konsisten
+    // menambahkan header CORS saat doGet mengembalikan Blob langsung, sedangkan
+    // ContentService JSON SELALU dapat header itu. Decode di sini sebelum
+    // diserahkan ke pdf.js.
+    const buffer = Uint8Array.from(atob(jsonBin.base64), (c) => c.charCodeAt(0));
     return buffer;
   }
 
