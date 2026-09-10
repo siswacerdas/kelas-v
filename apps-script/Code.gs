@@ -52,9 +52,10 @@
  *                ?pustakaBelajar=1 -> SEMUA baris "Data Pustaka Belajar" (untuk pages/pustaka-belajar.html),
  *                TIDAK digerbang wajibGuru_ — sama alasan dengan ?infografis=1/?linimasa=1 di atas (materi
  *                belajar untuk dibaca siswa juga). Filter ?mapel= opsional di server.
- *                ?pustakaBinary=<Drive File ID> -> PROXY byte PDF Pustaka Belajar, TANPA gerbang wajibGuru_
- *                (lihat servePustakaBinary_()) — dibaca pdf.js di klien (pages/pustaka-belajar/baca.html),
- *                BUKAN diunduh sebagai file (tidak ada Content-Disposition: attachment).
+ *                ?pustakaBinary=<Drive File ID> -> PROXY PDF Pustaka Belajar sebagai JSON
+ *                {base64, mime}, TANPA gerbang wajibGuru_ (lihat servePustakaBinary_() untuk
+ *                alasan kenapa dibungkus JSON, BUKAN Blob mentah seperti ?infografisFoto=) —
+ *                di-decode & dibaca pdf.js di klien (pages/pustaka-belajar/baca.html).
  *                ?laporanSiswa=1&nama=..&idToken=.. -> gabungan Profil+MPLS+Kognitif+Jurnal 1 siswa
  *                (untuk pages/laporan-siswa/mpls.html) — digerbang wajibAksesLaporan_() (BUKAN wajibGuru_),
  *                supaya guru boleh lihat siapa saja TAPI akun "orangtua" hanya bisa lihat anaknya
@@ -113,7 +114,7 @@ const PUSTAKA_SHEET_NAME = "Data Pustaka Belajar"; // fitur "Pustaka Belajar" (R
 // jadi Arif cukup isi SATU ID folder induk saja (buat 1 folder baru di Drive, share "Anyone with link -
 // Editor", salin ID-nya dari URL). Lihat juga apps-script/README.md bagian "Folder Drive untuk Pustaka
 // Belajar".
-const PUSTAKA_FOLDER_ID = "15Gv1apEOBeyhbwFeVyjovr_Dm7mOPtvm";
+const PUSTAKA_FOLDER_ID = "GANTI_DENGAN_ID_FOLDER_DRIVE_PUSTAKA_BELAJAR";
 
 // ── KUNCI AKSES (v0.7.0) ─────────────────────────────────────────────────
 // Sebelum ini, SEMUA endpoint di bawah bisa diakses siapa pun yang tahu URL Web
@@ -1108,19 +1109,26 @@ function otorisasiAksesDriveInfografis() {
   });
 }
 
-/** Proxy byte PDF Pustaka Belajar — sama pola & alasan persis dengan serveInfografisBinary_()
- * (hindari hotlink Drive anonim yang tidak konsisten diblokir Google), TANPA wajibGuru_ (PDF
- * ini materi belajar untuk dibaca siswa juga). BEDA satu hal dari serveInfografisBinary_():
- * dipanggil lewat fetch() oleh pdf.js di baca.html (bukan langsung sebagai <img src>/<a href>),
- * jadi Content-Type diset eksplisit ke "application/pdf" supaya pdf.js bisa mem-parsingnya. */
+/** Proxy byte PDF Pustaka Belajar — TANPA wajibGuru_ (PDF ini materi belajar untuk
+ * dibaca siswa juga). BEDA SENGAJA dari serveInfografisBinary_() (yang mengembalikan
+ * Blob mentah): di sini dibungkus JSON {base64, mime} lewat ContentService, BUKAN
+ * Blob langsung. Alasannya: serveInfografisBinary_() SELALU dipakai lewat <img src=...>
+ * yang tidak butuh header CORS sama sekali, sedangkan PDF ini WAJIB dibaca lewat
+ * fetch() oleh pdf.js di baca.html — dan Apps Script TERNYATA tidak konsisten
+ * menambahkan header Access-Control-Allow-Origin saat doGet mengembalikan Blob
+ * mentah (beda dari ContentService.createTextOutput yang SELALU dapat header itu).
+ * Efek samping yang tidak disengaja tapi menguntungkan: membuka link ini langsung
+ * di browser cuma menampilkan teks JSON acak, bukan PDF yang bisa disimpan —
+ * makin sejalan dengan niat "tidak mendukung download" (RANCANGAN-PUSTAKA-BELAJAR.md
+ * §0 poin 5). */
 function servePustakaBinary_(fileId) {
   try {
     if (!fileId) throw new Error("ID file tidak valid");
     const file = DriveApp.getFileById(String(fileId).trim());
-    return file.getBlob().setContentType("application/pdf");
+    const base64 = Utilities.base64Encode(file.getBlob().getBytes());
+    return jsonOut_({ status: "ok", base64: base64, mime: "application/pdf" });
   } catch (err) {
-    return ContentService.createTextOutput("File tidak ditemukan/gagal dibaca: " + String(err))
-      .setMimeType(ContentService.MimeType.TEXT);
+    return jsonOut_({ status: "error", message: "File tidak ditemukan/gagal dibaca: " + String(err) });
   }
 }
 
