@@ -50,11 +50,28 @@ const KEY_NAMA_SISWA = "kelas5_siswa_nama";
  *   ini kalau ditolak/belum login (sama seperti guardLoggedInPage/guardGuruPage).
  */
 window.guardRolePage = function (rolesDiizinkan, redirectPath) {
+  // v1.5 — PERBAIKAN PENTING: onAuthStateChanged BISA terpanggil lebih dari
+  // sekali untuk SESI LOGIN YANG SAMA (perilaku resmi Firebase — dipanggil
+  // lagi mis. saat token menyegarkan diri secara berkala), dan SEBELUM
+  // perbaikan ini, setiap kali itu terjadi, "role-verified" ikut ter-dispatch
+  // ULANG — halaman manapun yang mendengarkannya (mis. pustaka-belajar/
+  // baca.html) mengulang SEMUA proses beratnya dari nol setiap kali (fetch
+  // daftar file, fetch isi PDF, dst). Inilah akar masalah nyata di balik
+  // laporan "Pustaka Belajar sangat lambat & sering gagal 404" — rekaman
+  // network menunjukkan permintaan yang SAMA persis terkirim berkali-kali,
+  // bukan karena internet lambat, tapi karena dipanggil ulang oleh guard ini
+  // sendiri. Cukup 1x proses verifikasi per pemuatan halaman — kalau nanti
+  // BENAR-BENAR logout (user jadi null), redirect di atas tetap jalan kapan
+  // saja tanpa terhalang flag ini.
+  let sudahDiproses = false;
+
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       window.location.href = redirectPath;
       return;
     }
+    if (sudahDiproses) return;
+    sudahDiproses = true;
 
     if (user.isAnonymous) {
       // Akun siswa — tidak ada dokumen Firestore users/{uid} sama sekali,

@@ -41,11 +41,16 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 window.guardLoggedInPage = function (redirectPath) {
+  // v1.5 — sama perbaikan dengan role-guard.js/guru-guard.js: cegah
+  // "user-verified" ter-dispatch ulang untuk sesi yang sama.
+  let sudahDiproses = false;
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       window.location.href = redirectPath;
       return;
     }
+    if (sudahDiproses) return;
+    sudahDiproses = true;
     document.dispatchEvent(new CustomEvent("user-verified", { detail: { user } }));
   });
 };

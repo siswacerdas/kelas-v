@@ -40,6 +40,13 @@ const db = getFirestore(app);
 
 window.guardGuruPage = function (redirectPath) {
   let refreshTimer = null;
+  // v1.5 — sama perbaikan dengan role-guard.js: onAuthStateChanged bisa
+  // terpanggil ulang untuk sesi yang sama, dan tanpa penjagaan ini
+  // "guru-verified" ikut ter-dispatch ulang setiap kali — di admin.html itu
+  // berarti SEMUA loadXxx() (Pengumuman/Modul/Soal/Linimasa/Pustaka Belajar)
+  // terpanggil dobel-dobel/lebih, bikin tab admin terasa lambat tanpa alasan
+  // jelas. Lihat catatan lebih lengkap di role-guard.js.
+  let sudahDiproses = false;
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -48,6 +55,8 @@ window.guardGuruPage = function (redirectPath) {
       window.location.href = redirectPath;
       return;
     }
+    if (sudahDiproses) return;
+    sudahDiproses = true;
     try {
       const snap = await getDoc(doc(db, "users", user.uid));
       const data = snap.exists() ? snap.data() : {};
