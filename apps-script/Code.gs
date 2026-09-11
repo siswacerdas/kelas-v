@@ -16,17 +16,12 @@
  *                sama sekali) — respons cuma ok/gagal, tidak pernah membocorkan data profil.
  *                { type: "mpls_kognitif" }    -> upsert 1 baris nilai asesmen kognitif per siswa.
  *                { type: "jurnal" }           -> upsert 1 baris nilai asesmen menulis (jurnal aktivitas) per siswa.
- *                { type: "infografis" }       -> TAMBAH 1 baris baru media Galeri Visual (gambar ke Drive,
- *                atau tautan video) — lihat doPostInfografis_(). Beda dari "siswa" yang upsert (1 baris per
- *                nama), di sini SELALU menambah baris baru karena 1 mapel bisa punya banyak media.
- *                { type: "infografis_hapus" } -> hapus 1 baris Galeri Visual berdasarkan ID (lihat catatan
- *                di doPostInfografisHapus_() soal kenapa file Drive-nya SENGAJA tidak ikut dihapus).
  *                { type: "pustaka_belajar" }   -> TAMBAH 1 baris baru file PDF ke fitur "Pustaka Belajar"
  *                (lihat RANCANGAN-PUSTAKA-BELAJAR.md) — PDF diunggah ke subfolder Drive sesuai Mapel-nya
  *                (dibuat OTOMATIS kalau belum ada, lihat getOrCreateMapelSubfolder_()). SELALU tambah
  *                baris baru (bukan upsert) — 1 mapel wajar punya banyak file PDF dari guru pendamping.
  *                { type: "pustaka_belajar_hapus" } -> hapus 1 baris "Data Pustaka Belajar" berdasarkan ID
- *                (pola sama dengan "infografis_hapus" — file Drive SENGAJA tidak ikut dihapus).
+ *                (file Drive SENGAJA tidak ikut dihapus, bisa dibersihkan manual oleh guru kalau perlu).
  *                { type: "progres_materi" }   -> upsert 1 baris "sudah dibaca" (Nama Siswa + Materi Slug)
  *                di sheet "Data Progres Materi" — dikirim materi-progress-tracker.js, fire-and-forget,
  *                TANPA gerbang (siswa mengirim sendiri saat baca materi, bukan lewat guru/orang tua).
@@ -42,20 +37,13 @@
  *                ?allKognitif=1   -> SEMUA baris data kognitif (untuk rekap-kognitif.html/laporan-kognitif.html).
  *                ?namaJurnal=..   -> 1 baris data jurnal siswa tsb (untuk input-jurnal.html).
  *                ?allJurnal=1     -> SEMUA baris data jurnal (untuk rekap-jurnal.html/laporan-jurnal.html).
- *                ?infografis=1    -> SEMUA baris Galeri Visual (untuk pages/infografis.html & galeri.html).
- *                TIDAK digerbang wajibGuru_ (beda dari ?siswa=1) — kontennya materi belajar untuk
- *                dibaca siswa juga, sensitivitasnya setara Materi Ajar (pages/materi.html), yang juga
- *                cuma digerbang login-apa-saja di klien, bukan verifikasi server. Lihat juga catatan
- *                yang sama di serveInfografisBinary_().
- *                ?infografisFoto=<id atau URL Drive> -> PROXY byte gambar Galeri Visual, sama seperti
- *                ?foto= tapi TANPA gerbang wajibGuru_ (lihat serveInfografisBinary_()).
  *                ?pustakaBelajar=1 -> SEMUA baris "Data Pustaka Belajar" (untuk pages/pustaka-belajar.html),
- *                TIDAK digerbang wajibGuru_ — sama alasan dengan ?infografis=1/?linimasa=1 di atas (materi
- *                belajar untuk dibaca siswa juga). Filter ?mapel= opsional di server.
+ *                TIDAK digerbang wajibGuru_ — kontennya materi belajar untuk dibaca siswa juga,
+ *                sensitivitasnya setara Materi Ajar (pages/materi.html). Filter ?mapel= opsional di server.
  *                ?pustakaBinary=<Drive File ID> -> PROXY PDF Pustaka Belajar sebagai JSON
- *                {base64, mime}, TANPA gerbang wajibGuru_ (lihat servePustakaBinary_() untuk
- *                alasan kenapa dibungkus JSON, BUKAN Blob mentah seperti ?infografisFoto=) —
- *                di-decode & dibaca pdf.js di klien (pages/pustaka-belajar/baca.html).
+ *                {base64, mime}, TANPA gerbang wajibGuru_ (lihat servePustakaBinary_() untuk alasan kenapa
+ *                dibungkus JSON, BUKAN Blob mentah) — di-decode & dibaca pdf.js di klien
+ *                (pages/pustaka-belajar/baca.html).
  *                ?laporanSiswa=1&nama=..&idToken=.. -> gabungan Profil+MPLS+Kognitif+Jurnal 1 siswa
  *                (untuk pages/laporan-siswa/mpls.html) — digerbang wajibAksesLaporan_() (BUKAN wajibGuru_),
  *                supaya guru boleh lihat siapa saja TAPI akun "orangtua" hanya bisa lihat anaknya
@@ -64,9 +52,10 @@
  *                ?progresModul=1&nama=..&idToken=..  -> SEMUA baris "Data Progres Modul" milik 1 siswa
  *                (untuk pages/laporan-siswa/belajar-mandiri.html) — gerbang SAMA dengan ?laporanSiswa=1
  *                (wajibAksesLaporan_(), bukan endpoint terpisah dari sisi keamanan, cuma sheet beda).
- * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal() / setupInfografisSheet():
+ * - setupSheet() / setupSiswaSheet() / setupSheetKognitif() / setupSheetJurnal():
  *                jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi lalu Run) untuk
- *                membuat sheet + header.
+ *                membuat sheet + header. Sheet "Data Pustaka Belajar" & "Data Linimasa" dibuat OTOMATIS
+ *                (self-healing) saat pertama kali diakses — tidak butuh fungsi setup terpisah.
  *
  * PENTING setelah mengubah file ini: deploy ulang sebagai "New version" dari
  * deployment yang SAMA (Deploy > Manage deployments > pensil > New version),
@@ -83,38 +72,17 @@ const SISWA_SHEET_NAME = "Data Siswa";
 // ID folder Drive tempat foto siswa disimpan (dari link yang sudah dishare "siapa saja bisa mengedit")
 const FOTO_FOLDER_ID = "1b-ENsEQJeUFoVKKA6htZbVAxf7zr1IzG";
 
-const INFOGRAFIS_SHEET_NAME = "Data Infografis";
 const LINIMASA_SHEET_NAME = "Data Linimasa"; // fitur "Linimasa Materi" (v1.3, permintaan
 // Arif) — kalender bulanan per semester, isinya teks bebas (TIDAK ditaut ke kode TP resmi
 // tp-kko-index.js, keputusan sengaja diambil supaya mapel yang belum punya TP resmi seperti
 // Seni Budaya/Pendidikan Pancasila tetap bisa diisi bebas).
-// ID folder Drive KHUSUS untuk gambar/poster/infografis — SATU FOLDER PER MATA PELAJARAN
-// (bukan 1 folder untuk semuanya), supaya guru bisa menelusuri file langsung dari Drive per
-// mapel kalau perlu. Nama key di sini HARUS PERSIS SAMA dengan field "mapel" pada
-// pages/infografis/assets/infografis-data.js (window.INFOGRAFIS_MAPEL).
-// Cara siapkan folder yang belum ada ID-nya (masih "GANTI_..."): buat folder baru di Google
-// Drive, klik kanan > Share > Bagikan ke "siapa saja yang punya link" dengan akses "Editor",
-// lalu salin ID-nya dari URL folder (bagian setelah "/folders/"). Lihat juga
-// apps-script/README.md bagian "Folder Drive untuk Galeri Visual".
-const INFOGRAFIS_FOLDER_IDS = {
-  "Bahasa Indonesia": "1C01-Asd9Lp9ExtY7uN7PIm-CRcrgPg79",
-  "Matematika": "1Gqt5NR85ABiPgMkdL8tCMYXN08NKjsUI",
-  "IPAS": "19r-2ApSUxO-2A5H1KGNNKVdeYZHsVBY4",
-  "Pendidikan Agama Islam": "GANTI_DENGAN_ID_FOLDER_DRIVE_PAI",
-  "Pendidikan Pancasila": "1itEtnUcHnSAD2QOtUjvrTssKeP6Uuws4",
-  "Seni Budaya": "1aAl3z9yt3PumyHRhSD87u9K4pOfskSaF",
-  "PJOK": "GANTI_DENGAN_ID_FOLDER_DRIVE_PJOK",
-  "Bahasa Inggris": "GANTI_DENGAN_ID_FOLDER_DRIVE_BAHASA_INGGRIS",
-};
-
 const PUSTAKA_SHEET_NAME = "Data Pustaka Belajar"; // fitur "Pustaka Belajar" (RANCANGAN-PUSTAKA-BELAJAR.md)
-// — pengganti Galeri Visual: file PDF bebas (materi presentasi guru pendamping), TIDAK terikat TP resmi.
-// SATU folder induk di Drive, BEDA dari INFOGRAFIS_FOLDER_IDS (yang butuh 1 ID per mapel diisi manual) —
-// di sini subfolder per mapel dibuat OTOMATIS oleh getOrCreateMapelSubfolder_() di dalam folder induk ini,
-// jadi Arif cukup isi SATU ID folder induk saja (buat 1 folder baru di Drive, share "Anyone with link -
-// Editor", salin ID-nya dari URL). Lihat juga apps-script/README.md bagian "Folder Drive untuk Pustaka
-// Belajar".
-const PUSTAKA_FOLDER_ID = "15Gv1apEOBeyhbwFeVyjovr_Dm7mOPtvm";
+// — file PDF bebas (materi presentasi guru pendamping), TIDAK terikat TP resmi. SATU folder induk
+// di Drive — subfolder per mapel dibuat OTOMATIS oleh getOrCreateMapelSubfolder_() di dalam folder
+// induk ini, jadi Arif cukup isi SATU ID folder induk saja (buat 1 folder baru di Drive, share
+// "Anyone with link - Editor", salin ID-nya dari URL). Lihat juga apps-script/README.md bagian
+// "Folder Drive untuk Pustaka Belajar".
+const PUSTAKA_FOLDER_ID = "GANTI_DENGAN_ID_FOLDER_DRIVE_PUSTAKA_BELAJAR";
 
 // ── KUNCI AKSES (v0.7.0) ─────────────────────────────────────────────────
 // Sebelum ini, SEMUA endpoint di bawah bisa diakses siapa pun yang tahu URL Web
@@ -456,31 +424,14 @@ const SISWA_HEADERS = [
   "NISN",
 ];
 
-// "ID" dipakai sebagai kunci hapus dari galeri.html/admin.html — TIDAK pakai "Judul" seperti
-// SISWA_HEADERS pakai "Nama Lengkap", karena judul infografis boleh saja duplikat/mirip
-// antar-unggahan, sedangkan tiap baris di sini harus bisa dirujuk secara pasti.
-const INFOGRAFIS_HEADERS = [
-  "Timestamp",
-  "ID",
-  "Mapel",
-  "Materi Slug",   // opsional — diisi HANYA oleh pages/infografis/kelola-tp.html (1 infografis
-                    // per materi, upload baru MENIMPA yang lama). Kosong untuk infografis umum
-                    // yang diunggah lewat admin.html (tidak terikat 1 materi spesifik).
-                    // Nilainya = field "file" di materi-index.js TANPA akhiran ".html" (unik
-                    // per materi, sudah ada sebagai sumber tunggal, tidak perlu bikin skema ID
-                    // baru).
-  "Judul",
-  "Keterangan",
-  "Jenis Media",   // "gambar" (file diunggah ke Drive) atau "video" (tautan luar, mis. YouTube)
-  "URL Media",
-  "Diunggah Oleh",
-];
+// "ID" jadi kunci hapus/edit — sama pola dengan header sheet lain di bawah (LINIMASA_HEADERS,
+// PUSTAKA_HEADERS, dst.): TIDAK pakai "Judul" seperti SISWA_HEADERS pakai "Nama Lengkap", karena
+// judul/topik boleh saja duplikat/mirip antar-baris, sedangkan tiap baris harus bisa dirujuk pasti.
 
-// "ID" jadi kunci hapus/edit (sama alasan dengan INFOGRAFIS_HEADERS di atas). "Bulan"
-// disimpan sebagai ANGKA 1-12 (1=Januari … 12=Desember) — BUKAN nama bulan — supaya sortir &
-// perbandingan "sudah lewat/belum" di klien (linimasa.html) gampang dilakukan tanpa perlu
-// tabel terjemahan nama↔angka bulan lagi di banyak tempat. Semester DITURUNKAN dari Bulan di
-// KLIEN (Bulan 7-12 = Semester 1, Bulan 1-6 = Semester 2 — tahun ajaran dimulai Juli),
+// "Bulan" (di bawah) disimpan sebagai ANGKA 1-12 (1=Januari … 12=Desember) — BUKAN nama bulan —
+// supaya sortir & perbandingan "sudah lewat/belum" di klien (linimasa.html) gampang dilakukan
+// tanpa perlu tabel terjemahan nama↔angka bulan lagi di banyak tempat. Semester DITURUNKAN dari
+// Bulan di KLIEN (Bulan 7-12 = Semester 1, Bulan 1-6 = Semester 2 — tahun ajaran dimulai Juli),
 // BUKAN kolom terpisah di sheet — supaya tidak ada dua sumber kebenaran yang bisa tidak
 // sinkron (mis. Bulan diisi 3 tapi Semester keliru diisi 1 secara manual oleh guru).
 const LINIMASA_HEADERS = [
@@ -495,10 +446,9 @@ const LINIMASA_HEADERS = [
   "Diunggah Oleh",
 ];
 
-// "ID" jadi kunci hapus (sama alasan dengan INFOGRAFIS_HEADERS/LINIMASA_HEADERS di atas).
-// BEDA dari Galeri Visual: "Mapel" WAJIB diisi (dipakai memilih/membuat subfolder Drive,
-// lihat getOrCreateMapelSubfolder_()), dan TIDAK ADA kolom "Materi Slug" — Pustaka Belajar
-// sengaja TIDAK terikat ke TP resmi (bisa berisi file PDF apa saja dari guru pendamping).
+// "ID" jadi kunci hapus (sama alasan dengan LINIMASA_HEADERS di atas). "Mapel" WAJIB diisi
+// (dipakai memilih/membuat subfolder Drive, lihat getOrCreateMapelSubfolder_()) — Pustaka
+// Belajar sengaja TIDAK terikat ke TP resmi (bisa berisi file PDF apa saja dari guru pendamping).
 const PUSTAKA_HEADERS = [
   "Timestamp",
   "ID",
@@ -510,9 +460,8 @@ const PUSTAKA_HEADERS = [
   "Jumlah Halaman",  // dihitung di klien (pdf.js) saat upload, dikirim apa adanya
   "Diunggah Oleh",
 ];
-// "Materi Slug" = field "file" di materi-index.js TANPA akhiran ".html" — sama persis pola
-// yang dipakai INFOGRAFIS_HEADERS di atas, konsisten satu sumber kebenaran untuk identitas
-// materi di seluruh sistem (bukan skema ID baru).
+// "Materi Slug" (di bawah) = field "file" di materi-index.js TANPA akhiran ".html" — sumber
+// tunggal identitas materi yang sudah ada, dipakai ulang di sini (bukan skema ID baru).
 const PROGRES_MATERI_HEADERS = [
   "Timestamp",     // kapan TERAKHIR dibuka (upsert, lihat doPostProgresMateri_ — bukan log
                     // setiap kunjungan, supaya 1 siswa+1 materi = 1 baris saja)
@@ -750,51 +699,8 @@ function setupSiswaSheet() {
   Logger.log("Sheet siap: " + sheet.getName());
 }
 
-function getInfografisSheet_() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  let sheet = ss.getSheetByName(INFOGRAFIS_SHEET_NAME);
-  if (!sheet) {
-    sheet = ss.insertSheet(INFOGRAFIS_SHEET_NAME);
-    sheet.getRange(1, 1, 1, INFOGRAFIS_HEADERS.length).setValues([INFOGRAFIS_HEADERS]);
-    sheet.setFrozenRows(1);
-    return sheet;
-  }
-  // SELF-HEALING — PENTING: sheet ini dipakai sejak sebelum kolom "Materi Slug" ada di
-  // INFOGRAFIS_HEADERS. buildRowByHeaders_()/findRowByColumn_() SELALU mencocokkan berdasarkan
-  // NAMA kolom yang BENAR-BENAR ADA di baris header sheet (lewat readHeaderRow_()), BUKAN
-  // urutan di array INFOGRAFIS_HEADERS di kode. Akibatnya, kalau kode menambah kolom baru
-  // (seperti "Materi Slug") tapi baris header di sheet yang SUDAH ADA tidak ikut diperbarui,
-  // nilai kolom itu DIAM-DIAM TERBUANG setiap kali disimpan (bukan error, cuma hilang) — ini
-  // BUKAN teori, ini akar masalah nyata yang dilaporkan (materi tidak "diingat" sudah punya
-  // infografis setelah refresh, walau upload dilaporkan sukses). Supaya masalah SEJENIS tidak
-  // terulang tiap kali ada kolom baru ke depannya, cek & tambahkan otomatis kolom yang belum
-  // ada di UJUNG KANAN header yang sudah ada (BUKAN disisipkan di tengah — menyisipkan akan
-  // menggeser posisi kolom yang sudah ada, butuh menulis ulang SEMUA data; menambah di ujung
-  // aman karena kolom lama tidak bergeser sama sekali, dan pencocokan selalu berdasar nama,
-  // jadi urutan kolom tidak penting).
-  const currentHeaders = readHeaderRow_(sheet);
-  const missing = INFOGRAFIS_HEADERS.filter((h) => currentHeaders.indexOf(h) === -1);
-  if (missing.length > 0) {
-    sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
-    Logger.log('Kolom baru ditambahkan otomatis ke "Data Infografis": ' + missing.join(", "));
-  }
-  return sheet;
-}
-
-/** Jalankan SEKALI dari editor Apps Script untuk inisialisasi (atau perbaiki header) sheet
- * "Data Infografis". CATATAN: sejak getInfografisSheet_() jadi self-healing, memanggil fungsi
- * ini SEBENARNYA tidak wajib lagi — dipertahankan sebagai cara manual untuk memicu perbaikan
- * header + memicu dialog izin Drive kalau belum pernah, sama seperti setupSiswaSheet(). TIDAK
- * LAGI menimpa baris header secara mentah (bahaya kalau sheet sudah ada data dengan urutan
- * kolom berbeda) — perbaikan header sepenuhnya diserahkan ke getInfografisSheet_(). */
-function setupInfografisSheet() {
-  const sheet = getInfografisSheet_();
-  sheet.setFrozenRows(1);
-  Logger.log("Sheet siap: " + sheet.getName());
-}
-
-/** Sama pola self-healing persis dengan getInfografisSheet_() di atas (lihat komentar
- * panjang di sana untuk alasannya) — dibuat untuk fitur "Linimasa Materi" (v1.3). */
+/** Sama pola self-healing persis dengan getSiswaSheet_() di atas — dibuat untuk fitur
+ * "Linimasa Materi" (v1.3). */
 function getLinimasaSheet_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(LINIMASA_SHEET_NAME);
@@ -813,9 +719,8 @@ function getLinimasaSheet_() {
   return sheet;
 }
 
-/** Sama pola self-healing persis dengan getInfografisSheet_()/getLinimasaSheet_() di atas
- * — dibuat untuk fitur "Pustaka Belajar" (RANCANGAN-PUSTAKA-BELAJAR.md), pengganti Galeri
- * Visual. */
+/** Sama pola self-healing persis dengan getLinimasaSheet_() di atas — dibuat untuk fitur
+ * "Pustaka Belajar" (RANCANGAN-PUSTAKA-BELAJAR.md). */
 function getPustakaBelajarSheet_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(PUSTAKA_SHEET_NAME);
@@ -834,11 +739,11 @@ function getPustakaBelajarSheet_() {
   return sheet;
 }
 
-/** Sama pola self-healing dengan getInfografisSheet_() (lihat komentar panjang di sana untuk
- * alasannya) — dibuat sebagai sheet baru untuk fitur "Perkembangan Belajar Mandiri"
+/** Sama pola self-healing dengan getLinimasaSheet_()/getPustakaBelajarSheet_() di atas —
+ * dibuat sebagai sheet baru untuk fitur "Perkembangan Belajar Mandiri"
  * (RANCANGAN-LAPORAN-SISWA.md §7.1). Belum diekstrak jadi 1 helper generik dipakai bersama
- * getSiswaSheet_()/getInfografisSheet_() — bisa jadi perbaikan lanjutan kalau nanti nambah
- * sheet self-healing lagi ke-4 kalinya (baru 3 sekarang, belum terlalu mendesak diekstrak). */
+ * getSiswaSheet_() — bisa jadi perbaikan lanjutan kalau nanti nambah sheet self-healing lagi
+ * (sudah ada 4 sekarang, belum terlalu mendesak diekstrak). */
 function getProgresMateriSheet_() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let sheet = ss.getSheetByName(PROGRES_MATERI_SHEET_NAME);
@@ -963,12 +868,9 @@ function buildRowByHeaders_(sheet, recordObj) {
  * bagaimana menanganinya (supaya kegagalan foto tidak menggagalkan seluruh data siswa).
  *
  * folderId OPSIONAL, default FOTO_FOLDER_ID (perilaku lama, dipakai doPostSiswa_ untuk foto
- * siswa). doPostInfografis_ SELALU mengirim folderId eksplisit (folder per-mapel di
- * INFOGRAFIS_FOLDER_IDS) — PENTING: sebelum parameter ini ada, panggilan dari
- * doPostInfografis_ salah mengunggah ke FOTO_FOLDER_ID (folder foto siswa) karena
- * argumen ke-4 ini belum ada sama sekali. Jangan hilangkan default-nya kalau menambah
- * pemanggil baru — supaya lupa mengirim folderId tetap gagal aman ke folder foto siswa
- * yang sudah pasti valid, bukan folder kosong/undefined. */
+ * siswa). Kalau menambah pemanggil baru yang butuh folder lain, SELALU kirim folderId
+ * eksplisit — default ini sengaja dipertahankan supaya lupa mengirim folderId tetap gagal
+ * aman ke folder foto siswa yang sudah pasti valid, bukan folder kosong/undefined. */
 function simpanFotoKeDrive_(base64Data, mimeType, namaFile, folderId) {
   const folder = DriveApp.getFolderById(folderId || FOTO_FOLDER_ID);
   const bytes = Utilities.base64Decode(base64Data);
@@ -979,13 +881,13 @@ function simpanFotoKeDrive_(base64Data, mimeType, namaFile, folderId) {
   // yang membatasi "berbagi ke siapa saja yang punya link"), createFile() BERHASIL (file
   // benar-benar tersimpan di folder Drive) tapi setSharing() dilempar sebagai
   // "Exception: Akses ditolak: DriveApp" — SEBELUM perbaikan ini, exception itu merambat ke
-  // pemanggil (doPostInfografis_ / doPostSiswa_) dan dilaporkan sebagai "gagal", padahal
-  // filenya SUDAH ada di Drive (persis gejala yang dilaporkan: file terlihat di folder, tapi
-  // situs bilang gagal). Ini AMAN untuk diabaikan (bukan cuma "diam-diam ditutupi") karena
-  // proxy ?foto= / ?infografisFoto= (lihat serveFotoBinary_/serveInfografisBinary_) membaca
-  // byte file lewat DriveApp sebagai SCRIPT OWNER, bukan lewat link publik — jadi TIDAK
-  // butuh sharing "anyone with link" sama sekali untuk berfungsi di situs ini. Sharing publik
-  // di sini cuma cadangan untuk kandidat hotlink langsung (lh3.googleusercontent.com dkk).
+  // pemanggil (doPostSiswa_) dan dilaporkan sebagai "gagal", padahal filenya SUDAH ada di
+  // Drive (persis gejala yang dilaporkan: file terlihat di folder, tapi situs bilang gagal).
+  // Ini AMAN untuk diabaikan (bukan cuma "diam-diam ditutupi") karena proxy ?foto= (lihat
+  // serveFotoBinary_) membaca byte file lewat DriveApp sebagai SCRIPT OWNER, bukan lewat
+  // link publik — jadi TIDAK butuh sharing "anyone with link" sama sekali untuk berfungsi
+  // di situs ini. Sharing publik di sini cuma cadangan untuk kandidat hotlink langsung
+  // (lh3.googleusercontent.com dkk).
   try {
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
   } catch (sharingErr) {
@@ -1069,54 +971,13 @@ function otorisasiAksesDrive() {
   Logger.log("Berhasil! Nama folder foto siswa: " + folder.getName());
 }
 
-/**
- * Proxy byte gambar Galeri Visual — sama persis alasannya dengan serveFotoBinary_() (hindari
- * hotlink Drive anonim yang tidak konsisten diblokir Google), TAPI SENGAJA TANPA wajibGuru_():
- * gambar di sini adalah materi belajar untuk dibaca siswa juga (bukan foto pribadi), jadi levelnya
- * sama dengan Materi Ajar yang juga tidak digerbang verifikasi server. Lihat catatan panjang soal
- * ini di komentar header file (bagian doGet, ?infografis=1).
- */
-function serveInfografisBinary_(fileIdOrUrl) {
-  try {
-    const id = ekstrakIdFotoDrive_(fileIdOrUrl);
-    if (!id) throw new Error("ID media tidak valid: " + fileIdOrUrl);
-    const file = DriveApp.getFileById(id);
-    return file.getBlob();
-  } catch (err) {
-    return ContentService.createTextOutput("Media tidak ditemukan/gagal dibaca: " + String(err))
-      .setMimeType(ContentService.MimeType.TEXT);
-  }
-}
-
-/** Sama seperti otorisasiAksesDrive() tapi untuk folder-folder Galeri Visual (satu per mapel)
- * — jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi ini, klik Run, klik
- * Allow/Izinkan) kalau muncul error "Access denied: DriveApp" saat mengunggah gambar dari
- * pages/infografis/admin.html. Folder yang ID-nya belum diisi (masih "GANTI_...") dilewati
- * saja (bukan error) — lengkapi INFOGRAFIS_FOLDER_IDS dulu lalu jalankan ulang fungsi ini. */
-function otorisasiAksesDriveInfografis() {
-  Object.keys(INFOGRAFIS_FOLDER_IDS).forEach((mapel) => {
-    const folderId = INFOGRAFIS_FOLDER_IDS[mapel];
-    if (!folderId || folderId.indexOf("GANTI_") === 0) {
-      Logger.log("Dilewati (belum dikonfigurasi): " + mapel);
-      return;
-    }
-    try {
-      const folder = DriveApp.getFolderById(folderId);
-      Logger.log("Berhasil! " + mapel + " -> " + folder.getName());
-    } catch (err) {
-      Logger.log("GAGAL untuk " + mapel + " (ID: " + folderId + "): " + err);
-    }
-  });
-}
-
 /** Proxy byte PDF Pustaka Belajar — TANPA wajibGuru_ (PDF ini materi belajar untuk
- * dibaca siswa juga). BEDA SENGAJA dari serveInfografisBinary_() (yang mengembalikan
- * Blob mentah): di sini dibungkus JSON {base64, mime} lewat ContentService, BUKAN
- * Blob langsung. Alasannya: serveInfografisBinary_() SELALU dipakai lewat <img src=...>
- * yang tidak butuh header CORS sama sekali, sedangkan PDF ini WAJIB dibaca lewat
- * fetch() oleh pdf.js di baca.html — dan Apps Script TERNYATA tidak konsisten
- * menambahkan header Access-Control-Allow-Origin saat doGet mengembalikan Blob
- * mentah (beda dari ContentService.createTextOutput yang SELALU dapat header itu).
+ * dibaca siswa juga). Dibungkus JSON {base64, mime} lewat ContentService, BUKAN
+ * Blob langsung — Apps Script TERNYATA tidak konsisten menambahkan header
+ * Access-Control-Allow-Origin saat doGet mengembalikan Blob mentah (beda dari
+ * ContentService.createTextOutput yang SELALU dapat header itu), dan PDF ini WAJIB
+ * dibaca lewat fetch() oleh pdf.js di baca.html (beda dari gambar yang bisa dipakai
+ * langsung lewat <img src=...> yang tidak butuh header CORS sama sekali).
  * Efek samping yang tidak disengaja tapi menguntungkan: membuka link ini langsung
  * di browser cuma menampilkan teks JSON acak, bukan PDF yang bisa disimpan —
  * makin sejalan dengan niat "tidak mendukung download" (RANCANGAN-PUSTAKA-BELAJAR.md
@@ -1134,9 +995,8 @@ function servePustakaBinary_(fileId) {
 
 /** Cari subfolder bernama PERSIS `mapelNama` di dalam folder induk PUSTAKA_FOLDER_ID;
  * kalau belum ada, buat baru. Dipakai doPostPustakaBelajar_() supaya guru tidak perlu bikin
- * folder per mapel secara manual satu-satu di Drive (beda dari Galeri Visual yang folder
- * per-mapelnya harus diisi manual ke INFOGRAFIS_FOLDER_IDS) — cukup 1 folder induk yang
- * diisi Arif sekali ke PUSTAKA_FOLDER_ID.
+ * folder per mapel secara manual satu-satu di Drive — cukup 1 folder induk yang diisi Arif
+ * sekali ke PUSTAKA_FOLDER_ID.
  * DriveApp.getFoldersByName() mencari HANYA di dalam folder pemanggil (`induk.getFoldersByName`),
  * BUKAN pencarian global, jadi aman dari folder lain di Drive yang kebetulan nama sama. */
 function getOrCreateMapelSubfolder_(mapelNama) {
@@ -1153,7 +1013,7 @@ function getOrCreateMapelSubfolder_(mapelNama) {
   return induk.createFolder(mapelNama);
 }
 
-/** Sama seperti otorisasiAksesDrive()/otorisasiAksesDriveInfografis() tapi untuk folder induk
+/** Sama seperti otorisasiAksesDrive() tapi untuk folder induk
  * Pustaka Belajar — jalankan SEKALI secara manual dari editor Apps Script (pilih fungsi ini,
  * klik Run, klik Allow/Izinkan) kalau muncul error "Access denied: DriveApp" saat mengunggah
  * PDF pertama kali dari admin.html. */
@@ -1197,38 +1057,24 @@ function doGet(e) {
     return serveFotoBinary_(params.foto);
   }
 
-  // Proxy gambar Galeri Visual — SENGAJA TANPA wajibGuru_ (lihat serveInfografisBinary_()).
-  if (params.infografisFoto) {
-    return serveInfografisBinary_(params.infografisFoto);
-  }
-
   // Proxy PDF Pustaka Belajar — SENGAJA TANPA wajibGuru_ (lihat servePustakaBinary_()).
   if (params.pustakaBinary) {
     return servePustakaBinary_(params.pustakaBinary);
   }
 
   try {
-    if (params.infografis) {
-      // SENGAJA TANPA wajibGuru_ — lihat catatan di komentar header file & serveInfografisBinary_().
-      // Filter ?mapel= opsional di sisi server (kalau dikirim); klien (galeri.html) juga boleh
-      // memfilter ulang di sisi client, dua-duanya aman karena datanya memang bukan data sensitif.
-      const rows = sheetToObjects_(getInfografisSheet_());
-      const data = params.mapel ? rows.filter((r) => r["Mapel"] === params.mapel) : rows;
-      return jsonOut_({ data: data });
-    }
-
     if (params.linimasa) {
       // SENGAJA TANPA wajibGuru_/wajibAksesLaporan_ — Linimasa Materi memang dirancang
       // publik untuk siapa saja yang login (siswa/orangtua/guru), sama level keterbukaan
-      // dengan Papan Peringkat & Galeri Visual di atas (bukan data pribadi per-siswa).
-      // Filter ?mapel= opsional, sama pola dengan ?infografis= di atas.
+      // dengan Papan Peringkat di atas (bukan data pribadi per-siswa).
+      // Filter ?mapel= opsional.
       const rows = sheetToObjects_(getLinimasaSheet_());
       const data = params.mapel ? rows.filter((r) => r["Mapel"] === params.mapel) : rows;
       return jsonOut_({ data: data });
     }
 
     if (params.pustakaBelajar) {
-      // SENGAJA TANPA wajibGuru_ — sama alasan dengan ?infografis=/?linimasa= di atas (materi
+      // SENGAJA TANPA wajibGuru_ — sama alasan dengan ?linimasa= di atas (materi
       // belajar untuk dibaca siswa juga, bukan data pribadi). Filter ?mapel= opsional.
       const rows = sheetToObjects_(getPustakaBelajarSheet_());
       const data = params.mapel ? rows.filter((r) => r["Mapel"] === params.mapel) : rows;
@@ -1368,17 +1214,6 @@ function doPost(e) {
       // Firestore langsung by NISN (bukan list/scan semua), jadi tidak bisa
       // dipakai untuk "menebak-nebak" siapa saja yang terdaftar.
       return doPostSiswaLogin_(body);
-    }
-
-    if (body.type === "infografis") {
-      // LAPIS GURU — hanya guru yang boleh menambah materi ke Galeri Visual.
-      wajibGuru_(body.idToken);
-      return doPostInfografis_(body);
-    }
-
-    if (body.type === "infografis_hapus") {
-      wajibGuru_(body.idToken);
-      return doPostInfografisHapus_(body);
     }
 
     if (body.type === "linimasa") {
@@ -1738,126 +1573,9 @@ function migrasiSiswaKeFirestore_() {
 
 
 
-/** Simpan ke "Data Infografis". Ada DUA MODE tergantung ada-tidaknya body["Materi Slug"]:
- *
- * MODE A — body["Materi Slug"] KOSONG (dipakai admin.html, infografis umum per-mapel):
- * SELALU TAMBAH baris baru (perilaku lama) — karena 1 mapel wajar punya banyak media, tidak
- * ada "kunci" alami per mapel seperti "Nama Lengkap" di data siswa.
- *
- * MODE B — body["Materi Slug"] TERISI (dipakai pages/infografis/kelola-tp.html, 1 infografis
- * per materi): UPSERT seperti doPostSiswa_ — kalau materi itu SUDAH punya infografis
- * (baris lama ketemu lewat "Materi Slug"), baris lama DITIMPA (bukan ditambah baris baru),
- * dan file Drive lamanya (kalau jenisnya "gambar") DIPINDAH KE TRASH — beda dari
- * doPostInfografisHapus_() yang sengaja tidak menyentuh file Drive: di sini memang tujuannya
- * "1 materi = 1 infografis", jadi versi lama SEHARUSNYA diganti total, bukan ditumpuk. Trash
- * Drive (bukan hapus permanen) tetap dipilih supaya masih bisa dipulihkan manual dalam 30 hari
- * kalau ternyata guru salah unggah.
- *
- * jenisMedia "gambar": body.fotoBase64/fotoMime wajib ada, diunggah ke folder Drive milik
- * mapel tsb (lihat INFOGRAFIS_FOLDER_IDS[mapel]).
- * jenisMedia "video": body["URL Media"] wajib ada (tautan luar, mis. YouTube/Drive), TIDAK ada
- * upload — lihat catatan di pages/infografis/admin.html soal kenapa video tidak diunggah lewat
- * form ini (ukuran file video tidak praktis dikirim sebagai base64 lewat Apps Script). */
-function doPostInfografis_(body) {
-  const mapel = String(body["Mapel"] || "").trim();
-  const judul = String(body["Judul"] || "").trim();
-  const jenisMedia = String(body["Jenis Media"] || "").trim();
-  const materiSlug = String(body["Materi Slug"] || "").trim();
-  if (!mapel) return jsonOut_({ status: "error", message: "Mapel wajib diisi" });
-  if (!judul) return jsonOut_({ status: "error", message: "Judul wajib diisi" });
-  if (jenisMedia !== "gambar" && jenisMedia !== "video") {
-    return jsonOut_({ status: "error", message: 'Jenis Media harus "gambar" atau "video"' });
-  }
-
-  const sheet = getInfografisSheet_();
-  const existingRow = materiSlug ? findRowByColumn_(sheet, "Materi Slug", materiSlug) : -1;
-
-  let urlMedia = String(body["URL Media"] || "").trim();
-  if (jenisMedia === "gambar") {
-    if (!body.fotoBase64) return jsonOut_({ status: "error", message: "File gambar wajib diunggah" });
-    const folderId = INFOGRAFIS_FOLDER_IDS[mapel];
-    if (!folderId || folderId.indexOf("GANTI_") === 0) {
-      return jsonOut_({
-        status: "error",
-        message: 'Folder Drive untuk mapel "' + mapel + '" belum dikonfigurasi. Minta admin ' +
-          "mengisi ID folder Drive-nya di INFOGRAFIS_FOLDER_IDS pada Code.gs terlebih dulu " +
-          "(lihat apps-script/README.md).",
-      });
-    }
-    try {
-      const namaFile = (mapel + "_" + judul).replace(/[^a-zA-Z0-9]+/g, "_") + "_" + new Date().getTime();
-      urlMedia = simpanFotoKeDrive_(body.fotoBase64, body.fotoMime, namaFile, folderId);
-    } catch (err) {
-      return jsonOut_({ status: "error", message: "Gagal mengunggah gambar ke Drive: " + String(err) });
-    }
-  } else if (!urlMedia) {
-    return jsonOut_({ status: "error", message: "URL Media (tautan video) wajib diisi" });
-  }
-
-  // MODE B, dan sebuah baris lama untuk materi ini ditemukan: pindahkan file lamanya (kalau
-  // gambar) ke Trash Drive SEBELUM menimpa barisnya — supaya "1 materi = 1 infografis" benar
-  // terjaga di Drive juga, bukan cuma di sheet. Dibungkus try/catch supaya kegagalan
-  // menghapus file lama TIDAK menggagalkan penyimpanan yang baru (baris baru tetap lebih
-  // penting daripada rapi-rapi file lama).
-  let id = "ig" + new Date().getTime() + Math.floor(Math.random() * 1000);
-  if (existingRow !== -1) {
-    try {
-      const headerRow = readHeaderRow_(sheet);
-      const rowValuesLama = sheet.getRange(existingRow, 1, 1, headerRow.length).getValues()[0];
-      const idIdx = headerRow.indexOf("ID");
-      const jenisIdx = headerRow.indexOf("Jenis Media");
-      const urlIdx = headerRow.indexOf("URL Media");
-      if (idIdx > -1 && rowValuesLama[idIdx]) id = rowValuesLama[idIdx]; // ID tetap sama, cuma isinya diganti
-      if (jenisIdx > -1 && rowValuesLama[jenisIdx] === "gambar" && urlIdx > -1 && rowValuesLama[urlIdx]) {
-        const oldFileId = ekstrakIdFotoDrive_(rowValuesLama[urlIdx]);
-        if (oldFileId) DriveApp.getFileById(oldFileId).setTrashed(true);
-      }
-    } catch (cleanupErr) {
-      Logger.log("Gagal membersihkan infografis lama untuk materi " + materiSlug + ": " + cleanupErr);
-    }
-  }
-
-  const record = {
-    "Timestamp": new Date(),
-    "ID": id,
-    "Mapel": mapel,
-    "Materi Slug": materiSlug,
-    "Judul": judul,
-    "Keterangan": body["Keterangan"] || "",
-    "Jenis Media": jenisMedia,
-    "URL Media": urlMedia,
-    "Diunggah Oleh": body["Diunggah Oleh"] || "",
-  };
-  const rowValues = buildRowByHeaders_(sheet, record);
-  if (existingRow !== -1) {
-    sheet.getRange(existingRow, 1, 1, rowValues.length).setValues([rowValues]);
-  } else {
-    sheet.appendRow(rowValues);
-  }
-  return jsonOut_({ status: "ok", id: id, urlMedia: urlMedia });
-}
-
-/** Hapus 1 baris "Data Infografis" berdasarkan ID.
- * SENGAJA TIDAK ikut menghapus file di Drive (DriveApp.getFileById(...).setTrashed(true)
- * bisa saja ditambah di sini) — alasannya supaya "Hapus" dari galeri.html/admin.html adalah
- * aksi yang AMAN untuk dicoba (kalau ternyata salah pilih, file aslinya masih ada di folder
- * Drive dan bisa dipulihkan manual), bukan aksi destruktif yang langsung menghapus file
- * permanen. Guru yang mau benar-benar membersihkan folder Drive bisa lakukan itu langsung
- * dari Drive, terpisah dari situs ini. */
-function doPostInfografisHapus_(body) {
-  const id = String(body["ID"] || "").trim();
-  if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });
-  const sheet = getInfografisSheet_();
-  const row = findRowByColumn_(sheet, "ID", id);
-  if (row === -1) return jsonOut_({ status: "error", message: "Data tidak ditemukan (mungkin sudah dihapus)" });
-  sheet.deleteRow(row);
-  return jsonOut_({ status: "ok" });
-}
-
 /** Tambah ATAU perbarui 1 baris "Data Linimasa" (fitur Linimasa Materi, v1.3). Kalau body
  * berisi "ID" dan barisnya DITEMUKAN, baris itu DITIMPA (mode edit dari admin.html) —
- * kalau tidak, baris baru ditambahkan. Sama pola upsert-opsional dengan doPostInfografis_
- * (mode B di sana), tapi kuncinya "ID" langsung (bukan "Materi Slug") karena admin.html
+ * kalau tidak, baris baru ditambahkan. Kuncinya "ID" langsung karena admin.html
  * SELALU tahu ID pasti kalau sedang mengedit (dikirim balik dari loadLinimasa()).
  * TIDAK ADA validasi rentang Tahun (mis. "harus 2020-2030") — SENGAJA dibiarkan longgar,
  * guru yang paling tahu tahun ajaran berjalan, bukan kode ini. */
@@ -1895,8 +1613,7 @@ function doPostLinimasa_(body) {
   return jsonOut_({ status: "ok", id: id });
 }
 
-/** Hapus 1 baris "Data Linimasa" berdasarkan ID — sama pola persis dengan
- * doPostInfografisHapus_() di atas. */
+/** Hapus 1 baris "Data Linimasa" berdasarkan ID. */
 function doPostLinimasaHapus_(body) {
   const id = String(body["ID"] || "").trim();
   if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });
@@ -1907,15 +1624,13 @@ function doPostLinimasaHapus_(body) {
   return jsonOut_({ status: "ok" });
 }
 
-/** Simpan 1 baris baru ke "Data Pustaka Belajar" (fitur Pustaka Belajar, pengganti Galeri
- * Visual — RANCANGAN-PUSTAKA-BELAJAR.md). SELALU tambah baris baru (TIDAK upsert) — beda
- * dari mode B doPostInfografis_(), di sini tidak ada konsep "1 materi = 1 file" karena
- * Pustaka Belajar sengaja tidak terikat TP resmi; guru pendamping bisa share banyak PDF
- * untuk mapel yang sama.
- * body.pdfBase64/body.pdfMime WAJIB ada (beda dari Galeri Visual yang punya mode "video"
- * tanpa upload — Pustaka Belajar HANYA menerima PDF, tidak ada tautan luar). Diunggah ke
- * subfolder Drive sesuai body["Mapel"], dibuat otomatis kalau belum ada
- * (getOrCreateMapelSubfolder_()). */
+/** Simpan 1 baris baru ke "Data Pustaka Belajar" (fitur Pustaka Belajar,
+ * RANCANGAN-PUSTAKA-BELAJAR.md). SELALU tambah baris baru (TIDAK upsert) — tidak ada konsep
+ * "1 materi = 1 file", karena Pustaka Belajar sengaja tidak terikat TP resmi; guru pendamping
+ * bisa share banyak PDF untuk mapel yang sama.
+ * body.pdfBase64/body.pdfMime WAJIB ada (Pustaka Belajar HANYA menerima PDF, tidak ada
+ * tautan luar). Diunggah ke subfolder Drive sesuai body["Mapel"], dibuat otomatis kalau
+ * belum ada (getOrCreateMapelSubfolder_()). */
 function doPostPustakaBelajar_(body) {
   const mapel = String(body["Mapel"] || "").trim();
   const judul = String(body["Judul"] || "").trim();
@@ -1966,8 +1681,8 @@ function doPostPustakaBelajar_(body) {
 }
 
 /** Hapus 1 baris "Data Pustaka Belajar" berdasarkan ID — sama pola persis dengan
- * doPostInfografisHapus_()/doPostLinimasaHapus_() di atas: file Drive SENGAJA TIDAK ikut
- * dihapus (bisa dipulihkan/dibersihkan manual oleh guru langsung dari Drive kalau perlu). */
+ * doPostLinimasaHapus_() di atas: file Drive SENGAJA TIDAK ikut dihapus (bisa dipulihkan/
+ * dibersihkan manual oleh guru langsung dari Drive kalau perlu). */
 function doPostPustakaBelajarHapus_(body) {
   const id = String(body["ID"] || "").trim();
   if (!id) return jsonOut_({ status: "error", message: "ID wajib diisi" });

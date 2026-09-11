@@ -27,22 +27,13 @@ Menghubungkan halaman `pages/mpls/input.html` ke Google Spreadsheet
    foto siswa). Saat run ini, akan muncul permintaan izin **tambahan** untuk
    akses Google Drive (dibutuhkan supaya foto siswa bisa disimpan ke folder
    Drive) — klik **Allow/Izinkan** lagi.
-6. Ulangi juga untuk fungsi **setupInfografisSheet** (pilih di dropdown →
-   Run) — ini membuat sheet baru **"Data Infografis"** (dipakai fitur
-   "Galeri Visual"). 5 dari 8 folder Drive per-mapel sudah dikonfigurasi;
-   3 sisanya (PAI, PJOK, Bahasa Inggris) perlu dilengkapi dulu sebelum guru
-   bisa mengunggah gambar untuk mapel-mapel itu — lihat bagian
-   [Folder Drive untuk Galeri Visual](#folder-drive-untuk-galeri-visual)
-   di bawah.
-
-   > ℹ️ Kalau sheet "Data Infografis" sudah lebih dulu dipakai SEBELUM
-   > kolom "Materi Slug" ada di kode: **tidak perlu tindakan manual apa
-   > pun** — `getInfografisSheet_()` sekarang *self-healing*, otomatis
-   > menambahkan kolom header yang belum ada (di ujung kanan, tidak
-   > menggeser kolom yang sudah ada) setiap kali sheet ini diakses. Cukup
-   > deploy ulang seperti biasa. (Versi sebelumnya sempat menyarankan
-   > menyisipkan kolom manual di Google Sheets — sudah tidak perlu lagi
-   > sejak perbaikan ini; lihat CHANGELOG.)
+6. Untuk fitur **Pustaka Belajar** (file PDF materi presentasi dari guru
+   pendamping, lihat `RANCANGAN-PUSTAKA-BELAJAR.md`): sheet **"Data Pustaka
+   Belajar"** dibuat otomatis saat pertama kali diakses (self-healing, sama
+   seperti "Data Linimasa" — tidak perlu fungsi `setupXxxSheet` terpisah).
+   Yang WAJIB disiapkan manual cuma **1 folder Drive induk** — lihat
+   [Folder Drive untuk Pustaka Belajar](#folder-drive-untuk-pustaka-belajar)
+   di bawah — subfolder per mapel dibuat OTOMATIS di dalam folder induk itu.
 
 ### 3. Deploy sebagai Web App
 1. Klik **Deploy → New deployment** (Deploy → Deployment baru)
@@ -169,97 +160,43 @@ diubah, karena `assets/js/foto-fallback.js` hanya menggunakan URL ini untuk
 sendiri (termasuk proxy `?foto=` yang baru, lihat bawah). Foto lama yang
 sudah pernah tersimpan otomatis ikut kebagian perbaikan tanpa perlu diedit.
 
-## Folder Drive untuk Galeri Visual
+## Folder Drive untuk Pustaka Belajar
 
-Fitur "Galeri Visual" (menu di `pages/infografis.html`, unggah di
-`pages/infografis/kelola-tp.html`) memakai **satu folder Drive per mata
-pelajaran** (bukan 1 folder untuk semuanya), dan semuanya TERPISAH dari folder
-foto siswa. ID-nya disimpan di konstanta `INFOGRAFIS_FOLDER_IDS` (objek/map) di
-`Code.gs`, dengan key = nama mapel PERSIS sama seperti di
-`pages/infografis/assets/infografis-data.js`.
+Fitur "Pustaka Belajar" (menu di `pages/pustaka-belajar.html`, unggah di tab
+"Pustaka Belajar" pada `admin.html`) — pengganti Galeri Visual, PDF materi
+presentasi bebas dari guru pendamping — memakai **satu folder Drive induk
+saja**, berbeda dari Galeri Visual yang butuh 1 folder per mapel dikonfigurasi
+manual. ID folder induknya disimpan di konstanta `PUSTAKA_FOLDER_ID` pada
+`Code.gs`. Subfolder per mapel (mis. "Bahasa Indonesia", "Matematika", dst.)
+**dibuat OTOMATIS oleh Code.gs** di dalam folder induk itu saat guru pertama
+kali mengunggah PDF untuk mapel tersebut — tidak perlu dibuat manual satu-satu.
 
-**Sudah dikonfigurasi** (per catatan pemilik proyek):
+**Cara setup (sekali saja):**
 
-| Mapel | Status |
-|---|---|
-| Bahasa Indonesia | ✅ terisi |
-| Matematika | ✅ terisi |
-| IPAS | ✅ terisi |
-| Pendidikan Pancasila | ✅ terisi |
-| Seni Budaya | ✅ terisi |
-| Pendidikan Agama Islam | ⏳ belum — masih `"GANTI_..."` |
-| PJOK | ⏳ belum — masih `"GANTI_..."` |
-| Bahasa Inggris | ⏳ belum — masih `"GANTI_..."` |
-
-Selama sebuah mapel masih `"GANTI_..."`, tombol unggah gambar untuk mapel itu di
-`kelola-tp.html` akan **gagal dengan pesan jelas** (bukan error tersembunyi).
-
-> Catatan: dukungan unggah "video" (tautan luar seperti YouTube, tanpa lewat
-> Drive) sempat ada di halaman `admin.html` versi awal, tapi halaman itu
-> sudah dihapus (digantikan sepenuhnya oleh `kelola-tp.html` yang lebih
-> sesuai kebutuhan nyata: 1 materi = 1 infografis gambar). Kalau nanti perlu
-> unggah video lagi, opsi paling sederhana adalah menambah tombol "Tempel
-> Tautan Video" di kartu `kelola-tp.html` — backend (`doPostInfografis_`) di
-> `Code.gs` sudah mendukung `jenisMedia: "video"`, tinggal UI-nya saja yang
-> belum ada.
-
-**Cara melengkapi mapel yang masih kosong** (atau mengganti folder yang sudah ada):
-
-1. Buat folder baru di Google Drive Anda, mis. beri nama "Galeri Visual — PJOK"
+1. Buat 1 folder baru di Google Drive Anda, beri nama mis. "Pustaka Belajar"
 2. Klik kanan folder → **Share** (Bagikan) → ubah akses jadi **"Anyone with
    the link" / "Siapa saja yang punya link"** dengan peran **Editor**
-   *(sama seperti setup folder foto siswa — Apps Script perlu bisa menulis
-   file baru ke folder ini)*
-3. Salin **ID folder** dari URL folder tsb (bagian setelah `/folders/`,
-   mis. `https://drive.google.com/drive/folders/1AbCdEfGhIjKlMnOp` → ID-nya
-   `1AbCdEfGhIjKlMnOp`)
-4. Buka `Code.gs` di editor Apps Script, cari objek `INFOGRAFIS_FOLDER_IDS`,
-   ganti nilai `"GANTI_..."` mapel yang sesuai dengan ID yang baru disalin
+   *(sama seperti setup folder foto siswa — Apps Script perlu
+   bisa membuat subfolder & file baru di dalamnya)*
+3. Salin **ID folder** dari URL folder tsb (bagian setelah `/folders/`)
+4. Buka `Code.gs` di editor Apps Script, cari konstanta `PUSTAKA_FOLDER_ID`,
+   ganti nilai `"GANTI_..."` dengan ID yang baru disalin
 5. Simpan (💾), lalu **deploy ulang** sebagai "New version" (lihat bagian
    "Setiap kali kode Code.gs diubah" di atas)
-6. Jalankan fungsi **otorisasiAksesDriveInfografis** SEKALI dari dropdown
-   fungsi editor (sama seperti `otorisasiAksesDrive` untuk foto siswa) —
-   fungsi ini otomatis mencoba SEMUA folder yang sudah terisi ID-nya (folder
-   yang masih `"GANTI_..."` dilewati, dicatat di Logs, bukan error) — klik
-   **Allow/Izinkan** saat diminta
-7. Uji coba: buka `pages/infografis/kelola-tp.html`, login sebagai guru,
-   pilih TP yang mapelnya baru dikonfigurasi, unggah 1 gambar contoh — cek
-   file barunya muncul di folder Drive yang benar & thumbnail-nya tampil di
-   kartu materi tsb
+6. Jalankan fungsi **otorisasiAksesDrivePustaka** SEKALI dari dropdown fungsi
+   editor — klik **Allow/Izinkan** saat diminta
+7. Uji coba: buka tab "Pustaka Belajar" di `admin.html`, login sebagai guru,
+   unggah 1 file PDF contoh untuk 1 mapel — cek subfolder mapel itu otomatis
+   muncul di dalam folder induk Drive, dan file PDF-nya tersimpan di sana
 
-> **Kalau muncul error "Gagal mengunggah gambar ke Drive: Exception: Akses
-> ditolak: DriveApp" TAPI filenya ternyata SUDAH ada di folder Drive
-> tujuan**: ini bug yang sudah diperbaiki (lihat CHANGELOG) — `Code.gs`
-> sebelumnya melempar file yang SUDAH berhasil dibuat sebagai "gagal total"
-> hanya karena langkah *setting sharing publik*-nya gagal (umum terjadi di
-> akun Google Workspace sekolah yang kebijakan adminnya membatasi berbagi
-> "siapa saja yang punya link"). Situs ini sebenarnya TIDAK butuh sharing
-> publik itu sama sekali — proxy `?foto=`/`?infografisFoto=` membaca file
-> langsung lewat akses pemilik skrip, bukan lewat link publik. Pastikan
-> `Code.gs` sudah versi terbaru (fungsi `simpanFotoKeDrive_` membungkus
-> `setSharing()` dalam try/catch terpisah) lalu deploy ulang.
-
-Sama seperti foto siswa, gambar Galeri Visual juga rawan kena masalah hotlink
-Drive yang diblokir untuk pengunjung anonim — solusinya sama: `Code.gs` punya
-endpoint proxy `?infografisFoto=<id>` (dipakai otomatis oleh
-`pages/infografis/assets/infografis-galeri.js` dan `infografis-kelola-tp.js`).
-**Beda penting dari `?foto=`**: endpoint ini SENGAJA TIDAK digerbang
-`wajibGuru_()`, karena isinya materi belajar untuk dibaca siswa juga (bukan
-data pribadi) — levelnya disamakan dengan Materi Ajar yang juga tidak
-diverifikasi di server, cuma digerbang login-apa-saja di sisi klien.
-
-> **Cara mendiagnosis kalau thumbnail/lightbox Galeri Visual tidak
-> tampil:** buka langsung `APPS_SCRIPT_URL?infografisFoto=ID_FILE` (ID file
-> ada di URL Drive filenya) di tab **incognito/penyamaran** (PENTING: bukan
-> tab biasa — kalau Bapak sedang login Google sebagai pemilik file itu di
-> tab biasa, gambar bisa saja tetap tampil lewat kandidat cadangan
-> `lh3.googleusercontent.com`/`drive.google.com/thumbnail` walau proxy-nya
-> sendiri sebenarnya rusak — itu menyamarkan masalahnya, seolah "sudah
-> beres" padahal siswa yang tidak login sebagai Bapak tetap akan gagal
-> lihat gambarnya). Kalau di incognito muncul gambarnya, proxy sehat. Kalau
-> muncul tulisan "Media tidak ditemukan/gagal dibaca: ...", itu tandanya
-> ada masalah di sisi `serveInfografisBinary_()` — salin pesan error
-> lengkapnya, itu kunci untuk mendiagnosis lebih lanjut.
+> **Berbeda sengaja dari `simpanFotoKeDrive_()` (foto siswa):**
+> file PDF Pustaka Belajar **TIDAK di-share publik sama sekali** ("Anyone
+> with the link" hanya berlaku untuk folder INDUK yang dibuat Apps Script,
+> bukan tiap file PDF di dalamnya) — dibaca sepenuhnya lewat proxy
+> `?pustakaBinary=<id>` (`servePustakaBinary_()`) yang berjalan sebagai akun
+> pemilik skrip. Ini sejalan dengan niat fitur ini: tidak ada link publik
+> yang bisa dibagikan langsung ke file PDF-nya. Lihat
+> `RANCANGAN-PUSTAKA-BELAJAR.md` §0 poin 5 untuk batasan levelnya.
 
 ## Troubleshooting: foto TERSIMPAN di Drive tapi TIDAK TAMPIL di web/cetak
 
