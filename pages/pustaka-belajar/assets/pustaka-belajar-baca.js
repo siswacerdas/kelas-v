@@ -209,14 +209,28 @@ window.PustakaBelajarBaca = (function () {
       throw new Error("Fitur ini belum siap dikonfigurasi.");
     }
 
-    const resMeta = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
-    if (!resMeta.ok) throw new Error("Server tidak merespons (kode " + resMeta.status + "). Coba muat ulang halaman.");
-    const jsonMeta = await resMeta.json();
-    if (jsonMeta.status === "error") throw new Error(jsonMeta.message || "Gagal memuat data");
-    const row = (jsonMeta.data || []).find((r) => r["ID"] === id);
-    if (!row) throw new Error("Materi tidak ditemukan (mungkin sudah dihapus guru).");
-
-    setTitle(row["Judul"] || "Pustaka Belajar");
+    // JALUR CEPAT (dipakai kalau dibuka dari pustaka-belajar.html, kasus normal): judul &
+    // Drive File ID sudah disisipkan landing.js langsung di URL, jadi TIDAK PERLU fetch
+    // ?pustakaBelajar=1 lagi cuma untuk mencari 1 baris yang datanya sudah kita punya —
+    // menghilangkan 1 round-trip penuh ke Apps Script (yang sudah pelan per-permintaan,
+    // ~1.5-2.5 detik) di jalur kritis pembukaan PDF. Lihat catatan lengkap di
+    // pustaka-belajar-landing.js dekat pembuatan URL ini.
+    let driveFileId = qs("file");
+    const judulDariUrl = qs("judul");
+    if (driveFileId && judulDariUrl) {
+      setTitle(judulDariUrl);
+    } else {
+      // JALUR CADANGAN (tautan lama tanpa parameter file/judul, mis. hasil bookmark
+      // sebelum perbaikan ini, atau dibuka manual) — fetch daftar seperti sebelumnya.
+      const resMeta = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
+      if (!resMeta.ok) throw new Error("Server tidak merespons (kode " + resMeta.status + "). Coba muat ulang halaman.");
+      const jsonMeta = await resMeta.json();
+      if (jsonMeta.status === "error") throw new Error(jsonMeta.message || "Gagal memuat data");
+      const row = (jsonMeta.data || []).find((r) => r["ID"] === id);
+      if (!row) throw new Error("Materi tidak ditemukan (mungkin sudah dihapus guru).");
+      setTitle(row["Judul"] || "Pustaka Belajar");
+      driveFileId = row["Drive File ID"];
+    }
 
     // cache: "no-store" WAJIB di sini — URL relay yang dipakai Apps Script untuk
     // mengirim isi file (script.googleusercontent.com/macros/echo?user_content_key=...)
@@ -225,7 +239,7 @@ window.PustakaBelajarBaca = (function () {
     // sudah tidak berlaku (404) — persis pola yang bikin daftar file sempat tidak
     // muncul sebelumnya, cuma kali ini kena di file biner-nya, bukan daftarnya.
     const resBin = await fetch(
-      MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBinary=" + encodeURIComponent(row["Drive File ID"]),
+      MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBinary=" + encodeURIComponent(driveFileId),
       { cache: "no-store" }
     );
     if (!resBin.ok) throw new Error("Gagal mengambil file PDF (kode " + resBin.status + "). Coba muat ulang halaman.");

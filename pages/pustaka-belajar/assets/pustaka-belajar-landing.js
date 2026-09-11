@@ -68,8 +68,15 @@ window.PustakaBelajarLanding = (function () {
         const m = findMapel(r["Mapel"]) || { mapelSlug: "", mapelIcon: "📄" };
         const halaman = r["Jumlah Halaman"] ? `${r["Jumlah Halaman"]} halaman` : "";
         const tanggal = formatTanggal(r["Timestamp"]);
+        // "judul" & "file" (Drive File ID) SENGAJA ikut disisipkan di URL viewer —
+        // supaya baca.html TIDAK PERLU fetch ulang ?pustakaBelajar=1 lagi cuma untuk
+        // mencari 1 baris yang sudah kita punya datanya di sini. Apps Script sudah
+        // pelan per-permintaan (relay Google, ~1.5-2.5 detik), jadi menghilangkan 1
+        // round-trip penuh di jalur kritis pembukaan PDF ini dampaknya besar. Kalau
+        // parameter ini hilang (mis. tautan lama di-bookmark), baca.html tetap punya
+        // jalur cadangan fetch seperti sebelumnya — lihat ambilMetadataDanFile_().
         return `
-        <a class="pb-card ${slugClass(m.mapelSlug)}" href="pustaka-belajar/baca.html?id=${encodeURIComponent(r["ID"])}">
+        <a class="pb-card ${slugClass(m.mapelSlug)}" href="pustaka-belajar/baca.html?id=${encodeURIComponent(r["ID"])}&judul=${encodeURIComponent(r["Judul"] || "")}&file=${encodeURIComponent(r["Drive File ID"] || "")}">
           <div class="pb-card-top">
             <span class="pb-card-icon">${m.mapelIcon}</span>
             <span class="pb-card-badge">${r["Mapel"] || ""}</span>
