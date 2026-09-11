@@ -8,6 +8,63 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Dihapus — Fitur Galeri Visual (digantikan Pustaka Belajar)
+- **Alasan**: sudah tidak/kurang relevan dibanding Pustaka Belajar (permintaan Arif).
+- **File frontend dihapus dari repo**: `pages/infografis.html`, seluruh folder
+  `pages/infografis/` (`galeri.html`, `kelola-tp.html`, `assets/infografis-data.js`,
+  `infografis-galeri.js`, `infografis-kelola-tp.js`, `infografis-shared.js`, `infografis.css`).
+- **Backend (`Code.gs`) dibersihkan**: konstanta `INFOGRAFIS_SHEET_NAME`,
+  `INFOGRAFIS_FOLDER_IDS`, `INFOGRAFIS_HEADERS`; fungsi `getInfografisSheet_()`,
+  `setupInfografisSheet()`, `serveInfografisBinary_()`, `otorisasiAksesDriveInfografis()`,
+  `doPostInfografis_()`, `doPostInfografisHapus_()`; rute `doGet` (`?infografis=1`,
+  `?infografisFoto=`) & `doPost` (`type: "infografis"`, `"infografis_hapus"`).
+- **`index.html`**: kartu "Galeri Visual" & tombol "Kelola Galeri Visual" di Panel Guru dihapus.
+- **Ketahuan ketergantungan tersembunyi**: Linimasa Materi (`pages/linimasa.html` & tab
+  "Linimasa" di `admin.html`) ternyata memakai `infografis-data.js` untuk daftar mapelnya —
+  dipindah ke file baru independen `assets/js/mapel-list.js` supaya Linimasa tidak ikut rusak.
+- **Dokumentasi**: `README.md`, `apps-script/README.md`, `RANCANGAN-MIGRASI-FIRESTORE.md`
+  diperbarui (referensi Galeri Visual dibersihkan/diberi catatan "sudah dihapus, bukan
+  dimigrasi"). Sheet "Data Infografis" & folder Drive per-mapelnya di Google
+  Sheets/Drive **TIDAK ikut dihapus otomatis** — pembersihan manual, aman dilakukan kapan saja.
+- **Lihat §50 ANTIREGRESI.md** untuk checklist uji manual (termasuk verifikasi Linimasa tetap sehat).
+
+### Ditambahkan — Pustaka Belajar (fitur baru, pengganti Galeri Visual)
+- **Latar belakang**: file PDF materi presentasi bebas dari guru pendamping, TIDAK terikat
+  TP resmi (beda dari Galeri Visual yang 1 materi = 1 media). Dibaca sebagai slideshow lewat
+  pdf.js (render ke `<canvas>`), watermark "SD Muhammadiyah 01 Kukusan" di pojok kanan bawah
+  tiap halaman, tanpa tombol unduh/bagikan sama sekali. Lihat `RANCANGAN-PUSTAKA-BELAJAR.md`
+  untuk keputusan desain lengkap.
+- **Backend (`Code.gs`)**: sheet "Data Pustaka Belajar" (self-healing), 1 folder Drive induk
+  dengan subfolder PER MAPEL dibuat OTOMATIS — guru cukup siapkan 1 folder, bukan 8. File PDF
+  tidak di-share publik sama sekali, dibaca lewat proxy `servePustakaBinary_()`.
+- **Landing** (`pages/pustaka-belajar.html`): grid kartu PDF + filter chip per mapel.
+- **Viewer** (`pages/pustaka-belajar/baca.html`): swipe kiri/kanan + tombol navigasi + kibor,
+  tombol layar penuh (⛶) yang selalu terlihat — kombinasi Fullscreen API asli (Chrome/Android/
+  desktop) DAN mode sembunyikan topbar/footer (andalan utama di iPhone, yang tidak mendukung
+  Fullscreen API untuk halaman biasa).
+- **Tab admin** (`pages/admin.html#pustaka-belajar`): layout 2 kolom (form kiri, daftar
+  kanan), kartu per-file dengan badge warna mapel, modal konfirmasi hapus in-app (bukan
+  `confirm()` bawaan browser), validasi & progress upload inline.
+- **Perbaikan penting selama pengembangan** (detail lengkap di §48 ANTIREGRESI.md):
+  proxy file biner dibungkus JSON base64 (bukan Blob mentah) karena Apps Script tidak
+  konsisten memberi header CORS untuk Blob; semua fetch GET ke Apps Script di fitur ini
+  pakai `cache: "no-store"` (URL relay Apps Script sekali-pakai, rawan cache basi); upload
+  diberi timeout 90 detik + pengecekan otomatis "sudah tersimpan?" sebelum menampilkan error
+  (mencegah upload dobel saat respons server lambat).
+- **Lihat §48 ANTIREGRESI.md** untuk checklist uji manual lengkap.
+
+### Diperbaiki — Gerbang akses terpanggil berulang (`assets/js/role-guard.js`,
+`assets/js/guru-guard.js`, `assets/js/auth-guard.js`)
+- **Bug**: Firebase `onAuthStateChanged` bisa terpanggil lebih dari sekali untuk sesi login
+  yang sama (perilaku resmi Firebase) — ketiga file ini tidak pernah dijaga terhadap itu,
+  jadi event `role-verified`/`guru-verified`/`user-verified` ikut ter-dispatch ulang setiap
+  kali, membuat SEMUA halaman yang memakainya (hampir seluruh situs) berpotensi memuat ulang
+  data mereka berkali-kali secara diam-diam. Ketahuan lewat laporan "Pustaka Belajar sangat
+  lambat & sering gagal" — rekaman network menunjukkan permintaan identik terkirim 4×.
+- **Perbaikan**: flag sekali-proses di ketiga file — verifikasi & dispatch event HANYA jalan
+  1× per pemuatan halaman; redirect saat logout tetap berfungsi normal kapan saja.
+- **Lihat §49 ANTIREGRESI.md** untuk checklist uji manual.
+
 ### Ditambahkan — Linimasa Materi: kemudahan input di Panel Guru (`pages/admin.html`, murni frontend)
 - **Latar belakang**: setelah navigasi & ringkasan tampilan selesai (lihat entri di bawah),
   Arif memperhatikan tab "Linimasa" di `admin.html` masih kosong sama sekali — form isi

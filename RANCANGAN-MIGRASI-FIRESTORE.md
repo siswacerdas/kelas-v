@@ -8,10 +8,13 @@
 >
 > **Keputusan lingkup (dikonfirmasi Arif):** HANYA koleksi "Data Siswa" (profil +
 > NISN) yang pindah ke Firestore sekarang, sebagai bagian pekerjaan login. Data
-> MPLS, Asesmen Kognitif, Jurnal Aktivitas, dan metadata Galeri Visual (Data
-> Infografis) TETAP di Google Sheets — jadi proyek migrasi terpisah nanti,
-> setelah login selesai & stabil. File gambar Galeri tetap di Google Drive baik
-> sekarang maupun nanti (yang pindah nanti cuma metadatanya, bukan filenya).
+> MPLS, Asesmen Kognitif, dan Jurnal Aktivitas TETAP di Google Sheets — jadi
+> proyek migrasi terpisah nanti, setelah login selesai & stabil.
+>
+> *(Catatan tambahan: draf awal dokumen ini juga menyebut metadata Galeri
+> Visual/"Data Infografis" sebagai kandidat migrasi tertunda — fitur itu sejak
+> itu sudah DIHAPUS SEPENUHNYA (bukan dimigrasi), digantikan "Pustaka Belajar".
+> Lihat CHANGELOG.md & RANCANGAN-PUSTAKA-BELAJAR.md.)*
 
 ## 1. Setup Google Cloud Console (WAJIB dilakukan Arif sendiri — di luar akses saya)
 
@@ -140,7 +143,7 @@ ditambahkan bareng implementasi).
 - [ ] Tandai Fase 1 migrasi ini final di `CHANGELOG.md`, lanjut Fase 2
   dengan asumsi backend siswa sudah Firestore — **belum dikerjakan, lakukan
   di sesi berikutnya sebelum mulai Fase 2**
-- [ ] (Nanti, proyek terpisah) Migrasi MPLS/Kognitif/Jurnal/Galeri
+- [ ] (Nanti, proyek terpisah) Migrasi MPLS/Kognitif/Jurnal
 
 ## 6. Langkah yang Perlu Arif Lakukan Sekarang (urutan)
 

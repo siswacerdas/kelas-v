@@ -1388,6 +1388,11 @@ Jalankan skenario ini setelah perubahan besar:
 ---
 
 ### Skenario P — Kelola per TP di Galeri Visual (v0.10.0)
+> ⚠️ **OBSOLETE sejak fitur Galeri Visual dihapus** (lihat §50, CHANGELOG.md) —
+> digantikan Pustaka Belajar. Skenario di bawah ini TIDAK BISA lagi
+> dijalankan (halaman-halamannya sudah dihapus dari repo), dipertahankan
+> di sini HANYA sebagai jejak sejarah pengujian, BUKAN checklist aktif.
+> Untuk pengujian yang aktif menggantikannya, lihat §48 (Pustaka Belajar).
 1. Login sebagai guru → beranda → kontainer Kelas → "🖼️ Kelola Galeri Visual"
 2. Pilih TP "Menyimak · Informasi Penting dari Teks Aural" dari dropdown
 3. Klik "Unggah Infografis" pada kartu Materi 1 → pilih 1 gambar dari galeri HP
@@ -2433,3 +2438,137 @@ frontend, TIDAK ada perubahan `Code.gs`, TIDAK BUTUH redeploy Apps Script)
       Tambah Baru dengan Tahun otomatis terisi lagi
 - [ ] Cek di HP (≤480px): tabel Isi Cepat tetap bisa digeser/dibaca, tombol toggle mode
       tidak terpotong, semua input tetap nyaman disentuh
+
+### 48. Pustaka Belajar — fitur baru pengganti Galeri Visual (`apps-script/Code.gs`,
+`pages/pustaka-belajar.html`, `pages/pustaka-belajar/`, tab "Pustaka Belajar" di
+`pages/admin.html`)
+
+**Latar belakang**: lihat `RANCANGAN-PUSTAKA-BELAJAR.md` untuk keputusan desain
+lengkap. Ringkasnya: file PDF materi presentasi bebas dari guru pendamping,
+TIDAK terikat TP resmi (beda dari Galeri Visual yang sempat 1 materi = 1
+media). Dibaca sebagai slideshow lewat pdf.js (render ke `<canvas>`, BUKAN
+`<iframe>`/link file mentah), dengan watermark "SD Muhammadiyah 01 Kukusan" di
+pojok kanan bawah tiap halaman.
+
+**Backend (`Code.gs`)**: sheet "Data Pustaka Belajar" (self-healing), 1 folder
+Drive induk (`PUSTAKA_FOLDER_ID`) dengan subfolder PER MAPEL dibuat OTOMATIS
+oleh `getOrCreateMapelSubfolder_()` — beda dari Galeri Visual yang folder
+per-mapelnya harus diisi manual satu-satu. File PDF TIDAK di-share publik sama
+sekali (beda dari foto siswa), dibaca sepenuhnya lewat proxy
+`servePustakaBinary_()`.
+
+**Bug yang ditemukan & diperbaiki SELAMA pengembangan fitur ini (penting untuk
+konteks kalau ada regresi serupa di fitur lain nanti):**
+- **CORS pada file biner**: `doGet` yang mengembalikan `Blob` mentah TIDAK
+  konsisten mendapat header `Access-Control-Allow-Origin` dari Apps Script,
+  beda dari `ContentService.createTextOutput` (JSON) yang SELALU dapat.
+  `servePustakaBinary_()` karena itu membungkus PDF sebagai base64 di dalam
+  JSON, bukan Blob langsung.
+- **Cache browser pada endpoint GET Apps Script**: URL relay
+  (`script.googleusercontent.com/macros/echo?user_content_key=...`) SEKALI
+  PAKAI dan berubah tiap request — SEMUA fetch GET ke Apps Script di fitur ini
+  (`?pustakaBelajar=1`, `?pustakaBinary=`) WAJIB pakai `{ cache: "no-store" }`,
+  kalau tidak browser bisa mengarah ke URL relay basi (404).
+- **Pemanggilan berulang lewat `onAuthStateChanged`**: lihat §49 — bug ini
+  KETAHUAN lewat fitur ini (network tab menunjukkan 4× fetch identik) tapi
+  akar masalahnya ada di `role-guard.js`/`guru-guard.js`/`auth-guard.js`,
+  berdampak ke SEMUA halaman yang memakainya, bukan cuma Pustaka Belajar.
+- **Timeout tak terbatas saat upload**: `fetch()` tidak punya batas waktu
+  bawaan — upload PDF besar yang lambat direspons Apps Script (server
+  sebenarnya sudah berhasil) membuat guru mengira gagal & mengunggah ulang,
+  bikin file dobel di Drive. Diperbaiki dengan `AbortController` (timeout 90
+  detik) + pengecekan otomatis "apakah file ini sudah muncul di daftar"
+  sebelum menampilkan pesan error ke guru.
+
+**Uji manual yang WAJIB dilakukan sebelum dianggap aman:**
+- [ ] Login guru → tab "Pustaka Belajar" di admin.html → unggah 1 PDF untuk 1
+      mapel → subfolder mapel itu otomatis muncul di folder Drive induk, file
+      tersimpan di sana, baris baru muncul di daftar kanan dengan badge warna
+      sesuai mapel
+- [ ] Coba submit form dengan Mapel/Judul/File kosong → tiap field yang
+      kosong ditandai merah + pesan di bawahnya, TIDAK ada `alert()`
+- [ ] Klik ikon 🗑 pada 1 kartu → muncul modal konfirmasi in-app (BUKAN
+      `confirm()` bawaan browser) → klik "Ya, Hapus" → kartu hilang dari
+      daftar, TAPI file di Drive TETAP ada (sengaja tidak ikut terhapus)
+- [ ] Buka `pages/pustaka-belajar.html` (siswa/orangtua) → file yang baru
+      diunggah muncul di grid, filter chip mapel berfungsi
+- [ ] Klik 1 kartu → viewer terbuka, halaman pertama langsung tampil (BUKAN
+      fetch ulang daftar — cek network tab: harusnya cuma 1 fetch ke
+      `?pustakaBinary=`, TIDAK ada fetch ke `?pustakaBelajar=1` kalau dibuka
+      dari landing normal)
+- [ ] Swipe kiri/kanan (HP) & klik tombol ‹›  (desktop) → halaman berganti,
+      indikator "Halaman X / N" ikut update
+- [ ] Perbesar 1 halaman, cek pojok kanan bawah → watermark "SD Muhammadiyah
+      01 Kukusan" tampak, TIDAK menimpa teks isi materi
+- [ ] Klik tombol ⛶ pojok kanan atas → topbar/footer sembunyi, ikon berubah
+      jadi ⤡; klik lagi → kembali normal. **Wajib dicoba di iPhone** kalau
+      ada — Fullscreen API asli tidak akan aktif di sana, tapi mode
+      sembunyikan topbar/footer harus tetap berfungsi
+- [ ] Putar HP ke landscape saat sedang membaca → halaman render ulang
+      (tidak buram/pecah)
+
+### 49. Perbaikan gerbang akses: `onAuthStateChanged` terpanggil berulang
+(`assets/js/role-guard.js`, `assets/js/guru-guard.js`, `assets/js/auth-guard.js`)
+
+**Bug**: Firebase `onAuthStateChanged` bisa terpanggil lebih dari sekali untuk
+SESI LOGIN YANG SAMA (perilaku resmi Firebase, mis. saat token menyegarkan
+diri). Ketiga file penjaga akses ini TIDAK PERNAH dijaga terhadap itu, jadi
+event `role-verified`/`guru-verified`/`user-verified` ikut ter-*dispatch*
+ULANG setiap kali — halaman manapun yang mendengarkannya mengulang SEMUA
+proses inisialisasinya dari nol (fetch data, dsb). Ketahuan lewat laporan
+"Pustaka Belajar sangat lambat & sering gagal 404" — rekaman network
+menunjukkan 4× fetch identik untuk 1× pemuatan halaman.
+
+**Perbaikan**: tambah flag `sudahDiproses` di ketiga file — proses verifikasi
+(dan dispatch event-nya) HANYA jalan 1× per pemuatan halaman. Redirect saat
+logout (`user` jadi `null`) TETAP jalan kapan saja, tidak terhalang flag ini.
+
+**Dampak luas**: perbaikan ini bukan cuma untuk Pustaka Belajar — SEMUA
+halaman yang memakai `role-guard.js`/`guru-guard.js`/`auth-guard.js` (hampir
+seluruh situs: Materi Ajar, Modul, Uji Kemampuan, Linimasa, admin.html, dst.)
+ikut diuntungkan, karena sebelumnya SEMUA halaman itu berpotensi memuat
+ulang data mereka berkali-kali secara diam-diam.
+
+**Uji manual yang WAJIB dilakukan sebelum dianggap aman:**
+- [ ] Buka `pages/pustaka-belajar/baca.html?id=...` (atau halaman apa saja
+      yang pakai salah satu dari 3 file penjaga ini), buka DevTools → Network
+      → filter "exec" → biarkan halaman termuat sepenuhnya → hitung jumlah
+      permintaan ke Apps Script. **Harusnya CUMA 1× per jenis permintaan**
+      (bukan 2-4× seperti sebelum perbaikan)
+- [ ] Biarkan tab terbuka lama (>1 jam kalau memungkinkan, untuk memicu token
+      refresh Firebase) → pastikan TIDAK ada fetch ulang otomatis yang
+      muncul di Network tab tanpa aksi apa pun dari pengguna
+- [ ] Logout dari halaman guru (admin.html) → harus tetap redirect ke
+      index.html seperti biasa (pastikan perbaikan ini TIDAK merusak logout)
+- [ ] Login ulang → semua tab admin.html (Pengumuman/Modul/Soal/Linimasa/
+      Pustaka Belajar) tetap termuat normal seperti biasa
+
+### 50. Penghapusan fitur Galeri Visual (digantikan Pustaka Belajar, §48)
+
+**Alasan**: sudah tidak/kurang relevan dibanding Pustaka Belajar (permintaan
+Arif). File & endpoint berikut DIHAPUS SEPENUHNYA dari repo (bukan cuma
+disembunyikan) — lihat CHANGELOG.md untuk daftar lengkap. Sheet "Data
+Infografis" & folder Drive per-mapelnya di Google Sheets/Drive TIDAK ikut
+dihapus otomatis (Apps Script tidak menyentuh data lama yang sudah ada) —
+kalau Arif mau membersihkannya juga, itu tindakan manual terpisah, aman
+dilakukan kapan saja karena kode yang membacanya sudah tidak ada.
+
+**Yang WAJIB dicek setelah menghapus** (supaya tidak ada fitur LAIN yang
+diam-diam ikut rusak — Linimasa Materi & tab Linimasa di admin.html SEMPAT
+bergantung pada `infografis-data.js` untuk daftar mapelnya, sudah dipindah ke
+`assets/js/mapel-list.js` yang independen):
+- [ ] Beranda (`index.html`): kartu "Galeri Visual" & tombol "Kelola Galeri
+      Visual" sudah tidak ada; kartu "Pustaka Belajar" & tombol "Kelola
+      Pustaka Belajar" tetap ada dan berfungsi
+- [ ] `pages/linimasa.html`: dropdown/filter mapel tetap terisi lengkap 8
+      mapel dengan ikon yang benar (sumbernya sekarang `mapel-list.js`, BUKAN
+      `infografis-data.js` yang sudah terhapus)
+- [ ] Tab "Linimasa" di `admin.html`: dropdown mapel form satuan & Isi Cepat
+      tetap terisi lengkap, saran Topik dari TP resmi tetap muncul seperti
+      biasa
+- [ ] Mengakses langsung `pages/infografis.html` atau
+      `pages/infografis/galeri.html` → 404 GitHub Pages (memang sudah
+      dihapus, ini yang diharapkan)
+- [ ] `Code.gs` versi baru sudah di-deploy (Manage deployments → New
+      version) — cek `?infografis=1` di URL Apps Script TIDAK lagi
+      mengembalikan data (rute sudah dihapus dari `doGet`)

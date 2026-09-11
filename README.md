@@ -1,438 +1,417 @@
-# Apps Script — Backend MPLS
+# 📚 Kelas 5 — Pusat Belajar Digital
+### Tahun Pelajaran 2026–2027
 
-Menghubungkan halaman `pages/mpls/input.html` ke Google Spreadsheet
-(`1G-LWyOSyCKLP10RU234grIR_5-iWxLSG-6vZP3sKUkA`) tanpa perlu server sendiri.
-
----
-
-## Langkah Setup (sekali saja)
-
-### 1. Buka Spreadsheet, buka editor Apps Script
-1. Buka spreadsheet tujuan (pastikan Anda **Editor/pemilik**nya)
-2. Menu **Extensions → Apps Script** (Ekstensi → Apps Script)
-3. Hapus isi default `Code.gs`, lalu salin-tempel seluruh isi file
-   [`Code.gs`](./Code.gs) dari repo ini ke sana
-4. Klik ikon 💾 **Save**
-
-### 2. Inisialisasi sheet
-1. Di dropdown fungsi (toolbar atas editor), pilih **setupSheet**
-2. Klik **Run** (▶️)
-3. Saat diminta izin, klik **Review permissions** → pilih akun Google Anda →
-   **Advanced/Lanjutan** → **Buka (nama proyek) (tidak aman)** → **Allow/Izinkan**
-   *(ini normal untuk script buatan sendiri yang belum diverifikasi Google)*
-4. Cek spreadsheet — sheet baru bernama **"Data MPLS"** dengan header kolom
-   akan otomatis muncul
-5. Ulangi untuk fungsi **setupSiswaSheet** (pilih di dropdown → Run) — ini
-   membuat sheet baru **"Data Siswa"** (dipakai fitur "Kelas" untuk profil +
-   foto siswa). Saat run ini, akan muncul permintaan izin **tambahan** untuk
-   akses Google Drive (dibutuhkan supaya foto siswa bisa disimpan ke folder
-   Drive) — klik **Allow/Izinkan** lagi.
-6. Ulangi juga untuk fungsi **setupInfografisSheet** (pilih di dropdown →
-   Run) — ini membuat sheet baru **"Data Infografis"** (dipakai fitur
-   "Galeri Visual"). 5 dari 8 folder Drive per-mapel sudah dikonfigurasi;
-   3 sisanya (PAI, PJOK, Bahasa Inggris) perlu dilengkapi dulu sebelum guru
-   bisa mengunggah gambar untuk mapel-mapel itu — lihat bagian
-   [Folder Drive untuk Galeri Visual](#folder-drive-untuk-galeri-visual)
-   di bawah.
-
-   > ℹ️ Kalau sheet "Data Infografis" sudah lebih dulu dipakai SEBELUM
-   > kolom "Materi Slug" ada di kode: **tidak perlu tindakan manual apa
-   > pun** — `getInfografisSheet_()` sekarang *self-healing*, otomatis
-   > menambahkan kolom header yang belum ada (di ujung kanan, tidak
-   > menggeser kolom yang sudah ada) setiap kali sheet ini diakses. Cukup
-   > deploy ulang seperti biasa. (Versi sebelumnya sempat menyarankan
-   > menyisipkan kolom manual di Google Sheets — sudah tidak perlu lagi
-   > sejak perbaikan ini; lihat CHANGELOG.)
-7. Untuk fitur **Pustaka Belajar** (pengganti Galeri Visual — file PDF materi
-   presentasi dari guru pendamping, lihat `RANCANGAN-PUSTAKA-BELAJAR.md`):
-   sheet **"Data Pustaka Belajar"** dibuat otomatis saat pertama kali diakses
-   (self-healing, sama seperti "Data Infografis"/"Data Linimasa" — tidak
-   perlu fungsi `setupXxxSheet` terpisah). Yang WAJIB disiapkan manual cuma
-   **1 folder Drive induk** — lihat
-   [Folder Drive untuk Pustaka Belajar](#folder-drive-untuk-pustaka-belajar)
-   di bawah — jauh lebih sederhana dari Galeri Visual yang butuh 8 folder
-   per-mapel, karena Pustaka Belajar membuat subfolder per mapel secara
-   OTOMATIS di dalam folder induk itu.
-
-### 3. Deploy sebagai Web App
-1. Klik **Deploy → New deployment** (Deploy → Deployment baru)
-2. Klik ikon ⚙️ di samping "Select type" → pilih **Web app**
-3. Isi:
-   - **Execute as**: `Me` (akun Anda)
-   - **Who has access**: `Anyone` (Siapa saja) — *wajib*, agar halaman web bisa
-     mengirim data tanpa login Google
-4. Klik **Deploy**
-5. Salin **Web app URL** yang muncul (formatnya
-   `https://script.google.com/macros/s/xxxxx/exec`)
-
-### 4. Tempel URL ke config
-1. Buka `pages/mpls/assets/config.js` di repo ini
-2. Ganti `APPS_SCRIPT_URL: "GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT"` dengan URL
-   yang baru disalin
-3. Simpan, commit, push ke GitHub
-
-### 5. Uji coba
-1. Buka `pages/mpls/input.html` di HP
-2. Masukkan kode akses (default: `mpls2026`, bisa diganti di `config.js`)
-3. Pilih satu siswa, isi beberapa indikator, klik **Simpan**
-4. Cek sheet **"Data MPLS"** — baris baru harus muncul
-5. Pilih siswa yang sama lagi → data yang tadi diisi harus otomatis termuat
-   ulang (bukan kosong)
+Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitHub Pages (hosting gratis) dan Firebase (database + autentikasi).
 
 ---
 
-## Setiap kali kode Code.gs diubah
+## 🗂️ Isi Website
 
-Apps Script **tidak otomatis update** deployment yang sudah aktif. Setelah
-mengedit `Code.gs`:
-1. **Deploy → Manage deployments**
-2. Klik ikon ✏️ pada deployment aktif
-3. Ubah **Version** ke **New version**
-4. Klik **Deploy**
-
-URL Web App tetap sama — tidak perlu ganti `config.js` lagi.
-
----
-
-## Cara kerja singkat
-
-> **Sejak v0.7.0**: hampir semua endpoint di bawah butuh parameter tambahan `kode` atau
-> `idToken` (lihat bagian "Keamanan" di bawah untuk detail lengkapnya) — ringkasan di
-> bawah ini fokus ke fungsi datanya, bukan gerbang aksesnya.
-
-- **Satu baris per siswa.** Mengisi ulang siswa yang sama akan meng-update
-  baris yang sudah ada (dicocokkan lewat kolom "Nama Siswa"), bukan menambah
-  baris baru — supaya bisa diisi bertahap selama minggu MPLS.
-- **GET** `?nama=Nama%20Siswa` → mengembalikan data MPLS siswa itu bila sudah ada
-  (dipakai `input.html` untuk memuat isian sebelumnya).
-- **GET** `?all=1` → mengembalikan SEMUA baris data MPLS (dipakai `rekap.html`
-  dan `laporan.html` untuk menghitung kesimpulan otomatis semua siswa).
-- **GET** `?siswa=1` → mengembalikan SEMUA baris profil siswa dari sheet
-  "Data Siswa" (dipakai `pages/kelas/index.html` dan `laporan.html`).
-- **GET** `?foto=<id atau URL Drive>` → **(baru sejak v0.5.3)** bukan JSON,
-  tapi PROXY yang mengirim langsung byte gambar foto siswa, dipakai sebagai
-  `<img src>` oleh `assets/js/foto-fallback.js`. Lihat bagian
-  "Troubleshooting: foto tersimpan tapi tidak tampil" di bawah untuk alasannya.
-- **POST** tanpa `type` (body JSON, key = nama kolom persis seperti di
-  `HEADERS`) → simpan/update baris nilai MPLS (perilaku lama, tidak berubah).
-- **POST** dengan `type: "siswa"` → simpan/update profil siswa (dicocokkan
-  lewat "Nama Lengkap"). Kalau body menyertakan `fotoBase64` + `fotoMime`,
-  foto akan disimpan sebagai file baru ke folder Google Drive dengan ID
-  di konstanta `FOTO_FOLDER_ID`, lalu URL-nya disimpan ke kolom "URL Foto".
-- Header kolom didefinisikan satu tempat di `HEADERS` / `SISWA_HEADERS` /
-  `HEADERS_KOGNITIF` (atas file `Code.gs`) — dipakai HANYA untuk membuat
-  sheet baru pertama kali (`setupSheet`/`setupSiswaSheet`/`setupSheetKognitif`).
-  Untuk **membaca/menulis data**, kode selalu membaca ulang baris header
-  yang SESUNGGUHNYA ada di baris 1 tiap sheet (`readHeaderRow_`), bukan
-  mengasumsikan urutan kolom tetap — jadi tetap aman walau kolom di
-  spreadsheet fisik pernah diubah urutannya secara manual.
-
-## Troubleshooting: foto/tanggal lahir tidak muncul
-
-Kalau setelah simpan data siswa, foto atau tanggal lahir tidak muncul di
-daftar `pages/kelas/index.html`:
-
-1. **Cek dulu apakah datanya benar-benar tersimpan** — buka spreadsheet →
-   sheet "Data Siswa" → cek baris siswa tsb. Kalau kolom "URL Foto" kosong,
-   berarti upload foto ke Drive-nya yang gagal (lihat poin 2). Kalau kolom
-   "Tanggal Lahir" kosong, cek apakah field itu memang diisi saat submit form.
-2. **Foto gagal terupload dengan pesan `Exception: Access denied: DriveApp`** —
-   ini paling sering terjadi karena izin **Spreadsheet** dan izin **Drive**
-   adalah 2 hal TERPISAH di Google, walau sama-sama dipakai 1 script. Ciri
-   khasnya: data teks (nama/panggilan/TTL) berhasil tersimpan, tapi foto
-   gagal — itu artinya izin Spreadsheet sudah oke, cuma izin Drive yang
-   belum. **Deploy ulang saja TIDAK cukup** untuk memicu izin baru. Caranya:
-   1. Buka Apps Script editor (dari spreadsheet: Extensions/Ekstensi → Apps Script)
-   2. Di dropdown fungsi (toolbar atas), pilih **`otorisasiAksesDrive`**
-   3. Klik **Run** (▶️)
-   4. Muncul dialog "Authorization required" → **Review permissions** → pilih
-      akun Google Anda → **Advanced/Lanjutan** → "Buka (nama proyek) (tidak
-      aman)" → **Allow/Izinkan**
-   5. Cek log (menu **View → Logs**, atau Ctrl+Enter) — kalau muncul nama
-      folder foto, berarti berhasil
-   6. **Tidak perlu deploy ulang** — izin ini melekat ke akun Google Anda,
-      bukan ke versi deployment. Langsung coba lagi upload foto dari web.
-   - Kalau langkah di atas TIDAK memunculkan dialog izin sama sekali (langsung
-     jalan tanpa dialog tapi tetap error), kemungkinan project Apps Script
-     Anda punya file `appsscript.json` dengan `oauthScopes` yang didefinisikan
-     manual dan belum menyertakan scope Drive. Buka file itu (menu ⚙️ Project
-     Settings → centang "Show appsscript.json") dan pastikan ada
-     `"https://www.googleapis.com/auth/drive"` di daftar `oauthScopes`.
-3. **Header sheet jangan diedit manual** (nama kolom di baris 1) — kode
-   sekarang membaca nama kolom apa adanya dari baris 1, jadi kalau nama
-   kolom diketik ulang dengan typo/beda kapitalisasi, field itu tidak akan
-   ketemu. Aman menambah kolom BARU di paling kanan, tapi jangan mengubah
-   teks header kolom yang sudah ada.
-
-## Folder Drive untuk foto siswa
-
-Foto disimpan ke folder yang linknya sudah dishare "siapa saja yang punya
-link bisa mengedit" (ID folder ada di konstanta `FOTO_FOLDER_ID` pada
-`Code.gs`). Ini pengaturan sementara sesuai permintaan pemilik proyek —
-bila ingin diperketat nanti, folder bisa diubah ke akses lebih terbatas
-(mis. hanya akun tertentu), tanpa perlu mengubah kode `Code.gs`.
-
-URL foto yang disimpan (kolom "URL Foto" di sheet) tetap memakai format lama
-`https://drive.google.com/thumbnail?id=FILE_ID&sz=w1000` — ini TIDAK perlu
-diubah, karena `assets/js/foto-fallback.js` hanya menggunakan URL ini untuk
-**mengekstrak ID file**, lalu membangun ulang kandidat-kandidat tampilannya
-sendiri (termasuk proxy `?foto=` yang baru, lihat bawah). Foto lama yang
-sudah pernah tersimpan otomatis ikut kebagian perbaikan tanpa perlu diedit.
-
-## Folder Drive untuk Pustaka Belajar
-
-Fitur "Pustaka Belajar" (menu di `pages/pustaka-belajar.html`, unggah di tab
-"Pustaka Belajar" pada `admin.html`) — pengganti Galeri Visual, PDF materi
-presentasi bebas dari guru pendamping — memakai **satu folder Drive induk
-saja**, berbeda dari Galeri Visual yang butuh 1 folder per mapel dikonfigurasi
-manual. ID folder induknya disimpan di konstanta `PUSTAKA_FOLDER_ID` pada
-`Code.gs`. Subfolder per mapel (mis. "Bahasa Indonesia", "Matematika", dst.)
-**dibuat OTOMATIS oleh Code.gs** di dalam folder induk itu saat guru pertama
-kali mengunggah PDF untuk mapel tersebut — tidak perlu dibuat manual satu-satu.
-
-**Cara setup (sekali saja):**
-
-1. Buat 1 folder baru di Google Drive Anda, beri nama mis. "Pustaka Belajar"
-2. Klik kanan folder → **Share** (Bagikan) → ubah akses jadi **"Anyone with
-   the link" / "Siapa saja yang punya link"** dengan peran **Editor**
-   *(sama seperti setup folder foto siswa/Galeri Visual — Apps Script perlu
-   bisa membuat subfolder & file baru di dalamnya)*
-3. Salin **ID folder** dari URL folder tsb (bagian setelah `/folders/`)
-4. Buka `Code.gs` di editor Apps Script, cari konstanta `PUSTAKA_FOLDER_ID`,
-   ganti nilai `"GANTI_..."` dengan ID yang baru disalin
-5. Simpan (💾), lalu **deploy ulang** sebagai "New version" (lihat bagian
-   "Setiap kali kode Code.gs diubah" di atas)
-6. Jalankan fungsi **otorisasiAksesDrivePustaka** SEKALI dari dropdown fungsi
-   editor — klik **Allow/Izinkan** saat diminta
-7. Uji coba: buka tab "Pustaka Belajar" di `admin.html`, login sebagai guru,
-   unggah 1 file PDF contoh untuk 1 mapel — cek subfolder mapel itu otomatis
-   muncul di dalam folder induk Drive, dan file PDF-nya tersimpan di sana
-
-> **Berbeda sengaja dari `simpanFotoKeDrive_()` (foto siswa/Galeri Visual):**
-> file PDF Pustaka Belajar **TIDAK di-share publik sama sekali** ("Anyone
-> with the link" hanya berlaku untuk folder INDUK yang dibuat Apps Script,
-> bukan tiap file PDF di dalamnya) — dibaca sepenuhnya lewat proxy
-> `?pustakaBinary=<id>` (`servePustakaBinary_()`) yang berjalan sebagai akun
-> pemilik skrip. Ini sejalan dengan niat fitur ini: tidak ada link publik
-> yang bisa dibagikan langsung ke file PDF-nya. Lihat
-> `RANCANGAN-PUSTAKA-BELAJAR.md` §0 poin 5 untuk batasan levelnya.
-
-## Folder Drive untuk Galeri Visual
-
-Fitur "Galeri Visual" (menu di `pages/infografis.html`, unggah di
-`pages/infografis/kelola-tp.html`) memakai **satu folder Drive per mata
-pelajaran** (bukan 1 folder untuk semuanya), dan semuanya TERPISAH dari folder
-foto siswa. ID-nya disimpan di konstanta `INFOGRAFIS_FOLDER_IDS` (objek/map) di
-`Code.gs`, dengan key = nama mapel PERSIS sama seperti di
-`pages/infografis/assets/infografis-data.js`.
-
-**Sudah dikonfigurasi** (per catatan pemilik proyek):
-
-| Mapel | Status |
+| Halaman | Deskripsi |
 |---|---|
-| Bahasa Indonesia | ✅ terisi |
-| Matematika | ✅ terisi |
-| IPAS | ✅ terisi |
-| Pendidikan Pancasila | ✅ terisi |
-| Seni Budaya | ✅ terisi |
-| Pendidikan Agama Islam | ⏳ belum — masih `"GANTI_..."` |
-| PJOK | ⏳ belum — masih `"GANTI_..."` |
-| Bahasa Inggris | ⏳ belum — masih `"GANTI_..."` |
+| Beranda | Pengumuman terbaru, navigasi utama |
+| MPLS — Penilaian Non-Kognitif | Input observasi emosi, kemandirian, minat & kondisi fisik siswa selama MPLS, dioptimalkan untuk HP, tersimpan ke Google Spreadsheet |
+| CP / TP / ATP | Capaian Pembelajaran, Tujuan Pembelajaran, Alur Tujuan Pembelajaran |
+| Modul Pembelajaran | Modul scaffolding per tema & mata pelajaran |
+| Materi Ajar | Buku Belajar Mandiri siswa |
+| Uji Kemampuan | Latihan soal mandiri per mata pelajaran |
+| Laporan Siswa | Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas per siswa — guru (siapa saja) & orang tua (anaknya sendiri saja), tidak untuk siswa |
+| Pengumuman | Informasi penting dari guru |
+| Jadwal | Jadwal pelajaran & kalender akademik |
 
-Selama sebuah mapel masih `"GANTI_..."`, tombol unggah gambar untuk mapel itu di
-`kelola-tp.html` akan **gagal dengan pesan jelas** (bukan error tersembunyi).
+---
 
-> Catatan: dukungan unggah "video" (tautan luar seperti YouTube, tanpa lewat
-> Drive) sempat ada di halaman `admin.html` versi awal, tapi halaman itu
-> sudah dihapus (digantikan sepenuhnya oleh `kelola-tp.html` yang lebih
-> sesuai kebutuhan nyata: 1 materi = 1 infografis gambar). Kalau nanti perlu
-> unggah video lagi, opsi paling sederhana adalah menambah tombol "Tempel
-> Tautan Video" di kartu `kelola-tp.html` — backend (`doPostInfografis_`) di
-> `Code.gs` sudah mendukung `jenisMedia: "video"`, tinggal UI-nya saja yang
-> belum ada.
+## ⚙️ Teknologi yang Digunakan
 
-**Cara melengkapi mapel yang masih kosong** (atau mengganti folder yang sudah ada):
+- **GitHub Pages** — hosting website statis, gratis, otomatis deploy dari branch `main`
+- **Firebase Authentication** — login/logout berbasis email & kata sandi
+- **Cloud Firestore** — database untuk pengumuman, modul, dan soal yang bisa diupdate guru
+- **HTML + CSS + JavaScript (Vanilla)** — tidak perlu framework besar, ringan di semua perangkat
+- **Google Apps Script + Google Sheets** — backend khusus modul MPLS (lihat `apps-script/README.md`), dipakai karena datanya perlu langsung terbaca/diolah lewat spreadsheet oleh wali kelas
 
-1. Buat folder baru di Google Drive Anda, mis. beri nama "Galeri Visual — PJOK"
-2. Klik kanan folder → **Share** (Bagikan) → ubah akses jadi **"Anyone with
-   the link" / "Siapa saja yang punya link"** dengan peran **Editor**
-   *(sama seperti setup folder foto siswa — Apps Script perlu bisa menulis
-   file baru ke folder ini)*
-3. Salin **ID folder** dari URL folder tsb (bagian setelah `/folders/`,
-   mis. `https://drive.google.com/drive/folders/1AbCdEfGhIjKlMnOp` → ID-nya
-   `1AbCdEfGhIjKlMnOp`)
-4. Buka `Code.gs` di editor Apps Script, cari objek `INFOGRAFIS_FOLDER_IDS`,
-   ganti nilai `"GANTI_..."` mapel yang sesuai dengan ID yang baru disalin
-5. Simpan (💾), lalu **deploy ulang** sebagai "New version" (lihat bagian
-   "Setiap kali kode Code.gs diubah" di atas)
-6. Jalankan fungsi **otorisasiAksesDriveInfografis** SEKALI dari dropdown
-   fungsi editor (sama seperti `otorisasiAksesDrive` untuk foto siswa) —
-   fungsi ini otomatis mencoba SEMUA folder yang sudah terisi ID-nya (folder
-   yang masih `"GANTI_..."` dilewati, dicatat di Logs, bukan error) — klik
-   **Allow/Izinkan** saat diminta
-7. Uji coba: buka `pages/infografis/kelola-tp.html`, login sebagai guru,
-   pilih TP yang mapelnya baru dikonfigurasi, unggah 1 gambar contoh — cek
-   file barunya muncul di folder Drive yang benar & thumbnail-nya tampil di
-   kartu materi tsb
+---
 
-> **Kalau muncul error "Gagal mengunggah gambar ke Drive: Exception: Akses
-> ditolak: DriveApp" TAPI filenya ternyata SUDAH ada di folder Drive
-> tujuan**: ini bug yang sudah diperbaiki (lihat CHANGELOG) — `Code.gs`
-> sebelumnya melempar file yang SUDAH berhasil dibuat sebagai "gagal total"
-> hanya karena langkah *setting sharing publik*-nya gagal (umum terjadi di
-> akun Google Workspace sekolah yang kebijakan adminnya membatasi berbagi
-> "siapa saja yang punya link"). Situs ini sebenarnya TIDAK butuh sharing
-> publik itu sama sekali — proxy `?foto=`/`?infografisFoto=` membaca file
-> langsung lewat akses pemilik skrip, bukan lewat link publik. Pastikan
-> `Code.gs` sudah versi terbaru (fungsi `simpanFotoKeDrive_` membungkus
-> `setSharing()` dalam try/catch terpisah) lalu deploy ulang.
+## 🚀 Cara Setup (Untuk Pemula)
 
-Sama seperti foto siswa, gambar Galeri Visual juga rawan kena masalah hotlink
-Drive yang diblokir untuk pengunjung anonim — solusinya sama: `Code.gs` punya
-endpoint proxy `?infografisFoto=<id>` (dipakai otomatis oleh
-`pages/infografis/assets/infografis-galeri.js` dan `infografis-kelola-tp.js`).
-**Beda penting dari `?foto=`**: endpoint ini SENGAJA TIDAK digerbang
-`wajibGuru_()`, karena isinya materi belajar untuk dibaca siswa juga (bukan
-data pribadi) — levelnya disamakan dengan Materi Ajar yang juga tidak
-diverifikasi di server, cuma digerbang login-apa-saja di sisi klien.
+### Langkah 1 — Aktifkan GitHub Pages
+1. Buka repo ini di GitHub
+2. Klik tab **Settings** → pilih **Pages** di menu kiri
+3. Di bagian *Source*, pilih branch `main` dan folder `/ (root)`
+4. Klik **Save** — website akan aktif di `https://siswacerdas.github.io/kelas-v/`
 
-> **Cara mendiagnosis kalau thumbnail/lightbox Galeri Visual tidak
-> tampil:** buka langsung `APPS_SCRIPT_URL?infografisFoto=ID_FILE` (ID file
-> ada di URL Drive filenya) di tab **incognito/penyamaran** (PENTING: bukan
-> tab biasa — kalau Bapak sedang login Google sebagai pemilik file itu di
-> tab biasa, gambar bisa saja tetap tampil lewat kandidat cadangan
-> `lh3.googleusercontent.com`/`drive.google.com/thumbnail` walau proxy-nya
-> sendiri sebenarnya rusak — itu menyamarkan masalahnya, seolah "sudah
-> beres" padahal siswa yang tidak login sebagai Bapak tetap akan gagal
-> lihat gambarnya). Kalau di incognito muncul gambarnya, proxy sehat. Kalau
-> muncul tulisan "Media tidak ditemukan/gagal dibaca: ...", itu tandanya
-> ada masalah di sisi `serveInfografisBinary_()` — salin pesan error
-> lengkapnya, itu kunci untuk mendiagnosis lebih lanjut.
+### Langkah 2 — Buat Proyek Firebase
+1. Buka [console.firebase.google.com](https://console.firebase.google.com)
+2. Klik **Add project** → beri nama, misal: `kelas-v-2026`
+3. Nonaktifkan Google Analytics (tidak perlu untuk proyek ini) → klik **Create project**
 
-## Troubleshooting: foto TERSIMPAN di Drive tapi TIDAK TAMPIL di web/cetak
+### Langkah 3 — Aktifkan Firestore
+1. Di Firebase Console, klik **Build → Firestore Database**
+2. Klik **Create database**
+3. Pilih **Start in test mode** (untuk pemula — batas 30 hari, nanti perlu diperketat)
+4. Pilih lokasi server: `asia-southeast2` (Jakarta)
+5. Klik **Done**
 
-Kalau data siswa berhasil disimpan (termasuk kolom "URL Foto" terisi), file
-foto juga terlihat ada di folder Drive — tapi foto tetap tidak tampil di
-`pages/kelas/index.html` maupun laporan cetak (selalu jatuh ke placeholder
-"Foto Siswa"):
+### Langkah 4 — Aktifkan Authentication
+1. Klik **Build → Authentication**
+2. Klik **Get started**
+3. Pilih tab **Sign-in method** → klik **Email/Password**
+4. Aktifkan toggle pertama → klik **Save**
 
-- **Ini BUKAN soal format URL** (sudah dicoba 3 format berbeda sejak v0.5.2,
-  tetap gagal semua). Akar masalahnya: ketiga format itu sama-sama meng-
-  **hotlink** file Drive langsung dari domain Google sebagai pengunjung
-  ANONIM (browser yang membuka halaman tidak login ke akun Google manapun).
-  Google membatasi/memblokir pola ini secara tidak konsisten, terlepas dari
-  file sudah di-set "Anyone with the link" atau belum.
-- **Solusi sejak v0.5.3**: `Code.gs` sekarang punya endpoint `?foto=<id>`
-  yang membaca & mengirim byte file itu sendiri lewat Apps Script (berjalan
-  sebagai akun pemilik yang punya akses sah, bukan pengunjung anonim) —
-  `foto-fallback.js` otomatis memakai ini sebagai kandidat pertama.
-- **WAJIB deploy ulang** (`Deploy → Manage deployments` → ✏️ → ubah dropdown
-  **Version** ke **New version** → **Deploy**) setelah menarik update
-  `Code.gs` ini, kalau tidak endpoint `?foto=` baru tidak akan aktif meski
-  kode di editor sudah benar (kesalahan paling umum, lihat bagian "Setiap
-  kali kode Code.gs diubah" di atas).
-- Kalau setelah deploy ulang foto TETAP tidak tampil, buka langsung URL
-  `APPS_SCRIPT_URL_ANDA?foto=ID_FILE_DARI_KOLOM_URL_FOTO` di tab browser
-  baru — kalau muncul pesan teks "Foto tidak ditemukan/gagal dibaca: ...",
-  itu artinya ID filenya salah/file sudah terhapus dari Drive (cek folder
-  `FOTO_FOLDER_ID`), bukan lagi masalah hotlink.
+### Langkah 5 — Ambil Firebase Config
+1. Klik ikon ⚙️ (gear) → **Project settings**
+2. Scroll ke bawah ke bagian **Your apps** → klik ikon `</>`  (Web)
+3. Daftarkan app → salin objek `firebaseConfig`
+4. Buka file `index.html` di repo ini
+5. Ganti bagian `GANTI_...` dengan nilai yang kamu salin
 
-## Troubleshooting: foto berhasil ke Drive tapi kolom "URL Foto" tetap KOSONG di sheet
+### Langkah 6 — Tambah Pengguna Pertama (Guru)
+1. Di Firebase Console → **Authentication → Users** → **Add user**
+2. Masukkan email dan kata sandi guru
+3. Salin **User UID** yang muncul
+4. Di **Firestore** → buat koleksi `users` → buat dokumen dengan ID = UID tersebut
+5. Isi field:
+   ```
+   nama  : "Nama Guru"
+   role  : "guru"
+   email : "email@guru.com"
+   ```
 
-Kalau folder Drive (`FOTO_FOLDER_ID`) sudah punya file foto barunya, TIDAK ada pesan
-peringatan foto gagal yang muncul di aplikasi, tapi kolom "URL Foto" di sheet
-"Data Siswa" tetap kosong untuk siswa itu (v0.5.4):
+### Langkah 7 — Tambah Akun Siswa
+Ulangi Langkah 6 untuk setiap siswa, dengan `role: "siswa"`
 
-1. Buka sheet "Data Siswa" → **cek PERSIS teks header di baris 1, kolom URL Foto**.
-   Kode menulis nilai berdasarkan kecocokan nama header PERSIS (case-sensitive, termasuk
-   spasi) — kalau header tertulis mis. `"Url Foto"`, `" URL Foto"` (ada spasi di depan),
-   atau `"URL Foto "` (spasi di belakang), kolom itu TIDAK akan pernah terisi otomatis oleh
-   aplikasi, walau foto sendiri sudah 100% berhasil terupload ke Drive. Perbaiki teks header
-   itu jadi PERSIS `URL Foto`, lalu coba simpan ulang data siswa yang sama.
-2. Setelah update `Code.gs` v0.5.4, kondisi #1 di atas akan otomatis terdeteksi dan muncul
-   sebagai pesan peringatan jelas di toast aplikasi (bukan lagi senyap) — asalkan sudah
-   di-deploy ulang sebagai "New version".
-3. Kalau header sudah PERSIS benar dan tetap kosong, cek juga apakah nilai yang ditulis ke
-   `body["URL Foto"]`/hasil `simpanFotoKeDrive_()` memang bukan string kosong — buka
-   **View → Logs** (atau **Executions** di menu kiri editor Apps Script) setelah mencoba
-   simpan data untuk melihat error yang mungkin tertahan.
+### Langkah 7b — Tambah Akun Orang Tua (untuk fitur Laporan Siswa)
+Sama seperti Langkah 6/7, tapi field-nya:
+```
+nama  : "Nama Orang Tua"
+role  : "orangtua"
+email : "email@orangtua.com"
+anak  : ["Nama Lengkap Siswa 1", "Nama Lengkap Siswa 2"]
+```
+`anak` adalah **array** (bukan teks tunggal) — isinya harus **PERSIS SAMA**
+ejaannya dengan kolom "Nama Lengkap" di sheet "Data Siswa" (lihat
+`apps-script/README.md`), karena itu yang dipakai sistem untuk mencocokkan
+data laporan yang boleh dilihat akun ini. Boleh diisi lebih dari 1 nama
+kalau orang tua punya lebih dari 1 anak di kelas ini.
 
-## Troubleshooting: link foto yang ditempel manual tidak tampil (atau nama siswa ikut hilang)
+Cara menambah field array di Firestore Console: klik **+ Add field**, pilih
+tipe **array**, lalu tambahkan tiap nama sebagai item array bertipe string.
 
-Kalau Anda menempel link Google Drive secara manual ke kolom "URL Foto" di spreadsheet
-(untuk uji coba), pastikan formatnya link "Bagikan"/"Get link" standar, contoh:
-`https://drive.google.com/file/d/ID_FILE/view?usp=drive_link` — format ini sudah dikenali
-sejak v0.5.4. Kalau nama siswa yang bersangkutan malah ikut hilang dari daftar (bukan cuma
-placeholder foto yang muncul), pastikan Anda menarik update v0.5.4 (`foto-fallback.js`) —
-versi sebelum itu punya bug terpisah yang membuat seluruh baris siswa ikut terhapus dari
-tampilan saat foto gagal dimuat.
+Akun `orangtua` HANYA bisa melihat laporan anak yang namanya ada di field
+ini (dibatasi di server, lihat `apps-script/Code.gs` fungsi
+`wajibAksesLaporan_`) — bukan sekadar disembunyikan di tampilan. Detail
+rancangan lengkap fitur ini ada di `ANTIREGRESI.md §28`.
 
-## Menambahkan kategori "Menyimak & Menulis" (v0.6.0) ke sheet yang sudah berjalan
+### Langkah 8 — Aktifkan Modul MPLS (opsional, terpisah dari Firebase)
+Modul MPLS (`pages/mpls/`) memakai Google Sheets sebagai penyimpanan, bukan
+Firestore, supaya wali kelas bisa langsung baca/olah datanya di spreadsheet.
+Setup-nya independen dari Langkah 1–7 di atas — lihat panduan lengkap di
+[`apps-script/README.md`](./apps-script/README.md).
 
-Kategori baru ini ditambahkan di `Code.gs` (`HEADERS_KOGNITIF`) SETELAH kolom "Diisi
-Oleh" — sengaja di ujung paling akhir, BUKAN disisipkan di tengah, supaya kolom-kolom
-lama tidak pernah bergeser posisi (lihat komentar di `HEADERS_KOGNITIF` untuk alasan
-lengkapnya). Konsekuensinya:
+---
 
-- **Sheet "Data MPLS Kognitif" yang BARU dibuat** (lewat `setupSheetKognitif()`) otomatis
-  mendapat ke-14 kolom baru ini — tidak perlu langkah tambahan apa pun.
-- **Sheet yang SUDAH ADA isinya**: kolom baru TIDAK muncul otomatis. Tambahkan manual
-  14 kolom berikut di baris 1, dimulai dari kolom kosong pertama setelah kolom terakhir
-  yang sudah ada sekarang (teksnya harus PERSIS sama, termasuk tanda baca):
-  1. `Memperhatikan guru berbicara tanpa perlu diingatkan berulang kali`
-  2. `Memahami instruksi lisan sederhana (1 langkah) dan langsung melaksanakannya dengan benar`
-  3. `Memahami dan mengikuti instruksi lisan bertahap (2-3 langkah berurutan) dengan benar`
-  4. `Mampu mengulang/menjelaskan kembali inti instruksi yang baru didengar dengan kata-kata sendiri`
-  5. `Mampu memilah informasi penting dari penjelasan lisan yang lebih panjang (mis. bisa menyebutkan poin-poin utamanya)`
-  6. `Bertahan menyimak dengan fokus selama penjelasan/instruksi berlangsung (tidak mudah teralih)`
-  7. `Catatan Menyimak`
-  8. `Menulis huruf/kata dengan bentuk yang terbaca jelas (kerapian bukan fokus utama, keterbacaan yang utama)`
-  9. `Mencatat poin-poin penting dari penjelasan guru secara mandiri (tanpa didikte kata per kata)`
-  10. `Menulis rangkuman singkat (1-3 kalimat) dari suatu penjelasan/bacaan dengan kata-kata sendiri`
-  11. `Menyelesaikan catatan/tugas tulis dalam waktu yang wajar (tidak tertinggal jauh dari teman sekelas)`
-  12. `Memahami maksud instruksi/kriteria tugas tertulis (mis. rubrik penilaian) dan tahu apa yang harus dilakukan untuk mendapat nilai baik`
-  13. `Menuliskan jawaban/tugas sesuai dengan apa yang diminta instruksi (bukan asal menulis)`
-  14. `Catatan Menulis`
-- **Deploy ulang Apps Script sebagai "New version"** setelah menarik update `Code.gs` ini
-  (seperti biasa setiap `Code.gs` berubah).
-- Rubrik referensi cetak untuk kategori ini ada di
-  `pages/mpls/rubrik/rubrik-menyimak-menulis-mpls.html` — dokumen mandiri (tidak
-  memerlukan Apps Script/konfigurasi apa pun) berisi deskripsi lengkap tiap level
-  (BB/MB/BSH/BSB) per indikator, untuk membantu kalibrasi skor saat mengisi di aplikasi.
+## 📁 Struktur Folder
 
-## Keamanan
+```
+kelas-v/
+├── index.html           ← Halaman utama (beranda)
+├── README.md            ← Dokumentasi ini
+├── CHANGELOG.md         ← Riwayat perubahan
+├── ANTIREGRESI.md       ← Panduan ujicoba & anti-regresi
+├── assets/
+│   ├── css/
+│   │   └── style.css    ← Stylesheet global (opsional, sudah inline di index)
+│   ├── img/
+│   │   └── logo-sekolah.jpg ← Logo untuk laporan cetak MPLS
+│   └── js/
+│       ├── guru-guard.js   ← Pelindung Firebase Auth khusus halaman guru
+│       └── auth-guard.js   ← Pelindung Firebase Auth untuk siapa saja yang login (guru & siswa)
+├── apps-script/
+│   ├── Code.gs           ← Backend Google Apps Script untuk modul MPLS + Data Siswa
+│   └── README.md         ← Cara deploy Apps Script sebagai Web App
+└── pages/
+    ├── cp-tp-atp.html     ← Kerangka statis, isi CP/TP/ATP menunggu dokumen resmi
+    ├── modul.html         ← Daftar modul, bisa diakses guru & siswa yang login
+    ├── materi.html        ← Materi Ajar (dibaca langsung), guru & siswa
+    ├── uji-kemampuan.html ← Latihan soal interaktif dengan skor, guru & siswa (dulu "bank-soal.html")
+    ├── info.html          ← Arsip lengkap pengumuman, guru & siswa
+    ├── jadwal.html        ← Kerangka statis, isi jadwal menunggu jadwal resmi
+    ├── admin.html         ← Panel kelola konten (Pengumuman/Modul/Materi/Uji Kemampuan), hanya guru
+    ├── laporan-siswa.html ← Landing 3 pintu laporan (MPLS/Perkembangan Belajar Mandiri/
+    │                         Latihan Mandiri Siswa), guru (siapa saja) & orangtua (anaknya
+    │                         sendiri saja) — TIDAK untuk siswa
+    ├── kelas/             ← Data profil & foto siswa (khusus guru, Firebase-gated)
+    │   ├── index.html
+    │   └── assets/
+    │       ├── kelas.css
+    │       └── kelas.js
+    ├── laporan-siswa/
+    │   ├── mpls.html            ← Pintu 1: kesiapan belajar+akademik+jurnal (AKTIF)
+    │   ├── belajar-mandiri.html ← Pintu 2: ketuntasan Materi Ajar (AKTIF) & Modul (Segera Hadir)
+    │   ├── latihan-mandiri.html ← Pintu 3: hasil Uji Kemampuan per TP (AKTIF)
+    │   └── assets/
+    │       ├── laporan-guard.js  ← Gerbang akses bersama (role guru/orangtua, blokir siswa)
+    │       │                        untuk landing + ketiga pintu di atas
+    │       ├── laporan-picker.js ← Komponen pemilih siswa bersama (guru cari siapa saja /
+    │       │                        orang tua pilih anaknya), dipakai Pintu 1/2/3
+    │       ├── laporan.css
+    │       ├── laporan.js         ← Logika Pintu 1 (MPLS)
+    │       ├── belajar-mandiri.js ← Logika Pintu 2 (Materi Ajar; Modul menyusul)
+    │       └── latihan-mandiri.js ← Logika Pintu 3 (baca hasil_latihan LANGSUNG dari
+    │                                  Firestore di klien, BUKAN lewat Apps Script — beda
+    │                                  dari Pintu 1/2, lihat ANTIREGRESI.md §28 §6.3)
+    └── mpls/
+        ├── index.html     ← Landing MPLS (daftar sub-halaman)
+        ├── input.html     ← Form input penilaian (mobile-first)
+        ├── rekap.html     ← Rekap & kesimpulan otomatis semua siswa (khusus guru)
+        ├── laporan.html   ← Cetak/PDF hasil MPLS per siswa, A4 satu halaman (khusus guru)
+        └── assets/
+            ├── mpls.css        ← Gaya bersama halaman MPLS
+            ├── mpls-data.js    ← Daftar siswa, skala, kategori indikator, daftar guru
+            ├── mpls-scoring.js ← Engine skoring & kesimpulan otomatis
+            ├── config.js       ← URL Apps Script & kode akses (GANTI sebelum pakai)
+            └── app.js          ← Logika form: render, load, simpan
+```
 
-- Web App di-deploy dengan akses **Anyone**, artinya siapa pun yang tahu URL-nya
-  bisa mengirim permintaan. Ini standar untuk pola "situs statis + Apps Script"
-  tanpa server sendiri — yang membedakan aman/tidaknya adalah pengecekan **di dalam**
-  `doGet`/`doPost`, bukan siapa yang boleh mengakses URL-nya.
-- **Sejak v0.7.0**, setiap endpoint mengecek salah satu dari dua hal sebelum membalas data:
-  1. **Kode akses sederhana** (`wajibKodeAkses_()`, konstanta `ACCESS_CODE_MPLS`) — untuk
-     endpoint per-siswa yang dipakai halaman input (`?nama=`, `?namaKognitif=`,
-     `?namaJurnal=`, `POST` jenis `mpls`/`mpls_kognitif`/`jurnal`). Ini **level proteksi
-     yang sama** dengan `ACCESS_CODE` di `config.js` — cukup untuk mencegah pemanggilan
-     tidak sengaja/asal, **bukan** keamanan sesungguhnya (kodenya ada di source file publik).
-     `ACCESS_CODE_MPLS` di `Code.gs` dan `ACCESS_CODE` di `config.js` harus selalu disamakan
-     manual kalau salah satunya diganti — dua file ini tidak saling membaca.
-  2. **Verifikasi Firebase Auth sungguhan** (`wajibGuru_()`) — untuk endpoint yang
-     mengembalikan/menulis data SEMUA siswa sekaligus (`?all=1`, `?siswa=1`,
-     `?allKognitif=1`, `?allJurnal=1`, `?foto=`, `POST` jenis `siswa`), karena ini yang
-     paling sensitif (nama lengkap, foto, tempat & tanggal lahir semua siswa). Klien
-     mengirim `idToken` dari sesi Firebase Auth yang sedang login (diambil `guru-guard.js`
-     lewat `window.guruIdToken`); server memverifikasi token itu ke Identity Toolkit REST
-     API, lalu mengecek field `role` di Firestore (`users/{uid}`) lewat Firestore REST API.
-     Ini **keamanan sungguhan** — bukan cuma kode rahasia yang bisa dibaca di source.
-- **Redeploy WAJIB setelah menarik update ke v0.7.0**: kode lama (`Code.gs` versi lama yang
-  masih ter-deploy) tidak mengenal parameter `idToken`/`kode` sama sekali, jadi endpoint
-  akan tetap berjalan seperti sebelumnya sampai deployment aktif diganti ke versi baru
-  (lihat "Setiap kali kode Code.gs diubah" di atas). Saat redeploy, Apps Script akan
-  meminta izin tambahan untuk **menghubungkan ke layanan eksternal** (dipakai
-  `UrlFetchApp` di `wajibGuru_()` untuk memanggil Identity Toolkit & Firestore) — klik
-  Allow/Izinkan saat diminta, seperti otorisasi Drive yang sudah pernah diminta sebelumnya.
-- **Celah yang masih tersisa (belum ditutup, sengaja)**: 3 kandidat fallback foto di
-  `assets/js/foto-fallback.js` (hotlink langsung ke domain Google, peninggalan v0.5.2)
-  tidak melalui `wajibGuru_()` — file-nya sendiri di folder Drive masih di-share "siapa
-  saja yang punya link boleh melihat" (lihat `simpanFotoKeDrive_()`). Menutup ini berarti
-  mengubah setting share folder jadi privat + melepas 3 kandidat fallback tsb, yang akan
-  menghilangkan jaring pengaman kalau proxy Apps Script sedang down/timeout/kuota habis —
-  perlu didiskusikan dan diputuskan terpisah, bukan sekadar tempelan kecil.
+---
+
+## 🔐 Struktur Database Firestore
+
+```
+users/
+  {uid}/
+    nama    : string
+    role    : "guru" | "siswa" | "orangtua"
+    email   : string
+    anak    : array of string   (HANYA untuk role "orangtua" — lihat Langkah 7b)
+
+pengumuman/
+  {id}/
+    judul   : string
+    isi     : string
+    tanggal : timestamp
+    oleh    : string (nama guru)
+
+modul/
+  {id}/
+    judul    : string
+    mapel    : string
+    tema     : string
+    url_file : string (link Google Drive / PDF)
+    urutan   : number
+
+materi/
+  {id}/
+    judul    : string
+    mapel    : string
+    tema     : string
+    isi      : string (teks materi, dibaca langsung di halaman — bukan link)
+    url_file : string (opsional, lampiran tambahan kalau ada)
+    urutan   : number
+
+bank_soal/
+  {id}/
+    // ── Field umum, wajib ada di semua jenis soal ──
+    pertanyaan   : string
+    mapel        : string   (harus SAMA PERSIS dengan salah satu window.URUTAN_MAPEL)
+    tp           : string   (kode TP — harus SAMA PERSIS dengan tp di tp-kko-index.js)
+    jenisSoal    : "pg_tunggal" | "pg_kompleks" | "pg_kategori" | "mengurutkan" | "menjodohkan"
+    kko          : "C1".."C6"  (harus ≤ kkoMax milik TP tsb, divalidasi di admin.html)
+    kompleksitas : "dasar" | "menengah" | "menantang"
+    randKey      : number 0–1  (dibuat otomatis, dipakai buat ambil soal acak dari pool)
+
+    // ── Field tambahan, tergantung jenisSoal ──
+    // pg_tunggal:  pilihan (array string), jawaban (string, 1 teks benar)
+    // pg_kompleks: pilihan (array string), jawabanBenar (array string, ≥2 jawaban benar)
+    // pg_kategori: kategori (array string), item (array {teks, kategoriBenar})
+    // mengurutkan: item (array string, urutan array = urutan yang benar)
+    // menjodohkan: pasangan (array {kiri, kanan})
+
+hasil_latihan/
+  {id}/
+    uid            : string (uid siswa dari Firebase Auth — dipakai buat batasan akses)
+    namaSiswa      : string (dipakai orang tua buat mencocokkan field `anak` miliknya)
+    mapel          : string
+    tp             : string
+    tpJudul        : string (disalin biar riwayat tetap terbaca walau tp-kko-index berubah)
+    jumlahBenar    : number
+    jumlahSoal     : number
+    skor           : number (persen, 0–100)
+    detailJawaban  : array {soalId, jenisSoal, benar}
+    timestamp      : server timestamp
+
+    // Dibuat sendiri oleh siswa saat submit kuis (pages/uji-kemampuan.html).
+    // TIDAK BISA diubah/dihapus oleh siswa maupun orang tua — lihat rules di bawah.
+```
+
+> **Catatan migrasi:** Soal lama dengan skema bebas (`mapel` teks bebas, `tingkat`, tanpa `tp`/`jenisSoal`) TIDAK otomatis tergabung ke pool TP manapun — field `tp` kosong berarti soal itu tidak akan pernah terambil oleh Uji Kemampuan versi baru. Soal-soal lama itu perlu di-edit ulang lewat Panel Guru (isi TP & jenis soalnya) atau dihapus, tergantung apakah kontennya masih relevan.
+
+### Impor Soal Massal
+
+Karena target minimal 200 soal/TP × puluhan TP tidak realistis diisi satu-satu lewat form,
+Panel Guru punya tab **📥 Impor Massal** (`pages/admin.html#impor`): tempel array JSON berisi
+banyak soal sekaligus (skema sama seperti `bank_soal` di atas, tanpa `randKey` — dibuat otomatis),
+klik **Validasi** dulu (mengecek TP valid, KKO tidak melebihi batas TP, field wajib tiap jenis
+soal lengkap — kalau ada yang bermasalah, TIDAK ADA yang disimpan), baru klik **Impor ke
+Firestore** kalau sudah lolos validasi. Ditulis pakai `writeBatch` per 400 soal.
+
+
+---
+
+## 📊 Struktur Data MPLS (Google Sheets, terpisah dari Firestore)
+
+Spreadsheet: `1G-LWyOSyCKLP10RU234grIR_5-iWxLSG-6vZP3sKUkA` (lihat `apps-script/README.md`)
+
+```
+Sheet "Data MPLS"   → 1 baris per siswa: nilai 4 kategori observasi MPLS
+Sheet "Data Siswa"  → 1 baris per siswa: Nama Lengkap, Nama Panggilan,
+                       Tempat Lahir, Tanggal Lahir, URL Foto (link Google Drive)
+```
+
+Foto siswa disimpan sebagai file di folder Google Drive terpisah (ID folder
+ada di `apps-script/Code.gs` → `FOTO_FOLDER_ID`), bukan di spreadsheet.
+
+---
+
+## 🔒 Keamanan (Firestore Rules — Produksi)
+
+Setelah selesai ujicoba, ganti rules Firestore dengan:
+
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Data user: hanya bisa dibaca/ditulis oleh pemilik atau guru
+    match /users/{uid} {
+      // v1.0 (Fase 4 — Persetujuan Orang Tua di admin.html): guru BUTUH baca
+      // (query) dokumen SIAPA SAJA di koleksi ini (bukan cuma dokumen sendiri)
+      // untuk menampilkan daftar pendaftaran yang menunggu persetujuan.
+      // SEBELUM baris "|| get(...).data.role == 'guru'" ini ditambahkan, guru
+      // TIDAK BISA melihat daftar itu sama sekali — Firestore menolak query
+      // "list" kalau aturan read tidak bisa dipastikan berlaku utk SEMUA hasil
+      // yang mungkin cocok, dan "request.auth.uid == uid" saja cuma pernah
+      // benar untuk 1 dokumen (milik sendiri), sehingga query manapun ke
+      // koleksi ini oleh siapa pun kembali kosong sebelum perbaikan ini.
+      allow read: if request.auth != null && (
+        request.auth.uid == uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru'
+      );
+
+      // v1.0 (Fase 4 login — pendaftaran mandiri orang tua): pendaftar HANYA
+      // boleh membuat dokumennya SENDIRI dengan role PERSIS "pending_orangtua"
+      // — tidak bisa langsung set role "guru"/"orangtua" sendiri (mencegah
+      // eskalasi privilese dari sisi klien). Field lain (nama/anak/email/wa)
+      // boleh apa saja, hanya "role" yang dikunci.
+      allow create: if request.auth != null && request.auth.uid == uid &&
+        request.resource.data.role == "pending_orangtua";
+
+      // Guru tetap bisa tulis/ubah dokumen SIAPA SAJA (approve/reject
+      // pendaftaran orang tua, atau buat akun guru/orangtua manual).
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    // Koleksi "siswa/{nisn}" (profil siswa + NISN, sejak migrasi Firestore —
+    // lihat RANCANGAN-MIGRASI-FIRESTORE.md) SENGAJA TIDAK PUNYA blok match di
+    // sini sama sekali. Koleksi ini HANYA pernah dibaca/ditulis lewat Apps
+    // Script pakai kredensial Service Account (IAM), yang MELEWATI Firestore
+    // Rules sepenuhnya (diatur oleh izin IAM, bukan Rules) — jadi Rules di
+    // file ini tidak relevan untuknya. TIDAK menambahkan blok match untuk
+    // "siswa" adalah PILIHAN YANG BENAR di sini (bukan lupa) — default
+    // Firestore Rules adalah TOLAK SEMUA untuk path tanpa match block, yang
+    // artinya TIDAK ADA client (browser siapa pun, termasuk yang sudah login)
+    // yang bisa baca koleksi ini langsung. Ini justru pelindung utama supaya
+    // NISN 25 siswa tidak pernah bisa dibaca borongan dari luar. JANGAN
+    // menambahkan blok match /siswa/{nisn} di sini kecuali benar-benar paham
+    // konsekuensinya — itu akan MEMBUKA celah baca borongan NISN semua siswa.
+
+    // Pengumuman, modul, soal: semua login bisa baca; hanya guru yang bisa tulis.
+    // PENTING: ditulis per-koleksi secara EKSPLISIT (bukan wildcard /{koleksi}/{id})
+    // karena Firestore meng-OR-kan semua match block yang cocok dengan sebuah path —
+    // wildcard generik di sini akan "menabrak" & melumpuhkan pembatasan yang sudah
+    // dibuat di /users/{uid} di atas (siapa saja yang login jadi bisa baca dokumen
+    // users/{uid} SIAPA PUN lewat blok wildcard ini, bukan cuma dokumennya sendiri).
+    // Kalau menambah koleksi baru (mis. `jadwal`), tambahkan blok match baru di sini,
+    // JANGAN pakai wildcard generik lagi.
+    match /pengumuman/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /modul/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /materi/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    match /bank_soal/{id} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    // Hasil Uji Kemampuan: siswa HANYA bisa membuat dokumen miliknya sendiri
+    // (uid harus sama dengan uid pembuat) dan TIDAK PERNAH bisa mengubah/menghapusnya
+    // — update & delete cuma diberikan ke role "guru". Orang tua bisa membaca hasil
+    // anaknya (dicocokkan lewat field `anak` di users/{uid}), tapi juga tidak
+    // diberi izin write sama sekali.
+    //
+    // Klausa `resource.data.uid == request.auth.uid` di bawah SAAT INI TIDAK
+    // PERNAH benar-benar dipakai untuk membaca — kebijakan proyek (lihat tabel
+    // fitur di atas) sengaja mengecualikan siswa dari SEMUA laporan/riwayat
+    // (guru & orang tua saja). Dibiarkan di rules ini (tidak berbahaya, tidak
+    // membuka akses baru) untuk jaga-jaga, TAPI kalau suatu saat siswa memang
+    // diberi akses lihat riwayat sendiri, klausa ini TIDAK AKAN BERFUNGSI:
+    // siswa login lewat Firebase Anonymous Auth dan dapat `uid` BARU tiap
+    // sesi, jadi tidak akan pernah cocok dengan `uid` yang tersimpan di
+    // dokumen lama. Pola yang benar untuk kasus itu adalah cocokkan lewat
+    // `namaSiswa` (sama seperti klausa orang tua di bawah), BUKAN `uid`.
+    match /hasil_latihan/{id} {
+      allow create: if request.auth != null &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.namaSiswa is string &&
+        request.resource.data.namaSiswa.size() > 0;
+      allow read: if request.auth != null && (
+        resource.data.uid == request.auth.uid ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru' ||
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'orangtua' &&
+         resource.data.namaSiswa in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.anak)
+      );
+      allow update, delete: if request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'guru';
+    }
+
+    // Level Uji Kemampuan (belum dirilis): dibaca SIAPA SAJA yang login (termasuk
+    // siswa lain — dasar dari fitur "bandingkan level dengan teman"). TIDAK ADA
+    // klien yang boleh menulis SAMA SEKALI — satu-satunya penulis adalah Apps
+    // Script lewat Service Account (lihat apps-script/Code.gs doPostHitungLevel_
+    // untuk kenapa dihitung di server, bukan klien).
+    match /level_siswa/{namaSiswa} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
+```
+
+**Index komposit yang wajib dibuat di Firebase Console → Firestore → Indexes** (query di kode akan gagal tanpa ini — Firebase biasanya menyediakan link "Create Index" langsung di pesan error konsol browser saat pertama kali dicoba):
+- Koleksi `bank_soal`: `tp` (Ascending) + `randKey` (Ascending) — dipakai untuk mengambil soal acak per TP di `pages/uji-kemampuan.html`.
+
+---
+
+## 🤝 Kontribusi
+
+Proyek ini dikelola oleh wali kelas. Untuk pertanyaan atau saran perbaikan, hubungi melalui:
+- Email guru: *(isi email guru)*
+- Grup kelas: *(isi link WhatsApp grup)*
+
+---
+
+*Dibuat dengan semangat belajar bersama 🌱*
