@@ -507,7 +507,7 @@
 
     <!-- ══════════════ TAB: LINIMASA MATERI (v1.3, permintaan Arif poin 2; v1.4 kemudahan
          input) ══════════════ Backend Sheet "Data Linimasa" via Apps Script (POLA SAMA
-         dengan Kelola Galeri Visual, BUKAN Firestore seperti tab Pengumuman/Modul di atas —
+         dengan Pustaka Belajar, BUKAN Firestore seperti tab Pengumuman/Modul di atas —
          keputusan sengaja Arif). Halaman baca-nya (siswa/orangtua/guru) ada di
          pages/linimasa.html — di sini CUMA untuk guru menambah/ubah/hapus entrinya.
          Topik/Keterangan teks bebas, TIDAK divalidasi/diwajibkan cocok kode TP resmi
@@ -718,7 +718,7 @@
 
 <script src="materi/assets/tp-kko-index.js"></script>
 <script src="mpls/assets/config.js"></script>
-<script src="infografis/assets/infografis-data.js"></script>
+<script src="../assets/js/mapel-list.js"></script>
 <script src="pustaka-belajar/assets/pustaka-belajar-data.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script type="module" src="../assets/js/guru-guard.js"></script>
@@ -942,7 +942,7 @@
   let linimasaCache = []; // hasil fetch terakhir, dipakai ulang saat render & saat cari data untuk tombol Edit
 
   function isiDropdownMapelLinimasa() {
-    const opsi = (window.INFOGRAFIS_MAPEL || [])
+    const opsi = (window.DAFTAR_MAPEL || [])
       .map((m) => `<option value="${escHtml(m.mapel)}">${m.mapelIcon} ${escHtml(m.mapel)}</option>`)
       .join("");
     document.getElementById("linimasa-mapel").innerHTML = opsi;
@@ -1265,13 +1265,39 @@
    * itu terhitung "simple request" yang tidak memicu preflight sama sekali.
    * Konsekuensinya: progress bar TIDAK bisa menunjukkan persentase asli (lihat CSS
    * .pb-adm-progress-bar — dibuat indeterminate/animasi bolak-balik saja, jujur
-   * tidak berpura-pura tahu persentase pasti). */
+   * tidak berpura-pura tahu persentase pasti).
+   *
+   * TIMEOUT 90 DETIK (AbortController) SENGAJA ditambahkan — tanpa ini, fetch()
+   * bisa menggantung TANPA BATAS WAKTU kalau relay Apps Script (script.google
+   * usercontent.com) lambat merespons, dan guru cenderung mengira halaman
+   * "macet" lalu me-refresh/klik ulang — padahal proses di server (Drive+Sheet)
+   * seringkali SUDAH SELESAI di baliknya, tinggal responsnya yang belum sampai
+   * ke klien. Inilah penyebab paling mungkin dari laporan "upload lama, gagal,
+   * tapi file numpuk di Drive": guru menyerah menunggu sebelum respons datang,
+   * padahal server sudah berhasil membuat filenya. 90 detik dipilih cukup longgar
+   * untuk file beberapa MB + eksekusi Apps Script yang memang tidak instan. */
   async function postKeAppsScript_(url, payload) {
-    const res = await fetch(url, { method: "POST", body: JSON.stringify(payload) });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
     try {
-      return await res.json();
-    } catch (e) {
-      throw new Error("Respons tidak dikenali dari server.");
+      const res = await fetch(url, { method: "POST", body: JSON.stringify(payload), signal: controller.signal });
+      try {
+        return await res.json();
+      } catch (e) {
+        throw new Error("Respons tidak dikenali dari server.");
+      }
+    } catch (err) {
+      if (err.name === "AbortError") {
+        throw new Error(
+          "Waktu tunggu habis (90 detik) — TAPI ini BUKAN berarti gagal total. " +
+          "Server kemungkinan masih/sudah selesai memproses di baliknya. Cek dulu " +
+          "daftar di kanan (atau muat ulang halaman) sebelum mencoba unggah lagi, " +
+          "supaya file yang sama tidak ter-upload dobel."
+        );
+      }
+      throw err;
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 
@@ -1287,6 +1313,18 @@
     if (msg && !isErr) {
       setPustakaStatus_._t = setTimeout(() => { el.textContent = ""; el.className = "status-msg"; }, 4000);
     }
+  }
+
+  /** Untuk pesan SEMENTARA selagi proses masih berjalan ("Membaca file…",
+   * "Mengunggah…") — SENGAJA TIDAK memakai setPustakaStatus_() supaya tidak ikut
+   * kena auto-hilang 4 detik, karena upload PDF bisa berlangsung jauh lebih lama
+   * dari itu (sampai ±90 detik, lihat postKeAppsScript_) — tanpa ini pesannya
+   * akan kosong di tengah proses padahal masih berjalan, bikin guru mengira macet. */
+  function setPustakaStatusSementara_(msg) {
+    clearTimeout(setPustakaStatus_._t);
+    const el = document.getElementById("pb-status");
+    el.textContent = msg;
+    el.className = "status-msg ok";
   }
 
   window.simpanPustaka = async function () {
@@ -1311,12 +1349,12 @@
     const submitBtn = document.getElementById("pb-submit-btn");
     const progressWrap = document.getElementById("pb-progress-wrap");
     submitBtn.disabled = true;
-    setPustakaStatus_("Membaca file…");
+    setPustakaStatusSementara_("Membaca file…");
     progressWrap.classList.add("show");
 
     try {
       const { base64, jumlahHalaman } = await bacaPdfUntukUpload_(file);
-      setPustakaStatus_("Mengunggah…");
+      setPustakaStatusSementara_("Mengunggah… (bisa sampai ±1 menit untuk file beberapa MB — mohon tunggu, jangan tutup/muat ulang halaman ini)");
       const idToken = await window.getFreshGuruIdToken();
       const payload = {
         type: "pustaka_belajar",
@@ -1338,6 +1376,26 @@
       ["mapel", "judul", "file"].forEach((f) => pbFieldErr_(f, false));
       loadPustaka();
     } catch (err) {
+      // Sebelum menampilkan error ke guru, cek dulu apakah upload ini TERNYATA
+      // sudah berhasil di server (lihat catatan panjang soal timeout 90 detik di
+      // postKeAppsScript_ — kegagalan yang terlihat di klien tidak selalu berarti
+      // gagal di server). Kalau ketemu judul+mapel yang sama persis baru saja
+      // muncul, kasih tahu itu SUDAH tersimpan, supaya guru tidak unggah dobel.
+      try {
+        await loadPustaka();
+        const kemungkinanSudahTersimpan = pustakaCache.some(
+          (it) => it["Judul"] === judul && it["Mapel"] === mapel
+        );
+        if (kemungkinanSudahTersimpan) {
+          setPustakaStatus_(
+            "⚠️ Tampilan sempat error (" + err.message + "), TAPI \"" + judul +
+            "\" SUDAH muncul di daftar kanan — kemungkinan besar sebenarnya sudah tersimpan. " +
+            "Silakan cek dulu sebelum mengunggah ulang.", true
+          );
+          document.getElementById("form-pustaka").reset();
+          return;
+        }
+      } catch (e) { /* pengecekan tambahan gagal — lanjut tampilkan pesan error asli saja */ }
       setPustakaStatus_("⚠️ Gagal: " + err.message, true);
     } finally {
       submitBtn.disabled = false;
