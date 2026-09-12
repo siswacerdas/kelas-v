@@ -84,6 +84,19 @@
   .status-msg.ok { color: var(--accent-3); font-weight: 600; }
   .status-msg.err { color: var(--danger); font-weight: 600; }
 
+  /* ── Panel "Perbaiki Data Level & Papan Peringkat" (v1.5) ── */
+  .gamif-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 6px 10px; border-bottom: 1px solid var(--border, #eee); font-size: 12.5px;
+  }
+  .gamif-row:last-child { border-bottom: none; }
+  .gamif-row .gamif-status { font-weight: 600; white-space: nowrap; }
+  .gamif-row .gamif-status.tunggu { color: #9a9a9a; }
+  .gamif-row .gamif-status.proses { color: #b8860b; }
+  .gamif-row .gamif-status.sukses { color: var(--accent-3); }
+  .gamif-row .gamif-status.gagal { color: var(--danger); }
+  #gamifikasi-hasil { max-height: 320px; overflow-y: auto; border: 1px solid var(--border, #eee); border-radius: 8px; margin-top: 0.75rem; }
+
   /* ── LIST ─────────────────────────────── */
   .list-group-title {
     font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
@@ -319,6 +332,49 @@
 
     <!-- ══════════════ TAB: UJI KEMAMPUAN (BANK SOAL) ══════════════ -->
     <div id="tab-soal" class="tab-panel">
+      <!-- ══ v1.5: Perbaiki Data Level & Papan Peringkat ══
+           Latar belakang: `hitung_gamifikasi` (yang menulis level_siswa, sumber data
+           Papan Peringkat & Rekap Lengkap) dipanggil FIRE-AND-FORGET oleh
+           uji-kemampuan.html tepat setelah skor kuis tersimpan — lihat komentar
+           panjang di sana. Kalau siswa menutup tab/pindah halaman SEBELUM panggilan
+           itu selesai (skor sudah kelihatan "tersimpan", jadi wajar siswa langsung
+           pindah), level_siswa TIDAK PERNAH tertulis meski hasil_latihan-nya AMAN
+           tersimpan — persis gejala yang dilaporkan: riwayat ada, tapi Papan
+           Peringkat/Rekap tetap 0/"Perintis Lv.1" untuk siswa itu.
+           Perbaikannya BUKAN mengubah data manual, tapi MEMANGGIL ULANG endpoint
+           yang sama (`hitung_gamifikasi`) — fungsi ini murni/idempoten, SELALU
+           menghitung ulang PENUH dari `hasil_latihan` yang sudah tersimpan (lihat
+           hitungLevelDariRiwayat_ di Code.gs), jadi aman dipanggil ulang kapan saja
+           untuk siapa saja, termasuk siswa yang datanya sudah benar sekalipun. -->
+      <div class="panel-card">
+        <h2>🔄 Perbaiki Data Level &amp; Papan Peringkat</h2>
+        <p class="hint" style="margin-bottom:0.75rem;">
+          Kalau ada siswa yang riwayat Uji Kemampuan-nya sudah tersimpan tapi belum
+          muncul di Papan Peringkat/Rekap Lengkap (level tetap "Perintis Lv.1", 0 EXP),
+          kemungkinan besar panggilan penghitung level sempat gagal/terputus saat
+          siswa itu selesai kuis. Alat ini menghitung ulang levelnya langsung dari
+          riwayat Uji Kemampuan yang sudah tersimpan — aman dijalankan kapan saja,
+          termasuk untuk siswa yang datanya sudah benar.
+        </p>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="gamif-satu-nama">Perbaiki 1 siswa (opsional, lebih cepat)</label>
+            <input type="text" id="gamif-satu-nama" placeholder="mis. Abyan Nandana Khalif" list="gamif-nama-list" />
+            <datalist id="gamif-nama-list"></datalist>
+          </div>
+          <div class="form-row" style="justify-content:flex-end; display:flex; align-items:flex-end;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="hitungUlangGamifikasiSatu()">Hitung Ulang 1 Siswa</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary" id="gamif-semua-btn" onclick="hitungUlangGamifikasiSemua()">
+            🔄 Hitung Ulang Semua Siswa (25)
+          </button>
+        </div>
+        <div id="gamifikasi-hasil"></div>
+        <div id="gamif-status" class="status-msg"></div>
+      </div>
+
       <!-- ══ Ringkasan progres pool (tidak terpengaruh filter di bawah) ══ -->
       <div id="soal-pool-summary"></div>
 
@@ -718,6 +774,7 @@
 
 <script src="materi/assets/tp-kko-index.js"></script>
 <script src="mpls/assets/config.js"></script>
+<script src="mpls/assets/mpls-data.js"></script>
 <script src="../assets/js/mapel-list.js"></script>
 <script src="pustaka-belajar/assets/pustaka-belajar-data.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1300,6 +1357,98 @@
       clearTimeout(timeoutId);
     }
   }
+
+  // ═══════════════════════ PERBAIKI DATA LEVEL & PAPAN PERINGKAT (v1.5) ═══════
+  // Latar belakang lengkap ada di komentar HTML di atas tab-soal. Ringkasnya:
+  // `hitung_gamifikasi` di Code.gs MURNI/IDEMPOTEN (selalu menghitung ulang PENUH
+  // dari hasil_latihan tersimpan, tidak pernah mempercayai state lama) — jadi
+  // memanggilnya ulang untuk siapa saja, kapan saja, SELALU aman dan tidak
+  // pernah merusak data yang sudah benar.
+  (function () {
+    const dl = document.getElementById("gamif-nama-list");
+    if (dl && typeof MPLS_STUDENTS !== "undefined") {
+      dl.innerHTML = MPLS_STUDENTS.map((n) => `<option value="${n.replace(/"/g, "&quot;")}"></option>`).join("");
+    }
+  })();
+
+  function gamifBarisId_(nama) {
+    // id HTML tidak boleh mengandung spasi — pola sederhana, cukup untuk 25 nama tetap.
+    return "gamif-row-" + nama.replace(/[^a-zA-Z0-9]/g, "");
+  }
+
+  function gamifTampilkanBaris_(nama) {
+    const wrap = document.getElementById("gamifikasi-hasil");
+    const id = gamifBarisId_(nama);
+    if (!document.getElementById(id)) {
+      const row = document.createElement("div");
+      row.className = "gamif-row";
+      row.id = id;
+      row.innerHTML = `<span>${nama}</span><span class="gamif-status tunggu">⏳ Menunggu…</span>`;
+      wrap.appendChild(row);
+    }
+    return document.getElementById(id).querySelector(".gamif-status");
+  }
+
+  function gamifSetStatusBaris_(nama, kelas, teks) {
+    const el = gamifTampilkanBaris_(nama);
+    el.className = "gamif-status " + kelas;
+    el.textContent = teks;
+  }
+
+  /** Panggil hitung_gamifikasi untuk 1 nama, update baris statusnya. Dipakai baik oleh
+   * tombol "1 siswa" maupun loop "semua siswa" di bawah — SATU jalur kode supaya
+   * perilaku (pesan sukses/gagal) selalu konsisten di kedua tombol. */
+  async function gamifHitungSatu_(nama) {
+    gamifSetStatusBaris_(nama, "proses", "⏳ Menghitung…");
+    try {
+      const data = await postKeAppsScript_(MPLS_CONFIG.APPS_SCRIPT_URL, { type: "hitung_gamifikasi", nama: nama });
+      if (data.status !== "ok") {
+        gamifSetStatusBaris_(nama, "gagal", "✗ " + (data.message || "Gagal, tanpa keterangan."));
+        return false;
+      }
+      gamifSetStatusBaris_(nama, "sukses", `✓ ${data.exp || 0} EXP · ${data.totalKuisDikerjakan || 0} kuis`);
+      return true;
+    } catch (err) {
+      gamifSetStatusBaris_(nama, "gagal", "✗ " + err.message);
+      return false;
+    }
+  }
+
+  window.hitungUlangGamifikasiSatu = async function () {
+    const input = document.getElementById("gamif-satu-nama");
+    const nama = input.value.trim();
+    if (!nama) { setStatus("gamif-status", "Ketik/pilih nama siswa dulu.", true); return; }
+    setStatus("gamif-status", "", false);
+    await gamifHitungSatu_(nama);
+  };
+
+  /** Loop SEKUENSIAL (bukan Promise.all paralel) SENGAJA — Apps Script Web App punya
+   * batas eksekusi bersamaan per akun, dan dokumen ini juga jadi lebih mudah dibaca
+   * guru (satu per satu, bukan 25 lompat bareng). Jeda 300ms antar panggilan sebagai
+   * jaga-jaga tambahan terhadap kuota, bukan berarti Apps Script akan pasti kena limit
+   * tanpa jeda ini — murni kehati-hatian. */
+  window.hitungUlangGamifikasiSemua = async function () {
+    if (typeof MPLS_STUDENTS === "undefined" || !MPLS_STUDENTS.length) {
+      setStatus("gamif-status", "Daftar siswa (mpls-data.js) tidak termuat.", true);
+      return;
+    }
+    const btn = document.getElementById("gamif-semua-btn");
+    btn.disabled = true;
+    btn.textContent = "🔄 Menghitung ulang…";
+    document.getElementById("gamifikasi-hasil").innerHTML = "";
+    MPLS_STUDENTS.forEach((n) => gamifTampilkanBaris_(n)); // render semua baris dulu, isi "Menunggu…"
+
+    let sukses = 0, gagal = 0;
+    for (const nama of MPLS_STUDENTS) {
+      const ok = await gamifHitungSatu_(nama);
+      if (ok) sukses++; else gagal++;
+      await new Promise((r) => setTimeout(r, 300));
+    }
+
+    btn.disabled = false;
+    btn.textContent = "🔄 Hitung Ulang Semua Siswa (25)";
+    setStatus("gamif-status", `Selesai: ${sukses} berhasil, ${gagal} gagal dari ${MPLS_STUDENTS.length} siswa.`, gagal > 0);
+  };
 
   function setPustakaStatus_(msg, isErr) {
     const el = document.getElementById("pb-status");
