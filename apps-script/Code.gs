@@ -514,6 +514,15 @@ const PUSTAKA_HEADERS = [
 ];
 // "Materi Slug" (di bawah) = field "file" di materi-index.js TANPA akhiran ".html" — sumber
 // tunggal identitas materi yang sudah ada, dipakai ulang di sini (bukan skema ID baru).
+// BUG DITEMUKAN Sept 2026 (lihat CHANGELOG.md — TERPISAH dari perbaikan kuota firestoreQueryEqual_
+// di atas): konstanta ini SEMPAT HILANG total — cuma PROGRES_MATERI_HEADERS di bawah yang ada,
+// PROGRES_MATERI_SHEET_NAME tidak pernah dideklarasikan sama sekali (murni salah tempel saat
+// menyalin blok ini jadi blok Modul di bawah, yang benar). Akibatnya getProgresMateriSheet_()
+// SELALU throw ReferenceError begitu dipanggil — doPostHitungGamifikasi_ gagal total SEBELUM
+// sempat menulis level_siswa, untuk SEMUA siswa. Ini BUG YANG BERBEDA dari 429 RESOURCE_EXHAUSTED
+// di atas (yang satu ReferenceError kode, yang lain kuota Firestore) — keduanya kebetulan
+// ditemukan berurutan saat menguji tombol "Hitung Ulang Gamifikasi" di admin.html.
+const PROGRES_MATERI_SHEET_NAME = "Data Progres Materi";
 const PROGRES_MATERI_HEADERS = [
   "Timestamp",     // kapan TERAKHIR dibuka (upsert, lihat doPostProgresMateri_ — bukan log
                     // setiap kunjungan, supaya 1 siswa+1 materi = 1 baris saja)
@@ -1319,6 +1328,16 @@ function doPost(e) {
       return doPostHitungGamifikasi_(body);
     }
 
+    if (body.type === "hitung_gamifikasi_semua") {
+      // Dipanggil tombol "Hitung Ulang Semua Siswa" di admin.html. Level keamanan SAMA
+      // PERSIS dengan hitung_gamifikasi di atas (SENGAJA TANPA gerbang) — alasannya
+      // identik: fungsi ini murni, tidak pernah mempercayai angka dari body, jadi tidak
+      // ada manfaat curang dari memanggilnya untuk nama siapa pun. Aman dari sisi kuota
+      // karena di dalamnya cuma me-loop fungsi TUNGGAL yang sama dengan hitung_gamifikasi
+      // (lihat komentar panjang di doPostHitungGamifikasiSemua_).
+      return doPostHitungGamifikasiSemua_(body);
+    }
+
     if (body.type === "set_avatar") {
       // SENGAJA TANPA gerbang guru — sama level keamanan dengan hitung_gamifikasi di atas:
       // siswa cuma bisa menulis avatar milik NAMANYA SENDIRI (dikirim klien dari
@@ -2104,29 +2123,74 @@ function ambilLevelSiswaSaatIni_(nama) {
   return { level: f.level || "dasar", mahirTercapai: !!f.mahirTercapai };
 }
 
+/** Inti murni penghitungan+penyimpanan gamifikasi 1 siswa DARI DATA YANG SUDAH DIAMBIL
+ * (riwayat kuis + hasil hitung materi/modul) — SATU jalur logika dipakai BERSAMA oleh jalur
+ * satu-siswa (doPostHitungGamifikasi_) dan jalur banyak-siswa sekaligus
+ * (doPostHitungGamifikasiSemua_), supaya keduanya TIDAK PERNAH bisa menghasilkan angka
+ * berbeda untuk data sumber yang sama. SENGAJA diekstrak sebagai fungsi terpisah alih-alih
+ * disalin-tempel ke 2 tempat — proyek ini baru saja kena bug nyata (PROGRES_MATERI_SHEET_NAME
+ * hilang, lihat catatan di atas) akibat pola salin-tempel antar fungsi kembar yang lupa
+ * disinkronkan, jadi 1 sumber logika di sini sengaja dijaga ketat. */
+function hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData) {
+  const sebelum = ambilLevelSiswaSaatIni_(nama);
+  const existingLengkap = ambilLevelSiswaLengkap_(nama); // supaya field `avatar` (kalau ada) tidak hilang tertimpa di bawah
+  const levelData = hitungLevelDariRiwayat_(riwayat);
+  const exp = materiData.totalExp + modulData.totalExp + levelData.expDariKuis;
+  const level99Data = hitungLevel99DanRank_(exp);
+  const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
+    (levelData.mahirTercapai && !sebelum.mahirTercapai);
+  // Urutan Object.assign PENTING: existingLengkap DULUAN (basis, termasuk `avatar` kalau
+  // ada), baru ditimpa field yang MEMANG dihitung ulang di panggilan ini — supaya field lain
+  // yang tidak disentuh (avatar) tetap terbawa, tapi field yang dihitung ulang selalu pakai
+  // nilai terbaru, bukan nilai basis yang mungkin sudah basi.
+  const dataLengkap = Object.assign({}, existingLengkap, levelData, { jumlahMateriDibaca: materiData.jumlahDistinct, jumlahModulSelesai: modulData.jumlahDistinct, exp: exp }, level99Data);
+  setLevelSiswaFirestore_(nama, dataLengkap);
+  return Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap);
+}
+
 function doPostHitungGamifikasi_(body) {
   const nama = String(body.nama || "").trim();
   if (!nama) return jsonOut_({ status: "error", message: "Nama wajib diisi" });
   try {
-    const sebelum = ambilLevelSiswaSaatIni_(nama);
-    const existingLengkap = ambilLevelSiswaLengkap_(nama); // supaya field `avatar` (kalau ada) tidak hilang tertimpa di bawah
     const riwayat = ambilRiwayatHasilLatihan_(nama);
-    const levelData = hitungLevelDariRiwayat_(riwayat);
     const materiData = hitungExpDenganBacaUlang_(getProgresMateriSheet_(), "Materi Slug", nama, EXP_PER_MATERI_);
     const modulData = hitungExpDenganBacaUlang_(getProgresModulSheet_(), "Modul Slug", nama, EXP_PER_MODUL_);
-    const exp = materiData.totalExp + modulData.totalExp + levelData.expDariKuis;
-    const level99Data = hitungLevel99DanRank_(exp);
-    const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
-      (levelData.mahirTercapai && !sebelum.mahirTercapai);
-    // Urutan Object.assign PENTING: existingLengkap DULUAN (basis, termasuk `avatar` kalau
-    // ada), baru ditimpa field yang MEMANG dihitung ulang di panggilan ini — supaya field lain
-    // yang tidak disentuh (avatar) tetap terbawa, tapi field yang dihitung ulang selalu pakai
-    // nilai terbaru, bukan nilai basis yang mungkin sudah basi.
-    const dataLengkap = Object.assign({}, existingLengkap, levelData, { jumlahMateriDibaca: materiData.jumlahDistinct, jumlahModulSelesai: modulData.jumlahDistinct, exp: exp }, level99Data);
-    setLevelSiswaFirestore_(nama, dataLengkap);
-    return jsonOut_(Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap));
+    return jsonOut_(hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData));
   } catch (err) {
     return jsonOut_({ status: "error", message: String(err) });
   }
 }
+
+/** Dipakai tombol "Hitung Ulang Semua Siswa" di admin.html — 1 request klien, tapi di server
+ * cuma LOOP memanggil fungsi TUNGGAL yang SAMA per nama (ambilRiwayatHasilLatihan_ +
+ * hitungExpDenganBacaUlang_ + hitungDanSimpanGamifikasiSatuSiswa_), SENGAJA TIDAK punya
+ * fungsi baca-batch terpisah. Ini aman/tidak boros kuota SEKARANG karena
+ * ambilRiwayatHasilLatihan_ sendiri sudah dibetulkan pakai firestoreQueryEqual_ (baca
+ * TERFILTER per nama, bukan baca-semua-koleksi) — beda dari versi lama endpoint ini yang
+ * sempat menambah fungsi baca-semua-sekaligus terpisah HANYA untuk menghindari 25x baca
+ * penuh koleksi; sekarang setelah akar masalahnya dibetulkan di ambilRiwayatHasilLatihan_,
+ * 25x panggil fungsi yang sudah terfilter itu SAMA SEKALI TIDAK sama borosnya dengan 25x
+ * baca-semua-koleksi yang lama, jadi tidak perlu jalur baca terpisah lagi — lebih sedikit
+ * kode duplikat = lebih kecil risiko lupa sinkron seperti kasus PROGRES_MATERI_SHEET_NAME. */
+function doPostHitungGamifikasiSemua_(body) {
+  const namaList = Array.isArray(body.namaList) ? body.namaList : [];
+  if (!namaList.length) return jsonOut_({ status: "error", message: "namaList wajib diisi (array nama siswa)" });
+  const sheetMateri = getProgresMateriSheet_();
+  const sheetModul = getProgresModulSheet_();
+  const hasilPerSiswa = namaList.map((namaMentah) => {
+    const nama = String(namaMentah).trim();
+    try {
+      const riwayat = ambilRiwayatHasilLatihan_(nama);
+      const materiData = hitungExpDenganBacaUlang_(sheetMateri, "Materi Slug", nama, EXP_PER_MATERI_);
+      const modulData = hitungExpDenganBacaUlang_(sheetModul, "Modul Slug", nama, EXP_PER_MODUL_);
+      return Object.assign({ nama: nama }, hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData));
+    } catch (err) {
+      // 1 siswa gagal TIDAK BOLEH menggagalkan seluruh batch — siswa lain tetap lanjut
+      // dihitung, statusnya dilaporkan per-baris ke admin.html.
+      return { nama: nama, status: "error", message: String(err) };
+    }
+  });
+  return jsonOut_({ status: "ok", hasil: hasilPerSiswa });
+}
+
 
