@@ -748,6 +748,30 @@
     }
   };
 
+  /** Pesan ini SAMA PERSIS dengan yang dikembalikan doPostSiswaLogin_ di
+   * Code.gs saat verifikasi Firestore gagal karena hal TEKNIS (token Service
+   * Account gagal diambil, atau panggilan REST ke Firestore gagal) — BUKAN
+   * karena nama/NISN salah (lihat komentar di atas doPostSiswaLogin_ dan
+   * ANTIREGRESI.md §51). Server sengaja membalasnya sebagai JSON ber-status
+   * "error" yang "valid" (supaya detail teknis tidak bocor ke siswa), jadi
+   * dari sudut pandang HTTP/JSON dia terlihat sama sahnya dengan "Nama atau
+   * NISN tidak cocok" — padahal secara SIFAT dia adalah kegagalan teknis
+   * yang seharusnya ikut di-retry seperti timeout/jaringan, bukan langsung
+   * ditampilkan ke siswa sebagai final. Kalau kalimat pesan ini di Code.gs
+   * pernah diubah, PERBARUI juga string di bawah, kalau tidak deteksi ini
+   * tidak akan pernah kena/trigger lagi. */
+  const PESAN_GAGAL_TEKNIS_BACKEND_ = 'Gagal memverifikasi, coba beberapa saat lagi.';
+
+  /** True kalau balasan JSON (valid, tidak dilempar sebagai Error oleh
+   * cobaSiswaLogin_) sebenarnya adalah kegagalan TEKNIS dari backend (lihat
+   * PESAN_GAGAL_TEKNIS_BACKEND_ di atas) — dipakai doLoginSiswa untuk
+   * menyamakan perlakuannya dengan timeout/jaringan (layak di-retry),
+   * BUKAN dengan "Nama atau NISN tidak cocok" (kesalahan input asli siswa,
+   * tidak boleh di-retry supaya kesalahan ketik tetap langsung terlihat). */
+  function kegagalanTeknisDariBackend_(json) {
+    return !!json && json.status !== 'ok' && json.message === PESAN_GAGAL_TEKNIS_BACKEND_;
+  }
+
   /** Panggil endpoint siswa_login SEKALI, dengan batas waktu (AbortController)
    * supaya tidak menggantung tanpa batas kalau jaringan/Apps Script lambat
    * (lihat ANTIREGRESI.md §51 — percobaan PERTAMA ke Apps Script bisa lambat
@@ -758,7 +782,10 @@
    * dianggap "gagal teknis" yang layak dicoba ulang otomatis oleh pemanggil.
    * TIDAK melempar error untuk balasan JSON valid ber-status "error" (mis.
    * nama/NISN salah) — itu jawaban sah dari server, bukan kegagalan teknis,
-   * jadi tidak boleh ikut di-retry (lihat doLoginSiswa di bawah). */
+   * jadi tidak boleh ikut di-retry (lihat doLoginSiswa di bawah). Pengecualian:
+   * PESAN_GAGAL_TEKNIS_BACKEND_ tetap "valid JSON" di sini, klasifikasinya
+   * sebagai kegagalan teknis dilakukan belakangan oleh doLoginSiswa lewat
+   * kegagalanTeknisDariBackend_(), bukan di sini. */
   async function cobaSiswaLogin_(nama, nisn, timeoutMs) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -799,7 +826,18 @@
    * karena nama/NISN salah. Percobaan kedua nyaris selalu jauh lebih cepat
    * karena token Service Account & instans Apps Script sudah "hangat" dari
    * percobaan pertama, jadi retry ini murni menutupi latensi "cold start",
-   * BUKAN menyembunyikan kesalahan sungguhan dari siswa. */
+   * BUKAN menyembunyikan kesalahan sungguhan dari siswa.
+   *
+   * v1.3 (lanjutan §51 — kegagalan Firestore/token TERBUNGKUS JSON valid):
+   * v1.2 ternyata tidak menutup satu celah — kalau exception-nya kejadian
+   * DI DALAM Apps Script (token/Firestore gagal SETELAH request sukses
+   * sampai server), Code.gs menangkapnya sendiri lalu membalas JSON valid
+   * ber-status "error" berisi PESAN_GAGAL_TEKNIS_BACKEND_. Karena itu JSON
+   * valid, v1.2 menganggapnya jawaban sah (seperti nama/NISN salah) dan
+   * TIDAK ikut di-retry — padahal ini murni kegagalan teknis di sisi server,
+   * bukan kesalahan input siswa. v1.3 memakai kegagalanTeknisDariBackend_()
+   * untuk mendeteksi pesan spesifik ini lalu melemparnya sebagai Error biasa,
+   * supaya masuk ke alur retry yang sama seperti timeout/jaringan di v1.2. */
   window.doLoginSiswa = async () => {
     const nama = document.getElementById('inp-siswa-nama').value;
     const nisn = document.getElementById('inp-siswa-nisn').value.trim();
@@ -816,12 +854,17 @@
     try {
       errEl.textContent = 'Memeriksa… (percobaan pertama kadang agak lama, mohon tunggu)';
       json = await cobaSiswaLogin_(nama, nisn, 20000);
+      // v1.3: balasan JSON valid, tapi kalau isinya persis pesan generik
+      // kegagalan Firestore/token dari backend, perlakukan sama seperti
+      // gagal teknis lain di atas -> lempar supaya kena retry di bawah.
+      if (kegagalanTeknisDariBackend_(json)) throw new Error(json.message);
     } catch (firstErr) {
       // Gagal teknis di percobaan pertama -> coba sekali lagi otomatis,
       // biasanya sudah "hangat" & jauh lebih cepat kali ini.
       try {
         errEl.textContent = 'Koneksi pertama lambat, mencoba sekali lagi…';
         json = await cobaSiswaLogin_(nama, nisn, 20000);
+        if (kegagalanTeknisDariBackend_(json)) throw new Error(json.message);
       } catch (secondErr) {
         errEl.textContent = 'Gagal terhubung ke server setelah 2 kali percobaan. ' +
           'Coba pindah ke WiFi kalau memakai data seluler, lalu tekan Masuk lagi. ' +
