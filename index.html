@@ -748,12 +748,58 @@
     }
   };
 
+  /** Panggil endpoint siswa_login SEKALI, dengan batas waktu (AbortController)
+   * supaya tidak menggantung tanpa batas kalau jaringan/Apps Script lambat
+   * (lihat ANTIREGRESI.md §51 — percobaan PERTAMA ke Apps Script bisa lambat
+   * karena cache token Service Account kosong + kemungkinan "cold start"
+   * instans Apps Script, lebih terasa di jaringan seluler daripada WiFi PC).
+   * Melempar error kalau: jaringan gagal, timeout, ATAU balasan bukan JSON
+   * valid (mis. halaman HTML dari operator/Google saat timeout) — SEMUA itu
+   * dianggap "gagal teknis" yang layak dicoba ulang otomatis oleh pemanggil.
+   * TIDAK melempar error untuk balasan JSON valid ber-status "error" (mis.
+   * nama/NISN salah) — itu jawaban sah dari server, bukan kegagalan teknis,
+   * jadi tidak boleh ikut di-retry (lihat doLoginSiswa di bawah). */
+  async function cobaSiswaLogin_(nama, nisn, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    let res;
+    try {
+      res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ type: 'siswa_login', nama: nama, nisn: nisn }),
+        signal: controller.signal,
+      });
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        throw new Error('TIMEOUT');
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+    let json;
+    try {
+      json = await res.json();
+    } catch (err) {
+      // Balasan bukan JSON (mis. "<!DOCTYPE ...") — lihat ANTIREGRESI.md §51.
+      throw new Error('RESPON_BUKAN_JSON');
+    }
+    return json;
+  }
+
   /** Login siswa: verifikasi nama+NISN ke Apps Script (type: "siswa_login"),
    * kalau cocok baru buat sesi Firebase Anonymous + simpan nama tampilan ke
    * sessionStorage (BUKAN localStorage — supaya tidak nyangkut ke sesi
    * berikutnya kalau HP dipakai bergantian antar siswa, lihat
    * CHANGELOG.md v0.11.0. onAuthStateChanged yang menangani sisanya
-   * (membuka aplikasi) setelah signInAnonymously berhasil. */
+   * (membuka aplikasi) setelah signInAnonymously berhasil.
+   *
+   * v1.2 (ANTIREGRESI.md §51): auto-retry SEKALI kalau percobaan pertama
+   * gagal karena alasan TEKNIS (timeout/jaringan/balasan bukan JSON) — bukan
+   * karena nama/NISN salah. Percobaan kedua nyaris selalu jauh lebih cepat
+   * karena token Service Account & instans Apps Script sudah "hangat" dari
+   * percobaan pertama, jadi retry ini murni menutupi latensi "cold start",
+   * BUKAN menyembunyikan kesalahan sungguhan dari siswa. */
   window.doLoginSiswa = async () => {
     const nama = document.getElementById('inp-siswa-nama').value;
     const nisn = document.getElementById('inp-siswa-nisn').value.trim();
@@ -765,18 +811,32 @@
     if (!/^\d{10}$/.test(nisn)) { errEl.textContent = 'NISN harus 10 digit angka.'; return; }
 
     btn.disabled = true;
-    errEl.textContent = 'Memeriksa…';
+
+    let json;
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ type: 'siswa_login', nama: nama, nisn: nisn }),
-      });
-      const json = await res.json();
-      if (json.status !== 'ok') {
-        errEl.textContent = json.message || 'Nama atau NISN tidak cocok.';
+      errEl.textContent = 'Memeriksa… (percobaan pertama kadang agak lama, mohon tunggu)';
+      json = await cobaSiswaLogin_(nama, nisn, 20000);
+    } catch (firstErr) {
+      // Gagal teknis di percobaan pertama -> coba sekali lagi otomatis,
+      // biasanya sudah "hangat" & jauh lebih cepat kali ini.
+      try {
+        errEl.textContent = 'Koneksi pertama lambat, mencoba sekali lagi…';
+        json = await cobaSiswaLogin_(nama, nisn, 20000);
+      } catch (secondErr) {
+        errEl.textContent = 'Gagal terhubung ke server setelah 2 kali percobaan. ' +
+          'Coba pindah ke WiFi kalau memakai data seluler, lalu tekan Masuk lagi. ' +
+          '(' + secondErr.message + ')';
         btn.disabled = false;
         return;
       }
+    }
+
+    if (json.status !== 'ok') {
+      errEl.textContent = json.message || 'Nama atau NISN tidak cocok.';
+      btn.disabled = false;
+      return;
+    }
+    try {
       sessionStorage.setItem(KEY_NAMA_SISWA, nama);
       // v1.1: sesi siswa SENGAJA per-tab (browserSessionPersistence), BUKAN
       // ikut tersimpan lintas tab seperti guru/orangtua di atas — supaya kalau
@@ -790,7 +850,7 @@
       // Sengaja TIDAK set btn.disabled = false di sini — onAuthStateChanged akan
       // langsung menyembunyikan seluruh #login-screen begitu sesi anonim aktif.
     } catch (err) {
-      errEl.textContent = 'Gagal memeriksa, coba lagi: ' + err.message;
+      errEl.textContent = 'Gagal masuk, coba lagi: ' + err.message;
       btn.disabled = false;
     }
   };
