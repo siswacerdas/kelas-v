@@ -205,6 +205,58 @@ function firestoreFetch_(path, method, bodyObj) {
   return { code: res.getResponseCode(), json: json, text: text };
 }
 
+/** Structured query Firestore (`:runQuery`) dengan 1 filter kesetaraan sederhana —
+ * BEDA PENTING dari firestoreFetch_("koleksi?pageSize=...") biasa: Firestore menagih baca
+ * berdasarkan JUMLAH DOKUMEN YANG DIKEMBALIKAN filter ini, BUKAN jumlah dokumen yang di-scan
+ * di seluruh koleksi. Dipakai menggantikan pola "baca-semua-lalu-filter-di-JS" yang terbukti
+ * jadi biang kuota baca Firestore harian cepat habis (lihat ANTIREGRESI.md §52) — 1 filter
+ * kesetaraan seperti ini TIDAK butuh composite index manual di Firebase Console (index
+ * tunggal per-field sudah otomatis ada untuk semua field secara default; composite index
+ * baru dibutuhkan kalau filter ini digabung dengan orderBy field LAIN, yang TIDAK dilakukan
+ * di sini — pengurutan tetap dilakukan di JS pada hasil yang sudah sedikit).
+ * `value` HANYA mendukung string di sini (cukup untuk semua pemakaian saat ini) — pola
+ * query yang sama sudah dipakai lebih dulu di sisi klien (lihat
+ * pages/laporan-siswa/assets/latihan-mandiri.js: where("namaSiswa", "==", nama)), jadi
+ * pencocokan PERSIS (bukan trim/lowercase) sudah terbukti konsisten dengan cara field ini
+ * ditulis di seluruh proyek. Kembalikan array dokumen RAW Firestore (fields belum
+ * diterjemahkan) — pemanggil yang urus lewat objFromFirestoreFields_(). */
+function firestoreQueryEqual_(collectionId, fieldPath, value) {
+  const token = getServiceAccountToken_();
+  const body = {
+    structuredQuery: {
+      from: [{ collectionId: collectionId }],
+      where: {
+        fieldFilter: {
+          field: { fieldPath: fieldPath },
+          op: "EQUAL",
+          value: { stringValue: value },
+        },
+      },
+    },
+  };
+  // Endpoint :runQuery menempel LANGSUNG ke ".../documents" (TANPA "/" di antaranya) —
+  // beda dari firestoreFetch_ yang selalu menambah path SETELAH "/" di akhir
+  // FIRESTORE_BASE_URL_, makanya "/" itu dibuang dulu di sini sebelum menambah ":runQuery".
+  const url = FIRESTORE_BASE_URL_.replace(/\/$/, "") + ":runQuery";
+  const res = UrlFetchApp.fetch(url, {
+    method: "post",
+    contentType: "application/json",
+    headers: { Authorization: "Bearer " + token },
+    payload: JSON.stringify(body),
+    muteHttpExceptions: true,
+  });
+  const code = res.getResponseCode();
+  const text = res.getContentText();
+  if (code !== 200) {
+    throw new Error("Gagal menjalankan query Firestore (" + collectionId + "): " + text);
+  }
+  let arr;
+  try { arr = JSON.parse(text) || []; } catch (e) { arr = []; }
+  // Tiap elemen array hasil :runQuery BISA berupa progress-marker tanpa "document"
+  // (mis. saat 0 hasil cocok) — cuma ambil elemen yang benar-benar punya dokumen.
+  return arr.filter((item) => item && item.document).map((item) => item.document);
+}
+
 function firestoreValue_(v) {
   if (v instanceof Date) return { timestampValue: v.toISOString() };
   if (typeof v === "number") {
@@ -1889,29 +1941,32 @@ function hitungLevel99DanRank_(exp) {
 }
 
 /** Ambil SEMUA dokumen hasil_latihan milik 1 nama siswa, urut kronologis (lama -> baru).
- * Pola paging SAMA seperti cariDokumenSiswaByNama_ (baca-semua-lalu-filter) — koleksi ini
- * jauh lebih besar dari `siswa` (bisa ratusan/ribuan dokumen dalam 1 tahun ajaran), TAPI
- * structured query REST Firestore (:runQuery) belum pernah dipakai di proyek ini dan perlu
- * composite index manual di Firebase Console kalau digabung dengan orderBy — paging biasa
- * dipilih supaya TIDAK ADA langkah setup manual tambahan yang diperlukan Arif di Firebase
- * Console selain publish Security Rules yang sudah ada. Kalau nanti data membengkak sangat
- * besar (ribuan siswa/tahun), pola ini perlu diganti structured query + composite index. */
+ *
+ * v2 (ANTIREGRESI.md §52 — PERBAIKAN AKAR MASALAH kuota baca Firestore harian habis,
+ * lihat CHANGELOG.md): versi SEBELUMNYA membaca SELURUH koleksi `hasil_latihan` dengan
+ * paging (pageSize=300) lalu baru menyaring nama di JS — dipanggil ULANG setiap 1 siswa
+ * menyelesaikan 1 kuis/materi (lewat doPostHitungGamifikasi_), DITAMBAH tombol admin
+ * "Hitung Ulang Semua Siswa (25)" yang mengulanginya 25x berturut-turut. Begitu koleksi
+ * `hasil_latihan` membesar (wajar setelah kelas aktif berbulan-bulan), pola itu memakai
+ * puluhan ribu baca HANYA untuk mendapat beberapa baris milik 1 siswa — cukup untuk
+ * menghabiskan kuota gratis 50.000 baca/hari dalam hitungan jam, bikin SEMUA fitur yang
+ * bergantung Firestore (termasuk login siswa) ikut gagal dengan pesan
+ * "429 RESOURCE_EXHAUSTED / Quota exceeded" sampai kuota di-reset esok harinya.
+ *
+ * v2 pakai firestoreQueryEqual_() (structured query `:runQuery` dengan filter
+ * `namaSiswa == nama`) — Firestore HANYA menagih baca untuk dokumen yang BENAR-BENAR
+ * cocok filter, bukan seluruh koleksi yang di-scan. TIDAK butuh composite index manual
+ * (1 filter kesetaraan tanpa orderBy field lain sudah otomatis punya index). Pola
+ * `where("namaSiswa", "==", nama)` yang SAMA sudah lebih dulu dipakai & terbukti bekerja
+ * di sisi klien (pages/laporan-siswa/assets/latihan-mandiri.js), jadi pencocokan PERSIS
+ * (bukan trim/lowercase seperti v1) sudah konsisten dengan cara field ini ditulis
+ * (uji-kemampuan.html: `namaSiswa: namaSiswa` apa adanya, tanpa trim). */
 function ambilRiwayatHasilLatihan_(nama) {
-  const target = String(nama).trim().toLowerCase();
-  const hasil = [];
-  let pageToken = "";
-  do {
-    const qs = "pageSize=300" + (pageToken ? "&pageToken=" + encodeURIComponent(pageToken) : "");
-    const r = firestoreFetch_("hasil_latihan?" + qs, "get");
-    if (r.code !== 200) throw new Error("Gagal membaca riwayat hasil_latihan: " + r.text);
-    (r.json.documents || []).forEach((doc) => {
-      const f = objFromFirestoreFields_(doc.fields);
-      if (String(f.namaSiswa || "").trim().toLowerCase() === target) {
-        hasil.push({ skor: Number(f.skor) || 0, timestamp: f.timestamp || "" });
-      }
-    });
-    pageToken = (r.json && r.json.nextPageToken) || "";
-  } while (pageToken);
+  const docs = firestoreQueryEqual_("hasil_latihan", "namaSiswa", String(nama).trim());
+  const hasil = docs.map((doc) => {
+    const f = objFromFirestoreFields_(doc.fields);
+    return { skor: Number(f.skor) || 0, timestamp: f.timestamp || "" };
+  });
   hasil.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   return hasil;
 }
