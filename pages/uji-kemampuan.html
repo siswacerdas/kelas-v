@@ -655,8 +655,26 @@
 
   async function panggilHitungLevel(nama) {
     try {
+      // v1.6: `keepalive: true` ditambahkan — root cause sesi ini (lihat CHANGELOG.md):
+      // siswa lihat "✓ Hasil tersimpan" lalu langsung menutup/pindah tab SEBELUM fetch
+      // fire-and-forget ini sempat selesai, jadi level_siswa tidak pernah tertulis
+      // meski hasil_latihan aman. `keepalive` membuat browser TETAP mengirimkan request
+      // ini di background walau halaman sudah dibongkar — request tidak lagi terikat
+      // pada umur tab. Pola ini SUDAH TERBUKTI jalan di file lain (lihat komentar
+      // panjang "KEDUA panggilan di bawah SENGAJA ditembak BERSAMAAN" di
+      // pages/materi/assets/materi-progress-tracker.js dan pages/modul/assets/
+      // modul-progress-tracker.js — cuma file INI yang sebelumnya belum ikut memakainya.
+      // Batasan bawaan browser: total payload keepalive dibatasi ~64KB, jauh di atas
+      // ukuran body kecil ({type, nama}) di sini, jadi aman.
+      // Trade-off yang tetap sama seperti sebelumnya: kalau halaman SUDAH dibongkar saat
+      // respons kembali, `res`/`data` di bawah tidak akan pernah terbaca (konteks JS-nya
+      // sudah tidak ada) — banner "🎉 Level naik!" cuma sempat tampil kalau siswa masih
+      // membuka halaman ini ketika respons datang, persis seperti sebelumnya. Tidak ada
+      // regresi UX di jalur normal (siswa yang tetap menunggu), yang berubah HANYA
+      // jaminan pengiriman ke server pada jalur siswa yang langsung pergi.
       const res = await fetch(APPS_SCRIPT_URL_LEVEL, {
         method: "POST",
+        keepalive: true,
         body: JSON.stringify({ type: "hitung_gamifikasi", nama: nama }),
       });
       const data = await res.json();
