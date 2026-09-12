@@ -6,6 +6,11 @@
 <title>Pustaka Belajar · Kelas 5</title>
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<!-- pdf.js & worker-nya dimuat dari sini (lihat <script> di bawah) — preconnect supaya
+     DNS+TLS ke cdnjs sudah "hangat" sebelum <script src> itu benar-benar dieksekusi,
+     bukan baru mulai resolve saat itu juga. Bagian dari perbaikan performa Pustaka
+     Belajar, lihat ANTIREGRESI.md §52. -->
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
 <link rel="stylesheet" href="assets/pustaka-belajar.css" />
 <style>
   body { margin: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
