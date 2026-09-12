@@ -1,0 +1,9 @@
+{
+  "name": "kelas-v-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Script bantu admin (dijalankan lokal, tidak dideploy ke GitHub Pages) untuk website Kelas 5.",
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
