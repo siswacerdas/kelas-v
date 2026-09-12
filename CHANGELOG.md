@@ -8,6 +8,72 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki — Data `level_siswa` "hilang" meski `hasil_latihan` sudah tersimpan (belum dirilis)
+- **Laporan Nitnot**: Abyan Nandana Khalif sudah 100% mengerjakan "Informasi Penting
+  dari Teks Aural" (12 September 2026, terlihat di Riwayat), tapi di Papan
+  Peringkat/Rekap Lengkap dia tetap tampil "Perintis · Lv.1", 0 EXP, 0 Kuis
+  Dikerjakan — seolah belum pernah mengerjakan apa pun.
+- **Akar sebab**: `hasil_latihan` ditulis LANGSUNG oleh klien (`addDoc` di
+  `uji-kemampuan.html`) dan SELALU berhasil — tapi `level_siswa` (sumber Papan
+  Peringkat) hanya ditulis lewat panggilan TERPISAH ke Apps Script
+  (`hitung_gamifikasi`), dikirim FIRE-AND-FORGET tepat setelah skor tersimpan.
+  Begitu siswa melihat "✓ Hasil tersimpan" di layar, wajar mereka langsung menutup
+  tab/pindah halaman — dan kalau itu terjadi SEBELUM panggilan `hitung_gamifikasi`
+  selesai, panggilannya terputus dan `level_siswa` tidak pernah tertulis. Ini BUKAN
+  bug logika (`doPostHitungGamifikasi_` di `Code.gs` sudah benar, murni/idempoten),
+  melainkan kerapuhan arsitektur: keberhasilan `level_siswa` bergantung pada siswa
+  tetap membuka tab cukup lama, sesuatu yang tidak bisa dijamin.
+- **Ini kemungkinan menjelaskan mengapa hampir semua siswa di Rekap Lengkap masih
+  tampil "0" di semua kolom** meski kelas sudah aktif mengerjakan modul & kuis —
+  bukan berarti mereka belum mengerjakan apa pun, kemungkinan besar levelnya belum
+  pernah berhasil dihitung sama sekali.
+- **Perbaikan langsung (tersedia sekarang)**: panel baru "🔄 Perbaiki Data Level &
+  Papan Peringkat" di `pages/admin.html` (tab "💪 Uji Kemampuan") — tombol "Hitung
+  Ulang Semua Siswa (25)" memanggil ulang `hitung_gamifikasi` untuk seluruh
+  `MPLS_STUDENTS` secara berurutan (jeda 300ms antar panggilan), atau tombol "Hitung
+  Ulang 1 Siswa" untuk perbaikan cepat 1 nama saja. Aman dijalankan kapan saja,
+  termasuk berulang kali dan untuk siswa yang datanya sudah benar — fungsi ini
+  SELALU menghitung ulang PENUH dari riwayat `hasil_latihan` yang sudah tersimpan,
+  tidak pernah menimpa dengan data yang salah.
+- **Diperbaiki sekarang juga**: `pages/uji-kemampuan.html` — panggilan
+  `hitung_gamifikasi` ditambah `keepalive: true` pada `fetch()`-nya. Opsi ini
+  membuat browser TETAP mengirimkan request di background walau tab sudah
+  ditutup/dipindah sebelum fetch selesai — request tidak lagi terikat umur tab.
+  **Ini BUKAN pola baru**: sudah terbukti jalan di
+  `pages/materi/assets/materi-progress-tracker.js` dan
+  `pages/modul/assets/modul-progress-tracker.js` (keduanya sudah lebih dulu memakai
+  `keepalive: true` untuk alasan persis sama) — `uji-kemampuan.html` ternyata
+  satu-satunya dari 3 file pemicu `hitung_gamifikasi` yang belum ikut memakainya,
+  itulah gap yang menyebabkan insiden Abyan. Tidak ada perubahan pada
+  `materi-progress-tracker.js`/`modul-progress-tracker.js` (sudah benar sejak awal).
+- **Trade-off jauh lebih kecil dari perkiraan awal**: sempat dipertimbangkan
+  `navigator.sendBeacon()` (kehilangan respons balik → banner "🎉 Level naik!" tidak
+  bisa tampil di jalur cadangan). Dengan `keepalive: true`, banner itu TETAP bisa
+  tampil normal di jalur biasa (siswa yang masih menunggu di halaman) — yang
+  berubah HANYA jaminan pengiriman ke server untuk siswa yang langsung pergi, tanpa
+  mengorbankan pengalaman siswa yang menunggu. Tidak ada regresi UX sama sekali.
+- **Batas teknis `keepalive`**: total payload keepalive dibatasi ~64KB oleh
+  browser — jauh di atas ukuran body kecil (`{type, nama}`) yang dikirim di sini,
+  aman.
+- **Cara pakai perbaikan langsung**: Panel Guru → tab "💪 Uji Kemampuan" → jalankan
+  "🔄 Hitung Ulang Semua Siswa (25)" sekali sekarang untuk memulihkan data siswa
+  yang sudah kadung hilang (termasuk Abyan). Root cause di `uji-kemampuan.html`
+  sudah diperbaiki di sesi ini juga, jadi kejadian serupa untuk kuis yang
+  dikerjakan SETELAH file ini diunggah seharusnya tidak berulang — tombol
+  perbaikan tetap dipertahankan di `admin.html` sebagai jaring pengaman kalau
+  suatu saat dibutuhkan lagi.
+- **Checklist uji manual yang disarankan**:
+  - [ ] Jalankan "Hitung Ulang Semua Siswa (25)" di `admin.html` sekali, pastikan
+        Abyan (dan siswa lain yang selama ini 0) sekarang muncul dengan EXP/level
+        yang benar di Papan Peringkat & Rekap Lengkap.
+  - [ ] Login sebagai siswa, kerjakan 1 Uji Kemampuan, SEGERA tutup tab begitu
+        skor "✓ Hasil tersimpan" muncul (jangan tunggu banner level) — cek
+        beberapa saat kemudian di Rekap Lengkap guru bahwa level siswa itu tetap
+        ter-update (bukti `keepalive` bekerja).
+  - [ ] Kerjakan 1 Uji Kemampuan lagi TANPA buru-buru menutup tab — pastikan
+        banner "Level saat ini/🎉 Level naik!" tetap tampil normal seperti
+        sebelumnya (tidak ada regresi di jalur biasa).
+
 ### Diperbaiki — Login siswa gagal/lambat di HP saat percobaan pertama (Sept 2026)
 - **Kejadian**: sejak masuk tahap uji-coba dengan siswa sungguhan, beberapa siswa
   melaporkan gagal login lewat HP dengan dua pesan berbeda pada hari yang sama —
