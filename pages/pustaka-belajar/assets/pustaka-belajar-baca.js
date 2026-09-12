@@ -73,7 +73,12 @@ window.PustakaBelajarBaca = (function () {
     try {
       const page = await pdfDoc.getPage(num);
       const stage = document.getElementById("pb-stage");
-      const dpr = window.devicePixelRatio || 1;
+      // Dibatasi maks 2 (bukan dpr asli perangkat) — banyak HP Android kelas menengah
+      // punya devicePixelRatio 3-4, yang kalau dipakai penuh menghasilkan canvas raster
+      // sampai ~4200px lebar (targetWidth 1400 × dpr) — berat untuk di-render justru di
+      // perangkat paling umum dipakai siswa. dpr 2 sudah lebih dari cukup tajam untuk
+      // teks/gambar presentasi dibaca di layar HP. Lihat ANTIREGRESI.md §52.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       const targetWidth = Math.min(stage.clientWidth - 24, 1400);
       const unscaledViewport = page.getViewport({ scale: 1 });
       const scale = (targetWidth / unscaledViewport.width) * dpr;
@@ -202,6 +207,89 @@ window.PustakaBelajarBaca = (function () {
     });
   }
 
+  /* ── Cache PDF di klien (IndexedDB) ──────────────────────────────────────
+     Tujuan: kunjungan ULANG ke materi yang SAMA (pola umum belajar mandiri —
+     siswa buka-ulang materi yang sama berkali-kali, bukan sekali baca lalu
+     tidak pernah lagi) jadi INSTAN, nol permintaan jaringan sama sekali.
+
+     Aman di-cache TANPA batas waktu/kedaluwarsa karena Drive File ID bersifat
+     permanen per file: Code.gs (lihat doPostPustakaBelajar_/doPostPustakaBelajarHapus_)
+     TIDAK punya fitur "ganti isi file untuk ID yang sama" — upload baru selalu
+     bikin baris + Drive File ID baru. Kalau suatu saat fitur "ganti file" itu
+     ditambahkan, cache ini WAJIB diberi invalidasi (mis. sertakan Timestamp
+     baris) — jangan lupa cek ANTIREGRESI.md §52 kalau itu terjadi.
+
+     Kegagalan apa pun di cache ini (IndexedDB tidak didukung, mode penyamaran
+     Safari yang membatasinya, kuota penuh, dll.) SENGAJA diredam total (try/catch
+     mengembalikan null / diam-diam) — cache murni optimisasi, bukan sumber
+     kebenaran, dan tidak boleh membuat pembaca gagal memuat dokumen. Lihat
+     ANTIREGRESI.md §52 untuk rincian & checklist uji. */
+  const CACHE_DB_NAMA = "pustakaBelajarCache";
+  const CACHE_STORE_NAMA = "pdf";
+  const CACHE_MAKS_ENTRI = 20; // batas jumlah file tersimpan sekaligus per HP — cegah storage device tergerus tanpa batas
+
+  function bukaDbCache_() {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) { reject(new Error("IndexedDB tidak didukung")); return; }
+      const req = indexedDB.open(CACHE_DB_NAMA, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(CACHE_STORE_NAMA)) {
+          db.createObjectStore(CACHE_STORE_NAMA, { keyPath: "fileId" });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function ambilDariCache_(fileId) {
+    try {
+      const db = await bukaDbCache_();
+      return await new Promise((resolve) => {
+        const tx = db.transaction(CACHE_STORE_NAMA, "readonly");
+        const req = tx.objectStore(CACHE_STORE_NAMA).get(fileId);
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => resolve(null);
+      });
+    } catch (e) {
+      return null; // anggap cache kosong, lanjut ke jalur network seperti biasa
+    }
+  }
+
+  async function bersihkanCacheLama_(db) {
+    return new Promise((resolve) => {
+      const tx = db.transaction(CACHE_STORE_NAMA, "readwrite");
+      const store = tx.objectStore(CACHE_STORE_NAMA);
+      const req = store.getAll();
+      req.onsuccess = () => {
+        const semua = req.result || [];
+        if (semua.length > CACHE_MAKS_ENTRI) {
+          // LRU sederhana berdasar kapan TERAKHIR disimpan/dipakai — buang yang paling lama
+          semua.sort((a, b) => a.disimpanPada - b.disimpanPada);
+          semua.slice(0, semua.length - CACHE_MAKS_ENTRI).forEach((item) => store.delete(item.fileId));
+        }
+      };
+      tx.oncomplete = resolve;
+      tx.onerror = resolve;
+    });
+  }
+
+  async function simpanKeCache_(fileId, buffer) {
+    try {
+      const db = await bukaDbCache_();
+      await new Promise((resolve) => {
+        const tx = db.transaction(CACHE_STORE_NAMA, "readwrite");
+        tx.objectStore(CACHE_STORE_NAMA).put({ fileId, bytes: buffer, disimpanPada: Date.now() });
+        tx.oncomplete = resolve;
+        tx.onerror = resolve; // gagal simpan cache BUKAN error fatal — dokumen sudah tampil dari network
+      });
+      await bersihkanCacheLama_(db);
+    } catch (e) {
+      // diamkan — lihat catatan panjang di atas kenapa cache boleh diam-diam gagal
+    }
+  }
+
   async function ambilMetadataDanFile_() {
     const id = qs("id");
     if (!id) throw new Error("ID materi tidak ditemukan di tautan.");
@@ -230,6 +318,13 @@ window.PustakaBelajarBaca = (function () {
       if (!row) throw new Error("Materi tidak ditemukan (mungkin sudah dihapus guru).");
       setTitle(row["Judul"] || "Pustaka Belajar");
       driveFileId = row["Drive File ID"];
+    }
+
+    // Cek cache lokal (IndexedDB) DULU sebelum ke jaringan — lihat catatan panjang
+    // di modul cache PDF di atas soal kenapa ini aman dilakukan tanpa kedaluwarsa.
+    const tersimpan = await ambilDariCache_(driveFileId);
+    if (tersimpan && tersimpan.bytes) {
+      return tersimpan.bytes;
     }
 
     // cache: "no-store" WAJIB di sini — URL relay yang dipakai Apps Script untuk
@@ -266,6 +361,10 @@ window.PustakaBelajarBaca = (function () {
     if (header !== "%PDF-") {
       throw new Error("File yang diterima bukan PDF yang valid. Coba muat ulang halaman (Ctrl+Shift+R).");
     }
+
+    // Fire-and-forget: simpan ke cache untuk kunjungan berikutnya. SENGAJA tidak
+    // di-await — menulis ke IndexedDB tidak boleh menunda halaman pertama tampil.
+    simpanKeCache_(driveFileId, buffer);
 
     return buffer;
   }
