@@ -1,0 +1,8 @@
+# Kredensial Service Account Firebase — JANGAN PERNAH ikut ter-commit.
+# Lihat scripts/README.md untuk cara mendapatkan file ini.
+scripts/*serviceAccountKey*.json
+scripts/*service-account*.json
+scripts/*.key.json
+
+# Dependency Node.js — diinstal lokal lewat `npm install`, tidak perlu di-commit.
+scripts/node_modules/

@@ -24,6 +24,9 @@ Sebelum meng-upload perubahan ke GitHub, pastikan semua poin berikut sudah dicek
 - [ ] Tombol **Keluar** berhasil logout dan kembali ke layar login
 - [ ] Halaman utama tidak bisa diakses tanpa login (otomatis redirect ke login)
 - [ ] Menekan Enter di kolom kata sandi berfungsi sama dengan klik tombol Masuk
+- [ ] **Login siswa** sekarang lewat Firebase Auth email+kata sandi (dipetakan
+  dari dropdown nama), BUKAN lagi NISN via Apps Script — lihat checklist
+  detail lengkap di **§52**.
 
 ### 3. Peran Pengguna (Role)
 - [ ] Login sebagai **guru**: panel guru muncul
@@ -2575,6 +2578,18 @@ bergantung pada `infografis-data.js` untuk daftar mapelnya, sudah dipindah ke
 
 ### 51. Login siswa gagal/lambat di HP saat percobaan pertama (Sept 2026)
 
+> ⚠️ **OBSOLETE sejak migrasi login siswa ke Firebase Authentication** (lihat
+> §52, CHANGELOG.md) — SELURUH jalur kode yang dibahas di bawah ini
+> (`cobaSiswaLogin_`, retry 2×, endpoint `type: "siswa_login"` di sisi klien)
+> **sudah dihapus total** dari `index.html`, bukan lagi sekadar diperbaiki.
+> Akar masalahnya (round-trip ke Apps Script per login) sekarang hilang sama
+> sekali karena siswa login lewat Firebase Auth email+kata sandi langsung,
+> persis seperti guru/orangtua. Bagian di bawah ini **dipertahankan sebagai
+> arsip riwayat investigasi** (berguna kalau pola gejala serupa — "lambat di
+> percobaan pertama, cepat sesudahnya" — muncul lagi di fitur lain yang juga
+> memakai Service Account, mis. `apps-script/Code.gs` untuk fitur non-login),
+> BUKAN checklist yang perlu dijalankan lagi untuk login siswa.
+
 **Kronologi**: setelah masuk tahap uji-coba dengan siswa sungguhan, laporan
 masuk dari 2 siswa berbeda yang gagal login lewat HP, dengan **dua pesan
 berbeda** pada hari yang sama untuk siswa yang sama:
@@ -2656,3 +2671,62 @@ Apps Script perlu deploy dulu — Manage deployments → New version):
       ini — kalau iya, itu konfirmasi akhir dugaan cold-start/token-cache
       benar; kalau laporan masih ada dan Logger.log di Executions menunjukkan
       penyebab lain, revisi bagian "Akar masalah" di atas
+
+### 52. Migrasi login siswa ke Firebase Authentication email+kata sandi (Sept 2026)
+
+**Konteks**: menggantikan mekanisme §51 di atas (yang cuma menambal gejala
+lambat/error dengan retry) dengan perbaikan struktural — login siswa
+dipindah total ke Firebase Auth email+kata sandi, SAMA PERSIS mekanismenya
+dengan guru/orangtua, menghilangkan ketergantungan login pada Apps Script
+sama sekali. Lihat CHANGELOG.md untuk detail teknis lengkap & daftar file
+yang berubah.
+
+**Prasyarat sebelum menguji checklist di bawah** (WAJIB dilakukan lebih
+dulu, lihat `scripts/README.md`):
+- [ ] `scripts/bulk-buat-akun-siswa.js` sudah dijalankan dengan `--dry-run`
+      dulu, hasilnya diperiksa (terutama daftar nama yang "dikoreksi" — lihat
+      catatan 4 nama bermasalah di CHANGELOG.md), BARU dijalankan sungguhan
+- [ ] Firebase Console → Authentication → Users: 25 akun siswa muncul dengan
+      email sesuai `login_siswa.csv`
+- [ ] Firebase Console → Firestore → koleksi `users`: tiap akun siswa punya
+      dokumen dengan `role: "siswa"`, `nama` (ejaan PERSIS sama dengan
+      `MPLS_STUDENTS` di `pages/mpls/assets/mpls-data.js`), `email`
+
+**Checklist login itu sendiri**:
+- [ ] Login siswa dengan nama+NISN (kata sandi) **benar** → berhasil masuk
+      TANPA jeda "memeriksa…" yang terasa lama (beda jelas dari §51 lama)
+- [ ] Nama tampilan yang muncul di pojok kanan atas setelah login **sama
+      persis** dengan nama yang dipilih di dropdown (khususnya 4 siswa yang
+      namanya sempat bermasalah di CSV — Nayla Latifa, Reynand Pratama,
+      Shakila Qiyana Shadiqah, Shanum Meyra Rosadi)
+- [ ] Login dengan kata sandi **salah** → pesan error jelas ("Nama atau NISN
+      salah."), TIDAK ada jeda retry, kolom kata sandi tidak ikut ter-reset
+- [ ] Memilih nama yang akunnya **belum dibuat** di `SISWA_EMAIL_MAP` (mis.
+      dengan sengaja menghapus 1 baris sementara utk uji) → pesan "Akunmu
+      belum terdaftar…", bukan error teknis mentah
+- [ ] Kolom kata sandi menerima nilai **bukan 10 digit** tanpa ditolak duluan
+      oleh validasi form (validasi lama "harus 10 digit" sudah dihapus)
+
+**Checklist regresi di fitur lain (harus tetap berfungsi TANPA perubahan
+kode di fitur-fitur ini)**:
+- [ ] `pages/materi.html` & `pages/modul.html`: centang progres tersimpan &
+      kembali tercentang benar setelah logout→login lagi sebagai siswa yang
+      sama (`materi-progress-tracker.js`/`modul-progress-tracker.js` membaca
+      `data.nama` dari Firestore, bukan lagi `sessionStorage`)
+- [ ] `pages/uji-kemampuan.html`: bisa mengerjakan & submit seperti biasa,
+      `hasil_latihan` tersimpan dengan `namaSiswa` yang benar (cek Firestore
+      Console), skor tetap tampil di `pages/papan-peringkat.html`
+- [ ] `pages/riwayat-latihan.html` & `pages/profil-siswa.html`: menampilkan
+      riwayat/profil milik siswa yang sedang login, bukan siswa lain
+- [ ] Login sebagai **guru** dan **orangtua**: sama sekali tidak berubah,
+      masih memakai form & alur yang sama seperti sebelumnya
+- [ ] `pages/admin.html`, `pages/kelas/` (roster NISN untuk rapor): berfungsi
+      normal, tidak terpengaruh (sistem NISN di sini terpisah dari login)
+- [ ] 2 siswa login BERGANTIAN di 1 perangkat/browser yang sama (tanpa
+      menutup tab): siswa kedua HARUS logout siswa pertama dulu secara
+      eksplisit sebelum bisa login sebagai dirinya sendiri — sesi TIDAK
+      boleh "nyangkut" otomatis (verifikasi `browserSessionPersistence`
+      masih berfungsi sama seperti sebelum migrasi)
+- [ ] Buka DevTools → Network saat login siswa → pastikan **tidak ada lagi**
+      request ke URL Apps Script (`script.google.com/...`) yang terpicu oleh
+      proses login (dulu ada karena `type: "siswa_login"`)

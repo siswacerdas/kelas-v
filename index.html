@@ -589,11 +589,22 @@
      sama seperti dipakai di pages/kelas/ & pages/mpls/. -->
 <script src="pages/mpls/assets/mpls-data.js"></script>
 <script src="pages/mpls/assets/config.js"></script>
+<!-- Peta nama siswa -> email akun Firebase (login siswa, sejak migrasi ke Firebase
+     Auth email+kata sandi — lihat CHANGELOG.md & assets/js/siswa-akun.js). -->
+<script src="assets/js/siswa-akun.js"></script>
 
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail }
+  // v2.0 (login siswa via email/kata sandi Firebase): signInAnonymously TIDAK
+  // diimpor lagi di sini karena doLoginSiswa() tidak lagi memakainya (lihat
+  // catatan panjang di doLoginSiswa() di bawah) — TAPI cabang `user.isAnonymous`
+  // di onAuthStateChanged SENGAJA TETAP DIBIARKAN ADA (bukan dihapus), untuk
+  // siswa yang kebetulan masih punya sesi anonim lama tersimpan di browsernya
+  // dari SEBELUM migrasi ini dipasang (jarang, tapi mungkin) — supaya sesi lama
+  // itu tetap ditangani dengan benar alih-alih error, sampai sesi itu berakhir
+  // sendiri (browserSessionPersistence -> hilang begitu tab ditutup).
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
   import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, limit }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -748,152 +759,75 @@
     }
   };
 
-  /** Pesan ini SAMA PERSIS dengan yang dikembalikan doPostSiswaLogin_ di
-   * Code.gs saat verifikasi Firestore gagal karena hal TEKNIS (token Service
-   * Account gagal diambil, atau panggilan REST ke Firestore gagal) — BUKAN
-   * karena nama/NISN salah (lihat komentar di atas doPostSiswaLogin_ dan
-   * ANTIREGRESI.md §51). Server sengaja membalasnya sebagai JSON ber-status
-   * "error" yang "valid" (supaya detail teknis tidak bocor ke siswa), jadi
-   * dari sudut pandang HTTP/JSON dia terlihat sama sahnya dengan "Nama atau
-   * NISN tidak cocok" — padahal secara SIFAT dia adalah kegagalan teknis
-   * yang seharusnya ikut di-retry seperti timeout/jaringan, bukan langsung
-   * ditampilkan ke siswa sebagai final. Kalau kalimat pesan ini di Code.gs
-   * pernah diubah, PERBARUI juga string di bawah, kalau tidak deteksi ini
-   * tidak akan pernah kena/trigger lagi. */
-  const PESAN_GAGAL_TEKNIS_BACKEND_ = 'Gagal memverifikasi, coba beberapa saat lagi.';
-
-  /** True kalau balasan JSON (valid, tidak dilempar sebagai Error oleh
-   * cobaSiswaLogin_) sebenarnya adalah kegagalan TEKNIS dari backend (lihat
-   * PESAN_GAGAL_TEKNIS_BACKEND_ di atas) — dipakai doLoginSiswa untuk
-   * menyamakan perlakuannya dengan timeout/jaringan (layak di-retry),
-   * BUKAN dengan "Nama atau NISN tidak cocok" (kesalahan input asli siswa,
-   * tidak boleh di-retry supaya kesalahan ketik tetap langsung terlihat). */
-  function kegagalanTeknisDariBackend_(json) {
-    return !!json && json.status !== 'ok' && json.message === PESAN_GAGAL_TEKNIS_BACKEND_;
-  }
-
-  /** Panggil endpoint siswa_login SEKALI, dengan batas waktu (AbortController)
-   * supaya tidak menggantung tanpa batas kalau jaringan/Apps Script lambat
-   * (lihat ANTIREGRESI.md §51 — percobaan PERTAMA ke Apps Script bisa lambat
-   * karena cache token Service Account kosong + kemungkinan "cold start"
-   * instans Apps Script, lebih terasa di jaringan seluler daripada WiFi PC).
-   * Melempar error kalau: jaringan gagal, timeout, ATAU balasan bukan JSON
-   * valid (mis. halaman HTML dari operator/Google saat timeout) — SEMUA itu
-   * dianggap "gagal teknis" yang layak dicoba ulang otomatis oleh pemanggil.
-   * TIDAK melempar error untuk balasan JSON valid ber-status "error" (mis.
-   * nama/NISN salah) — itu jawaban sah dari server, bukan kegagalan teknis,
-   * jadi tidak boleh ikut di-retry (lihat doLoginSiswa di bawah). Pengecualian:
-   * PESAN_GAGAL_TEKNIS_BACKEND_ tetap "valid JSON" di sini, klasifikasinya
-   * sebagai kegagalan teknis dilakukan belakangan oleh doLoginSiswa lewat
-   * kegagalanTeknisDariBackend_(), bukan di sini. */
-  async function cobaSiswaLogin_(nama, nisn, timeoutMs) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    let res;
-    try {
-      res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
-        method: 'POST',
-        body: JSON.stringify({ type: 'siswa_login', nama: nama, nisn: nisn }),
-        signal: controller.signal,
-      });
-    } catch (err) {
-      if (err.name === 'AbortError') {
-        throw new Error('TIMEOUT');
-      }
-      throw err;
-    } finally {
-      clearTimeout(timer);
-    }
-    let json;
-    try {
-      json = await res.json();
-    } catch (err) {
-      // Balasan bukan JSON (mis. "<!DOCTYPE ...") — lihat ANTIREGRESI.md §51.
-      throw new Error('RESPON_BUKAN_JSON');
-    }
-    return json;
-  }
-
-  /** Login siswa: verifikasi nama+NISN ke Apps Script (type: "siswa_login"),
-   * kalau cocok baru buat sesi Firebase Anonymous + simpan nama tampilan ke
-   * sessionStorage (BUKAN localStorage — supaya tidak nyangkut ke sesi
-   * berikutnya kalau HP dipakai bergantian antar siswa, lihat
-   * CHANGELOG.md v0.11.0. onAuthStateChanged yang menangani sisanya
-   * (membuka aplikasi) setelah signInAnonymously berhasil.
+  /** Login siswa — v2.0 (CHANGELOG.md, migrasi login siswa ke Firebase Auth):
+   * SEBELUMNYA (v1.x) nama+NISN diverifikasi lewat 1-2x panggilan HTTP ke Apps
+   * Script (`type: "siswa_login"`), yang MELEWATI Firestore lewat kredensial
+   * Service Account — lambat (butuh timeout 20 detik + auto-retry, lihat
+   * riwayat lengkap di CHANGELOG.md versi lama) dan rawan gagal di jaringan
+   * seluler/sekolah. SEKARANG nama dipetakan ke email lewat SISWA_EMAIL_MAP
+   * (assets/js/siswa-akun.js), lalu langsung dipakai signInWithEmailAndPassword
+   * — SAMA PERSIS mekanismenya dengan login Guru & Orang Tua di atas, cuma
+   * beda sumber emailnya (dipilih dari dropdown, bukan diketik manual) supaya
+   * siswa tetap tidak perlu tahu/ketik alamat emailnya sendiri. Ini menghapus
+   * SELURUH round-trip ke Apps Script dari proses login — Firebase Auth
+   * langsung menjawab dari Google, tanpa "cold start" Apps Script yang jadi
+   * akar keluhan lambat/sering error sebelumnya.
    *
-   * v1.2 (ANTIREGRESI.md §51): auto-retry SEKALI kalau percobaan pertama
-   * gagal karena alasan TEKNIS (timeout/jaringan/balasan bukan JSON) — bukan
-   * karena nama/NISN salah. Percobaan kedua nyaris selalu jauh lebih cepat
-   * karena token Service Account & instans Apps Script sudah "hangat" dari
-   * percobaan pertama, jadi retry ini murni menutupi latensi "cold start",
-   * BUKAN menyembunyikan kesalahan sungguhan dari siswa.
+   * Kolom "NISN" di form SENGAJA TIDAK diubah namanya walau sekarang isinya
+   * dipakai LANGSUNG sebagai kata sandi Firebase (bukan lagi dicocokkan ke
+   * data NISN sungguhan) — supaya siswa yang sudah terbiasa dengan angka yang
+   * sama persis tidak perlu belajar ulang apa pun. Validasi format "harus 10
+   * digit" DIHAPUS (sebelumnya wajib karena itu syarat pencarian data NISN) —
+   * sekarang cukup "tidak boleh kosong", supaya kalau suatu saat kata sandi
+   * siswa tertentu diganti manual jadi format lain (mis. lewat Firebase
+   * Console), form ini tidak ikut menolaknya secara keliru.
    *
-   * v1.3 (lanjutan §51 — kegagalan Firestore/token TERBUNGKUS JSON valid):
-   * v1.2 ternyata tidak menutup satu celah — kalau exception-nya kejadian
-   * DI DALAM Apps Script (token/Firestore gagal SETELAH request sukses
-   * sampai server), Code.gs menangkapnya sendiri lalu membalas JSON valid
-   * ber-status "error" berisi PESAN_GAGAL_TEKNIS_BACKEND_. Karena itu JSON
-   * valid, v1.2 menganggapnya jawaban sah (seperti nama/NISN salah) dan
-   * TIDAK ikut di-retry — padahal ini murni kegagalan teknis di sisi server,
-   * bukan kesalahan input siswa. v1.3 memakai kegagalanTeknisDariBackend_()
-   * untuk mendeteksi pesan spesifik ini lalu melemparnya sebagai Error biasa,
-   * supaya masuk ke alur retry yang sama seperti timeout/jaringan di v1.2. */
+   * Akun siswa TETAP BUKAN Anonymous Auth lagi — sesi tersimpan sebagai akun
+   * email+password sungguhan, dengan dokumen Firestore users/{uid} berisi
+   * {nama, role:"siswa", email} (dibuat lewat script sekali-jalan, lihat
+   * scripts/README.md — BUKAN dibuat sendiri oleh klien, lihat firestore.rules
+   * yang memang tidak mengizinkan client menulis role "siswa" untuk dirinya
+   * sendiri). onAuthStateChanged() TIDAK PERLU diubah sama sekali untuk ini —
+   * cabang "else" (bukan anonim) di bawah sudah menangani akun apa pun dengan
+   * dokumen users/{uid} sejak awal, apa pun rolenya. */
   window.doLoginSiswa = async () => {
     const nama = document.getElementById('inp-siswa-nama').value;
-    const nisn = document.getElementById('inp-siswa-nisn').value.trim();
+    const kataSandi = document.getElementById('inp-siswa-nisn').value.trim();
     const errEl = document.getElementById('login-siswa-error');
     const btn = document.getElementById('btn-login-siswa');
     errEl.textContent = '';
 
     if (!nama) { errEl.textContent = 'Pilih namamu dulu dari daftar.'; return; }
-    if (!/^\d{10}$/.test(nisn)) { errEl.textContent = 'NISN harus 10 digit angka.'; return; }
+    if (!kataSandi) { errEl.textContent = 'Isi NISN/kata sandimu dulu.'; return; }
 
-    btn.disabled = true;
-
-    let json;
-    try {
-      errEl.textContent = 'Memeriksa… (percobaan pertama kadang agak lama, mohon tunggu)';
-      json = await cobaSiswaLogin_(nama, nisn, 20000);
-      // v1.3: balasan JSON valid, tapi kalau isinya persis pesan generik
-      // kegagalan Firestore/token dari backend, perlakukan sama seperti
-      // gagal teknis lain di atas -> lempar supaya kena retry di bawah.
-      if (kegagalanTeknisDariBackend_(json)) throw new Error(json.message);
-    } catch (firstErr) {
-      // Gagal teknis di percobaan pertama -> coba sekali lagi otomatis,
-      // biasanya sudah "hangat" & jauh lebih cepat kali ini.
-      try {
-        errEl.textContent = 'Koneksi pertama lambat, mencoba sekali lagi…';
-        json = await cobaSiswaLogin_(nama, nisn, 20000);
-        if (kegagalanTeknisDariBackend_(json)) throw new Error(json.message);
-      } catch (secondErr) {
-        errEl.textContent = 'Gagal terhubung ke server setelah 2 kali percobaan. ' +
-          'Coba pindah ke WiFi kalau memakai data seluler, lalu tekan Masuk lagi. ' +
-          '(' + secondErr.message + ')';
-        btn.disabled = false;
-        return;
-      }
-    }
-
-    if (json.status !== 'ok') {
-      errEl.textContent = json.message || 'Nama atau NISN tidak cocok.';
-      btn.disabled = false;
+    const email = (typeof SISWA_EMAIL_MAP !== 'undefined') ? SISWA_EMAIL_MAP[nama] : undefined;
+    if (!email) {
+      // Nama ada di dropdown (MPLS_STUDENTS) tapi tidak ada di SISWA_EMAIL_MAP —
+      // berarti akunnya belum dibuat/dipetakan, BUKAN kesalahan input siswa.
+      errEl.textContent = 'Akunmu belum terdaftar, minta tolong ke guru untuk mengeceknya.';
       return;
     }
+
+    btn.disabled = true;
+    errEl.textContent = 'Memeriksa…';
     try {
-      sessionStorage.setItem(KEY_NAMA_SISWA, nama);
-      // v1.1: sesi siswa SENGAJA per-tab (browserSessionPersistence), BUKAN
-      // ikut tersimpan lintas tab seperti guru/orangtua di atas — supaya kalau
-      // ada tab lain situs ini terbuka di browser yang sama (mis. dibuka
-      // penasaran), tab itu TIDAK ikut "mewarisi" sesi siswa yang sedang aktif
-      // di tab ini, dan proteksi "sesi nyasar" di bawah tidak sampai ikut
-      // mengeluarkan sesi tab ini juga (sebelum perbaikan ini, keduanya
-      // berbagi 1 sesi Firebase yang sama karena persistence default global).
+      // Sesi siswa SENGAJA per-tab (browserSessionPersistence), BUKAN ikut
+      // tersimpan lintas tab/buka-tutup browser seperti guru/orangtua di atas
+      // — supaya kalau HP/tablet dipakai bergantian antar siswa, sesi siswa
+      // sebelumnya tidak "nyangkut" ke siswa berikutnya yang memakai perangkat
+      // yang sama (kebijakan ini dipertahankan sama persis dari mekanisme lama).
       await setPersistence(auth, browserSessionPersistence);
-      await signInAnonymously(auth);
+      await signInWithEmailAndPassword(auth, email, kataSandi);
       // Sengaja TIDAK set btn.disabled = false di sini — onAuthStateChanged akan
-      // langsung menyembunyikan seluruh #login-screen begitu sesi anonim aktif.
-    } catch (err) {
-      errEl.textContent = 'Gagal masuk, coba lagi: ' + err.message;
+      // langsung menyembunyikan seluruh #login-screen begitu sesi aktif.
+    } catch (e) {
+      const map = {
+        'auth/invalid-credential': 'Nama atau NISN salah.',
+        'auth/user-not-found':     'Akunmu belum terdaftar, minta tolong ke guru untuk mengeceknya.',
+        'auth/wrong-password':     'NISN salah.',
+        'auth/too-many-requests':  'Terlalu banyak percobaan. Coba lagi nanti.',
+      };
+      errEl.textContent = map[e.code] || 'Gagal masuk: ' + e.message;
       btn.disabled = false;
     }
   };
@@ -924,6 +858,15 @@
     sembunyikanPanelKondisional_();
 
     if (user && user.isAnonymous) {
+      // v2.0: cabang ini SENGAJA DIBIARKAN (bukan kode aktif lagi) — sejak
+      // migrasi login siswa ke Firebase Auth email+kata sandi (lihat
+      // doLoginSiswa() di bawah), doLoginSiswa() TIDAK PERNAH lagi memanggil
+      // signInAnonymously(), jadi cabang ini seharusnya tidak pernah ketemu
+      // user baru. Dipertahankan hanya untuk menangani siswa yang kebetulan
+      // masih bawa sesi anonim lama tersimpan dari SEBELUM migrasi ini (sesi
+      // itu otomatis hilang sendiri begitu tab lama ditutup, karena dulu
+      // dipakai browserSessionPersistence) — supaya sesi lama itu tetap
+      // ditangani dengan benar, bukan malah error, selama masa transisi.
       // Akun siswa (Firebase Anonymous Auth) — TIDAK punya dokumen Firestore
       // users/{uid} sama sekali, nama tampilan datang dari sessionStorage yang
       // diisi doLoginSiswa() tepat sebelum signInAnonymously() dipanggil.

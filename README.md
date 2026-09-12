@@ -76,8 +76,24 @@ Website pembelajaran terpadu untuk guru dan siswa Kelas 5. Dibangun di atas GitH
    email : "email@guru.com"
    ```
 
-### Langkah 7 — Tambah Akun Siswa
-Ulangi Langkah 6 untuk setiap siswa, dengan `role: "siswa"`
+### Langkah 7 — Tambah Akun Siswa (cara cepat, direkomendasikan)
+Sejak migrasi login siswa ke Firebase Auth email+kata sandi (lihat
+`CHANGELOG.md`, versi login siswa terbaru), akun siswa **tidak perlu lagi
+dibuat 1-per-1 lewat Firebase Console**. Gunakan `scripts/bulk-buat-akun-siswa.js`
+— cukup siapkan 1 file CSV berisi Nama Lengkap, Alamat Email, dan Password
+Login untuk seluruh siswa, jalankan sekali, semua akun (Authentication +
+dokumen Firestore `users/{uid}` dengan `role: "siswa"`) langsung terbuat.
+Panduan lengkap ada di `scripts/README.md`.
+
+Kalau cuma perlu menambah 1-2 siswa baru di tengah tahun (mis. pindahan),
+script yang sama juga bisa dipakai — lihat bagian "Menambah 1 siswa baru di
+tengah tahun" di `scripts/README.md`.
+
+#### Cara manual (fallback — kalau tidak bisa menjalankan Node.js)
+Ulangi Langkah 6 untuk setiap siswa, dengan `role: "siswa"`. Untuk siswa,
+selain `nama`/`role`/`email`, akun Firebase Auth-nya juga perlu dibuat
+dengan email+kata sandi seperti pada Langkah 6 (bukan diaktifkan lewat cara
+NISN lama — cara itu sudah tidak dipakai lagi).
 
 ### Langkah 7b — Tambah Akun Orang Tua (untuk fitur Laporan Siswa)
 Sama seperti Langkah 6/7, tapi field-nya:

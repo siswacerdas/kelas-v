@@ -8,6 +8,88 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diubah — Login siswa dipindah total ke Firebase Authentication (email + kata sandi)
+- **Alasan (permintaan Arif)**: mekanisme login siswa lama (pilih nama + NISN,
+  diverifikasi lewat Apps Script `type: "siswa_login"`) sangat lambat & sering
+  error, terutama di jaringan seluler — akar masalahnya adalah setiap login
+  butuh round-trip HTTP ke Apps Script yang menandatangani JWT Service Account
+  lalu query Firestore lewat REST API, dengan "cold start" yang bisa berujung
+  timeout 20 detik + retry manual (perbaikan sementara ini sudah pernah
+  dilakukan & didokumentasikan lengkap di `ANTIREGRESI.md §51` — sekarang
+  ditandai OBSOLETE di sana karena jalur kodenya dihapus total oleh migrasi
+  ini, bukan sekadar diperbaiki lagi).
+- **Solusi**: siswa sekarang login lewat **Firebase Authentication email+kata
+  sandi sungguhan** — mekanisme PERSIS SAMA dengan yang sudah dipakai
+  guru/orangtua sejak awal proyek ini (lihat CHANGELOG v0.1.0), bukan lagi
+  Firebase Anonymous Auth + verifikasi terpisah ke Apps Script. Ini
+  MENGHILANGKAN SELURUH ketergantungan proses login pada Apps Script — Firebase
+  Auth menjawab langsung dari Google, tanpa "cold start".
+- **UI TIDAK berubah untuk siswa** — tetap pilih nama dari dropdown + isi kolom
+  "NISN" seperti sebelumnya. Yang berubah cuma di baliknya: nama dipetakan ke
+  email lewat peta baru `assets/js/siswa-akun.js` (`SISWA_EMAIL_MAP`), lalu isi
+  kolom "NISN" dipakai LANGSUNG sebagai kata sandi Firebase (bukan lagi
+  dicocokkan ke data NISN sungguhan lewat Apps Script) — kata sandi awal semua
+  siswa SENGAJA disamakan dengan NISN mereka masing-masing untuk kontinuitas,
+  supaya tidak ada yang perlu belajar ulang apa pun.
+- **`index.html`**: `doLoginSiswa()` ditulis ulang total — `signInAnonymously`,
+  `cobaSiswaLogin_()`, `kegagalanTeknisDariBackend_()`, dan
+  `PESAN_GAGAL_TEKNIS_BACKEND_` dihapus (tidak dipakai lagi), diganti langsung
+  `signInWithEmailAndPassword()` dengan `browserSessionPersistence` (sesi
+  per-tab dipertahankan sama seperti sebelumnya, supaya HP/tablet yang dipakai
+  bergantian antar siswa tidak saling mewarisi sesi). Validasi format "NISN
+  harus 10 digit" DIHAPUS (sekarang cukup "tidak boleh kosong") supaya kata
+  sandi format lain di masa depan tidak ditolak keliru oleh form.
+- **TIDAK ADA perubahan** di `onAuthStateChanged()` (`index.html`),
+  `role-guard.js`, `materi-progress-tracker.js`, `modul-progress-tracker.js`,
+  atau `firestore.rules` — SEMUANYA sudah dirancang sejak awal untuk menangani
+  akun apa pun yang punya dokumen Firestore `users/{uid}` dengan `role`,
+  terlepas dari mekanisme login akun itu (lihat cabang "else"/bukan-anonim di
+  tiap file). Cabang `user.isAnonymous` di file-file itu DIBIARKAN ADA (bukan
+  dihapus) murni untuk menangani sisa sesi anonim lama dari sebelum migrasi
+  ini, sampai sesi itu berakhir sendiri.
+- **Backend (`apps-script/Code.gs`)**: TIDAK disentuh sama sekali di migrasi
+  ini — `doPostSiswaLogin_`/endpoint `type: "siswa_login"` sekarang jadi kode
+  mati (tidak ada lagi klien yang memanggilnya) tapi dibiarkan ada dulu (aman,
+  tidak berbahaya) sampai migrasi ini dikonfirmasi lancar di kelas sungguhan;
+  boleh dibersihkan di sesi terpisah nanti.
+- **`RANCANGAN-MIGRASI-FIRESTORE.md` Fase 2 (endpoint `siswaLogin` baca
+  `siswa/{nisn}` via Firestore) DIBATALKAN/tidak jadi dikerjakan** — sudah
+  tidak relevan lagi karena login siswa sekarang sama sekali tidak lewat Apps
+  Script. Koleksi Firestore `siswa/{nisn}` (profil + NISN untuk keperluan
+  rapor/roster, dikelola dari `pages/kelas/`) TETAP ADA dan TIDAK terpengaruh
+  — itu sistem terpisah dari akun login, lihat dokumen itu untuk detail.
+- **Alat baru — `scripts/bulk-buat-akun-siswa.js`**: script Node.js (Firebase
+  Admin SDK, dijalankan lokal oleh Arif, TIDAK dideploy ke GitHub Pages) untuk
+  membuat/memperbarui akun 25 siswa sekaligus dari 1 file CSV
+  (`login_siswa.csv`), menggantikan cara manual 1-per-1 lewat Firebase Console.
+  Idempoten (aman dijalankan ulang), ada mode `--dry-run`, dan memvalidasi
+  setiap nama terhadap roster resmi (`MPLS_STUDENTS`) sebelum membuat apa pun
+  — lihat `scripts/README.md`.
+- **Ditemukan+diperbaiki sekalian — data CSV asli (`login_siswa.csv`, Sept
+  2026) punya 4 nama dengan spasi nyasar di tengah kata** (kemungkinan artefak
+  export spreadsheet): "Nay la Latifa", "Re y nand Pratama", "Shakila Q i y ana
+  Shadi q ah", "Shanum Me y ra Rosadi" — seharusnya "Nayla Latifa", "Reynand
+  Pratama", "Shakila Qiyana Shadiqah", "Shanum Meyra Rosadi" (persis
+  `MPLS_STUDENTS`). Kalau tidak ketahuan, ke-4 akun ini akan login dengan
+  nama yang TIDAK PERNAH cocok dengan progres belajar mereka di tempat lain
+  (materi/modul/uji kemampuan/papan peringkat akan terlihat "kosong" walau
+  sudah mengerjakan banyak hal) — persis kelas bug yang sama dengan yang
+  dijelaskan panjang di `assets/js/siswa-akun.js`. `scripts/bulk-buat-akun-siswa.js`
+  MENDETEKSI & MENGOREKSI otomatis ke-4 nama ini (dicocokkan ke
+  `ROSTER_RESMI_`, bukan ditulis tangan) — sudah diuji dengan `--dry-run` ke
+  file CSV asli, hasilnya benar. **Sumber CSV ini sebaiknya dicek ulang** kalau
+  dipakai lagi untuk keperluan lain (mis. diimpor ke sheet "Data Siswa") —
+  kemungkinan artefak yang sama ikut kebawa di sana.
+- **Lihat §52 ANTIREGRESI.md** untuk checklist uji manual lengkap sebelum
+  dipakai seluruh kelas.
+- **BELUM diuji dengan Firebase project sungguhan** — perubahan ini disusun &
+  diverifikasi secara statis (baca kode existing role-guard.js/tracker/rules
+  untuk memastikan kompatibel, `node --check` pada script login, dry-run
+  script bulk-buat-akun) tapi BELUM dicoba login sungguhan di `kelas-v-2026`.
+  Arif WAJIB menjalankan `scripts/bulk-buat-akun-siswa.js` (dry-run dulu, baru
+  sungguhan) lalu login sebagai minimal 2-3 siswa contoh sebelum diumumkan ke
+  kelas — lihat checklist §52.
+
 ### Diperbaiki — Data `level_siswa` "hilang" meski `hasil_latihan` sudah tersimpan (belum dirilis)
 - **Laporan Nitnot**: Abyan Nandana Khalif sudah 100% mengerjakan "Informasi Penting
   dari Teks Aural" (12 September 2026, terlihat di Riwayat), tapi di Papan

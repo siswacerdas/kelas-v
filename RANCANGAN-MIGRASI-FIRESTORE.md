@@ -1,5 +1,18 @@
 # Rancangan Migrasi "Data Siswa" ke Firestore
 
+> **⚠️ UPDATE (lihat CHANGELOG.md, migrasi login siswa ke Firebase Auth):**
+> **Fase 2 di dokumen ini (endpoint `siswaLogin` baca `siswa/{nisn}` via
+> Firestore, disebut di §5/§6 di bawah) DIBATALKAN — TIDAK JADI DIKERJAKAN.**
+> Login siswa sekarang memakai Firebase Authentication email+kata sandi
+> langsung (sama seperti guru/orangtua), sama sekali tidak lewat Apps Script
+> lagi — jadi endpoint `siswaLogin` yang direncanakan Fase 2 ini sudah tidak
+> relevan. **Fase 1 (migrasi koleksi `siswa/{nisn}` untuk profil/rapor) TETAP
+> BERLAKU DAN TIDAK TERPENGARUH** — koleksi itu masih dipakai `pages/kelas/`
+> untuk data profil siswa (nama, NISN, tempat/tanggal lahir, foto), cuma
+> sudah tidak ada hubungannya dengan proses LOGIN lagi. Jangan lanjutkan Fase
+> 2 di dokumen ini kecuali ada keputusan baru yang membatalkan migrasi login
+> Firebase Auth di atas.
+>
 > Status: **RENCANA — menunggu Arif menyiapkan Service Account di Google Cloud
 > Console (§1) sebelum kode bisa mulai ditulis.**
 > Dokumen ini pelacak progres migrasi Data Siswa saja. `CHANGELOG.md`
@@ -140,9 +153,11 @@ ditambahkan bareng implementasi).
   **✅ SELESAI — 25 siswa berhasil masuk ke Firestore.**
 - [x] Update `ANTIREGRESI.md` §29 (gerbang wajib utk koleksi `siswa`, uji
   baca/tulis Firestore, uji koreksi NISN salah ketik, uji migrasi idempoten)
-- [ ] Tandai Fase 1 migrasi ini final di `CHANGELOG.md`, lanjut Fase 2
-  dengan asumsi backend siswa sudah Firestore — **belum dikerjakan, lakukan
-  di sesi berikutnya sebelum mulai Fase 2**
+- [ ] ~~Tandai Fase 1 migrasi ini final di `CHANGELOG.md`, lanjut Fase 2
+  dengan asumsi backend siswa sudah Firestore~~ — **DIBATALKAN, lihat catatan
+  ⚠️ di puncak dokumen ini.** Fase 1 (migrasi profil `siswa/{nisn}`) tetap
+  final & tetap dipakai `pages/kelas/`; Fase 2 (endpoint `siswaLogin`) tidak
+  jadi dikerjakan karena login siswa sudah pindah ke Firebase Auth langsung.
 - [ ] (Nanti, proyek terpisah) Migrasi MPLS/Kognitif/Jurnal
 
 ## 6. Langkah yang Perlu Arif Lakukan Sekarang (urutan)
