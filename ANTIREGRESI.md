@@ -2572,3 +2572,87 @@ bergantung pada `infografis-data.js` untuk daftar mapelnya, sudah dipindah ke
 - [ ] `Code.gs` versi baru sudah di-deploy (Manage deployments → New
       version) — cek `?infografis=1` di URL Apps Script TIDAK lagi
       mengembalikan data (rute sudah dihapus dari `doGet`)
+
+### 51. Login siswa gagal/lambat di HP saat percobaan pertama (Sept 2026)
+
+**Kronologi**: setelah masuk tahap uji-coba dengan siswa sungguhan, laporan
+masuk dari 2 siswa berbeda yang gagal login lewat HP, dengan **dua pesan
+berbeda** pada hari yang sama untuk siswa yang sama:
+1. Pagi: `"Gagal memverifikasi, coba beberapa saat lagi."` — pesan JSON asli
+   dari `Code.gs` (`doPostSiswaLogin_`), artinya request BERHASIL sampai &
+   dieksekusi Apps Script, tapi gagal spesifik saat membaca Firestore lewat
+   Service Account.
+2. Siang: `"Unexpected token '<', "<!DOCTYPE "... is not valid JSON"` di
+   klien — artinya balasan yang diterima browser adalah HALAMAN HTML, bukan
+   JSON, jadi kali ini request kemungkinan tidak sempat selesai dieksekusi
+   dengan normal sama sekali.
+- Login lewat PC oleh Arif sendiri tidak pernah mengalami gagal seperti ini,
+  hanya terasa **lambat di percobaan pertama** lalu cepat di percobaan
+  berikutnya — petunjuk kunci yang akhirnya mengarah ke akar masalah.
+
+**Akar masalah (dugaan Arif, dikonfirmasi cocok dengan kode)**: login siswa
+membaca Firestore lewat kredensial Service Account (`getServiceAccountToken_()`
+di `Code.gs`), yang meng-cache token OAuth selama 55 menit
+(`CacheService.getScriptCache()`). Konsekuensinya:
+- **Cache token kosong/kedaluwarsa** → percobaan login itu harus menandatangani
+  JWT baru (`Utilities.computeRsaSha256Signature`) + memanggil
+  `oauth2.googleapis.com/token` (round-trip tambahan) SEBELUM bisa membaca
+  Firestore. Percobaan berikutnya (dalam 55 menit) langsung pakai token dari
+  cache, jauh lebih cepat.
+- Kemungkinan ditambah **"cold start"** instans Apps Script kalau Web App
+  sedang tidak ada trafik sebelumnya.
+- Tambahan latensi ini lebih terasa di **jaringan seluler HP** (lebih rentan
+  naik-turun, lebih mudah kena timeout dari operator/Google di tengah jalan)
+  dibanding WiFi PC yang stabil. Dua gejala berbeda di atas konsisten dengan
+  "kalah lomba dengan waktu" di dua titik berbeda: kadang sempat selesai tapi
+  Firestore-nya sendiri gagal, kadang malah terpotong duluan oleh jaringan
+  sebelum sempat selesai.
+- **PENTING**: ini bukan bug fungsional dari fitur Pustaka Belajar/penghapusan
+  Galeri Visual — sudah diverifikasi terpisah (lihat catatan investigasi di
+  bawah) bahwa jalur kode Service Account→Firestore untuk login siswa memang
+  arsitekturnya berbeda total dari Infografis (Sheets+Drive), tidak disentuh
+  oleh pekerjaan §50.
+
+**Catatan investigasi yang SUDAH dilakukan sebelum sampai ke akar masalah di
+atas** (supaya tidak diulang kalau muncul laporan serupa lagi):
+- `grep -i infografis` di `Code.gs` → nol hasil (pembersihan §50 tuntas)
+- `node --check` pada `Code.gs` → sintaks valid, dispatcher `doPost` masih
+  benar merutekan `type: "siswa_login"`
+- Semua 5 file yang menyimpan salinan `APPS_SCRIPT_URL` sendiri (lihat §41)
+  dicek konsisten satu sama lain — bukan masalah URL basi
+
+**Perbaikan yang sudah diterapkan**:
+- **`index.html`** (`doLoginSiswa` + helper baru `cobaSiswaLogin_`, murni
+  frontend, **TIDAK butuh redeploy Apps Script**):
+  - Timeout 20 detik per percobaan lewat `AbortController`
+  - Auto-retry **sekali** kalau percobaan pertama gagal karena alasan TEKNIS
+    (timeout/jaringan/balasan bukan JSON) — TIDAK di-retry kalau jawabannya
+    JSON valid ber-status error (nama/NISN memang salah), supaya kesalahan
+    input asli tetap langsung terlihat
+  - Pesan status diperjelas selama proses; pesan gagal akhir (setelah 2×
+    percobaan) menyarankan pindah ke WiFi
+- **`apps-script/Code.gs`** (`doPostSiswaLogin_`): tambah `Logger.log()` di
+  blok `catch` sebelum mengembalikan pesan generik — supaya kalau terulang,
+  penyebab asli (token Service Account vs Firestore vs lainnya) terlihat di
+  Apps Script Executions, tanpa membocorkan detail teknis ke siswa
+- **Divalidasi**: `node --check` blok `<script type="module">` di
+  `index.html`, plus 5 skenario test logika murni Node.js (sukses langsung,
+  timeout→sukses, HTML→sukses, gagal total setelah retry,
+  nama/NISN-salah-tidak-boleh-retry) — semua lulus
+
+**Checklist uji manual** (jalankan setelah upload `index.html` baru; item
+Apps Script perlu deploy dulu — Manage deployments → New version):
+- [ ] Login siswa normal (nama+NISN benar) di WiFi/PC → tetap sukses seperti
+      biasa, tanpa jeda tambahan yang terasa
+- [ ] Login siswa dengan nama/NISN **sengaja salah** → pesan error langsung
+      muncul di percobaan PERTAMA (tidak ada jeda "mencoba lagi" dulu)
+- [ ] Login siswa di HP dengan sinyal lemah/data seluler → kalau percobaan
+      pertama lambat/gagal, pesan "koneksi pertama lambat, mencoba sekali
+      lagi…" muncul dan percobaan kedua biasanya berhasil
+- [ ] Kalau memang gagal total (2× percobaan), pesan akhir menyarankan pindah
+      ke WiFi — bukan lagi pesan mentah `Unexpected token` yang membingungkan
+- [ ] Setelah beberapa hari uji-coba: pantau apakah laporan "gagal login
+      pertama kali" dari siswa berkurang drastis dibanding sebelum perbaikan
+      ini — kalau iya, itu konfirmasi akhir dugaan cold-start/token-cache
+      benar; kalau laporan masih ada dan Logger.log di Executions menunjukkan
+      penyebab lain, revisi bagian "Akar masalah" di atas

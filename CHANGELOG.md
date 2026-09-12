@@ -8,6 +8,48 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki — Login siswa gagal/lambat di HP saat percobaan pertama (Sept 2026)
+- **Kejadian**: sejak masuk tahap uji-coba dengan siswa sungguhan, beberapa siswa
+  melaporkan gagal login lewat HP dengan dua pesan berbeda pada hari yang sama —
+  `"Gagal memverifikasi, coba beberapa saat lagi."` (dari `Code.gs`) dan
+  `"Unexpected token '<', "<!DOCTYPE "... is not valid JSON"` (balasan berupa
+  halaman HTML, bukan JSON, ke `fetch()` di klien). Login lewat PC pada
+  perangkat/akun yang sama tidak mengalami ini.
+- **Dugaan akar masalah** (dari Arif, dikonfirmasi cocok dengan kode): login siswa
+  ke Firestore lewat kredensial Service Account (`getServiceAccountToken_()`)
+  meng-cache token OAuth selama 55 menit — percobaan **pertama** setelah cache
+  kosong harus menandatangani JWT baru + memanggil `oauth2.googleapis.com`
+  sebelum baru bisa membaca Firestore, ditambah kemungkinan "cold start"
+  instans Apps Script kalau sedang tidak ada trafik. Tambahan latensi ini lebih
+  sering membuat jaringan seluler HP "menyerah duluan" (dapat halaman
+  timeout/error dari operator atau Google, bukan JSON kita) dibanding WiFi PC
+  yang lebih stabil — dua gejala berbeda tergantung di titik mana proses itu
+  terpotong.
+- **Perbaikan sisi klien** (`index.html`, fungsi `doLoginSiswa` + helper baru
+  `cobaSiswaLogin_`, murni frontend — **tidak butuh redeploy Apps Script**):
+  - Setiap percobaan dibatasi 20 detik lewat `AbortController` (sebelumnya bisa
+    menggantung tanpa batas).
+  - Kegagalan **teknis** (timeout, jaringan, atau balasan bukan JSON) otomatis
+    di-retry **sekali** tanpa siswa perlu tekan tombol lagi — percobaan kedua
+    hampir selalu jauh lebih cepat karena token & instans sudah "hangat".
+  - Jawaban JSON valid ber-status error (nama/NISN memang salah) **TIDAK**
+    ikut di-retry — supaya kesalahan input asli tetap langsung terlihat, tidak
+    disembunyikan di balik percobaan ulang yang sia-sia.
+  - Pesan status diperjelas selama proses ("percobaan pertama kadang agak
+    lama…", "koneksi pertama lambat, mencoba sekali lagi…"), dan pesan gagal
+    akhir (setelah 2× percobaan) menyarankan pindah ke WiFi.
+- **Perbaikan sisi server** (`apps-script/Code.gs`, `doPostSiswaLogin_`):
+  ditambah `Logger.log()` di blok `catch` sebelum mengembalikan pesan generik
+  ke klien — supaya penyebab asli kegagalan Firestore/Service Account (kalau
+  terulang) terlihat di Apps Script Executions, tanpa membocorkan detail
+  teknis ke siswa.
+- **Divalidasi**: `node --check` pada blok `<script type="module">` di
+  `index.html`, plus 5 skenario test logika murni Node.js (sukses langsung,
+  timeout-lalu-sukses, HTML-lalu-sukses, gagal total setelah retry,
+  nama/NISN-salah-tidak-di-retry) — semua lulus sebelum diserahkan.
+- **Lihat §51 ANTIREGRESI.md** untuk checklist uji manual & catatan
+  investigasi lengkap.
+
 ### Dihapus — Fitur Galeri Visual (digantikan Pustaka Belajar)
 - **Alasan**: sudah tidak/kurang relevan dibanding Pustaka Belajar (permintaan Arif).
 - **File frontend dihapus dari repo**: `pages/infografis.html`, seluruh folder
