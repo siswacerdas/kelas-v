@@ -1422,11 +1422,15 @@
     await gamifHitungSatu_(nama);
   };
 
-  /** Loop SEKUENSIAL (bukan Promise.all paralel) SENGAJA — Apps Script Web App punya
-   * batas eksekusi bersamaan per akun, dan dokumen ini juga jadi lebih mudah dibaca
-   * guru (satu per satu, bukan 25 lompat bareng). Jeda 300ms antar panggilan sebagai
-   * jaga-jaga tambahan terhadap kuota, bukan berarti Apps Script akan pasti kena limit
-   * tanpa jeda ini — murni kehati-hatian. */
+  /** v1.7: SEBELUMNYA loop ini memanggil hitung_gamifikasi 25× berturut-turut (1 panggilan
+   * per siswa) — tiap panggilan membaca ULANG seluruh koleksi hasil_latihan dari nol, dan
+   * terbukti memicu error 429 RESOURCE_EXHAUSTED dari Firestore (lihat CHANGELOG.md).
+   * Sekarang cukup SATU panggilan ke endpoint baru `hitung_gamifikasi_semua`, yang membaca
+   * hasil_latihan & sheet progres MASING-MASING SATU KALI SAJA di server (lihat
+   * doPostHitungGamifikasiSemua_ di Code.gs), lalu mengembalikan hasil untuk ke-25 siswa
+   * sekaligus dalam satu respons — baris status di bawah tetap diisi SATU PER SATU secara
+   * visual (bukan langsung semua "selesai" serentak) supaya guru tetap bisa mengikuti
+   * progresnya, meski secara jaringan sudah cuma 1 request. */
   window.hitungUlangGamifikasiSemua = async function () {
     if (typeof MPLS_STUDENTS === "undefined" || !MPLS_STUDENTS.length) {
       setStatus("gamif-status", "Daftar siswa (mpls-data.js) tidak termuat.", true);
@@ -1437,12 +1441,35 @@
     btn.textContent = "🔄 Menghitung ulang…";
     document.getElementById("gamifikasi-hasil").innerHTML = "";
     MPLS_STUDENTS.forEach((n) => gamifTampilkanBaris_(n)); // render semua baris dulu, isi "Menunggu…"
+    MPLS_STUDENTS.forEach((n) => gamifSetStatusBaris_(n, "proses", "⏳ Menghitung…"));
 
     let sukses = 0, gagal = 0;
-    for (const nama of MPLS_STUDENTS) {
-      const ok = await gamifHitungSatu_(nama);
-      if (ok) sukses++; else gagal++;
-      await new Promise((r) => setTimeout(r, 300));
+    try {
+      const data = await postKeAppsScript_(MPLS_CONFIG.APPS_SCRIPT_URL, {
+        type: "hitung_gamifikasi_semua",
+        namaList: MPLS_STUDENTS,
+      });
+      if (data.status !== "ok") {
+        MPLS_STUDENTS.forEach((n) => gamifSetStatusBaris_(n, "gagal", "✗ " + (data.message || "Gagal, tanpa keterangan.")));
+        gagal = MPLS_STUDENTS.length;
+      } else {
+        // Isi baris SATU PER SATU dengan jeda kecil murni untuk visual (bukan permintaan
+        // jaringan baru — datanya sudah lengkap di `data.hasil`), supaya guru tetap bisa
+        // mengikuti progresnya seperti sebelumnya, bukan semua baris berubah serentak.
+        for (const row of data.hasil || []) {
+          if (row.status === "ok") {
+            gamifSetStatusBaris_(row.nama, "sukses", `✓ ${row.exp || 0} EXP · ${row.totalKuisDikerjakan || 0} kuis`);
+            sukses++;
+          } else {
+            gamifSetStatusBaris_(row.nama, "gagal", "✗ " + (row.message || "Gagal, tanpa keterangan."));
+            gagal++;
+          }
+          await new Promise((r) => setTimeout(r, 80));
+        }
+      }
+    } catch (err) {
+      MPLS_STUDENTS.forEach((n) => gamifSetStatusBaris_(n, "gagal", "✗ " + err.message));
+      gagal = MPLS_STUDENTS.length;
     }
 
     btn.disabled = false;
