@@ -27,7 +27,23 @@
   #topbar a.back:hover { color: #fff; }
   .container { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
   h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
-  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 0.5rem; }
+
+  /* ── Indikator LIVE (v1.4) — papan ini sekarang pakai onSnapshot Firestore,
+     bukan getDocs sekali-fetch, jadi perlu penanda visual supaya guru/siswa
+     tahu papan otomatis update tanpa perlu refresh manual. ── */
+  .live-row { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; font-size: 11.5px; color: var(--ink-3); }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 99px;
+    background: rgba(42,157,111,0.10); color: var(--ok); font-weight: 700; font-size: 11px;
+  }
+  .live-badge .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--ok);
+    animation: live-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes live-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .live-badge.terputus { background: rgba(201,64,64,0.10); color: var(--err); }
+  .live-badge.terputus .dot { background: var(--err); animation: none; }
   #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
   .hidden { display: none !important; }
   .empty-state { padding: 2.5rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; background: #fff; border-radius: var(--r); border: 1px solid var(--border); }
@@ -103,6 +119,13 @@
     <h1>🏅 Papan Peringkat Kelas</h1>
     <p class="subtitle">Rank & Level (1-99) seluruh teman sekelas, dari Uji Kemampuan & Ingat Lagi.</p>
 
+    <!-- v1.4: indikator live — diisi/diupdate oleh JS tiap kali listener onSnapshot
+         menerima data baru. Placeholder teks awal sebelum listener pertama nyala. -->
+    <div class="live-row" id="liveRow">
+      <span class="live-badge" id="liveBadge"><span class="dot"></span> Live</span>
+      <span id="liveTimestamp">Menyambungkan…</span>
+    </div>
+
     <!-- Tab ini SENGAJA disembunyikan default (class "hidden") dan HANYA dimunculkan untuk
          guru lewat JS (lihat event role-verified) — siswa/orangtua tetap lihat tampilan lama
          tanpa tab sama sekali, supaya tidak ada perubahan visual yang tidak perlu buat mereka. -->
@@ -119,7 +142,7 @@
 <script src="mpls/assets/mpls-data.js"></script>
 <script type="module" src="../assets/js/role-guard.js"></script>
 <script type="module">
-  import { getFirestore, collection, getDocs }
+  import { getFirestore, collection, onSnapshot }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 
@@ -252,6 +275,16 @@
    * fallback `|| 0` supaya tidak muncul "undefined" di sel tabel. */
   function renderRekap() {
     const wrap = document.getElementById("isi-rekap");
+
+    // v1.4: data sekarang bisa berubah KAPAN SAJA lewat onSnapshot (bukan cuma saat
+    // guru mengetik/klik kolom), termasuk saat guru sedang mengetik di kolom cari.
+    // Simpan fokus + posisi kursor SEBELUM innerHTML diganti, lalu kembalikan
+    // sesudahnya — supaya update real-time tidak memutus ketikan guru di tengah jalan.
+    const inputLama = document.getElementById("rekapSearchInput");
+    const fokusTersimpan = inputLama && document.activeElement === inputLama
+      ? { mulai: inputLama.selectionStart, akhir: inputLama.selectionEnd }
+      : null;
+
     const q = rekapSearch.trim().toLowerCase();
     let rows = rosterCache.filter((s) => !q || s.namaSiswa.toLowerCase().includes(q));
 
@@ -306,10 +339,16 @@
       </div>
       <p class="rekap-hint">Ketuk judul kolom untuk mengurutkan. Geser ke samping untuk lihat kolom lain di layar kecil.</p>`;
 
-    document.getElementById("rekapSearchInput").addEventListener("input", (e) => {
+    const inputBaru = document.getElementById("rekapSearchInput");
+    inputBaru.addEventListener("input", (e) => {
       rekapSearch = e.target.value;
       renderRekap();
     });
+    // Kembalikan fokus & posisi kursor jika sebelumnya guru sedang mengetik di sini.
+    if (fokusTersimpan) {
+      inputBaru.focus();
+      inputBaru.setSelectionRange(fokusTersimpan.mulai, fokusTersimpan.akhir);
+    }
     wrap.querySelectorAll("th[data-key]").forEach((th) => {
       th.addEventListener("click", () => {
         const key = th.getAttribute("data-key");
@@ -333,17 +372,57 @@
     if (!isPapan) renderRekap();
   }
 
-  async function muatPapan(namaSaya) {
+  // v1.4: papan peringkat REAL-TIME — dari getDocs() (sekali ambil, butuh refresh
+  // manual buat lihat progres siswa lain) jadi onSnapshot() (listener yang otomatis
+  // terpanggil ulang tiap ada dokumen level_siswa berubah, TERMASUK milik siswa lain
+  // yang sedang login bersamaan). Aman dipasang karena firestore.rules mengizinkan
+  // `read` koleksi ini untuk SEMUA yang login (lihat komentar di firestore.rules),
+  // dan `write`-nya tetap `if false` mutlak — cuma Apps Script (Service Account) yang
+  // bisa menulis, jadi listener ini murni pasif, tidak membuka celah keamanan baru.
+  let lepasListenerPapan = null; // fungsi unsubscribe, dipanggil ulang jaga-jaga
+                                  // event role-verified sempat terpanggil dobel
+
+  function tandaiLive() {
+    const badge = document.getElementById("liveBadge");
+    const ts = document.getElementById("liveTimestamp");
+    badge.classList.remove("terputus");
+    badge.innerHTML = '<span class="dot"></span> Live';
+    ts.textContent = "Diperbarui " + new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+  }
+
+  function tandaiTerputus(pesan) {
+    const badge = document.getElementById("liveBadge");
+    const ts = document.getElementById("liveTimestamp");
+    badge.classList.add("terputus");
+    badge.innerHTML = '<span class="dot"></span> Terputus';
+    ts.textContent = pesan || "Koneksi live terputus — coba muat ulang halaman.";
+  }
+
+  function pasangListenerPapan(namaSaya) {
+    if (lepasListenerPapan) { lepasListenerPapan(); lepasListenerPapan = null; }
+
     const wrap = document.getElementById("isi-papan");
-    try {
-      const snap = await getDocs(collection(db, "level_siswa"));
-      const dokumenLevel = [];
-      snap.forEach((d) => dokumenLevel.push(d.data()));
-      rosterCache = gabungkanRoster(dokumenLevel);
-      renderPapan(rosterCache, namaSaya ? namaSaya.trim().toLowerCase() : null);
-    } catch (err) {
-      wrap.innerHTML = `<div class="empty-state">Gagal memuat papan peringkat: ${esc(err.message)}</div>`;
-    }
+    const namaSayaLower = namaSaya ? namaSaya.trim().toLowerCase() : null;
+
+    lepasListenerPapan = onSnapshot(
+      collection(db, "level_siswa"),
+      (snap) => {
+        const dokumenLevel = [];
+        snap.forEach((d) => dokumenLevel.push(d.data()));
+        rosterCache = gabungkanRoster(dokumenLevel);
+        renderPapan(rosterCache, namaSayaLower);
+        // Rekap Lengkap (tab guru) memakai rosterCache yang sama — ikut diperbarui
+        // live juga kalau sedang ditampilkan, bukan cuma tab Papan Peringkat.
+        if (!document.getElementById("isi-rekap").classList.contains("hidden")) {
+          renderRekap();
+        }
+        tandaiLive();
+      },
+      (err) => {
+        wrap.innerHTML = `<div class="empty-state">Gagal memuat papan peringkat: ${esc(err.message)}</div>`;
+        tandaiTerputus();
+      }
+    );
   }
 
   // Siswa DAN guru boleh lihat papan ini (data level/EXP memang dirancang publik
@@ -361,7 +440,7 @@
       document.getElementById("tabPapan").addEventListener("click", () => pindahTab("papan"));
       document.getElementById("tabRekap").addEventListener("click", () => pindahTab("rekap"));
     }
-    muatPapan(e.detail.role === "siswa" ? e.detail.nama : null);
+    pasangListenerPapan(e.detail.role === "siswa" ? e.detail.nama : null);
   });
   document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
 </script>
