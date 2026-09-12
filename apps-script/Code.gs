@@ -1505,6 +1505,10 @@ function doPostSiswaLogin_(body) {
   try {
     profil = getSiswaByNisnFirestore_(nisn);
   } catch (err) {
+    // DIAGNOSTIK SEMENTARA (lihat ANTIREGRESI.md §51) — dicatat ke Executions
+    // supaya penyebab asli kegagalan Firestore/Service Account terlihat,
+    // TANPA membocorkan detail teknis ke siswa (pesan ke klien tetap generik).
+    Logger.log("doPostSiswaLogin_ gagal untuk nisn=" + nisn + ": " + String(err));
     return jsonOut_({ status: "error", message: "Gagal memverifikasi, coba beberapa saat lagi." });
   }
 
