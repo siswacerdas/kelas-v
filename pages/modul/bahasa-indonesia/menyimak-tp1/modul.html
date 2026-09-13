@@ -573,17 +573,30 @@ function startStageUtterance(stageId, text){
 }
 
 /* ============ SPEECH SYNTHESIS — KALIMAT PENDEK (tombol putar kecil) ============ */
+let ttsUtterance = null; // BUGFIX: tahan referensi objek utterance supaya tidak dibuang (garbage collected)
+                          // oleh browser sebelum selesai bicara — ini penyebab utama banyak audio
+                          // pada tombol "Dengarkan" tidak terdengar suaranya sama sekali.
+let ttsKeepAlive = null; // BUGFIX: timer anti-macet, sama seperti pada pemutar cerita utama, supaya
+                          // kalimat/paragraf yang agak panjang (>15 detik) tidak terhenti sendiri di Chrome.
 function playTTS(text, containerEl, iconEl, labelEl){
   if(!('speechSynthesis' in window)){
     if(containerEl && !containerEl.dataset.warned){ containerEl.insertAdjacentHTML('beforeend', '<div style="font-size:11.5px;color:var(--wrong);margin-top:6px;">⚠️ Perangkat ini tidak mendukung suara otomatis.</div>'); containerEl.dataset.warned='1'; }
     return;
   }
   speechSynthesis.cancel(); // selalu mulai bersih — ini yang memperbaiki tombol yang "tidak bisa diputar"
+  clearInterval(ttsKeepAlive);
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang='id-ID'; utter.rate=0.88; utter.pitch=1;
   const voices = speechSynthesis.getVoices();
   const idVoice = voices.find(v=>v.lang && v.lang.toLowerCase().startsWith('id'));
   if(idVoice) utter.voice = idVoice;
+  ttsUtterance = utter; // simpan referensi supaya tidak di-GC saat masih berbicara
+  utter.onstart = () => {
+    clearInterval(ttsKeepAlive);
+    ttsKeepAlive = setInterval(()=>{ if(speechSynthesis.speaking && !speechSynthesis.paused){ speechSynthesis.pause(); speechSynthesis.resume(); } }, 9000);
+  };
+  utter.onend = () => { clearInterval(ttsKeepAlive); ttsUtterance = null; };
+  utter.onerror = () => { clearInterval(ttsKeepAlive); ttsUtterance = null; };
   speechSynthesis.speak(utter);
 }
 
