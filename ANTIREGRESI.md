@@ -2764,12 +2764,22 @@ tunggu keputusan Arif kapan mau digarap.**
    unik (akumulatif) + milestone sekali di 3/7/14/30 hari (+10/+25/+50/+100). Ditampilkan
    di `pages/profil-siswa.html` (kartu) dan `pages/papan-peringkat.html` (lencana + kolom
    Rekap Lengkap guru).
+3. **Kurva Level 1-99 dikalibrasi ulang** (`EXP_PER_LEVEL99_TAHAP_`) — 15/30/60/120 →
+   **30/45/70/130** EXP per level di tiap tahap. Dihitung dari total pool EXP realistis
+   kalau siswa mengerjakan semua materi+modul+kuis sekali (±3.750 EXP first-pass;
+   jumlah TP kuis ±45 adalah ESTIMASI dari jumlah folder topik materi/modul, bukan angka
+   pasti dari `bank_soal`). Total EXP ke Level 99: ±7.215 → ±8.340. Efek: Level 6
+   sekarang butuh ±10 TP BERBEDA lulus, bukan lagi 5. **Keputusan sadar Arif**: Level
+   siswa yang sudah main BISA TERLIHAT TURUN setelah "Hitung Ulang Semua Siswa"
+   dijalankan (EXP mentah tidak hilang, cuma dikonversi ke skala baru) — diterapkan
+   langsung, dijelaskan ke kelas kalau ditanya, tidak ditunda/diakali.
 
 **Divalidasi**: `node --check` `apps-script/Code.gs` + blok `<script>` di
 `pages/profil-siswa.html` & `pages/papan-peringkat.html`, plus
-`scripts/test-gamifikasi-53.js` (20 skenario pure-logic: dedup EXP kuis 5 kasus, streak
+`scripts/test-gamifikasi-53.js` (24 skenario pure-logic: dedup EXP kuis 5 kasus, streak
 7 kasus termasuk weekend/bolong/duplikat, konversi tanggal WIB 3 kasus, bonus milestone
-5 kasus termasuk idempotensi) — semua lulus.
+5 kasus termasuk idempotensi, kurva Level 1-99 4 kasus termasuk verifikasi langsung
+laporan awal Arif) — semua lulus.
 
 **Prasyarat sebelum uji manual**: cek Project Settings Apps Script → General → Time
 zone = **Asia/Jakarta (GMT+07:00)**. Kalau timezone proyek BEDA, tanggal `Timestamp` di
@@ -2810,3 +2820,17 @@ New version — DAN klik "Hitung Ulang Semua Siswa" di `pages/admin.html` supaya
       mengerjakan sesuatu (cek tanggal di `pages/riwayat-latihan.html` dia) — harus
       cocok persis, termasuk kalau ada Sabtu/Minggu yang terlewat di antaranya
       (streak seharusnya sudah putus & mulai dari 1 lagi setelahnya)
+
+*Kurva Level 1-99 (dikalibrasi ulang):*
+- [ ] Sebelum klik "Hitung Ulang Semua Siswa" di admin.html, catat/screenshot Level
+      beberapa siswa contoh (misal 3-5 siswa dari rentang EXP berbeda) sebagai
+      pembanding SEBELUM/SESUDAH
+- [ ] Setelah dihitung ulang, verifikasi Level siswa-siswa itu TURUN atau tetap (TIDAK
+      NAIK) dibanding sebelumnya — kalau ada yang naik, kemungkinan ada bug di kurva
+      baru (harusnya kurva baru lebih ketat, bukan lebih longgar)
+- [ ] Siapkan penjelasan singkat kalau ada siswa yang tanya kenapa Level-nya berubah
+      dari sebelumnya (efek gabungan perbaikan celah kuis + kurva baru — keputusan
+      sadar Arif untuk langsung diterapkan, bukan bug)
+- [ ] Cek `pages/papan-peringkat.html` bagian Rank (perintis/penjelajah/dst) masih
+      tampil wajar setelah recalc (rank pakai breakpoint level yang sama, cuma exp-nya
+      yang beda skala — seharusnya otomatis konsisten, tapi tetap cek visual)

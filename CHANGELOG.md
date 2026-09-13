@@ -69,12 +69,29 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
   `kelas-v-2026`. Jalankan tombol "Hitung Ulang Semua Siswa" di `pages/admin.html`
   setelah redeploy, lalu cek Papan Peringkat & Profil beberapa siswa contoh sebelum
   diumumkan ke kelas.
-- **Curah pendapat kurva level (BELUM diubah sesi ini)**: dengan celah retake sudah
-  ditutup, EXP dari kuis sekarang terbatas (maks 1x EXP penuh per TP), jadi kurva
-  `EXP_PER_LEVEL99_TAHAP_` yang ada saat ini KEMUNGKINAN sudah cukup wajar tanpa
-  diubah — tapi kalau Arif masih merasa lompatan Level 1→beberapa masih terlalu cepat
-  setelah perbaikan ini dicoba di kelas sungguhan, tinggal naikkan angka tahap awal
-  (saat ini 15 EXP/level di Level 1-10) di konstanta itu, TIDAK perlu perubahan lain.
+- **Curah pendapat kurva level — SUDAH DIKALIBRASI ULANG sesi ini** (keputusan Arif):
+  - **Angka baru**: Level 1-10: 15→**30** EXP/level · Level 10-30: 30→**45** · Level 30-60:
+    60→**70** · Level 60-99: 120→**130**. Total EXP ke Level 99: ±7.215 → **±8.340**.
+  - **Dasar perhitungan**: total EXP pool realistis kalau siswa mengerjakan SEMUA materi
+    (200×10=2.000) + SEMUA modul (43×25=1.075) + SEMUA TP kuis sekali lulus (±45×15=±675,
+    jumlah TP sebenarnya ada di `bank_soal` Firestore — bukan di repo — jadi ini ESTIMASI
+    dari jumlah folder topik materi/modul, bukan angka pasti) ≈ **±3.750 EXP first-pass**.
+    Tahap awal dinaikkan 2x paling agresif (paling relevan dengan laporan awal Arif),
+    tahap menengah-atas dinaikkan lebih ringan supaya total ke Level 99 tetap di orde
+    yang sama, bukan tiba-tiba jauh lebih sulit/mustahil dari sebelumnya.
+  - **Efek nyata**: Level 6 sekarang butuh ±10 TP BERBEDA lulus (≈22% seluruh bank soal),
+    bukan lagi 5 — dan itu pun harus 10 TP berbeda (bukan retake 1 TP, sudah ditutup di
+    atas).
+  - **PERINGATAN yang Arif sudah setujui secara sadar**: begitu "Hitung Ulang Semua
+    Siswa" dijalankan, Level 1-99 siswa yang SUDAH main **bisa terlihat turun** dari
+    yang mereka lihat sebelumnya (gabungan efek perbaikan celah kuis + pengetatan kurva
+    ini) — EXP mentah TIDAK hilang, cuma dikonversi ke skala baru. Arif memutuskan
+    langsung menerapkan & menjelaskan ke kelas kalau ditanya, TIDAK menunda ke semester
+    baru atau mengakali angka supaya tidak terlihat turun.
+  - **Divalidasi**: 4 test tambahan di `scripts/test-gamifikasi-53.js` (total 24 test,
+    semua lulus) — termasuk memverifikasi laporan awal Arif ("6 kuis dari Level 1→6")
+    sekarang HANYA menghasilkan Level 1 kalau itu retake 1 TP yang sama (dedup aktif),
+    dan 10 TP berbeda yang lulus PERSIS mendarat di Level 6 sesuai target pacing.
 
 ### Diubah — Login siswa dipindah total ke Firebase Authentication (email + kata sandi)
 - **Alasan (permintaan Arif)**: mekanisme login siswa lama (pilih nama + NISN,
