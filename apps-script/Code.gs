@@ -1314,6 +1314,34 @@ function doPost(e) {
       return doPostProgresModul_(body);
     }
 
+    if (body.type === "get_progres_materi") {
+      // DITAMBAHKAN — versi POST dari ?progresMateri=1 (doGet). Dipakai belajar-mandiri.js
+      // (laporan "Perkembangan Belajar Mandiri", Pintu 2) SUPAYA idToken (JWT Firebase, bisa
+      // 1000+ karakter) TIDAK lagi ikut ditempel di query string URL: request GET yang
+      // sangat panjang ke Apps Script Web App terbukti bisa gagal dengan gejala 404 di
+      // proxy redirect "script.googleusercontent.com/macros/echo" (lihat konsol browser) —
+      // request POST dengan body JSON tidak kena batasan panjang URL sama sekali. Gerbang
+      // akses & bentuk respons SENGAJA dijaga identik persis dengan cabang doGet
+      // ?progresMateri=1 di atas (sama-sama wajibAksesLaporan_, sama-sama {data: [...]})
+      // supaya belajar-mandiri.js tidak perlu ubah apa pun selain URL & method fetch-nya.
+      const nama = body.nama;
+      if (!nama) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
+      wajibAksesLaporan_(body.idToken, nama);
+      const rows = sheetToObjects_(getProgresMateriSheet_()).filter((r) => r["Nama Siswa"] === nama);
+      return jsonOut_({ data: rows });
+    }
+
+    if (body.type === "get_progres_modul") {
+      // Sama persis alasan & pola dengan "get_progres_materi" di atas — versi POST dari
+      // ?progresModul=1 (doGet), dipakai belajar-mandiri.js untuk menghindari idToken
+      // panjang nyangkut di query string GET.
+      const namaModul = body.nama;
+      if (!namaModul) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
+      wajibAksesLaporan_(body.idToken, namaModul);
+      const rowsModul = sheetToObjects_(getProgresModulSheet_()).filter((r) => r["Nama Siswa"] === namaModul);
+      return jsonOut_({ data: rowsModul });
+    }
+
     if (body.type === "hitung_gamifikasi") {
       // SENGAJA TANPA gerbang — dipanggil siswa sendiri tepat setelah 1 hasil kuis
       // tersimpan ATAU 1 materi ditandai dibaca. TIDAK bisa disalahgunakan untuk
