@@ -236,4 +236,57 @@ assertSama(
 );
 
 console.log("\n" + lulus + " lulus, " + gagal + " gagal");
+
+// ── Disalin dari Code.gs (kurva Level 1-99, dikalibrasi ulang) ─────────────
+const EXP_PER_LEVEL99_TAHAP_ = [
+  { hinggaLevel: 10, expPerLevel: 30 },
+  { hinggaLevel: 30, expPerLevel: 45 },
+  { hinggaLevel: 60, expPerLevel: 70 },
+  { hinggaLevel: 99, expPerLevel: 130 },
+];
+function bangunTabelThresholdLevel99_() {
+  const table = [0, 0];
+  let cum = 0;
+  for (let lvl = 2; lvl <= 99; lvl++) {
+    const tahap = EXP_PER_LEVEL99_TAHAP_.filter((t) => lvl <= t.hinggaLevel)[0];
+    cum += tahap.expPerLevel;
+    table[lvl] = cum;
+  }
+  return table;
+}
+const TABEL_THRESHOLD_LEVEL99_ = bangunTabelThresholdLevel99_();
+function hitungLevel99_(exp) {
+  let level99 = 1;
+  for (let lvl = 99; lvl >= 1; lvl--) {
+    if (exp >= TABEL_THRESHOLD_LEVEL99_[lvl]) { level99 = lvl; break; }
+  }
+  return level99;
+}
+
+console.log("\n=== Kurva Level 1-99 dikalibrasi ulang (30/45/70/130) ===");
+
+assertSama("Level 99 butuh total ±8.340 EXP dari nol", TABEL_THRESHOLD_LEVEL99_[99], 8340);
+
+assertSama(
+  "laporan awal Arif: retake 1 TP 5x (dedup aktif) -> HANYA Level 1 (dulu: Level 6 dari celah lama)",
+  hitungLevel99_(hitungExpDariKuis_([
+    { skor: 90, tp: "tp-a" }, { skor: 90, tp: "tp-a" }, { skor: 90, tp: "tp-a" },
+    { skor: 90, tp: "tp-a" }, { skor: 90, tp: "tp-a" },
+  ])), // = 19 EXP (lihat kasus dedup di atas)
+  1 // 19 < 30 (threshold Level 2) -> tetap Level 1, exploit tidak lagi memberi apa-apa berarti
+);
+
+assertSama(
+  "5 TP BERBEDA lulus (legitimate, 75 EXP) -> Level 3 (dulu: Level 6 di kurva lama)",
+  hitungLevel99_(75),
+  3 // threshold: lv2=30, lv3=60, lv4=90 -> 75 jatuh di Level 3
+);
+
+assertSama(
+  "10 TP BERBEDA lulus (150 EXP) -> Level 6, PERSIS target pacing yang diminta Arif",
+  hitungLevel99_(150),
+  6 // lv5=120, lv6=150, lv7=180 -> pas 150 = Level 6
+);
+
+console.log("\n" + lulus + " lulus, " + gagal + " gagal (total termasuk kurva level)");
 process.exit(gagal > 0 ? 1 : 0);
