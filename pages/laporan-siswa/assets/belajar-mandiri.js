@@ -117,9 +117,21 @@ async function loadReport(nama) {
   try {
     const idToken = await window.getFreshLaporanIdToken();
     const base = MPLS_CONFIG.APPS_SCRIPT_URL;
+    // DIUBAH — sebelumnya GET dengan idToken ditempel di query string (?progresMateri=1&
+    // idToken=...). idToken JWT Firebase bisa 1000+ karakter, dan request GET sepanjang itu
+    // ke Apps Script Web App bisa gagal dengan gejala 404 di proxy redirect
+    // "script.googleusercontent.com/macros/echo" (lihat catatan di Code.gs doPost, cabang
+    // "get_progres_materi"/"get_progres_modul"). POST dengan body JSON tidak kena batasan
+    // panjang URL, jadi idToken dipindah ke body, bukan lagi ke URL.
     const [resMateri, resModul] = await Promise.all([
-      fetch(base + "?progresMateri=1&nama=" + encodeURIComponent(nama) + "&idToken=" + encodeURIComponent(idToken)),
-      fetch(base + "?progresModul=1&nama=" + encodeURIComponent(nama) + "&idToken=" + encodeURIComponent(idToken)),
+      fetch(base, {
+        method: "POST",
+        body: JSON.stringify({ type: "get_progres_materi", nama: nama, idToken: idToken }),
+      }),
+      fetch(base, {
+        method: "POST",
+        body: JSON.stringify({ type: "get_progres_modul", nama: nama, idToken: idToken }),
+      }),
     ]);
     const jsonMateri = await resMateri.json();
     const jsonModul = await resModul.json();
