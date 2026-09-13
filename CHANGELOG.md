@@ -8,6 +8,44 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki — Lanjutan Laporan "Perkembangan Belajar Mandiri" (Pintu 2): 1 modul tambahan belum terdaftar + idToken dipindah dari GET ke POST (lihat ANTIREGRESI.md §54, lanjutan §39)
+- **Temuan baru, TERPISAH dari perbaikan 16 file di §39**: 1 file `modul.html` LAGI
+  (`matematika/bangun-ruang-tp1/modul.html`, TP resmi `geometri-tp1` — sudah lama
+  punya 4 entri "Ingat Lagi" di `materi-index.js`, tapi modul "Ayo Belajar!"-nya
+  baru selesai dibangun belakangan dan sempat terlewat didaftarkan) TIDAK
+  terdaftar di `modul-index.js`. Pola bug PERSIS sama dengan §39 Bagian A —
+  ketahuan lagi karena file baru ditambahkan ke repo SETELAH perbaikan §39
+  selesai, tanpa didaftarkan bersamaan. Akibatnya modul ini tidak tampil di menu
+  Modul siswa, DAN progres yang mungkin sudah tersimpan di sheet "Data Progres
+  Modul" untuknya tidak pernah ikut terhitung di laporan "Perkembangan Belajar
+  Mandiri" (dilewati diam-diam, sama seperti dijelaskan di checklist §39 Bagian
+  B poin terakhir). `modul-index.js` sekarang 43 entri (dari 42), field `slug`
+  diverifikasi ulang otomatis cocok 1:1 dengan `STORAGE_KEY` di SEMUA 43 file
+  `modul.html` (skrip pengecekan silang yang sama dengan §39).
+- **Diagnosis error konsol nyata**: `script.googleusercontent.com/macros/echo?...
+  404` muncul saat laporan Pintu 2 dibuka. Akar masalah: `belajar-mandiri.js`
+  mengirim `idToken` (JWT Firebase, bisa 1000+ karakter) LEWAT QUERY STRING GET
+  ke `?progresMateri=1`/`?progresModul=1` — request GET sepanjang itu ke Apps
+  Script Web App terbukti bisa gagal dengan gejala redirect proxy 404 persis
+  seperti yang dilaporkan. Wajar tidak ketahuan sebelumnya karena fitur ini
+  memang "belum pernah diuji live" (lihat §39).
+- **Perbaikan**: `apps-script/Code.gs` `doPost` mendapat 2 cabang baru,
+  `type: "get_progres_materi"` dan `type: "get_progres_modul"` — versi POST
+  dari `?progresMateri=1`/`?progresModul=1` (`doGet`), gerbang akses & bentuk
+  respons DIJAGA IDENTIK PERSIS (`wajibAksesLaporan_`, `{data: [...]}`), supaya
+  perilaku/keamanan tidak berubah, cuma cara kirim `idToken`-nya (body JSON,
+  bukan lagi query string). Cabang `doGet` LAMA (`?progresMateri=1`/
+  `?progresModul=1`) SENGAJA TIDAK dihapus (dibiarkan ada, tidak berbahaya)
+  untuk kompatibilitas kalau ada pemanggil lain yang belum diketahui.
+  `belajar-mandiri.js` diubah memanggil endpoint POST baru ini.
+- **BELUM dikonfirmasi hilang errornya di lingkungan Apps Script sungguhan** —
+  perbaikan berdasar diagnosis akar masalah yang paling mungkin (panjang URL
+  GET + idToken), divalidasi lewat `node --check` & `diff` baris-per-baris
+  terhadap `Code.gs` yang sedang dipakai (memastikan TIDAK ADA fitur lain yang
+  ikut hilang/tertimpa, termasuk cache §61 dan Streak Harian §53) — bukan
+  lewat pengujian langsung di browser/Apps Script. Tetap perlu di-deploy ulang
+  ("New version") lalu diuji ulang di Pintu 2 sebelum ditandai selesai.
+
 ### Ditambahkan — Streak Harian & Diperbaiki — celah kecurangan EXP Uji Kemampuan (lihat ANTIREGRESI.md §53)
 - **Laporan awal Arif**: siswa bisa naik dari Level 1 ke Level 6 hanya dengan mengerjakan
   6 kuis. Setelah ditelusuri, akar masalahnya BUKAN kurva level yang terlalu landai,

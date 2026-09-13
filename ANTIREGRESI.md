@@ -2834,3 +2834,83 @@ New version — DAN klik "Hitung Ulang Semua Siswa" di `pages/admin.html` supaya
 - [ ] Cek `pages/papan-peringkat.html` bagian Rank (perintis/penjelajah/dst) masih
       tampil wajar setelah recalc (rank pakai breakpoint level yang sama, cuma exp-nya
       yang beda skala — seharusnya otomatis konsisten, tapi tetap cek visual)
+
+---
+
+### 54. Lanjutan §39 — 1 modul tambahan belum terdaftar + idToken GET→POST di Laporan "Perkembangan Belajar Mandiri" (`pages/modul/assets/modul-index.js`, `apps-script/Code.gs`, `pages/laporan-siswa/assets/belajar-mandiri.js`, Sept 2026, belum dirilis — belum diuji live)
+
+**Bagian A — 1 file `modul.html` lagi ternyata belum terdaftar:**
+- **Pola bug PERSIS sama dengan §39 Bagian A**, ketahuan setelah §39 selesai —
+  file `matematika/bangun-ruang-tp1/modul.html` (TP resmi `geometri-tp1`,
+  "Mengonstruksi dan Mengurai Bangun Ruang") ditambahkan ke repo BELAKANGAN,
+  SETELAH perbaikan §39, dan tidak ikut didaftarkan ke `modul-index.js` di
+  waktu yang sama. TP ini sudah lama punya 4 entri "Ingat Lagi" di
+  `materi-index.js` — cuma modul "Ayo Belajar!"-nya yang sempat terlewat.
+- `modul-index.js` sekarang 43 entri (dari 42 di §39). Field `slug` untuk
+  entri baru ini (`mtk-bangun-ruang-tp1`) diambil PERSIS dari `STORAGE_KEY`
+  file modul.html-nya, sama seperti aturan yang ditetapkan di §39 — BUKAN
+  ditebak dari nama folder.
+- **Pelajaran yang SAMA persis dengan §39 & insiden materi-index.js
+  sebelumnya, tapi terulang lagi**: index statis seperti ini akan TERUS rawan
+  tidak sinkron setiap kali ada file modul/materi baru ditambah ke repo tanpa
+  proses yang memaksa pendaftaran di saat yang sama. Perlu dipertimbangkan
+  skrip pengecekan silang (`modul.html` di disk vs entri `modul-index.js`)
+  dijalankan otomatis (mis. sebagai bagian alur commit/deploy), bukan hanya
+  diingat-ingat manual tiap kali ada perbaikan seperti ini.
+- [ ] Buka `pages/modul.html` sebagai siswa → modul "Mengonstruksi dan
+      Mengurai Bangun Ruang" (Matematika · Geometri) muncul di menu, bisa
+      diklik dari menu (bukan cuma lewat URL langsung) tanpa 404
+- [ ] Kalau ada siswa yang KEBETULAN sudah pernah menyelesaikan modul ini
+      sebelum perbaikan ini (progresnya sempat "hilang" dari laporan) → buka
+      laporan Pintu 2 untuk siswa itu, pastikan sekarang muncul di "Aktivitas
+      Terbaru" dan ikut terhitung di ringkasan "🧩 Modul selesai"
+
+**Bagian B — `idToken` dipindah dari query string GET ke body POST:**
+- **Gejala nyata dilaporkan pemilik proyek**: console browser menampilkan
+  `script.googleusercontent.com/macros/echo?...` gagal dengan status 404 saat
+  laporan "Perkembangan Belajar Mandiri" (Pintu 2) dibuka.
+- **Diagnosis**: `belajar-mandiri.js` memanggil `?progresMateri=1&nama=..
+  &idToken=..` dan `?progresModul=1&nama=..&idToken=..` lewat **GET**, dengan
+  `idToken` (JWT Firebase, bisa 1000+ karakter) ikut ditempel di query string
+  URL. Request GET sepanjang itu ke Apps Script Web App terbukti bisa gagal
+  dengan gejala redirect proxy 404 seperti dilaporkan — wajar baru ketahuan
+  sekarang karena fitur Pintu 2 ini memang belum pernah diuji live sejak §39.
+  Endpoint lain yang sudah lama berjalan (`?laporanSiswa=1`, `?siswa=1`) pakai
+  pola GET+idToken yang SAMA dan SENGAJA TIDAK diubah di perbaikan ini (di
+  luar cakupan sesi ini, sudah terbukti jalan di produksi) — kalau nanti
+  gejala 404 serupa muncul di situ juga, pola perbaikan yang sama (pindah ke
+  POST) bisa diterapkan di sana.
+- **Perbaikan**: `apps-script/Code.gs` `doPost` menambah 2 cabang baru,
+  `type: "get_progres_materi"` / `type: "get_progres_modul"` — versi POST
+  dari `?progresMateri=1`/`?progresModul=1` (`doGet`), gerbang akses
+  (`wajibAksesLaporan_`) dan bentuk respons (`{data: [...]}`) DIJAGA IDENTIK
+  PERSIS dengan cabang `doGet` lama, supaya keamanan/perilaku tidak berubah,
+  cuma cara `idToken` dikirim (body JSON, bukan query string). Cabang `doGet`
+  lama SENGAJA TIDAK dihapus (dibiarkan ada, tidak berbahaya) untuk
+  kompatibilitas mundur. `belajar-mandiri.js` diubah memanggil endpoint POST
+  baru ini lewat `fetch(base, { method: "POST", body: JSON.stringify(...) })`.
+- **PENTING — proses menemukan perbaikan ini SEMPAT nyaris menimbulkan
+  regresi**: draf awal `Code.gs` yang disiapkan untuk perbaikan ini
+  didasarkan pada salinan `Code.gs` yang SUDAH KETINGGALAN (tidak punya cache
+  verifikasi idToken §61 maupun Streak Harian §53) — nyaris menimpa & MENGHAPUS
+  kedua fitur itu kalau langsung dipakai. Ditemukan HANYA karena pemilik
+  proyek membandingkan jumlah baris file secara manual dan curiga. **Pelajaran
+  untuk ke depan**: SELALU minta/pakai file `Code.gs` yang SEDANG DIPAKAI
+  (upload langsung, bukan mengandalkan salinan lama dari sesi/zip sebelumnya)
+  sebagai basis SEBELUM mengedit file ini, lalu verifikasi dengan `diff`
+  baris-per-baris bahwa HANYA perubahan yang dimaksud yang berbeda dari file
+  asli, sebelum hasilnya diserahkan.
+- [ ] Setelah `Code.gs` di-deploy ulang ("New version", lihat §45 checklist
+      rutin sinkronisasi URL) → buka Pintu 2, pastikan TIDAK ADA lagi error
+      404 di console untuk permintaan progres materi/modul
+- [ ] Data yang tampil di laporan (ringkasan, Aktivitas Terbaru, detail per
+      mapel) tetap benar/lengkap seperti sebelum perbaikan — perbaikan ini
+      MURNI mengubah cara kirim `idToken`, bukan logika pengambilan datanya
+- [ ] Orang tua yang BUKAN wali anak yang diminta tetap DITOLAK aksesnya
+      (`wajibAksesLaporan_` di endpoint POST baru berperilaku identik dengan
+      versi GET lama — uji ulang skenario penolakan akses dari §39/checklist
+      laporan siswa)
+- [ ] `verifikasiUser_()` (cache §61) dan fitur Streak Harian (§53) masih
+      berfungsi normal setelah `Code.gs` ini di-deploy — memastikan
+      penambahan 2 endpoint baru di sesi ini benar-benar tidak menyentuh
+      bagian lain file (lihat catatan proses di atas)
