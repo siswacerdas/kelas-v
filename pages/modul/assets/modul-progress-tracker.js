@@ -145,6 +145,38 @@
     var sudahMencapaiAkhir = false;
     var sudahDikirim = false;
 
+    // v1.3 (BUG NYATA ditemukan Sept 2026, lihat ANTIREGRESI.md §55 & CHANGELOG.md):
+    // PEMULIHAN HALAMAN TERAKHIR SAAT MODUL DIBUKA ULANG TIDAK PERNAH TERDETEKSI DI SINI.
+    // Kronologi: hampir semua file modul.html memulihkan posisi baca (goToPage(halaman
+    // tersimpan)) SECARA SINKRON saat skrip inline modul dieksekusi — pada SEBAGIAN file,
+    // ini terjadi SEBELUM tag <script src=".../modul-progress-tracker.js"> di bawahnya
+    // sempat jalan sama sekali; pada sebagian file LAIN, restore itu ditunda ke event
+    // "user-verified" yang (biasanya) baru terpicu SETELAH file ini sempat menempel monkey-
+    // patch-nya ke window.goToPage lewat DOMContentLoaded — jadi urutannya TIDAK KONSISTEN
+    // antar file, dan pada pola PERTAMA, monkey-patch belum terpasang saat restore terjadi.
+    // Akibatnya: siswa yang sudah mencapai halaman terakhir modul di sesi SEBELUMNYA (tapi
+    // sesi itu berakhir sebelum genap AMBANG_WAKTU_MS di halaman itu — sangat wajar terjadi,
+    // mis. tab/HP tertutup) lalu MEMBUKA ULANG modul yang sama untuk menghabiskan sisa
+    // waktunya, TIDAK PERNAH tercatat selesai — karena `sudahMencapaiAkhir` di sesi baru ini
+    // tetap `false` selamanya (goToPage(halaman-terakhir) yang terpanggil saat restore adalah
+    // versi ASLI yang BELUM di-patch, bukan versi yang di-monkey-patch di bawah, jadi flag
+    // ini tidak pernah ke-set walau siswa sudah TERLIHAT diam di halaman terakhir menunggu).
+    // Inilah laporan Arif: siswa merasa "sudah selesai baca modul" tapi laporan orang tua/
+    // guru tidak pernah menunjukkan modul itu selesai.
+    // PERBAIKAN: baca localStorage (`STORAGE_KEY`) LANGSUNG di sini saat init, sebelum
+    // bergantung sepenuhnya pada intersepsi goToPage — kalau halaman TERSIMPAN sudah
+    // halaman terakhir, langsung anggap syarat ini terpenuhi, TIDAK PEDULI pola restore
+    // modul yang mana atau urutan skripnya. Syarat waktu minimum (AMBANG_WAKTU_MS) TETAP
+    // dihitung dari waktu TERLIHAT di SESI INI seperti biasa (tidak berubah) — jadi siswa
+    // tetap tidak bisa dapat EXP instan hanya dengan buka-tutup cepat, cuma syarat "sampai
+    // halaman terakhir"-nya sekarang benar-benar akurat sejak awal sesi.
+    try {
+      var stateTersimpan = JSON.parse(localStorage.getItem(window.STORAGE_KEY) || "{}");
+      if (typeof stateTersimpan.page === "number" && stateTersimpan.page === window.TOTAL_PAGES - 1) {
+        sudahMencapaiAkhir = true;
+      }
+    } catch (e) { /* localStorage rusak/nonaktif/bukan JSON — abaikan, anggap belum sampai akhir */ }
+
     function totalWaktuTerlihatMs() {
       var total = akumulasiMs;
       if (mulaiTerlihat !== null) total += (Date.now() - mulaiTerlihat);
