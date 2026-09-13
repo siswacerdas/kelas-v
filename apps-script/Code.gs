@@ -1314,34 +1314,6 @@ function doPost(e) {
       return doPostProgresModul_(body);
     }
 
-    if (body.type === "get_progres_materi") {
-      // DITAMBAHKAN — versi POST dari ?progresMateri=1 (doGet). Dipakai belajar-mandiri.js
-      // (laporan "Perkembangan Belajar Mandiri", Pintu 2) SUPAYA idToken (JWT Firebase, bisa
-      // 1000+ karakter) TIDAK lagi ikut ditempel di query string URL: request GET yang
-      // sangat panjang ke Apps Script Web App terbukti bisa gagal dengan gejala 404 di
-      // proxy redirect "script.googleusercontent.com/macros/echo" (lihat konsol browser) —
-      // request POST dengan body JSON tidak kena batasan panjang URL sama sekali. Gerbang
-      // akses & bentuk respons SENGAJA dijaga identik persis dengan cabang doGet
-      // ?progresMateri=1 di atas (sama-sama wajibAksesLaporan_, sama-sama {data: [...]})
-      // supaya belajar-mandiri.js tidak perlu ubah apa pun selain URL & method fetch-nya.
-      const nama = body.nama;
-      if (!nama) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
-      wajibAksesLaporan_(body.idToken, nama);
-      const rows = sheetToObjects_(getProgresMateriSheet_()).filter((r) => r["Nama Siswa"] === nama);
-      return jsonOut_({ data: rows });
-    }
-
-    if (body.type === "get_progres_modul") {
-      // Sama persis alasan & pola dengan "get_progres_materi" di atas — versi POST dari
-      // ?progresModul=1 (doGet), dipakai belajar-mandiri.js untuk menghindari idToken
-      // panjang nyangkut di query string GET.
-      const namaModul = body.nama;
-      if (!namaModul) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
-      wajibAksesLaporan_(body.idToken, namaModul);
-      const rowsModul = sheetToObjects_(getProgresModulSheet_()).filter((r) => r["Nama Siswa"] === namaModul);
-      return jsonOut_({ data: rowsModul });
-    }
-
     if (body.type === "hitung_gamifikasi") {
       // SENGAJA TANPA gerbang — dipanggil siswa sendiri tepat setelah 1 hasil kuis
       // tersimpan ATAU 1 materi ditandai dibaca. TIDAK bisa disalahgunakan untuk
@@ -1897,9 +1869,14 @@ const EXP_BONUS_KUIS_LULUS_ = 10;
  * materi/modul dapat `expPenuh`, kunjungan berikutnya ke MATERI/MODUL YANG SAMA cuma dapat
  * `EXP_ULANG_`. Dipakai bersama untuk Materi (kolom "Materi Slug") maupun Modul (kolom
  * "Modul Slug") — cukup beda nama kolom & besaran EXP penuhnya.
- * Return: { jumlahDistinct, totalExp } — jumlahDistinct dipakai utk statistik "Materi
- * Dibaca"/"Modul Selesai" (tetap cuma hitung SEKALI per materi/modul, bukan total kunjungan),
- * totalExp sudah termasuk bonus kunjungan ulang. */
+ * Return: { jumlahDistinct, totalExp, tanggalAktifList } — jumlahDistinct dipakai utk
+ * statistik "Materi Dibaca"/"Modul Selesai" (tetap cuma hitung SEKALI per materi/modul,
+ * bukan total kunjungan), totalExp sudah termasuk bonus kunjungan ulang. tanggalAktifList
+ * (BARU, lihat ANTIREGRESI.md §53 — Streak Harian) berisi kolom "Timestamp" APA ADANYA
+ * (string "yyyy-MM-dd" hasil normalizeCell_ di sheetToObjects_, zona waktu proyek Apps
+ * Script) untuk SETIAP baris milik siswa ini — SENGAJA termasuk kunjungan ulang (bukan
+ * cuma kunjungan pertama), karena untuk keperluan streak "aktif hari ini" tetap sah dari
+ * baca ulang materi lama, bukan cuma materi baru. */
 function hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh) {
   const target = String(nama).trim().toLowerCase();
   const rows = sheetToObjects_(sheet).filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target);
@@ -1915,7 +1892,135 @@ function hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh) {
     const kunjungan = kunjunganPerSlug[slug];
     totalExp += expPenuh + Math.max(0, kunjungan - 1) * EXP_ULANG_;
   });
-  return { jumlahDistinct: slugList.length, totalExp: totalExp };
+  const tanggalAktifList = rows.map((r) => String(r["Timestamp"] || "").trim()).filter(Boolean);
+  return { jumlahDistinct: slugList.length, totalExp: totalExp, tanggalAktifList: tanggalAktifList };
+}
+
+/* ── STREAK HARIAN — lihat ANTIREGRESI.md §53 & CHANGELOG.md untuk latar belakang lengkap.
+ * Prinsip SAMA dengan EXP/Level di atas: dihitung ulang PENUH setiap kali dari tanggal
+ * aktivitas yang sudah tercatat di sumber-sumber TERPERCAYA SERVER (Progres Materi/Modul:
+ * `Timestamp` di-set `new Date()` oleh Apps Script sendiri saat baris ditulis; hasil_latihan:
+ * `timestamp` di-set `serverTimestamp()` Firestore) — BUKAN counter yang di-increment dari
+ * klien. Siswa TIDAK BISA memalsukan "hari aktif" hanya dengan mengubah jam di perangkatnya
+ * sendiri, karena tanggal yang dipakai selalu berasal dari jam SERVER saat data ditulis.
+ *
+ * Aturan (keputusan sadar Arif, BUKAN default umum ala Duolingo): Sabtu/Minggu TANPA
+ * aktivitas MEMUTUS streak, sama ketatnya dengan hari sekolah biasa — supaya streak betul2
+ * mencerminkan kebiasaan aktif harian, bukan cuma hari sekolah. Kalau nanti dirasa terlalu
+ * keras (banyak siswa "kehilangan" streak gara-gara libur akhir pekan/libur sekolah), aturan
+ * ini gampang diubah: cukup ubah hitungStreakDariTanggal_ supaya melompati tanggal Sabtu/Minggu
+ * saat mengecek "konsekutif" (lihat komentar di dalam fungsi itu).
+ *
+ * SEMUA fungsi di blok ini SENGAJA murni JS standar (Date.UTC/getUTCFullYear dst, TIDAK
+ * pakai Utilities.formatDate atau API Apps Script lain) supaya bisa dites identik di Node.js
+ * (lihat scripts/test-streak.js) maupun saat benar-benar jalan di Apps Script — 1 sumber
+ * logika, 2 lingkungan berbeda, tanpa risiko beda hasil. */
+const EXP_PER_HARI_AKTIF_ = 2; // bonus kecil per HARI (bukan per aktivitas) siswa tercatat aktif — angka rekomendasi Claude, gampang diubah di sini
+const MILESTONE_STREAK_ = [ // bonus SEKALI (bukan per hari) begitu streak TERPANJANG siswa pernah menyentuh angka ini
+  { hari: 3, bonus: 10 },
+  { hari: 7, bonus: 25 },
+  { hari: 14, bonus: 50 },
+  { hari: 30, bonus: 100 },
+];
+
+/** Format Date (WAJIB dalam nilai UTC, lihat pemanggil) jadi "yyyy-MM-dd" — pengganti
+ * Utilities.formatDate yang murni JS standar, supaya testable di Node.js. */
+function formatTanggalUtc_(d) {
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+  return y + "-" + m + "-" + day;
+}
+
+/** Ubah 1 nilai tanggal APA ADANYA dari sumber data jadi tanggal kalender WIB "yyyy-MM-dd":
+ * - Kalau sudah berformat "yyyy-MM-dd" (dari sheet Progres Materi/Modul, sudah dinormalisasi
+ *   normalizeCell_ pakai zona waktu proyek Apps Script) → dipakai APA ADANYA.
+ * - Kalau berupa string ISO dengan jam (dari Firestore `timestampValue`, selalu UTC) →
+ *   digeser +7 jam (WIB = UTC+7, tanpa DST) baru diambil tanggal kalendernya, murni supaya
+ *   kuis yang dikerjakan lewat tengah malam WIB tetap terhitung di tanggal WIB yang benar,
+ *   bukan tanggal UTC-nya.
+ * PRASYARAT (dicatat di checklist manual §53): timezone proyek Apps Script HARUS
+ * Asia/Jakarta (GMT+7) — kalau beda, tanggal dari sheet (jalur pertama) akan salah geser. */
+function tanggalWib_(nilaiTanggal) {
+  if (!nilaiTanggal) return "";
+  const s = String(nilaiTanggal);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  const d = new Date(s);
+  if (isNaN(d.getTime())) return "";
+  const wib = new Date(d.getTime() + 7 * 60 * 60 * 1000);
+  return formatTanggalUtc_(wib);
+}
+
+/** Geser 1 tanggal "yyyy-MM-dd" sejumlah `offsetHari` (boleh negatif). Murni JS, tidak
+ * terpengaruh zona waktu lokal proses yang menjalankannya (selalu hitung via Date.UTC). */
+function geserTanggal_(yyyyMmDd, offsetHari) {
+  const p = yyyyMmDd.split("-").map(Number);
+  const d = new Date(Date.UTC(p[0], p[1] - 1, p[2]));
+  d.setUTCDate(d.getUTCDate() + offsetHari);
+  return formatTanggalUtc_(d);
+}
+
+/** Selisih hari kalender (bulat, boleh negatif) antara 2 tanggal "yyyy-MM-dd". */
+function selisihHariKalender_(tglAwal, tglAkhir) {
+  const p = (s) => s.split("-").map(Number);
+  const a = p(tglAwal), b = p(tglAkhir);
+  const ua = Date.UTC(a[0], a[1] - 1, a[2]);
+  const ub = Date.UTC(b[0], b[1] - 1, b[2]);
+  return Math.round((ub - ua) / 86400000);
+}
+
+/** Fungsi MURNI (tidak menyentuh Firestore/Sheet/jam sistem) — inti kalkulasi streak, mudah
+ * diuji terpisah dari sumber data. `daftarTanggalWib`: array string "yyyy-MM-dd" (boleh
+ * duplikat/tidak urut, akan di-dedup+diurutkan di sini). `hariIniWib`: tanggal "hari ini"
+ * WIB "yyyy-MM-dd", SENGAJA diterima sebagai parameter (bukan dihitung dari `new Date()` di
+ * dalam fungsi ini) supaya fungsi ini deterministik & testable — pemanggil (Apps Script)
+ * yang menyediakan `new Date()` sungguhan.
+ * Return: { streakSaatIni, streakTerpanjang, hariAktifTerakhir, jumlahHariAktifUnik }. */
+function hitungStreakDariTanggal_(daftarTanggalWib, hariIniWib) {
+  const unik = Array.from(new Set((daftarTanggalWib || []).filter(Boolean))).sort();
+  if (unik.length === 0) {
+    return { streakSaatIni: 0, streakTerpanjang: 0, hariAktifTerakhir: null, jumlahHariAktifUnik: 0 };
+  }
+
+  // Streak TERPANJANG: replay seluruh riwayat, reset begitu ada hari bolong (termasuk
+  // Sabtu/Minggu — lihat catatan aturan di komentar blok atas).
+  let streakTerpanjang = 1;
+  let streakBerjalan = 1;
+  for (let i = 1; i < unik.length; i++) {
+    streakBerjalan = selisihHariKalender_(unik[i - 1], unik[i]) === 1 ? streakBerjalan + 1 : 1;
+    if (streakBerjalan > streakTerpanjang) streakTerpanjang = streakBerjalan;
+  }
+
+  // Streak SAAT INI: cuma "hidup" kalau hari aktif TERAKHIR adalah hari ini atau kemarin WIB
+  // (kemarin tetap dihitung hidup supaya siswa yang belum sempat buka aplikasi HARI INI
+  // tidak tiba-tiba melihat streak-nya sudah 0 sebelum harinya berakhir). Begitu sudah 2+
+  // hari absen, streak saat ini resmi 0 — riwayat streakTerpanjang tetap tersimpan sebagai
+  // rekor, tidak ikut hilang.
+  const hariAktifTerakhir = unik[unik.length - 1];
+  const kemarinWib = geserTanggal_(hariIniWib, -1);
+  let streakSaatIni = 0;
+  if (hariAktifTerakhir === hariIniWib || hariAktifTerakhir === kemarinWib) {
+    streakSaatIni = 1;
+    for (let i = unik.length - 1; i > 0; i--) {
+      if (selisihHariKalender_(unik[i - 1], unik[i]) === 1) streakSaatIni++;
+      else break;
+    }
+  }
+
+  return { streakSaatIni: streakSaatIni, streakTerpanjang: streakTerpanjang, hariAktifTerakhir: hariAktifTerakhir, jumlahHariAktifUnik: unik.length };
+}
+
+/** Fungsi MURNI — EXP bonus dari streak, gabungan (a) bonus kecil PER HARI aktif unik
+ * (akumulatif sepanjang tahun, tidak pernah berkurang meski streak SAAT INI putus — hari
+ * yang sudah pernah aktif tetap dihargai) dan (b) bonus SEKALI per milestone streak
+ * TERPANJANG yang PERNAH dicapai (pakai streakTerpanjang, bukan streakSaatIni, supaya
+ * bonus milestone TIDAK hilang/re-award berulang tiap kali dihitung ulang — deterministik,
+ * konsisten dengan prinsip "replay penuh dari sumber" di seluruh file ini). */
+function hitungBonusExpStreak_(streakTerpanjang, jumlahHariAktifUnik) {
+  let bonusMilestone = 0;
+  MILESTONE_STREAK_.forEach((m) => { if (streakTerpanjang >= m.hari) bonusMilestone += m.bonus; });
+  const bonusHarian = jumlahHariAktifUnik * EXP_PER_HARI_AKTIF_;
+  return bonusMilestone + bonusHarian;
 }
 
 
@@ -1931,15 +2036,34 @@ function hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh) {
  *
  * Kurva EXP per level SENGAJA TIDAK LINEAR — naik cepat di level awal (bikin
  * nagih), makin lambat di level tinggi (bikin Level 99 terasa istimewa/langka):
- * Level 1-10: 15 EXP/level · Level 10-30: 30 EXP/level ·
- * Level 30-60: 60 EXP/level · Level 60-99: 120 EXP/level
- * (total EXP buat tembus Level 99 dari nol: ±7.215 EXP — target realistisnya
- * cuma segelintir siswa paling aktif sepanjang tahun ajaran, itu justru poinnya). */
+ * Level 1-10: 30 EXP/level · Level 10-30: 45 EXP/level ·
+ * Level 30-60: 70 EXP/level · Level 60-99: 130 EXP/level
+ * (total EXP buat tembus Level 99 dari nol: ±8.340 EXP — target realistisnya
+ * cuma segelintir siswa paling aktif sepanjang tahun ajaran, itu justru poinnya).
+ *
+ * DIPERBARUI Sept 2026 (ANTIREGRESI.md §53 lanjutan — dikalibrasi ulang dari nol
+ * SETELAH celah retake kuis ditutup di atas): angka LAMA (15/30/60/120) dulu bikin
+ * 1x kuis lulus (15 EXP) = 1 level PENUH di tahap awal, jadi 5 TP berbeda yang
+ * dikerjakan legitimate dalam 1 hari pun sudah lompat ke Level 6 — terasa terlalu
+ * cepat untuk keputusan sadar Arif. Angka baru dihitung dari total pool EXP realistis
+ * kalau siswa mengerjakan SEMUA materi (200×10=2.000) + SEMUA modul (43×25=1.075) +
+ * SEMUA TP kuis sekali lulus (±45×15=±675) = ±3.750 EXP "first-pass" — tahap awal
+ * dinaikkan 2x supaya Level 6 butuh ±10 TP lulus (≈22% seluruh bank soal), sisanya
+ * (tahap menengah-atas) dinaikkan lebih ringan supaya total ke Level 99 tetap di
+ * orde yang sama (bukan tiba-tiba jauh lebih sulit/mustahil).
+ *
+ * CATATAN PENTING (keputusan sadar Arif, BUKAN kelalaian): begitu perubahan ini
+ * jalan lewat "Hitung Ulang Semua Siswa", Level 1-99 siswa yang SUDAH main bisa
+ * TERLIHAT TURUN dari yang mereka lihat sebelumnya (gabungan efek perbaikan celah
+ * kuis + pengetatan kurva ini) — EXP mentahnya TIDAK hilang/berkurang, cuma
+ * dikonversi ke skala level yang baru. Arif sudah memutuskan untuk langsung
+ * menerapkan & menjelaskan ke kelas kalau ada yang bertanya, BUKAN menunda atau
+ * mengakali supaya angka lama tidak terlihat turun. */
 const EXP_PER_LEVEL99_TAHAP_ = [
-  { hinggaLevel: 10, expPerLevel: 15 },
-  { hinggaLevel: 30, expPerLevel: 30 },
-  { hinggaLevel: 60, expPerLevel: 60 },
-  { hinggaLevel: 99, expPerLevel: 120 },
+  { hinggaLevel: 10, expPerLevel: 30 },
+  { hinggaLevel: 30, expPerLevel: 45 },
+  { hinggaLevel: 60, expPerLevel: 70 },
+  { hinggaLevel: 99, expPerLevel: 130 },
 ];
 
 // Rentang level -> rank, lihat CHANGELOG.md untuk penamaan & alasan tiap rank.
@@ -2012,7 +2136,13 @@ function ambilRiwayatHasilLatihan_(nama) {
   const docs = firestoreQueryEqual_("hasil_latihan", "namaSiswa", String(nama).trim());
   const hasil = docs.map((doc) => {
     const f = objFromFirestoreFields_(doc.fields);
-    return { skor: Number(f.skor) || 0, timestamp: f.timestamp || "" };
+    // `tp` (BARU, lihat ANTIREGRESI.md §53) dibaca APA ADANYA dari dokumen — field ini
+    // SUDAH ADA di setiap hasil_latihan sejak awal (ditulis uji-kemampuan.html sebagai
+    // `tp: currentTp.tp`), cuma belum pernah dipakai di sini. Dokumen LAMA dari sebelum
+    // field ini konsisten terisi (kalau ada) akan bernilai "" — sengaja DIBIARKAN tanpa
+    // dedup EXP (lihat hitungLevelDariRiwayat_) demi tidak mengubah EXP yang sudah pernah
+    // dihitung untuk data lama.
+    return { skor: Number(f.skor) || 0, timestamp: f.timestamp || "", tp: String(f.tp || "").trim() };
   });
   hasil.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   return hasil;
@@ -2032,11 +2162,39 @@ function hitungLevelDariRiwayat_(riwayat) {
   let totalSkor = 0;
   let expDariKuis = 0;
 
+  // Dedup EXP kuis PER TP (ANTIREGRESI.md §53 — PERBAIKAN CELAH KECURANGAN): sebelum ini,
+  // TIAP percobaan kuis (row hasil_latihan) dihitung EXP PENUH tanpa peduli itu TP baru
+  // atau TP YANG SAMA diulang berkali-kali — soal diacak ulang tiap sesi jadi siswa bisa
+  // menekan "Kerjakan Lagi" pada 1 TP termudah berulang-ulang untuk EXP tanpa batas (lihat
+  // CHANGELOG.md untuk laporan awal: "level 1 → 6 cuma dari 6 kuis"). Sekarang, PERSIS pola
+  // yang sudah dipakai Materi/Modul (hitungExpDenganBacaUlang_): percobaan PERTAMA di 1 TP
+  // dapat EXP_PER_KUIS_DIKERJAKAN_ penuh, percobaan berikutnya di TP YANG SAMA cuma dapat
+  // EXP_ULANG_ kecil. Bonus lulus (EXP_BONUS_KUIS_LULUS_) dedup TERPISAH per-TP dari basis
+  // "pernah dikerjakan" — diberikan PENUH sekali di kali PERTAMA TP itu lulus, walau
+  // percobaan pertamanya gagal (supaya siswa yang butuh beberapa kali coba sebelum lulus
+  // tetap dapat bonus penuh sekali, tidak dihukum karena belum lulus di percobaan pertama).
+  // Dokumen LAMA tanpa field `tp` terisi (r.tp === "") SENGAJA TIDAK di-dedup (fallback ke
+  // perilaku lama, EXP penuh tiap kali) — supaya EXP historis yang sudah pernah dihitung
+  // dari data lama tidak tiba-tiba berubah/berkurang akibat migrasi ini.
+  const tpSudahDikerjakan_ = {};
+  const tpSudahLulus_ = {};
+
   riwayat.forEach((r) => {
     totalSkor += r.skor;
     if (r.skor > skorTertinggi) skorTertinggi = r.skor;
-    if (r.skor >= LEVEL_AMBANG_LULUS_UMUM_) totalLulusUmum++;
-    expDariKuis += EXP_PER_KUIS_DIKERJAKAN_ + (r.skor >= LEVEL_AMBANG_LULUS_UMUM_ ? EXP_BONUS_KUIS_LULUS_ : 0);
+    const lulus = r.skor >= LEVEL_AMBANG_LULUS_UMUM_;
+    if (lulus) totalLulusUmum++;
+
+    const tp = r.tp;
+    const sudahDikerjakanSebelumnya = tp && tpSudahDikerjakan_[tp];
+    const sudahLulusSebelumnya = tp && tpSudahLulus_[tp];
+    const expDikerjakan = (tp && sudahDikerjakanSebelumnya) ? EXP_ULANG_ : EXP_PER_KUIS_DIKERJAKAN_;
+    const expBonusLulus = lulus && !(tp && sudahLulusSebelumnya) ? EXP_BONUS_KUIS_LULUS_ : 0;
+    expDariKuis += expDikerjakan + expBonusLulus;
+    if (tp) {
+      tpSudahDikerjakan_[tp] = true;
+      if (lulus) tpSudahLulus_[tp] = true;
+    }
 
     if (mahirTercapai) return; // sudah di puncak, sisa riwayat cuma pengaruhi statistik umum di atas
 
@@ -2163,7 +2321,18 @@ function hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulDat
   const sebelum = ambilLevelSiswaSaatIni_(nama);
   const existingLengkap = ambilLevelSiswaLengkap_(nama); // supaya field `avatar` (kalau ada) tidak hilang tertimpa di bawah
   const levelData = hitungLevelDariRiwayat_(riwayat);
-  const exp = materiData.totalExp + modulData.totalExp + levelData.expDariKuis;
+
+  // Streak harian (ANTIREGRESI.md §53): gabungkan tanggal aktif dari SEMUA sumber
+  // terpercaya-server — Materi & Modul (tanggalAktifList, sudah "yyyy-MM-dd" WIB dari
+  // sheet) + kuis (riwayat, timestamp ISO Firestore, dikonversi tanggalWib_ di sini).
+  const tanggalAktifGabungan = materiData.tanggalAktifList
+    .concat(modulData.tanggalAktifList)
+    .concat(riwayat.map((r) => tanggalWib_(r.timestamp)));
+  const hariIniWib = formatTanggalUtc_(new Date(Date.now() + 7 * 60 * 60 * 1000));
+  const streakData = hitungStreakDariTanggal_(tanggalAktifGabungan, hariIniWib);
+  const bonusStreakExp = hitungBonusExpStreak_(streakData.streakTerpanjang, streakData.jumlahHariAktifUnik);
+
+  const exp = materiData.totalExp + modulData.totalExp + levelData.expDariKuis + bonusStreakExp;
   const level99Data = hitungLevel99DanRank_(exp);
   const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
     (levelData.mahirTercapai && !sebelum.mahirTercapai);
@@ -2171,7 +2340,15 @@ function hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulDat
   // ada), baru ditimpa field yang MEMANG dihitung ulang di panggilan ini — supaya field lain
   // yang tidak disentuh (avatar) tetap terbawa, tapi field yang dihitung ulang selalu pakai
   // nilai terbaru, bukan nilai basis yang mungkin sudah basi.
-  const dataLengkap = Object.assign({}, existingLengkap, levelData, { jumlahMateriDibaca: materiData.jumlahDistinct, jumlahModulSelesai: modulData.jumlahDistinct, exp: exp }, level99Data);
+  const dataLengkap = Object.assign({}, existingLengkap, levelData, {
+    jumlahMateriDibaca: materiData.jumlahDistinct,
+    jumlahModulSelesai: modulData.jumlahDistinct,
+    exp: exp,
+    streakSaatIni: streakData.streakSaatIni,
+    streakTerpanjang: streakData.streakTerpanjang,
+    hariAktifTerakhir: streakData.hariAktifTerakhir,
+    jumlahHariAktifUnik: streakData.jumlahHariAktifUnik,
+  }, level99Data);
   setLevelSiswaFirestore_(nama, dataLengkap);
   return Object.assign({ status: "ok", baruSajaNaikLevel: baruSajaNaikLevel }, dataLengkap);
 }
