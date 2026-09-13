@@ -1905,11 +1905,26 @@ const EXP_BONUS_KUIS_LULUS_ = 10;
  * Script) untuk SETIAP baris milik siswa ini — SENGAJA termasuk kunjungan ulang (bukan
  * cuma kunjungan pertama), karena untuk keperluan streak "aktif hari ini" tetap sah dari
  * baca ulang materi lama, bukan cuma materi baru. */
-function hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh) {
+/** v2 (perbaikan performa, Sept 2026 — lihat ANTIREGRESI.md §56 & CHANGELOG.md): logika
+ * murni DIPISAH dari pembacaan sheet (`hitungExpDenganBacaUlangDariRows_` di bawah), supaya
+ * baca sheet "Data Progres Materi"/"Data Progres Modul" (`sheetToObjects_`, 1 panggilan
+ * Sheets API per baca) bisa dilakukan SEKALI SAJA dan dipakai ULANG untuk banyak siswa
+ * sekaligus (lihat `doPostHitungGamifikasiSemua_` & `hitungGamifikasiSemuaOtomatis_`) —
+ * SEBELUMNYA fungsi ini membaca ULANG SELURUH sheet dari nol UNTUK SETIAP SISWA, jadi
+ * "Hitung Ulang Semua Siswa (25)" melakukan 25× baca sheet yang PERSIS SAMA, cuma disaring
+ * beda nama tiap kali — 25× lebih lambat dari yang seharusnya, dan makin parah begitu sheet
+ * membesar. TIDAK ADA perubahan pada ATURAN penghitungan (tetap PENUH dari riwayat, bukan
+ * increment sejak checkpoint terakhir — SENGAJA dipertahankan, lihat catatan arsitektur di
+ * atas & ANTIREGRESI.md §56 untuk alasan kenapa opsi "hitung dari update terakhir saja"
+ * SENGAJA TIDAK dipakai meski lebih cepat lagi: kehilangan sifat "self-healing" kalau ada
+ * baris yang pernah gagal terhitung). Dipertahankan sebagai fungsi TERPISAH (bukan cuma
+ * dilebur ke pemanggilnya) supaya tetap ada 1 sumber logika tunggal dipakai jalur satu-siswa
+ * (`hitungExpDenganBacaUlang_`, wrapper tipis di bawah) maupun jalur banyak-siswa. */
+function hitungExpDenganBacaUlangDariRows_(rows, namaKolomSlug, nama, expPenuh) {
   const target = String(nama).trim().toLowerCase();
-  const rows = sheetToObjects_(sheet).filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target);
+  const rowsSiswa = rows.filter((r) => String(r["Nama Siswa"] || "").trim().toLowerCase() === target);
   const kunjunganPerSlug = {};
-  rows.forEach((r) => {
+  rowsSiswa.forEach((r) => {
     const slug = String(r[namaKolomSlug] || "").trim();
     if (!slug) return;
     kunjunganPerSlug[slug] = (kunjunganPerSlug[slug] || 0) + 1;
@@ -1920,8 +1935,18 @@ function hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh) {
     const kunjungan = kunjunganPerSlug[slug];
     totalExp += expPenuh + Math.max(0, kunjungan - 1) * EXP_ULANG_;
   });
-  const tanggalAktifList = rows.map((r) => String(r["Timestamp"] || "").trim()).filter(Boolean);
+  const tanggalAktifList = rowsSiswa.map((r) => String(r["Timestamp"] || "").trim()).filter(Boolean);
   return { jumlahDistinct: slugList.length, totalExp: totalExp, tanggalAktifList: tanggalAktifList };
+}
+
+/** Wrapper tipis untuk jalur SATU siswa (`doPostHitungGamifikasi_`, dipanggil siswa sendiri
+ * tepat setelah 1 aktivitas) — baca sheet + langsung hitung, karena di jalur ini memang cuma
+ * dipakai 1 kali per panggilan (tidak ada N-siswa untuk dihemat). Jalur BANYAK siswa
+ * (`doPostHitungGamifikasiSemua_`, `hitungGamifikasiSemuaOtomatis_`) memanggil
+ * `hitungExpDenganBacaUlangDariRows_` LANGSUNG dengan rows yang sudah dibaca sekali di luar
+ * loop — TIDAK lewat wrapper ini. */
+function hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh) {
+  return hitungExpDenganBacaUlangDariRows_(sheetToObjects_(sheet), namaKolomSlug, nama, expPenuh);
 }
 
 /* ── STREAK HARIAN — lihat ANTIREGRESI.md §53 & CHANGELOG.md untuk latar belakang lengkap.
@@ -2396,26 +2421,34 @@ function doPostHitungGamifikasi_(body) {
 
 /** Dipakai tombol "Hitung Ulang Semua Siswa" di admin.html — 1 request klien, tapi di server
  * cuma LOOP memanggil fungsi TUNGGAL yang SAMA per nama (ambilRiwayatHasilLatihan_ +
- * hitungExpDenganBacaUlang_ + hitungDanSimpanGamifikasiSatuSiswa_), SENGAJA TIDAK punya
- * fungsi baca-batch terpisah. Ini aman/tidak boros kuota SEKARANG karena
- * ambilRiwayatHasilLatihan_ sendiri sudah dibetulkan pakai firestoreQueryEqual_ (baca
- * TERFILTER per nama, bukan baca-semua-koleksi) — beda dari versi lama endpoint ini yang
- * sempat menambah fungsi baca-semua-sekaligus terpisah HANYA untuk menghindari 25x baca
- * penuh koleksi; sekarang setelah akar masalahnya dibetulkan di ambilRiwayatHasilLatihan_,
- * 25x panggil fungsi yang sudah terfilter itu SAMA SEKALI TIDAK sama borosnya dengan 25x
- * baca-semua-koleksi yang lama, jadi tidak perlu jalur baca terpisah lagi — lebih sedikit
- * kode duplikat = lebih kecil risiko lupa sinkron seperti kasus PROGRES_MATERI_SHEET_NAME. */
+ * hitungExpDenganBacaUlangDariRows_ + hitungDanSimpanGamifikasiSatuSiswa_), SENGAJA TIDAK
+ * punya fungsi baca-batch terpisah untuk hasil_latihan (`ambilRiwayatHasilLatihan_` sendiri
+ * sudah dibetulkan pakai firestoreQueryEqual_, baca TERFILTER per nama, bukan
+ * baca-semua-koleksi — jadi 25x panggil fungsi itu TIDAK boros kuota Firestore).
+ *
+ * v2 (perbaikan performa, Sept 2026 — lihat ANTIREGRESI.md §56): BEDA dari hasil_latihan di
+ * atas, sheet "Data Progres Materi"/"Data Progres Modul" SEBELUMNYA dibaca ULANG dari nol
+ * DI DALAM `hitungExpDenganBacaUlang_` — dipanggil 25x (1x per siswa) tiap klik tombol ini,
+ * padahal isinya PERSIS SAMA di semua 25 panggilan itu (cuma beda nama yang disaring
+ * belakangan). Sekarang KEDUA sheet dibaca SEKALI SAJA di sini (`rowsMateri`/`rowsModul`),
+ * lalu rows yang sama dipakai ULANG untuk semua siswa lewat
+ * `hitungExpDenganBacaUlangDariRows_` — mengubah dari O(25× baca sheet) jadi O(1× baca
+ * sheet), sisanya cuma filter JS murni (murah, tidak ada panggilan Sheets API tambahan).
+ * ATURAN penghitungan TIDAK BERUBAH SAMA SEKALI (tetap replay PENUH dari riwayat) — ini
+ * MURNI optimasi cara membaca data sumbernya, lihat ANTIREGRESI.md §56 untuk alasan kenapa
+ * opsi "hitung cuma sejak update terakhir" (lebih cepat lagi tapi kehilangan sifat
+ * self-healing) SENGAJA tidak dipakai. */
 function doPostHitungGamifikasiSemua_(body) {
   const namaList = Array.isArray(body.namaList) ? body.namaList : [];
   if (!namaList.length) return jsonOut_({ status: "error", message: "namaList wajib diisi (array nama siswa)" });
-  const sheetMateri = getProgresMateriSheet_();
-  const sheetModul = getProgresModulSheet_();
+  const rowsMateri = sheetToObjects_(getProgresMateriSheet_());
+  const rowsModul = sheetToObjects_(getProgresModulSheet_());
   const hasilPerSiswa = namaList.map((namaMentah) => {
     const nama = String(namaMentah).trim();
     try {
       const riwayat = ambilRiwayatHasilLatihan_(nama);
-      const materiData = hitungExpDenganBacaUlang_(sheetMateri, "Materi Slug", nama, EXP_PER_MATERI_);
-      const modulData = hitungExpDenganBacaUlang_(sheetModul, "Modul Slug", nama, EXP_PER_MODUL_);
+      const materiData = hitungExpDenganBacaUlangDariRows_(rowsMateri, "Materi Slug", nama, EXP_PER_MATERI_);
+      const modulData = hitungExpDenganBacaUlangDariRows_(rowsModul, "Modul Slug", nama, EXP_PER_MODUL_);
       return Object.assign({ nama: nama }, hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData));
     } catch (err) {
       // 1 siswa gagal TIDAK BOLEH menggagalkan seluruh batch — siswa lain tetap lanjut
@@ -2424,6 +2457,80 @@ function doPostHitungGamifikasiSemua_(body) {
     }
   });
   return jsonOut_({ status: "ok", hasil: hasilPerSiswa });
+}
+
+/* ═══════════════════ JARING PENGAMAN OTOMATIS — HITUNG ULANG GAMIFIKASI TIAP 6 JAM ═══════
+ * (BARU, Sept 2026 — lihat ANTIREGRESI.md §56 & CHANGELOG.md untuk latar belakang lengkap)
+ *
+ * KENAPA: `hitung_gamifikasi` (dipanggil klien tepat setelah 1 aktivitas selesai) DAN tombol
+ * manual "Hitung Ulang Semua Siswa" SAMA-SAMA bergantung pada seseorang/sesuatu MEMICUNYA.
+ * Fire-and-forget dari klien terbukti BISA gagal diam-diam (tab ditutup/koneksi putus
+ * sebelum request terkirim — persis pola bug modul di ANTIREGRESI.md §55, walau itu kasus
+ * "progres_modul" bukan "hitung_gamifikasi", risikonya sama: sinyal aktivitas SUDAH tersimpan
+ * di sheet Progres Materi/Modul, tapi Level/EXP di Firestore level_siswa belum sempat
+ * ke-refresh mengikutinya kalau permintaan hitung_gamifikasi yang menyusul gagal terkirim).
+ * Trigger ini TIDAK menggantikan pemicu di atas (keduanya tetap jalan seperti biasa) — cuma
+ * jaring pengaman TAMBAHAN yang jalan SENDIRI tanpa bergantung siapa pun memicu, memastikan
+ * data Level/EXP semua siswa maksimal "basi" 6 jam meski SEMUA pemicu lain kebetulan gagal.
+ *
+ * CARA PASANG (WAJIB dilakukan MANUAL 1x oleh Arif dari editor Apps Script, TIDAK otomatis
+ * ikut aktif hanya dengan men-deploy kode ini — trigger time-based Apps Script memang harus
+ * didaftarkan lewat panggilan `ScriptApp.newTrigger` yang benar-benar dieksekusi, bukan cuma
+ * ada di kode):
+ *   1. Buka project Apps Script → pilih fungsi `installTriggerHitungGamifikasiOtomatis_`
+ *      di dropdown pemilih fungsi (sebelah tombol ▶ Jalankan)
+ *   2. Klik ▶ Jalankan — akan minta izin otorisasi tambahan (Apps Script perlu izin
+ *      "Trigger" pada project ini), setujui
+ *   3. Cek "Pemicu" (Triggers, ikon jam ⏰ di sidebar kiri editor) — harus muncul 1 baris
+ *      baru: fungsi `hitungGamifikasiSemuaOtomatis_`, jenis "Berdasarkan waktu", "Setiap 6 jam"
+ *   4. SELESAI — tidak perlu dijalankan ulang lagi setelah ini kecuali project di-redeploy
+ *      ke Apps Script project yang BENAR-BENAR baru (redeploy versi biasa TIDAK menghapus
+ *      trigger yang sudah terpasang)
+ * Fungsi `installTriggerHitungGamifikasiOtomatis_` AMAN dijalankan berkali-kali kalau perlu
+ * (mis. ingin ganti dari 6 jam ke interval lain) — selalu menghapus trigger LAMA untuk fungsi
+ * ini dulu sebelum memasang yang baru, supaya tidak menumpuk jadi banyak trigger duplikat
+ * yang masing-masing jalan sendiri-sendiri (boros & bisa tabrakan).
+ */
+
+/** Fungsi yang BENAR-BENAR dijalankan trigger tiap 6 jam — TIDAK dipanggil lewat doPost/HTTP
+ * sama sekali (Apps Script time-based trigger memanggil fungsi ini LANGSUNG, tanpa lewat web
+ * app), jadi TIDAK perlu & TIDAK ADA gerbang akses di sini. Daftar siswa yang diproses pakai
+ * `SISWA_NAMA_VALID_` (salinan 25 nama siswa yang SUDAH ADA untuk validasi impor massal, lihat
+ * definisinya) — sumber yang sama, TIDAK menambah sumber roster baru yang perlu disinkronkan
+ * manual lagi. Logika penghitungan & optimasi baca sheet SEKALI SAJA PERSIS SAMA dengan
+ * `doPostHitungGamifikasiSemua_` (lihat komentar di sana) — kalau nanti fungsi itu berubah,
+ * cek juga apakah perubahan yang sama perlu diterapkan di sini. */
+function hitungGamifikasiSemuaOtomatis_() {
+  const rowsMateri = sheetToObjects_(getProgresMateriSheet_());
+  const rowsModul = sheetToObjects_(getProgresModulSheet_());
+  const hasil = SISWA_NAMA_VALID_.map((nama) => {
+    try {
+      const riwayat = ambilRiwayatHasilLatihan_(nama);
+      const materiData = hitungExpDenganBacaUlangDariRows_(rowsMateri, "Materi Slug", nama, EXP_PER_MATERI_);
+      const modulData = hitungExpDenganBacaUlangDariRows_(rowsModul, "Modul Slug", nama, EXP_PER_MODUL_);
+      return Object.assign({ nama: nama }, hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData));
+    } catch (err) {
+      return { nama: nama, status: "error", message: String(err) };
+    }
+  });
+  const gagal = hasil.filter((h) => h.status === "error");
+  // Logger.log masuk ke "Log Eksekusi" Apps Script (Executions, ikon ▷ di sidebar kiri) —
+  // TIDAK ada admin.html yang menampilkan ini secara real-time (trigger jalan sendiri tanpa
+  // ada yang menunggu di browser), jadi kalau curiga ada yang gagal, cek riwayat eksekusi di
+  // situ, BUKAN di admin.html.
+  Logger.log("hitungGamifikasiSemuaOtomatis_: " + (hasil.length - gagal.length) + " berhasil, " +
+    gagal.length + " gagal dari " + hasil.length + " siswa.");
+  if (gagal.length > 0) Logger.log("Rincian gagal: " + JSON.stringify(gagal));
+}
+
+/** Jalankan SATU KALI SAJA secara manual dari editor Apps Script untuk memasang trigger 6 jam
+ * di atas — lihat panduan lengkap di komentar blok sebelum `hitungGamifikasiSemuaOtomatis_`. */
+function installTriggerHitungGamifikasiOtomatis_() {
+  ScriptApp.getProjectTriggers().forEach(function (t) {
+    if (t.getHandlerFunction() === "hitungGamifikasiSemuaOtomatis_") ScriptApp.deleteTrigger(t);
+  });
+  ScriptApp.newTrigger("hitungGamifikasiSemuaOtomatis_").timeBased().everyHours(6).create();
+  Logger.log("Trigger terpasang: hitungGamifikasiSemuaOtomatis_ akan otomatis jalan setiap 6 jam.");
 }
 
 
