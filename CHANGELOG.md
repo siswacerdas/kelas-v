@@ -8,6 +8,34 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki — Penyelesaian Modul TETAP tidak tercatat setelah §55 (akar masalah sesungguhnya: timer diam-diam) + error 404 laporan intermiten (lihat ANTIREGRESI.md §57)
+- **Laporan Arif (dengan screenshot)**: 5 modul menunjukkan "100% selesai" di HP siswa
+  TAPI dashboard tetap "0/43 Modul selesai" — dikonfirmasi terjadi SETELAH §55 di-deploy,
+  jadi §55 bukan akar masalah utamanya (walau tetap valid diperbaiki).
+- **Akar masalah sesungguhnya**: badge "100% selesai" di header modul (dihitung dari kuis
+  yang dijawab benar) SAMA SEKALI TERPISAH dari syarat pengiriman penanda "selesai" ke
+  server (mencapai halaman terakhir + menunggu 3 menit `AMBANG_WAKTU_MS`). Syarat waktu 3
+  menit ini SEPENUHNYA DIAM-DIAM — tidak ada petunjuk visual apa pun. Siswa melihat "100%"
+  di header, mengira sudah tuntas, menutup tab — padahal timer belum genap, penanda tidak
+  pernah terkirim. Pola ini jauh lebih umum daripada skenario buka-ulang §55.
+- **Perbaikan**: `modul-progress-tracker.js` sekarang menampilkan banner mengambang di
+  bawah layar begitu halaman terakhir tercapai, dengan hitung mundur waktu tersisa yang
+  jujur, berubah jadi pesan sukses begitu penanda berhasil dikirim. Gaya inline (bukan CSS
+  class), otomatis berlaku di semua 43 file modul.html tanpa disentuh satu-satu. Aturan
+  pengiriman (2 syarat, ambang 3 menit) TIDAK berubah — murni membuat proses yang
+  sebelumnya diam-diam jadi terlihat.
+- **PENTING**: 5 modul yang sudah terlanjur tidak tercatat di screenshot TIDAK otomatis
+  pulih — sumber datanya memang tidak pernah tercipta. Siswa perlu membuka ulang & menunggu
+  penuh (sekarang dengan banner yang menuntun) di kelima modul itu.
+- **Error 404 laporan (intermiten)**: beda dari §54 (soal panjang URL, sudah tuntas) — ini
+  ketidakstabilan bawaan proxy Apps Script Web App sendiri, "kadang gagal kadang tidak".
+  `belajar-mandiri.js` sekarang punya `fetchDenganRetry_` — timeout 20 detik + 1x retry
+  otomatis KHUSUS kegagalan teknis (timeout/network/bukan-JSON). Error valid dari server
+  TIDAK diulang. Dipakai untuk kedua panggilan (`get_progres_materi` & `get_progres_modul`).
+- Divalidasi `node --check` + `scripts/test-banner-modul-57.js` (6 skenario format waktu)
+  + `scripts/test-retry-laporan-57.js` (7 skenario retry) — semua lulus. Checklist manual
+  lengkap di ANTIREGRESI.md §57.
+
 ### Ditambahkan/Diperbaiki — Performa "Hitung Ulang Semua Siswa" + jaring pengaman otomatis 6 jam sekali (lihat ANTIREGRESI.md §56)
 - **Konteks**: Arif minta fitur hitung ulang XP hanya memproses progres BARU sejak update
   terakhir (bukan hitung ulang penuh dari riwayat), dan bertanya apakah ada sistem yang

@@ -3111,3 +3111,113 @@ siswa lain (termasuk yang urutannya SETELAH siswa gagal) tetap berhasil dihitung
       redeploy (trigger terikat ke PROJECT Apps Script, bukan ke versi deployment, jadi
       redeploy versi biasa TIDAK menghapusnya — cuma perlu diinstal ulang kalau project
       Apps Script-nya benar-benar dibuat baru dari nol)
+
+---
+
+### 57. Penyelesaian Modul TETAP tidak tercatat setelah §55 (akar masalah sesungguhnya: timer diam-diam) + error 404 laporan intermiten (`pages/modul/assets/modul-progress-tracker.js`, `pages/laporan-siswa/assets/belajar-mandiri.js`, Sept 2026)
+
+**Laporan Arif (dengan bukti screenshot)**: 5 modul Bahasa Indonesia berbeda menunjukkan
+"100% selesai" di HP siswa (Presentasi Gagasan, Membacakan Karya Sastra, Menangkap Info
+Penting, Menulis dari Pengalaman, Sebab-Akibat), TAPI dashboard tetap menunjukkan "0/43
+Modul selesai" dan hampir semua kategori materi/modul di "Rincian per Mata Pelajaran" masih
+0. Dikonfirmasi ini terjadi **SETELAH** perbaikan §55 di-deploy — jadi §55 BUKAN akar
+masalah utamanya (walau tetap valid diperbaiki). Arif juga melaporkan error konsol
+`script.googleusercontent.com/macros/echo...` 404 masih sesekali muncul saat memuat
+laporan, WALAU idToken sudah dipindah ke POST (§54) — sifatnya "kadang gagal kadang
+tidak" (intermiten), bukan gagal permanen/konsisten.
+
+**Akar masalah SESUNGGUHNYA (modul tidak tercatat)**: dua sistem yang TERLIHAT seperti 1
+oleh siswa TERNYATA sama sekali TERPISAH secara teknis:
+1. **Badge "100% selesai" di header tiap modul.html** — dihitung oleh `updateProgress()`
+   (fungsi LOKAL di tiap file modul.html) dari jumlah kuis/checklist yang sudah dijawab
+   BENAR (`totalMarkers`), dibandingkan jumlah yang sudah selesai. TIDAK ADA hubungannya
+   sama sekali dengan "sudah mencapai halaman terakhir" atau timer di bawah.
+2. **Syarat pengiriman penanda "selesai" ke server** (`modul-progress-tracker.js`) — perlu
+   DUA hal: (a) mencapai halaman terakhir, DAN (b) sudah menghabiskan **`AMBANG_WAKTU_MS`
+   (3 menit)** waktu TERLIHAT di halaman itu. Syarat (b) ini **SEPENUHNYA DIAM-DIAM** sejak
+   awal dirancang (fire-and-forget, sengaja tidak mengganggu tampilan modul) — TIDAK ADA
+   petunjuk visual apa pun ke siswa bahwa mereka harus tetap menunggu.
+
+Akibatnya: siswa menjawab semua kuis dengan benar → badge header naik ke "100% selesai" →
+siswa (apalagi anak kelas 5) WAJAR SAJA mengira sudah tuntas dan menutup tab/pindah
+pelajaran lain → padahal timer 3 menit BELUM genap sama sekali → penanda "modul selesai"
+TIDAK PERNAH terkirim. Pola ini **JAUH lebih umum** daripada skenario buka-ulang yang
+diperbaiki di §55 (tidak perlu menutup-buka ulang modul sama sekali — cukup 1 sesi normal
+yang berakhir sebelum genap 3 menit di halaman terakhir, yang sangat mungkin terjadi kalau
+tidak ada yang memberi tahu siswa untuk menunggu).
+
+**Perbaikan (modul)**: `modul-progress-tracker.js` sekarang menampilkan **banner
+mengambang** di bagian bawah layar begitu halaman terakhir tercapai, dengan hitung mundur
+waktu tersisa yang jujur ("🎉 Halaman terakhir! Tetap di sini 2:45 lagi untuk menandai
+modul ini selesai."), berubah jadi pesan sukses ("✅ Modul selesai tercatat!") begitu
+syarat waktu terpenuhi dan penanda berhasil dikirim, lalu menghilang otomatis setelah 4
+detik. Banner disembunyikan lagi kalau siswa berpindah dari halaman terakhir sebelum genap
+waktunya (mis. ingin lihat ulang halaman sebelumnya), dan muncul lagi kalau kembali ke
+halaman terakhir. Ditulis dengan gaya INLINE (bukan class CSS) supaya konsisten tampil di
+SEMUA 43 file modul.html tanpa bergantung CSS masing-masing file — TIDAK ADA file modul.html
+yang perlu disentuh satu-satu. **ATURAN pengiriman (2 syarat, ambang 3 menit) TIDAK
+berubah SAMA SEKALI** — perbaikan ini murni membuat proses yang sebelumnya diam-diam
+menjadi terlihat, supaya siswa TAHU harus menunggu alih-alih mengira sudah selesai dari
+badge "100%" yang sebenarnya mengukur hal berbeda.
+
+**Akar masalah error 404 laporan (intermiten)**: berbeda dari §54 (yang murni soal panjang
+URL GET, sudah tuntas diperbaiki dengan pindah ke POST) — kegagalan yang MASIH terjadi
+sesekali ini adalah pola ketidakstabilan bawaan proxy redirect Apps Script Web App sendiri
+(`script.googleusercontent.com/macros/echo`), bukan lagi soal ukuran payload. Proyek ini
+sudah PERNAH menghadapi pola kegagalan Apps Script yang mirip di endpoint lain (riwayat
+lama `siswa_login` sebelum bermigrasi ke Firebase Auth langsung) — mitigasinya BUKAN
+menghindari Apps Script (laporan ini memang harus baca sheet lewat Apps Script), tapi
+menerima bahwa kegagalan TEKNIS sesekali itu WAJAR dan menanganinya dengan **timeout +
+retry otomatis**, pola yang sama dipakai `postKeAppsScript_` di admin.html (walau di sana
+tanpa retry otomatis, cuma pesan error yang jelas).
+
+**Perbaikan (laporan)**: `belajar-mandiri.js` sekarang punya `fetchDenganRetry_(url,
+payload)` — timeout 20 detik (`AbortController`) + **SATU KALI** retry otomatis, KHUSUS
+untuk kegagalan TEKNIS (timeout, network error/offline, atau respons yang gagal di-parse
+sebagai JSON sama sekali — termasuk pola 404 proxy ini). Error VALID dari server (respons
+JSON berhasil di-parse, termasuk `status:"error"` dengan pesan jelas dari
+`wajibAksesLaporan_` dsb.) **TIDAK diulang** — itu bukan kegagalan teknis, mengulang tidak
+akan mengubah jawaban server. Jeda 800ms sebelum retry (bukan langsung beruntun) supaya
+tidak menabrak masalah proxy yang sama persis kalau memang cuma sesaat. Dipakai untuk
+KEDUA panggilan (`get_progres_materi` & `get_progres_modul`) — laporan baru dianggap gagal
+kalau retry-nya JUGA gagal.
+
+**PENTING — data yang SUDAH TERLANJUR hilang TIDAK otomatis pulih**: sama seperti §55,
+perbaikan banner ini HANYA mencegah kegagalan BARU ke depan. 5 modul di screenshot Arif
+yang sudah terlanjur tidak tercatat TIDAK akan muncul otomatis di laporan — sumber datanya
+(baris di sheet "Data Progres Modul") memang tidak pernah tercipta, jadi tidak ada yang
+bisa "dihitung ulang". Siswa yang bersangkutan PERLU membuka ulang & menunggu penuh di
+kelima modul itu (sekarang dengan banner yang jelas menuntunnya) supaya tercatat.
+
+**Verifikasi logika**: `node --check` lulus untuk kedua file. `scripts/test-banner-modul-57.js`
+(6 skenario format hitung mundur, termasuk pembulatan & nilai negatif) dan
+`scripts/test-retry-laporan-57.js` (7 skenario: retry berhasil setelah 1x gagal teknis,
+tidak retry kalau langsung berhasil, error valid TIDAK memicu retry, kedua percobaan gagal
+tetap melempar setelah TEPAT 2x percobaan) — semua lulus.
+
+**Manual test checklist (Arif):**
+- [ ] Buka modul BARU, jawab semua kuis sampai badge header menunjukkan "100% selesai",
+      lanjut ke halaman terakhir → **banner oranye mengambang** harus muncul di bawah
+      layar dengan hitung mundur (mis. "Tetap di sini 2:58 lagi...") — pastikan banner
+      TERLIHAT JELAS, tidak tertutup elemen lain, dan angka hitung mundurnya BERKURANG
+      tiap detik
+- [ ] Tunggu sampai hitung mundur habis → banner berubah jadi HIJAU "✅ Modul selesai
+      tercatat! Kerja bagus." → hilang otomatis setelah ~4 detik
+- [ ] Cek laporan Pintu 2 (akun orang tua/guru) menunjukkan modul itu ✅ setelah banner
+      sukses muncul (boleh tunggu beberapa detik untuk `hitung_gamifikasi` selesai)
+- [ ] Di halaman terakhir, klik tombol "Kembali"/mundur ke halaman sebelumnya SEBELUM
+      hitung mundur habis → banner harus HILANG (bukan tetap menghitung mundur untuk
+      halaman yang sudah tidak dilihat) → klik "Lanjut" balik ke halaman terakhir → banner
+      muncul lagi dengan hitung mundur yang SESUAI (waktu terlihat yang sudah terkumpul
+      tetap dihitung, bukan reset ke 3:00 lagi)
+- [ ] Uji di HP Android Chrome (sesuai kondisi asli laporan Arif) — pastikan banner tidak
+      terpotong/salah posisi di layar sempit, dan tidak menghalangi tombol penting
+- [ ] Untuk 5 modul yang sudah terlanjur hilang di screenshot: minta siswa yang
+      bersangkutan membuka ulang & MENUNGGU PENUH sampai banner hijau muncul di
+      kelima modul itu, lalu cek laporan Pintu 2 menunjukkan ✅ untuk semuanya
+- [ ] Laporan "Perkembangan Belajar Mandiri": buka berkali-kali (idealnya di jaringan
+      sekolah yang sama dengan kejadian error 404 asli) → error 404 di konsol MASIH boleh
+      sesekali muncul (retry terjadi DI BALIK LAYAR, tidak terlihat pengguna) tapi laporan
+      HARUS tetap berhasil tampil dengan data benar selama TIDAK KEDUA percobaan gagal
+      sekaligus — kalau laporan masih sering gagal total, catat & laporkan lagi (mungkin
+      butuh investigasi lebih lanjut di sisi kuota/performa Apps Script itu sendiri)
