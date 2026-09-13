@@ -59,6 +59,16 @@
   .rk-progress-fill { background: linear-gradient(90deg, var(--purple), #c9a227); height: 100%; border-radius: 99px; transition: width 0.4s ease; }
   .rk-progress-label { font-size: 11px; color: var(--ink-3); margin-top: 5px; }
 
+  /* ── KARTU STREAK HARIAN (BARU, lihat ANTIREGRESI.md §53) ── */
+  .streak-card {
+    background: linear-gradient(135deg, #f2994a, #c0621f); color: #fff; border-radius: 16px;
+    padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 1rem;
+  }
+  .streak-card .sk-emoji { font-size: 2.5rem; line-height: 1; flex-shrink: 0; }
+  .streak-card .sk-angka { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; }
+  .streak-card .sk-label { font-size: 12px; opacity: 0.95; margin-top: 1px; }
+  .streak-card.putus { background: linear-gradient(135deg, #9a9ab0, #6b6b85); }
+
   /* ── STATISTIK ── */
   .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1.5rem; }
   .stat-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 0.9rem 1rem; text-align: center; }
@@ -234,6 +244,35 @@
     maestro_kelas_5:  { label: "Maestro Kelas 5",  gambar: "../assets/img/badges/rank-06-maestro-kelas-5.webp" },
   };
 
+  /** Kartu streak (BARU, lihat ANTIREGRESI.md §53). Dua kondisi tampilan:
+   * - streakSaatIni > 0 → kartu oranye "menyala", ajak pertahankan.
+   * - streakSaatIni 0 tapi PERNAH punya rekor (streakTerpanjang > 0) → kartu abu-abu netral,
+   *   ajak mulai lagi (BUKAN dibuat terasa seperti hukuman/kegagalan).
+   * - belum pernah aktif sama sekali (streakTerpanjang 0) → kartu ini TIDAK ditampilkan
+   *   sama sekali (lihat pemanggil muatProfil), supaya siswa baru tidak disambut angka 0. */
+  function renderStreakCard(d) {
+    const saatIni = d.streakSaatIni || 0;
+    const rekor = d.streakTerpanjang || 0;
+    if (saatIni > 0) {
+      return `
+        <div class="streak-card">
+          <div class="sk-emoji">🔥</div>
+          <div class="rk-info">
+            <div class="sk-angka">${saatIni} hari beruntun</div>
+            <div class="sk-label">Aktif belajar tiap hari — pertahankan sampai besok, ya!${rekor > saatIni ? ` (rekormu: ${rekor} hari)` : ""}</div>
+          </div>
+        </div>`;
+    }
+    return `
+      <div class="streak-card putus">
+        <div class="sk-emoji">💤</div>
+        <div class="rk-info">
+          <div class="sk-angka">Streak belum jalan hari ini</div>
+          <div class="sk-label">Rekor terbaikmu: ${rekor} hari beruntun — kerjakan 1 materi/modul/kuis hari ini untuk mulai lagi!</div>
+        </div>
+      </div>`;
+  }
+
   function renderRankCard(d) {
     const info = RANK_INFO[d.rank] || RANK_INFO.perintis;
     const progresHtml = d.level99Maksimal
@@ -282,6 +321,7 @@
         <div class="stat-card"><div class="st-angka">${d.jumlahMateriDibaca || 0}</div><div class="st-label">Materi Dibaca</div></div>
         <div class="stat-card"><div class="st-angka">${d.jumlahModulSelesai || 0}</div><div class="st-label">Modul Selesai</div></div>
         <div class="stat-card"><div class="st-angka">⭐ ${d.exp || 0}</div><div class="st-label">Total EXP</div></div>
+        <div class="stat-card"><div class="st-angka">🔥 ${d.streakTerpanjang || 0}</div><div class="st-label">Rekor Streak</div></div>
       </div>`;
   }
 
@@ -329,6 +369,7 @@
         return;
       }
       wrap.innerHTML = `
+        ${(d.streakTerpanjang || 0) > 0 ? renderStreakCard(d) : ""}
         <p class="section-title">Rank &amp; EXP — dari keaktifan belajar</p>
         ${renderRankCard(d)}
         <p class="section-title">Level Kemampuan — dari konsistensi lulus Uji Kemampuan</p>

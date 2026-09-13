@@ -71,6 +71,7 @@
   .siswa-row .sr-nama { flex: 1; font-weight: 600; font-size: 13.5px; min-width: 0; }
   .siswa-row .sr-nama .tag-kamu { color: var(--purple); font-weight: 700; font-size: 11px; margin-left: 4px; }
   .siswa-row .sr-level-kemampuan { font-size: 11px; color: var(--ink-3); white-space: nowrap; margin-right: 4px; }
+  .siswa-row .sr-streak { font-size: 11px; font-weight: 700; color: #c0621f; background: rgba(201,98,31,0.10); border-radius: 999px; padding: 2px 7px; white-space: nowrap; margin-right: 4px; }
   .siswa-row .sr-exp { font-size: 12.5px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
   .siswa-row.belum-mulai { opacity: 0.55; }
   .siswa-row.belum-mulai .sr-exp { color: var(--ink-3); font-weight: 500; }
@@ -225,11 +226,17 @@
         const kelas = [iniKamu ? "ini-kamu" : "", s.belumMulai ? "belum-mulai" : ""].filter(Boolean).join(" ");
         const levelKemampuanTag = s.belumMulai ? "" :
           `<span class="sr-level-kemampuan">${LEVEL_KEMAMPUAN_ICON[s.level] || "🌱"} Lv.${s.level99 || 1}</span>`;
+        // Streak (BARU, lihat ANTIREGRESI.md §53) — cuma tampil kalau streakSaatIni > 0,
+        // supaya siswa yang streak-nya sudah putus tidak melihat "🔥 0 hari" yang terasa
+        // negatif; mereka cukup tidak melihat lencana ini sampai aktif lagi.
+        const streakTag = (!s.belumMulai && s.streakSaatIni > 0) ?
+          `<span class="sr-streak" title="Beruntun ${s.streakSaatIni} hari aktif">🔥 ${s.streakSaatIni}</span>` : "";
         return `
           <div class="siswa-row ${kelas}">
             ${avatarHtml(s.avatar)}
             <div class="sr-nama">${esc(s.namaSiswa)}${iniKamu ? '<span class="tag-kamu">← Ini kamu!</span>' : ""}</div>
             ${levelKemampuanTag}
+            ${streakTag}
             <div class="sr-exp">${s.belumMulai ? "Belum mulai" : "⭐ " + (s.exp || 0) + " EXP"}</div>
           </div>`;
       }).join("");
@@ -258,6 +265,8 @@
     { key: "level99",             label: "Rank & Level",      numeric: true  },
     { key: "level",               label: "Level Kemampuan",   numeric: false },
     { key: "exp",                 label: "EXP",               numeric: true  },
+    { key: "streakSaatIni",       label: "🔥 Streak",         numeric: true  },
+    { key: "streakTerpanjang",    label: "Rekor Streak",      numeric: true  },
     { key: "totalKuisDikerjakan", label: "Kuis Dikerjakan",   numeric: true  },
     { key: "totalLulusUmum",      label: "Lulus",             numeric: true  },
     { key: "skorTertinggi",       label: "Skor Tertinggi",    numeric: true  },
@@ -318,6 +327,8 @@
           <td>${esc(rankInfo.label)} · Lv.${s.level99 || 1}</td>
           <td>${levelKemampuanCell}</td>
           <td class="rk-num">${s.exp || 0}</td>
+          <td class="rk-num">${s.streakSaatIni || 0}</td>
+          <td class="rk-num">${s.streakTerpanjang || 0}</td>
           <td class="rk-num">${s.totalKuisDikerjakan || 0}</td>
           <td class="rk-num">${s.totalLulusUmum || 0}</td>
           <td class="rk-num">${s.skorTertinggi ? s.skorTertinggi + "%" : "—"}</td>
