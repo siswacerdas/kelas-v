@@ -123,18 +123,24 @@ async function loadReport(nama) {
     // "script.googleusercontent.com/macros/echo" (lihat catatan di Code.gs doPost, cabang
     // "get_progres_materi"/"get_progres_modul"). POST dengan body JSON tidak kena batasan
     // panjang URL, jadi idToken dipindah ke body, bukan lagi ke URL.
-    const [resMateri, resModul] = await Promise.all([
-      fetch(base, {
-        method: "POST",
-        body: JSON.stringify({ type: "get_progres_materi", nama: nama, idToken: idToken }),
-      }),
-      fetch(base, {
-        method: "POST",
-        body: JSON.stringify({ type: "get_progres_modul", nama: nama, idToken: idToken }),
-      }),
+    //
+    // v2 (BUG lanjutan ditemukan Sept 2026, lihat ANTIREGRESI.md §57): Arif melaporkan
+    // error 404 "script.googleusercontent.com/macros/echo" MASIH SESEKALI muncul WALAU
+    // idToken sudah di body (POST), dan laporan "kadang gagal kadang tidak" — bukan gagal
+    // permanen/konsisten. Ini pola KLASIK ketidakstabilan proxy redirect Apps Script Web
+    // App sendiri (bukan soal ukuran payload lagi) — dokumentasi & keluhan publik soal ini
+    // sudah dikenal luas, dan proyek ini SUDAH PERNAH menangani pola serupa dengan cara yang
+    // SAMA di tempat lain (lihat riwayat lama "siswa_login" sebelum migrasi ke Firebase Auth
+    // langsung, CHANGELOG.md) — bukan dengan menghilangkan Apps Script (laporan ini memang
+    // harus baca sheet lewat Apps Script), tapi dengan TIMEOUT + SATU KALI RETRY OTOMATIS
+    // untuk kegagalan TEKNIS (timeout/network/bukan JSON) — BUKAN untuk error valid dari
+    // server (mis. `status:"error"` dengan pesan yang jelas, itu tidak diulang, langsung
+    // ditampilkan apa adanya). Diterapkan lewat `fetchDenganRetry_` di bawah, dipakai KEDUA
+    // panggilan (materi & modul) — laporan baru dianggap gagal kalau retry-nya JUGA gagal.
+    const [jsonMateri, jsonModul] = await Promise.all([
+      fetchDenganRetry_(base, { type: "get_progres_materi", nama: nama, idToken: idToken }),
+      fetchDenganRetry_(base, { type: "get_progres_modul", nama: nama, idToken: idToken }),
     ]);
-    const jsonMateri = await resMateri.json();
-    const jsonModul = await resModul.json();
     if (jsonMateri.status === "error") throw new Error(jsonMateri.message || "Gagal memuat laporan materi");
     if (jsonModul.status === "error") throw new Error(jsonModul.message || "Gagal memuat laporan modul");
     dataMateriRows = jsonMateri.data || [];
@@ -148,6 +154,35 @@ async function loadReport(nama) {
     renderReport(nama);
   } catch (err) {
     wrap.innerHTML = '<div class="ma-empty">Gagal memuat laporan: ' + esc(err.message) + "</div>";
+  }
+}
+
+/** Timeout 20 detik + SATU kali retry otomatis, KHUSUS untuk kegagalan TEKNIS (timeout,
+ * network error/offline, atau respons yang bukan JSON sama sekali — termasuk pola 404
+ * "script.googleusercontent.com/macros/echo" yang terbukti sesekali terjadi begitu saja
+ * dari sisi proxy Apps Script, lihat komentar panjang di `loadReport` di atas). Error VALID
+ * dari server (respons JSON yang berhasil di-parse, apa pun isinya termasuk
+ * `status:"error"`) TIDAK diulang — itu bukan kegagalan teknis, server SUDAH menjawab
+ * dengan jelas, mengulang tidak akan mengubah jawabannya. */
+async function fetchDenganRetry_(url, payload) {
+  async function sekaliCoba() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
+    try {
+      const res = await fetch(url, { method: "POST", body: JSON.stringify(payload), signal: controller.signal });
+      return await res.json(); // melempar SyntaxError kalau respons bukan JSON — ditangkap di bawah
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+  try {
+    return await sekaliCoba();
+  } catch (err) {
+    // Kegagalan teknis (AbortError / TypeError jaringan / SyntaxError bukan-JSON) — coba
+    // SATU kali lagi sebelum benar-benar menyerah, jeda sebentar dulu (bukan langsung
+    // beruntun) supaya tidak menabrak masalah proxy yang sama persis kalau itu sesaat.
+    await new Promise((r) => setTimeout(r, 800));
+    return await sekaliCoba();
   }
 }
 
