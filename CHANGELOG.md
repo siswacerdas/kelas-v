@@ -8,6 +8,35 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki — Penyelesaian Modul tidak tercatat saat siswa membuka ulang modul yang sudah sampai halaman terakhir (lihat ANTIREGRESI.md §55)
+- **Laporan Arif**: siswa mengaku sudah menyelesaikan membaca sebuah Modul,
+  tapi laporan "Perkembangan Belajar Mandiri" yang dilihat orang tua/guru
+  tidak pernah menunjukkan modul itu selesai (dan siswa tidak dapat EXP-nya).
+- **Akar masalah**: `modul-progress-tracker.js` mendeteksi "sampai halaman
+  terakhir" dengan membungkus (monkey-patch) `window.goToPage` bawaan tiap
+  modul.html. Masalahnya, **24 dari 43 file modul.html** memulihkan posisi
+  baca terakhir SECARA SINKRON di badan skrip inline modul — ini terjadi
+  SEBELUM skrip tracker sempat menempel monkey-patch-nya (baru terpasang
+  belakangan lewat `DOMContentLoaded`). Akibatnya kalau siswa sudah mencapai
+  halaman terakhir di satu sesi tapi menutup tab sebelum genap ambang waktu
+  3 menit, lalu MEMBUKA ULANG modul untuk menghabiskan sisa waktu — di sesi
+  baru itu status "sampai halaman terakhir" TIDAK PERNAH terdeteksi lagi
+  (restore memanggil `goToPage` versi asli, bukan versi yang di-patch), jadi
+  penanda "Selesai" tidak pernah terkirim, walau siswa benar-benar sedang
+  menunggu di halaman terakhir. Gagal SEPENUHNYA DIAM-DIAM (sesuai desain
+  fire-and-forget), tidak ada error yang terlihat siswa/guru.
+- **Perbaikan**: `modul-progress-tracker.js` sekarang membaca `localStorage`
+  langsung saat `init()` — kalau halaman TERSIMPAN sudah halaman terakhir,
+  status itu langsung dianggap terpenuhi sejak awal sesi, terlepas dari pola
+  restore modul yang mana atau urutan skripnya. Syarat waktu minimum (3
+  menit, dihitung dari waktu TERLIHAT di sesi berjalan) tidak berubah — jadi
+  tidak bisa didapat instan, cuma sekarang benar-benar akurat. 1 perubahan
+  di file bersama, otomatis berlaku untuk semua 43 file modul tanpa perlu
+  disentuh satu per satu.
+- Divalidasi dengan `node --check` + skenario logika murni Node.js (halaman
+  terakhir → true, halaman tengah → false, localStorage kosong/corrupt →
+  false tanpa error) — lihat checklist manual lengkap di ANTIREGRESI.md §55.
+
 ### Diperbaiki — Lanjutan Laporan "Perkembangan Belajar Mandiri" (Pintu 2): 1 modul tambahan belum terdaftar + idToken dipindah dari GET ke POST (lihat ANTIREGRESI.md §54, lanjutan §39)
 - **Temuan baru, TERPISAH dari perbaikan 16 file di §39**: 1 file `modul.html` LAGI
   (`matematika/bangun-ruang-tp1/modul.html`, TP resmi `geometri-tp1` — sudah lama

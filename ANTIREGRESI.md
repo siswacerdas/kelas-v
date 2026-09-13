@@ -2914,3 +2914,93 @@ New version — DAN klik "Hitung Ulang Semua Siswa" di `pages/admin.html` supaya
       berfungsi normal setelah `Code.gs` ini di-deploy — memastikan
       penambahan 2 endpoint baru di sesi ini benar-benar tidak menyentuh
       bagian lain file (lihat catatan proses di atas)
+
+---
+
+### 55. Penyelesaian Modul tidak tercatat saat siswa membuka ulang modul yang sudah sampai halaman terakhir (`pages/modul/assets/modul-progress-tracker.js`, Sept 2026)
+
+**Laporan Arif**: siswa melapor sudah menyelesaikan membaca sebuah Modul, tapi
+laporan "Perkembangan Belajar Mandiri" (Pintu 2) yang dilihat orang tua/guru
+tidak menunjukkan modul itu sudah selesai (chip ⬜, bukan ✅), dan siswa juga
+tidak dapat EXP dari modul tersebut.
+
+**Akar masalah**: `modul-progress-tracker.js` menandai modul "sampai halaman
+terakhir" dengan cara membungkus (monkey-patch) fungsi `window.goToPage`
+bawaan tiap modul.html — begitu dipanggil dengan `n === TOTAL_PAGES - 1`, flag
+`sudahMencapaiAkhir` di-set `true`. Masalahnya, HAMPIR SEMUA file modul.html
+memulihkan posisi baca terakhir (`goToPage(halaman tersimpan)`) sendiri saat
+modul dibuka, dan urutan pemulihan itu TIDAK KONSISTEN antar file:
+- **24 dari 43 file** memanggil pemulihan itu **SECARA SINKRON** langsung di
+  badan skrip inline modul — ini terjadi SEBELUM tag
+  `<script src=".../modul-progress-tracker.js">` di bawahnya sempat berjalan
+  sama sekali, apalagi sempat menempel monkey-patch-nya (yang baru terpasang
+  belakangan lewat `DOMContentLoaded`). Akibatnya pemulihan itu memanggil
+  `goToPage` versi ASLI (belum di-patch), dan `sudahMencapaiAkhir` TIDAK
+  PERNAH ke-set dari situ.
+- **19 file lainnya** menunda pemulihan ke event `"user-verified"` (dipicu
+  `auth-guard.js` setelah verifikasi Firebase selesai) — yang, secara
+  kebetulan, biasanya baru terpicu SETELAH `DOMContentLoaded` (dan karenanya
+  setelah monkey-patch terpasang), jadi pola ini SEBENARNYA sudah aman —
+  tapi ini kebetulan urutan waktu, bukan jaminan yang disengaja/didesain.
+
+Dampaknya: siswa yang mencapai halaman terakhir modul di SATU sesi (via klik
+"Lanjut →" — ini normal, monkey-patch sudah pasti terpasang saat itu, karena
+DOMContentLoaded sudah lewat jauh sebelum siswa selesai membaca semua
+halaman) tapi menutup tab SEBELUM genap `AMBANG_WAKTU_MS` (3 menit) di
+halaman terakhir, lalu MEMBUKA ULANG modul yang sama untuk menghabiskan sisa
+waktu — kalau file modul itu termasuk yang 24 di atas, sesi baru ini
+`sudahMencapaiAkhir` mulai dari `false` lagi dan TIDAK PERNAH ke-set, walau
+siswa benar-benar sedang diam menunggu di halaman terakhir. Penanda "selesai"
+tidak pernah terkirim — sepenuhnya diam-diam (sesuai desain fire-and-forget),
+jadi siswa maupun guru/orang tua tidak melihat error apa pun, cuma progres
+yang tidak pernah bertambah.
+
+**Perbaikan**: `modul-progress-tracker.js` sekarang membaca `localStorage`
+(`STORAGE_KEY`) LANGSUNG saat `init()`, sebelum bergantung sepenuhnya pada
+intersepsi `goToPage` — kalau field `page` yang tersimpan sudah sama dengan
+`TOTAL_PAGES - 1`, `sudahMencapaiAkhir` langsung di-set `true` di awal,
+TERLEPAS dari pola restore modul yang mana atau urutan skripnya. Syarat
+waktu minimum (`AMBANG_WAKTU_MS`, dihitung dari waktu TERLIHAT di sesi ini)
+TIDAK berubah — jadi siswa tetap tidak bisa dapat EXP instan hanya dengan
+buka-tutup cepat, cuma syarat "sampai halaman terakhir"-nya sekarang akurat
+sejak awal sesi, bukan cuma kalau kebetulan urutan skrip modul itu "aman".
+Perbaikan ini di 1 file bersama (`modul-progress-tracker.js`), otomatis
+berlaku untuk SEMUA 43 file modul.html tanpa perlu menyentuh satu per satu,
+dan juga menutup celah yang sama untuk modul BARU nanti — mana pun pola
+restore yang dipakai penulisnya.
+
+**Verifikasi logika**: `node --check` lulus; skenario `page === TOTAL_PAGES-1`
+(harus `true`), `page` di tengah modul (harus `false`), belum ada data
+tersimpan (harus `false`), dan `localStorage` corrupt/bukan JSON (harus
+`false`, tidak boleh melempar error) semua diuji lolos secara terpisah dari
+DOM nyata (logika murni Node.js, tanpa framework).
+
+**Manual test checklist (Arif, di browser/HP nyata):**
+- [ ] Modul BARU (belum pernah dibuka): baca sampai halaman terakhir, TUNGGU
+      3 menit PENUH di halaman itu (tab tetap aktif/terlihat) → penanda
+      "Selesai" tetap terkirim seperti sebelumnya (regresi paling dasar,
+      pastikan perbaikan ini TIDAK mengubah alur normal)
+- [ ] **Skenario inti bug ini**: baca modul sampai halaman terakhir, TUTUP
+      tab SEBELUM 3 menit (mis. setelah 30 detik) → BUKA ULANG modul yang
+      sama → tunggu di halaman terakhir sampai genap 3 menit waktu TERLIHAT
+      (akumulasi dari sesi baru ini) → pastikan penanda "Selesai" SEKARANG
+      terkirim (cek: laporan Pintu 2 di akun orang tua/guru menunjukkan ✅,
+      atau cek langsung sheet "Data Progres Modul" ada baris baru)
+- [ ] Uji skenario di atas untuk minimal 1 file dari kelompok "24 file
+      bermasalah" (mis. `bahasa-indonesia/menyimak-tp1/modul.html`) DAN 1
+      file dari kelompok "19 file sudah aman" (mis.
+      `pendidikan-pancasila/uud1945-tp3/modul.html`) — keduanya harus
+      berhasil sama-sama, supaya perbaikan ini terbukti tidak bergantung
+      pada pola restore file tertentu
+- [ ] Buka modul yang BELUM PERNAH selesai, baca cuma sampai halaman
+      TENGAH (bukan terakhir), tutup, buka lagi, tunggu 3 menit di halaman
+      tengah itu → penanda "Selesai" TIDAK BOLEH terkirim (memastikan
+      perbaikan ini tidak jadi terlalu longgar/salah anggap "sampai akhir")
+- [ ] Buka ULANG modul yang SUDAH PERNAH selesai sebelumnya (server sudah
+      punya riwayat "Selesai" untuk modul+siswa itu) → tunggu 3 menit lagi
+      di halaman terakhir → pastikan EXP yang didapat cuma `EXP_ULANG_` (1),
+      BUKAN `EXP_PER_MODUL_` (25) penuh lagi (perilaku "baca ulang" di
+      §37/§38 harus tetap konsisten, tidak berubah oleh perbaikan ini)
+- [ ] Cek console browser tidak ada error JS baru muncul di halaman modul
+      manapun akibat perubahan `localStorage.getItem`/`JSON.parse` ini
+      (termasuk modul yang localStorage-nya benar-benar kosong/baru)
