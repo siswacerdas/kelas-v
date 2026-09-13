@@ -2730,3 +2730,83 @@ kode di fitur-fitur ini)**:
 - [ ] Buka DevTools → Network saat login siswa → pastikan **tidak ada lagi**
       request ke URL Apps Script (`script.google.com/...`) yang terpicu oleh
       proses login (dulu ada karena `type: "siswa_login"`)
+
+### 53. Streak Harian + perbaikan celah kecurangan EXP Uji Kemampuan (Sept 2026)
+
+**Konteks**: Arif melaporkan siswa bisa naik dari Level 1 ke Level 6 hanya dengan
+mengerjakan 6 kuis, dan minta ditelusuri celah kecurangan lain yang mungkin bisa
+ditemukan siswa yang jeli. Lihat CHANGELOG.md untuk latar belakang & detail teknis
+lengkap. Ringkasan akar masalah: EXP dari Uji Kemampuan TIDAK dedup per TP seperti
+Materi/Modul, jadi retake TP yang sama berkali-kali = EXP tanpa batas.
+
+**Temuan tambahan (dicatat, BELUM diperbaiki sesi ini — keputusan sadar Arif untuk
+diprioritaskan terpisah)**: soal `bank_soal` (termasuk field jawaban benar) diambil
+LANGSUNG oleh klien lewat Firestore SDK di `uji-kemampuan.html`, dan penilaian
+benar/salah dihitung DI BROWSER sebelum dikirim ke `hasil_latihan`. Siswa yang
+membuka DevTools Console SEBELUM menjawab bisa melihat kunci jawaban sesi itu.
+Ini memengaruhi integritas skor & Level Kemampuan (dasar/menengah/atas/mahir), bukan
+cuma EXP — beda kelas masalah dari perbaikan di §53 ini (butuh pemindahan penilaian
+ke server, perubahan arsitektur lebih besar). **Belum ada rencana kerja untuk ini —
+tunggu keputusan Arif kapan mau digarap.**
+
+**Perbaikan yang SUDAH dikerjakan di §53 ini**:
+1. **Dedup EXP kuis per TP** di `hitungLevelDariRiwayat_` (`apps-script/Code.gs`) —
+   pola PERSIS sama dengan `hitungExpDenganBacaUlang_` (Materi/Modul). Percobaan
+   pertama di 1 TP = EXP dikerjakan penuh; percobaan berikutnya di TP SAMA = EXP kecil
+   (`EXP_ULANG_`). Bonus lulus dedup terpisah berbasis "TP itu pernah lulus", diberikan
+   penuh sekali di kali pertama lulus (gagal dulu baru lulus tetap dapat bonus penuh).
+   `ambilRiwayatHasilLatihan_` diperluas ikut mengambil field `tp`.
+2. **Streak Harian** (🔥) — field baru `streakSaatIni`/`streakTerpanjang`/
+   `hariAktifTerakhir`/`jumlahHariAktifUnik` di `level_siswa`, dihitung ulang PENUH tiap
+   `hitung_gamifikasi` dari tanggal aktivitas SERVER-TRUSTED (Timestamp Apps Script di
+   Progres Materi/Modul + `serverTimestamp()` Firestore di `hasil_latihan`). Sabtu/Minggu
+   tanpa aktivitas MEMUTUS streak (keputusan sadar Arif, ketat). EXP bonus: +2/hari aktif
+   unik (akumulatif) + milestone sekali di 3/7/14/30 hari (+10/+25/+50/+100). Ditampilkan
+   di `pages/profil-siswa.html` (kartu) dan `pages/papan-peringkat.html` (lencana + kolom
+   Rekap Lengkap guru).
+
+**Divalidasi**: `node --check` `apps-script/Code.gs` + blok `<script>` di
+`pages/profil-siswa.html` & `pages/papan-peringkat.html`, plus
+`scripts/test-gamifikasi-53.js` (20 skenario pure-logic: dedup EXP kuis 5 kasus, streak
+7 kasus termasuk weekend/bolong/duplikat, konversi tanggal WIB 3 kasus, bonus milestone
+5 kasus termasuk idempotensi) — semua lulus.
+
+**Prasyarat sebelum uji manual**: cek Project Settings Apps Script → General → Time
+zone = **Asia/Jakarta (GMT+07:00)**. Kalau timezone proyek BEDA, tanggal `Timestamp` di
+sheet Progres Materi/Modul (basis streak) akan salah geser dan streak bisa keliru
+(lompat hari atau mundur 1 hari).
+
+**Checklist uji manual** (jalankan setelah redeploy Apps Script — Manage deployments →
+New version — DAN klik "Hitung Ulang Semua Siswa" di `pages/admin.html` supaya
+`level_siswa` semua siswa terhitung ulang dengan logika baru):
+
+*Dedup EXP kuis:*
+- [ ] Kerjakan 1 TP kuis sampai lulus, catat EXP sebelum & sesudah (harus naik 15:
+      5 dikerjakan + 10 bonus lulus)
+- [ ] Kerjakan LAGI TP yang SAMA (retake), lulus lagi → EXP cuma naik 1 (BUKAN naik
+      15 lagi seperti sebelum perbaikan ini)
+- [ ] Kerjakan TP LAIN (berbeda) sampai lulus → EXP naik 15 penuh seperti biasa
+      (memastikan TP baru TIDAK ikut kena dedup TP lain)
+- [ ] Cek `pages/riwayat-latihan.html` siswa yang sudah retake beberapa kali → riwayat
+      skor tiap percobaan TETAP muncul semua apa adanya (dedup ini cuma memengaruhi
+      EXP, BUKAN menyembunyikan/menghapus riwayat kuis)
+
+*Streak harian:*
+- [ ] Siswa yang BELUM PERNAH aktif sama sekali → tidak melihat kartu streak sama
+      sekali di Profil (bukan kartu "0 hari" yang terasa negatif)
+- [ ] Siswa aktif (baca 1 materi ATAU kuis ATAU modul) hari ini untuk PERTAMA kali →
+      kartu streak oranye muncul "1 hari beruntun"
+- [ ] Siswa yang aktif KEMARIN tapi belum buka apa pun HARI INI → streak masih
+      tampil "hidup" (belum putus, karena masih dalam grace period kemarin→hari ini)
+- [ ] Siswa yang absen 2+ hari berturut-turut → kartu streak berubah abu-abu
+      ("Streak belum jalan hari ini"), TAPI rekor terbaik tetap tampil, tidak hilang
+- [ ] Di Papan Peringkat, siswa dengan streak > 0 menampilkan lencana 🔥; siswa
+      dengan streak 0 TIDAK menampilkan lencana ini sama sekali
+- [ ] Login sebagai **guru** → tab Rekap Lengkap di Papan Peringkat menampilkan kolom
+      "🔥 Streak" dan "Rekor Streak" terisi angka yang masuk akal (bisa disortir
+      dengan klik header kolom seperti kolom lain)
+- [ ] Setelah beberapa hari uji-coba nyata di kelas: bandingkan `streakTerpanjang` di
+      Firestore Console (`level_siswa`) dengan hari-hari sungguhan siswa itu login &
+      mengerjakan sesuatu (cek tanggal di `pages/riwayat-latihan.html` dia) — harus
+      cocok persis, termasuk kalau ada Sabtu/Minggu yang terlewat di antaranya
+      (streak seharusnya sudah putus & mulai dari 1 lagi setelahnya)

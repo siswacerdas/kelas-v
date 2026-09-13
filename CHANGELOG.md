@@ -8,6 +8,74 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Ditambahkan — Streak Harian & Diperbaiki — celah kecurangan EXP Uji Kemampuan (lihat ANTIREGRESI.md §53)
+- **Laporan awal Arif**: siswa bisa naik dari Level 1 ke Level 6 hanya dengan mengerjakan
+  6 kuis. Setelah ditelusuri, akar masalahnya BUKAN kurva level yang terlalu landai,
+  melainkan **celah kecurangan nyata**: EXP dari Uji Kemampuan (`hitungLevelDariRiwayat_`
+  di `apps-script/Code.gs`) dihitung PENUH untuk SETIAP percobaan kuis, tanpa peduli itu
+  Topik Pembelajaran (TP) baru atau TP YANG SAMA diulang berkali-kali — beda dari Materi
+  & Modul yang sejak awal sudah punya proteksi ini (`hitungExpDenganBacaUlang_`). Karena
+  soal diacak ulang tiap sesi (`uji-kemampuan.html`), siswa cukup menekan "Kerjakan Lagi"
+  di 1 TP termudah berkali-kali untuk EXP tanpa batas.
+- **Perbaikan**: `hitungLevelDariRiwayat_` sekarang dedup EXP kuis PER TP, pola PERSIS sama
+  dengan Materi/Modul — percobaan PERTAMA di 1 TP dapat EXP dikerjakan penuh
+  (`EXP_PER_KUIS_DIKERJAKAN_`), percobaan berikutnya di TP YANG SAMA cuma dapat EXP kecil
+  (`EXP_ULANG_`). Bonus lulus (`EXP_BONUS_KUIS_LULUS_`) dedup TERPISAH berbasis "TP itu
+  pernah lulus" — diberikan penuh SEKALI di kali pertama TP itu lulus (walau percobaan
+  pertamanya gagal), supaya siswa yang butuh beberapa kali coba sebelum lulus tidak
+  dirugikan. Field `tp` yang dipakai untuk dedup ini SUDAH ADA sejak awal di setiap
+  dokumen `hasil_latihan` (`uji-kemampuan.html` sudah menulis `tp: currentTp.tp`), jadi
+  perbaikan ini murni logika server, TIDAK butuh migrasi data. Dokumen historis TANPA
+  field `tp` terisi (data sangat lama, kalau ada) SENGAJA di-fallback ke perilaku LAMA
+  (EXP penuh tiap kali) supaya EXP yang sudah pernah dihitung dari data itu tidak
+  tiba-tiba berubah.
+- `ambilRiwayatHasilLatihan_`: sekarang ikut mengambil field `tp` (sebelumnya cuma
+  `skor`/`timestamp`) supaya dedup di atas bisa jalan.
+- **Fitur baru — Streak Harian** (🔥): insentif aktif belajar tiap hari, ditampilkan di
+  `pages/profil-siswa.html` (kartu oranye "X hari beruntun" + rekor) dan
+  `pages/papan-peringkat.html` (lencana 🔥 di baris siswa + kolom "🔥 Streak"/"Rekor
+  Streak" di tabel Rekap Lengkap guru).
+  - **Sumber "hari aktif"**: tanggal (WIB) kapan pun siswa MENYELESAIKAN sesuatu yang
+    tercatat SERVER — baca materi/selesai modul (kolom `Timestamp` di sheet Progres
+    Materi/Modul, di-set `new Date()` oleh Apps Script) atau kerjakan kuis (`timestamp`
+    `serverTimestamp()` Firestore di `hasil_latihan`). KETIGANYA di-set di server, BUKAN
+    dikirim dari klien — siswa tidak bisa memalsukan "hari aktif" dengan mengubah jam di
+    perangkatnya sendiri.
+  - **Dihitung ulang PENUH setiap kali** dari tanggal-tanggal itu (bukan counter yang
+    di-increment) — prinsip sama dengan EXP/Level di atasnya, supaya selalu bisa
+    dibuktikan benar dari data sumber & tidak mungkin "nyasar".
+  - **Aturan (keputusan sadar Arif)**: Sabtu/Minggu TANPA aktivitas TETAP MEMUTUS streak
+    (ketat, bukan gaya Duolingo yang biasanya skip weekend) — supaya streak
+    mencerminkan konsistensi harian sungguhan, bukan cuma hari sekolah.
+  - **EXP bonus dari streak** (angka rekomendasi Claude, gampang diubah di
+    `EXP_PER_HARI_AKTIF_`/`MILESTONE_STREAK_` di `Code.gs`): +2 EXP per hari aktif unik
+    (akumulatif, tidak pernah hilang meski streak putus) + bonus SEKALI di milestone
+    3/7/14/30 hari (+10/+25/+50/+100) — milestone dihitung dari `streakTerpanjang`
+    (rekor, bukan streak saat ini) supaya tidak ter-re-award berulang setiap gamifikasi
+    dihitung ulang.
+  - Field baru di `level_siswa`: `streakSaatIni`, `streakTerpanjang`, `hariAktifTerakhir`,
+    `jumlahHariAktifUnik`.
+- **Divalidasi**: `node --check` pada `apps-script/Code.gs` dan blok script di kedua file
+  HTML yang diubah, plus `scripts/test-gamifikasi-53.js` — 20 skenario pure-logic Node.js
+  (dedup EXP kuis, kalkulasi streak termasuk kasus weekend/bolong/duplikat tanggal,
+  konversi tanggal WIB dari timestamp ISO Firestore, idempotensi bonus milestone) —
+  semua lulus.
+- **PRASYARAT sebelum dipakai**: timezone proyek Apps Script (Project Settings → General
+  → Time zone) HARUS `Asia/Jakarta (GMT+07:00)` — kalau beda, tanggal `Timestamp` dari
+  sheet Progres Materi/Modul (dipakai basis streak) akan salah geser. Lihat checklist
+  §53 ANTIREGRESI.md.
+- **BELUM diuji dengan data siswa sungguhan** — logika sudah lolos test pure-logic &
+  `node --check`, tapi belum dicoba `hitung_gamifikasi` sungguhan di Firebase project
+  `kelas-v-2026`. Jalankan tombol "Hitung Ulang Semua Siswa" di `pages/admin.html`
+  setelah redeploy, lalu cek Papan Peringkat & Profil beberapa siswa contoh sebelum
+  diumumkan ke kelas.
+- **Curah pendapat kurva level (BELUM diubah sesi ini)**: dengan celah retake sudah
+  ditutup, EXP dari kuis sekarang terbatas (maks 1x EXP penuh per TP), jadi kurva
+  `EXP_PER_LEVEL99_TAHAP_` yang ada saat ini KEMUNGKINAN sudah cukup wajar tanpa
+  diubah — tapi kalau Arif masih merasa lompatan Level 1→beberapa masih terlalu cepat
+  setelah perbaikan ini dicoba di kelas sungguhan, tinggal naikkan angka tahap awal
+  (saat ini 15 EXP/level di Level 1-10) di konstanta itu, TIDAK perlu perubahan lain.
+
 ### Diubah — Login siswa dipindah total ke Firebase Authentication (email + kata sandi)
 - **Alasan (permintaan Arif)**: mekanisme login siswa lama (pilih nama + NISN,
   diverifikasi lewat Apps Script `type: "siswa_login"`) sangat lambat & sering
