@@ -3004,3 +3004,110 @@ DOM nyata (logika murni Node.js, tanpa framework).
 - [ ] Cek console browser tidak ada error JS baru muncul di halaman modul
       manapun akibat perubahan `localStorage.getItem`/`JSON.parse` ini
       (termasuk modul yang localStorage-nya benar-benar kosong/baru)
+
+---
+
+### 56. Performa "Hitung Ulang Semua Siswa" + trigger otomatis 6 jam (`apps-script/Code.gs`, Sept 2026)
+
+**Permintaan Arif**: (1) perbaiki fitur hitung ulang XP siswa supaya hanya menghitung dari
+progres BARU sejak tanggal/waktu update terakhir, bukan hitung ulang penuh; (2) apakah ada
+sistem yang memastikan proses belajar siswa tersimpan otomatis di database supaya bisa
+ditarik tiap 6 jam, atau perlu ditambahkan fitur simpan-progres-otomatis di akhir tiap
+materi/modul, TANPA harus mengupdate seluruh file modul/materi yang banyak.
+
+**Diagnosis permintaan (1) — kenapa "hitung cuma sejak update terakhir" TIDAK diterapkan
+literal**: Sistem EXP saat ini (lihat komentar arsitektur di atas `hitungLevelDariRiwayat_`
+& `hitungExpDenganBacaUlangDariRows_`) SENGAJA menghitung ulang PENUH dari riwayat setiap
+kali dipanggil, BUKAN increment dari checkpoint — ini keputusan keamanan sadar: siswa login
+Anonymous Auth dapat UID baru tiap sesi dan tidak bisa diverifikasi Firestore Security
+Rules, jadi kalau EXP dihitung dari CLIENT atau di-increment dari sebagian data, siswa yang
+paham DevTools berpotensi memalsukan progres. Replay penuh dari sumber (`hasil_latihan` +
+sheet Progres Materi/Modul, semua timestamp dari SERVER) membuat angka EXP SELALU bisa
+"membenarkan dirinya sendiri" di panggilan berikutnya — kalau diganti jadi "cuma proses
+baris sejak checkpoint terakhir", sifat self-healing ini HILANG: sekali ada 1 baris yang
+gagal terproses (bug, gangguan jaringan, dll — persis pola yang baru ditemukan di §55),
+checkpoint sudah lewat baris itu SELAMANYA dan tidak akan pernah otomatis terkoreksi lagi.
+
+**Diagnosis akar masalah performa yang SEBENARNYA**: ditemukan bug performa nyata (BUKAN
+soal "hitung penuh vs incremental") — `hitungExpDenganBacaUlang_` (dipakai tombol "Hitung
+Ulang Semua Siswa (25)" di admin.html) membaca ULANG SELURUH sheet "Data Progres Materi"
+dan "Data Progres Modul" dari nol (`sheetToObjects_`, 1 panggilan Sheets API) UNTUK SETIAP
+SISWA di dalam loop — untuk 25 siswa, kedua sheet itu dibaca 25× dengan isi yang PERSIS
+SAMA, cuma disaring beda nama belakangan. Ini akan makin lambat seiring sheet membesar
+setelah berbulan-bulan kelas aktif, dan berisiko mendekati batas eksekusi 6 menit Apps
+Script kalau jumlah siswa/baris terus bertambah.
+
+**Keputusan yang dikonfirmasi Arif** (lewat pertanyaan eksplisit, bukan diputuskan sepihak):
+pakai rekomendasi Claude — tetap hitung PENUH dari riwayat (self-healing dipertahankan),
+tapi DIPERCEPAT dengan membaca sheet sekali saja, BUKAN skema incremental sejak update
+terakhir. Ditambah: PASANG trigger otomatis 6 jam sebagai jaring pengaman independen.
+
+**Perbaikan performa**:
+- `hitungExpDenganBacaUlang_(sheet, namaKolomSlug, nama, expPenuh)` dipecah jadi 2:
+  - `hitungExpDenganBacaUlangDariRows_(rows, namaKolomSlug, nama, expPenuh)` — logika MURNI,
+    bekerja dari `rows` yang SUDAH dibaca (tidak menyentuh Sheets API sendiri).
+  - `hitungExpDenganBacaUlang_(sheet, ...)` — wrapper tipis (`sheetToObjects_(sheet)` lalu
+    delegasikan ke atas), TETAP dipakai jalur SATU siswa (`doPostHitungGamifikasi_`, dipicu
+    klien tepat setelah 1 aktivitas) karena di jalur itu memang cuma 1× panggil, tidak ada
+    yang perlu dihemat.
+- `doPostHitungGamifikasiSemua_` sekarang membaca `sheetToObjects_(getProgresMateriSheet_())`
+  dan `sheetToObjects_(getProgresModulSheet_())` **SEKALI SAJA** di luar loop 25 siswa, lalu
+  rows yang sama dipakai ulang lewat `hitungExpDenganBacaUlangDariRows_` — dari O(25× baca
+  sheet) jadi O(1× baca sheet). ATURAN penghitungan (replay penuh riwayat, dedup kunjungan
+  pertama vs ulang) TIDAK berubah SAMA SEKALI — murni optimasi cara AKSES data sumbernya.
+
+**Fitur baru — jaring pengaman otomatis 6 jam**:
+- `hitungGamifikasiSemuaOtomatis_()` — fungsi yang BENAR-BENAR dijalankan trigger time-based
+  Apps Script (dipanggil LANGSUNG oleh trigger, BUKAN lewat `doPost`/web app, jadi TIDAK
+  butuh & TIDAK ADA gerbang akses). Memakai pola baca-sheet-sekali yang SAMA dengan
+  `doPostHitungGamifikasiSemua_`, dan roster `SISWA_NAMA_VALID_` yang **SUDAH ADA**
+  sebelumnya (dipakai validasi impor massal) — SENGAJA dipakai ulang, TIDAK menambah sumber
+  roster baru yang perlu disinkronkan manual. Kegagalan 1 siswa (try/catch per nama) TIDAK
+  menghentikan siswa lain, hasil ringkas ditulis ke `Logger.log` (Log Eksekusi Apps Script,
+  BUKAN admin.html — trigger jalan sendiri tanpa ada yang menunggu di browser).
+- `installTriggerHitungGamifikasiOtomatis_()` — fungsi SETUP, WAJIB dijalankan MANUAL 1×
+  oleh Arif dari editor Apps Script (bukan otomatis aktif hanya dengan deploy kode ini —
+  trigger time-based Apps Script memang harus didaftarkan lewat eksekusi nyata
+  `ScriptApp.newTrigger`). Cara pasang lengkap ada di komentar Code.gs persis sebelum fungsi
+  `hitungGamifikasiSemuaOtomatis_`. Aman dijalankan berkali-kali — selalu menghapus trigger
+  LAMA untuk fungsi ini dulu sebelum memasang yang baru (`ScriptApp.getProjectTriggers()` +
+  filter `getHandlerFunction()`), supaya tidak menumpuk jadi banyak trigger duplikat.
+- Trigger ini TIDAK menggantikan pemicu `hitung_gamifikasi` yang sudah ada (dipanggil klien
+  tepat setelah aktivitas) — keduanya tetap jalan berdampingan, trigger ini cuma jaring
+  pengaman TAMBAHAN memastikan data Level/EXP maksimal "basi" 6 jam meski semua pemicu lain
+  kebetulan gagal (pola kegagalan sama dengan bug §55, walau beda endpoint yang terdampak).
+
+**Verifikasi logika**: `node --check` lulus untuk `Code.gs` utuh. Suite baru
+`scripts/test-hitung-exp-56.js` (11 skenario, semua lulus): (1) hasil
+`hitungExpDenganBacaUlangDariRows_` identik dengan pola lama untuk data sama; (2) tidak ada
+kebocoran data antar siswa saat rows gabungan dipakai bersama (termasuk nama yang tidak ada
+di rows -> 0, bukan error); (3) orkestrasi banyak-siswa mengisolasi kegagalan 1 nama —
+siswa lain (termasuk yang urutannya SETELAH siswa gagal) tetap berhasil dihitung.
+
+**Manual test checklist (Arif):**
+- [ ] **Pasang trigger (WAJIB, 1x)**: buka editor Apps Script → pilih fungsi
+      `installTriggerHitungGamifikasiOtomatis_` di dropdown → klik ▶ Jalankan → setujui
+      izin tambahan yang diminta (izin "Trigger") → cek menu "Pemicu" (ikon ⏰) muncul 1
+      baris baru: `hitungGamifikasiSemuaOtomatis_`, "Berdasarkan waktu", "Setiap 6 jam"
+- [ ] Klik tombol "Hitung Ulang Semua Siswa (25)" di admin.html seperti biasa → pastikan
+      HASIL ANGKA (EXP, level, jumlah materi/modul per siswa) **SAMA PERSIS** dengan
+      sebelum perbaikan performa ini (bandingkan Papan Peringkat/Profil sebelum & sesudah
+      untuk minimal 2-3 siswa) — perbaikan ini HARUS murni lebih cepat, bukan mengubah hasil
+- [ ] Rasakan/ukur waktu tombol "Hitung Ulang Semua Siswa" selesai — seharusnya terasa lebih
+      cepat dari sebelumnya (dari 25× baca sheet jadi 1× baca sheet); kalau masih terasa
+      lambat, kemungkinan bottleneck ada di sisi lain (`ambilRiwayatHasilLatihan_` per
+      siswa ke Firestore), bukan di bagian yang diperbaiki sesi ini
+- [ ] Setelah trigger terpasang, TUNGGU minimal 6+ jam (atau ubah sementara jadi
+      `everyMinutes(1)` di `installTriggerHitungGamifikasiOtomatis_` KHUSUS untuk uji cepat,
+      lalu kembalikan ke `everyHours(6)` setelah terverifikasi) → cek "Log Eksekusi"
+      (Executions, ikon ▷) di editor Apps Script menunjukkan `hitungGamifikasiSemuaOtomatis_`
+      pernah jalan otomatis, dengan log ringkasan "X berhasil, Y gagal dari 25 siswa"
+- [ ] Simulasikan 1 siswa gagal (mis. ubah sementara 1 nama di array jadi typo yang tidak
+      match data mana pun) → jalankan `hitungGamifikasiSemuaOtomatis_` manual dari editor →
+      pastikan Log Eksekusi tetap menunjukkan 24 siswa lain berhasil + 1 baris gagal
+      tercatat di "Rincian gagal", BUKAN seluruh eksekusi berhenti/gagal total
+- [ ] Redeploy `Code.gs` seperti biasa ("Manage deployments → New version", lihat checklist
+      rutin §45) → pastikan trigger yang sudah terpasang TETAP ada di menu "Pemicu" setelah
+      redeploy (trigger terikat ke PROJECT Apps Script, bukan ke versi deployment, jadi
+      redeploy versi biasa TIDAK menghapusnya — cuma perlu diinstal ulang kalau project
+      Apps Script-nya benar-benar dibuat baru dari nol)

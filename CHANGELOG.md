@@ -8,6 +8,45 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Ditambahkan/Diperbaiki — Performa "Hitung Ulang Semua Siswa" + jaring pengaman otomatis 6 jam sekali (lihat ANTIREGRESI.md §56)
+- **Konteks**: Arif minta fitur hitung ulang XP hanya memproses progres BARU sejak update
+  terakhir (bukan hitung ulang penuh dari riwayat), dan bertanya apakah ada sistem yang
+  memastikan proses belajar siswa tersimpan otomatis + bisa ditarik tiap 6 jam.
+- **Jawaban soal penyimpanan otomatis**: SUDAH ADA — `materi-progress-tracker.js` dan
+  `modul-progress-tracker.js` (2 file BERSAMA yang dipakai di semua halaman materi/modul)
+  sudah otomatis menyimpan progres ke sheet setiap 1 materi/modul selesai, TANPA perlu
+  menyentuh file materi/modul satu-satu. Yang BELUM ada: jaring pengaman independen dari
+  sisi server yang jalan sendiri tanpa bergantung permintaan dari klien — ditambahkan di
+  sesi ini (lihat poin trigger di bawah).
+- **Soal "hitung cuma sejak update terakhir"**: SENGAJA TIDAK diterapkan literal — akan
+  menghilangkan sifat "self-healing" perhitungan EXP saat ini (dihitung ulang PENUH dari
+  riwayat tiap kali, keputusan keamanan sadar yang sudah ada sebelumnya). Kalau
+  diganti jadi incremental, 1 baris yang pernah gagal terproses TIDAK AKAN PERNAH
+  ketahuan/terkoreksi lagi di masa depan (checkpoint sudah lewat). Diagnosis akar masalah
+  performa yang SEBENARNYA dikeluhkan: `hitungExpDenganBacaUlang_` (dipakai tombol "Hitung
+  Ulang Semua Siswa") membaca ULANG SELURUH sheet "Data Progres Materi"/"Data Progres
+  Modul" dari nol UNTUK SETIAP SISWA — 25 siswa = 25× baca sheet yang PERSIS SAMA. Ini akar
+  masalah yang diperbaiki (bukan skema incrementalnya), lihat ANTIREGRESI.md §56 untuk
+  penjelasan trade-off lengkap yang sudah dikonfirmasi Arif.
+- **Perbaikan performa**: logika hitung EXP dipisah jadi
+  `hitungExpDenganBacaUlangDariRows_(rows, ...)` (bekerja dari rows yang SUDAH dibaca) +
+  `hitungExpDenganBacaUlang_(sheet, ...)` (wrapper tipis, tetap dipakai jalur satu-siswa).
+  `doPostHitungGamifikasiSemua_` sekarang baca sheet Materi & Modul **SEKALI SAJA** di luar
+  loop, dipakai ulang untuk semua siswa — dari O(25× baca sheet) jadi O(1× baca sheet).
+  ATURAN penghitungan (replay penuh dari riwayat) TIDAK berubah sama sekali.
+- **Fitur baru — trigger otomatis 6 jam**: `hitungGamifikasiSemuaOtomatis_()` (fungsi baru,
+  dijalankan langsung oleh time-based trigger Apps Script, BUKAN lewat endpoint web) +
+  `installTriggerHitungGamifikasiOtomatis_()` (fungsi setup, dijalankan MANUAL 1x oleh Arif
+  dari editor Apps Script untuk memasang triggernya — lihat panduan lengkap di komentar
+  Code.gs & checklist ANTIREGRESI.md §56). Memakai roster `SISWA_NAMA_VALID_` yang SUDAH
+  ADA (sumber yang sama dipakai validasi impor massal, tidak menambah sumber roster baru).
+  Menghitung ulang Level/EXP SEMUA siswa tiap 6 jam TANPA bergantung siapa pun memicunya —
+  jaring pengaman kalau permintaan `hitung_gamifikasi` dari klien gagal terkirim diam-diam
+  (pola kegagalan yang sama dengan bug §55, walau beda endpoint).
+- Divalidasi `node --check` (sintaks) + `scripts/test-hitung-exp-56.js` (11 skenario: hasil
+  pola baru identik pola lama, tidak ada kebocoran data antar siswa saat rows digabung,
+  kegagalan 1 siswa tidak menggagalkan siswa lain dalam batch) — semua lulus.
+
 ### Diperbaiki — Penyelesaian Modul tidak tercatat saat siswa membuka ulang modul yang sudah sampai halaman terakhir (lihat ANTIREGRESI.md §55)
 - **Laporan Arif**: siswa mengaku sudah menyelesaikan membaca sebuah Modul,
   tapi laporan "Perkembangan Belajar Mandiri" yang dilihat orang tua/guru
