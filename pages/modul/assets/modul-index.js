@@ -431,6 +431,30 @@ window.MODUL_INDEX = [
     file: "matematika/notasi-simbolik-tp2/modul.html"
   },
   {
+    // DITAMBAHKAN (bug ditemukan Sept 2026 — lihat ANTIREGRESI.md §39 untuk kelas bug yang
+    // sama persis: file modul.html sudah lengkap di repo tapi tidak pernah didaftarkan di
+    // sini): TP resmi "geometri-tp1" (GEOM-TP1 di tp-kko-index.js) sudah lama punya 4 entri
+    // "Ingat Lagi" di materi-index.js, tapi modul "Ayo Belajar!"-nya baru selesai dibangun
+    // dan sempat terlewat didaftarkan. Akibatnya modul ini tidak tampil di menu Modul siswa
+    // DAN progres yang sudah tersimpan di sheet "Data Progres Modul" (kalau ada) tidak pernah
+    // ikut dihitung di laporan "Perkembangan Belajar Mandiri" (dilewati diam-diam karena slug
+    // tidak dikenal — lihat komentar `if (!info) return;` di belajar-mandiri.js).
+    mapel: "Matematika",
+    mapelSlug: "matematika",
+    mapelColor: "var(--m-matematika)",
+    mapelIcon: "🔢",
+    icon: "📦",
+    elemen: "Geometri",
+    tp: "geometri-tp1",
+    tema: "Geometri · Mengonstruksi dan Mengurai Bangun Ruang serta Visualisasi Spasial",
+    urutan: 9,
+    judul: "Mengonstruksi dan Mengurai Bangun Ruang",
+    ringkasan: "Mengonstruksi dan mengurai bangun ruang (kubus, balok, dan gabungannya) serta visualisasi spasial.",
+    status: "selesai",
+    slug: "mtk-bangun-ruang-tp1",
+    file: "matematika/bangun-ruang-tp1/modul.html"
+  },
+  {
     mapel: "Matematika",
     mapelSlug: "matematika",
     mapelColor: "var(--m-matematika)",
