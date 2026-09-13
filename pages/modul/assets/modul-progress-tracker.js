@@ -176,11 +176,87 @@
         sudahMencapaiAkhir = true;
       }
     } catch (e) { /* localStorage rusak/nonaktif/bukan JSON — abaikan, anggap belum sampai akhir */ }
-
+    if (sudahMencapaiAkhir) mulaiBanner_(); // tampilkan banner SEGERA kalau restore langsung ke halaman terakhir
     function totalWaktuTerlihatMs() {
       var total = akumulasiMs;
       if (mulaiTerlihat !== null) total += (Date.now() - mulaiTerlihat);
       return total;
+    }
+
+    // v1.4 (BUG NYATA ditemukan Sept 2026, lihat ANTIREGRESI.md §57 & CHANGELOG.md): §55 DI
+    // ATAS TERNYATA TIDAK CUKUP — Arif melaporkan siswa MASIH kehilangan penyelesaian modul
+    // SETELAH §55 di-deploy. Akar masalah SEBENARNYA jauh lebih mendasar dan lebih sering
+    // terjadi daripada skenario buka-ulang di §55: SELURUH mekanisme timer 3 menit di atas
+    // 100% DIAM-DIAM — TIDAK ADA petunjuk visual apa pun ke siswa bahwa mereka harus tetap
+    // di halaman ini. Sementara itu, badge "100% selesai" di header tiap modul.html dihitung
+    // dari HAL YANG SAMA SEKALI BERBEDA (`updateProgress()` di tiap modul.html, dari jumlah
+    // kuis/checklist yang sudah dijawab benar) — TIDAK ADA hubungannya dengan
+    // `sudahMencapaiAkhir`/timer di file ini. Akibatnya: siswa menjawab semua kuis dengan
+    // benar, melihat "100% selesai" di header, MENGIRA sudah tuntas, lalu WAJAR SAJA
+    // menutup tab/pindah pelajaran — padahal timer 3 menit ini belum genap sama sekali,
+    // jadi penanda "modul selesai" TIDAK PERNAH terkirim. Ini pola kegagalan yang JAUH lebih
+    // umum daripada skenario buka-ulang §55 (tidak perlu menutup-buka ulang sama sekali,
+    // cukup 1 sesi normal yang berakhir sebelum genap 3 menit di halaman terakhir).
+    // PERBAIKAN: tambahkan banner mengambang di bawah layar begitu halaman terakhir
+    // tercapai, menunjukkan hitung mundur waktu tersisa secara terus terang — supaya siswa
+    // TAHU harus menunggu, alih-alih mengira sudah selesai dari badge "100%" yang menyesatkan
+    // itu. Banner ini PELENGKAP (tidak mengubah aturan pengiriman sama sekali) — cuma
+    // membuat proses yang SEBELUMNYA sepenuhnya diam-diam menjadi terlihat.
+    var bannerEl = null;
+    var bannerTickId = null;
+
+    function formatSisaWaktu_(ms) {
+      var detik = Math.max(0, Math.ceil(ms / 1000));
+      var menit = Math.floor(detik / 60);
+      var sisaDetik = detik % 60;
+      return menit + ":" + (sisaDetik < 10 ? "0" : "") + sisaDetik;
+    }
+
+    function pastikanBanner_() {
+      if (bannerEl) return bannerEl;
+      bannerEl = document.createElement("div");
+      bannerEl.id = "_modulSelesaiBanner";
+      // Gaya ditulis INLINE (bukan class CSS) SENGAJA — supaya banner ini konsisten
+      // tampil di SEMUA 43 file modul.html tanpa bergantung pada CSS masing-masing file
+      // (yang bisa beda-beda/tidak lengkap), dan tidak berisiko bentrok nama class.
+      bannerEl.setAttribute("style",
+        "position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:99999;" +
+        "background:#b45309;color:#fff;padding:10px 18px;border-radius:999px;" +
+        "font-family:system-ui,-apple-system,sans-serif;font-size:13.5px;font-weight:600;" +
+        "box-shadow:0 4px 16px rgba(0,0,0,.25);text-align:center;max-width:92vw;" +
+        "line-height:1.4;transition:opacity .3s ease;pointer-events:none;");
+      document.body.appendChild(bannerEl);
+      return bannerEl;
+    }
+
+    function hapusBanner_() {
+      if (!bannerEl) return;
+      var el = bannerEl;
+      bannerEl = null;
+      el.style.opacity = "0";
+      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 350);
+    }
+
+    function updateBannerTeks_() {
+      if (sudahDikirim) {
+        if (bannerTickId) { clearInterval(bannerTickId); bannerTickId = null; }
+        var elSukses = pastikanBanner_();
+        elSukses.style.background = "#166534";
+        elSukses.textContent = "✅ Modul selesai tercatat! Kerja bagus.";
+        setTimeout(hapusBanner_, 4000);
+        return;
+      }
+      var sisa = AMBANG_WAKTU_MS - totalWaktuTerlihatMs();
+      var el = pastikanBanner_();
+      el.style.background = "#b45309";
+      el.textContent = sisa > 0
+        ? "🎉 Halaman terakhir! Tetap di sini " + formatSisaWaktu_(sisa) + " lagi untuk menandai modul ini selesai."
+        : "⏳ Menandai selesai…";
+    }
+
+    function mulaiBanner_() {
+      updateBannerTeks_();
+      if (!bannerTickId) bannerTickId = setInterval(updateBannerTeks_, 1000);
     }
 
     function cobaKirim() {
@@ -188,6 +264,7 @@
       if (!sudahMencapaiAkhir) return;
       if (totalWaktuTerlihatMs() < AMBANG_WAKTU_MS) return;
       sudahDikirim = true;
+      updateBannerTeks_(); // ganti banner jadi pesan sukses sebelum menghilang otomatis
       deteksiSiswaLaluKirim(slug);
     }
 
@@ -217,7 +294,14 @@
       var halamanTerakhir = Math.max(0, Math.min(window.TOTAL_PAGES - 1, n)) === window.TOTAL_PAGES - 1;
       if (halamanTerakhir) {
         sudahMencapaiAkhir = true;
+        mulaiBanner_();
         cobaKirim();
+      } else if (bannerEl) {
+        // Siswa mundur/pindah dari halaman terakhir SEBELUM ambang waktu terlewati (mis.
+        // ingin lihat ulang halaman sebelumnya) — sembunyikan banner supaya tidak
+        // menampilkan hitung mundur untuk halaman yang sudah tidak sedang dilihat. Kalau
+        // siswa balik lagi ke halaman terakhir, banner akan muncul lagi dari cabang di atas.
+        hapusBanner_();
       }
       return hasil;
     };
