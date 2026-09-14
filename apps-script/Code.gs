@@ -25,6 +25,12 @@
  *                { type: "progres_materi" }   -> upsert 1 baris "sudah dibaca" (Nama Siswa + Materi Slug)
  *                di sheet "Data Progres Materi" — dikirim materi-progress-tracker.js, fire-and-forget,
  *                TANPA gerbang (siswa mengirim sendiri saat baca materi, bukan lewat guru/orang tua).
+ *                { type: "progres_pustaka" }   -> SAMA PERSIS pola & alasannya dengan "progres_materi" di
+ *                atas (append-only, TANPA gerbang), bedanya sumbernya "Nama Siswa" + "Pustaka ID" dari
+ *                pages/pustaka-belajar/baca.html (dikirim pustaka-belajar-progress-tracker.js) ke sheet
+ *                "Data Progres Pustaka Belajar" — EXP per pembacaan LEBIH BESAR dari Materi (lihat
+ *                EXP_PER_PUSTAKA_) karena 1 file Pustaka Belajar memuat materi belajar yang lebih lengkap
+ *                dibanding 1 topik Materi Ajar (lihat ANTIREGRESI.md §55).
  * - doGet(e)   : ?nama=...        -> 1 baris data MPLS non-kognitif siswa tsb (untuk input.html).
  *                ?all=1           -> SEMUA baris data MPLS non-kognitif (untuk rekap.html/laporan.html).
  *                ?siswa=1         -> SEMUA profil siswa (untuk pages/kelas/) — dari Firestore
@@ -548,6 +554,25 @@ const PROGRES_MODUL_HEADERS = [
                     // modul-progress-tracker.js, bukan sekadar dibuka)
 ];
 
+/** Sama pola PERSIS dengan PROGRES_MATERI_SHEET_NAME/PROGRES_MATERI_HEADERS di atas — dibuat
+ * belakangan (lihat ANTIREGRESI.md §55) supaya membaca 1 file Pustaka Belajar (PDF lengkap
+ * dari guru pendamping, lihat PUSTAKA_HEADERS) juga masuk hitungan EXP gamifikasi, PERSIS
+ * seperti Materi/Modul. "Pustaka ID" = kolom "ID" di "Data Pustaka Belajar" (PUSTAKA_HEADERS),
+ * BUKAN skema ID baru — dipakai apa adanya dari qs("id") di baca.html, yang SELALU terisi
+ * (dibangun dari r["ID"] saat kartu di pustaka-belajar.html dibuat, lihat
+ * pustaka-belajar-landing.js), beda dari "file"/"judul" yang punya jalur fallback. */
+const PROGRES_PUSTAKA_SHEET_NAME = "Data Progres Pustaka Belajar";
+const PROGRES_PUSTAKA_HEADERS = [
+  "Timestamp",     // kapan TERAKHIR dibaca (append-only sejak awal, BUKAN upsert — sama pola
+                    // dengan Progres Materi/Modul SEKARANG, lihat "BACA ULANG = EXP KECIL" di
+                    // hitungExpDenganBacaUlangDariRows_ — 1 baris = 1 KUNJUNGAN yang lolos
+                    // ambang waktu)
+  "Nama Siswa",
+  "Pustaka ID",
+  "Status",         // saat ini SELALU "Dibaca" — sama pola dengan Progres Materi, disediakan
+                    // untuk kemungkinan status lebih rinci di masa depan
+];
+
 const HEADERS = [
   "Timestamp",
   "No",
@@ -839,6 +864,27 @@ function getProgresModulSheet_() {
   if (missing.length > 0) {
     sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
     Logger.log('Kolom baru ditambahkan otomatis ke "Data Progres Modul": ' + missing.join(", "));
+  }
+  return sheet;
+}
+
+/** Sama pola PERSIS dengan getProgresMateriSheet_()/getProgresModulSheet_() di atas — sheet
+ * self-healing terpisah untuk progres Pustaka Belajar (lihat ANTIREGRESI.md §55, dibuat
+ * belakangan sama seperti Progres Modul dulu MENYUSUL Progres Materi). */
+function getProgresPustakaSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = ss.getSheetByName(PROGRES_PUSTAKA_SHEET_NAME);
+  if (!sheet) {
+    sheet = ss.insertSheet(PROGRES_PUSTAKA_SHEET_NAME);
+    sheet.getRange(1, 1, 1, PROGRES_PUSTAKA_HEADERS.length).setValues([PROGRES_PUSTAKA_HEADERS]);
+    sheet.setFrozenRows(1);
+    return sheet;
+  }
+  const currentHeaders = readHeaderRow_(sheet);
+  const missing = PROGRES_PUSTAKA_HEADERS.filter((h) => currentHeaders.indexOf(h) === -1);
+  if (missing.length > 0) {
+    sheet.getRange(1, currentHeaders.length + 1, 1, missing.length).setValues([missing]);
+    Logger.log('Kolom baru ditambahkan otomatis ke "Data Progres Pustaka Belajar": ' + missing.join(", "));
   }
   return sheet;
 }
@@ -1312,6 +1358,19 @@ function doPost(e) {
       // Sama level keamanan & alasan persis dengan "progres_materi" di atas — pengirimnya
       // SISWA sendiri lewat modul-progress-tracker.js saat mencapai halaman terakhir modul.
       return doPostProgresModul_(body);
+    }
+
+    if (body.type === "progres_pustaka") {
+      // Sama level keamanan & alasan persis dengan "progres_materi" di atas — pengirimnya
+      // SISWA sendiri lewat pustaka-belajar-progress-tracker.js saat sudah menghabiskan
+      // waktu minimum membaca 1 file Pustaka Belajar. Lihat ANTIREGRESI.md §55.
+      //
+      // CATATAN (belum dilakukan, follow-up terpisah kalau diminta): "get_progres_materi"/
+      // "get_progres_modul" di bawah dipakai laporan "Perkembangan Belajar Mandiri"
+      // (belajar-mandiri.js) — Pustaka Belajar SENGAJA belum ditambahkan ke laporan itu,
+      // di luar cakupan permintaan gamifikasi ini. Kalau nanti diminta, tinggal salin pola
+      // "get_progres_modul" persis, ganti sheet & filternya ke getProgresPustakaSheet_().
+      return doPostProgresPustaka_(body);
     }
 
     if (body.type === "get_progres_materi") {
@@ -1844,6 +1903,26 @@ function doPostProgresModul_(body) {
   return jsonOut_({ status: "ok" });
 }
 
+/** Sama pola PERSIS dengan doPostProgresMateri_()/doPostProgresModul_() di atas (append-only,
+ * alasan sama persis: "baca ulang = EXP kecil" butuh tahu berapa kali, bukan cuma pernah/
+ * belum) — dipanggil dari pustaka-belajar-progress-tracker.js setelah siswa menghabiskan
+ * waktu minimum membaca 1 file Pustaka Belajar. Lihat ANTIREGRESI.md §55. */
+function doPostProgresPustaka_(body) {
+  const nama = String(body["Nama Siswa"] || "").trim();
+  const pustakaId = String(body["Pustaka ID"] || "").trim();
+  if (!nama || !pustakaId) return jsonOut_({ status: "ok" }); // diam-diam abaikan, sama alasan dgn doPostProgresMateri_
+
+  const sheet = getProgresPustakaSheet_();
+  const record = {
+    "Timestamp": new Date(),
+    "Nama Siswa": nama,
+    "Pustaka ID": pustakaId,
+    "Status": "Dibaca",
+  };
+  sheet.appendRow(buildRowByHeaders_(sheet, record));
+  return jsonOut_({ status: "ok" });
+}
+
 /* ═══════════════════ SISTEM LEVEL UJI KEMAMPUAN (belum dirilis) ═══════════════════
  * Lihat CHANGELOG.md untuk latar belakang lengkap. Ringkasan keputusan desain:
  * - Level GLOBAL (gabungan seluruh mapel/TP), BUKAN per-TP — 1 siswa = 1 level.
@@ -1877,18 +1956,28 @@ const LEVEL_AMBANG_LULUS_UMUM_ = 70; // ambang "lulus" generik untuk statistik t
  * Modul (25/modul dituntaskan sampai halaman terakhir — nilai lebih besar dari materi karena
  * 1 modul mencakup beberapa bagian + beberapa kuis tertanam, jauh lebih banyak usaha
  * dibanding 1 materi; angka ini direkomendasikan Claude, mudah diubah di sini kalau dirasa
- * kurang/lebih pas setelah dipakai beberapa waktu), dan Uji Kemampuan (5/kuis dikerjakan +
- * 10 bonus kalau lulus ≥70%).
+ * kurang/lebih pas setelah dipakai beberapa waktu), Pustaka Belajar (15/file dibaca — lihat
+ * EXP_PER_PUSTAKA_ & ANTIREGRESI.md §55, di antara Materi & Modul), dan Uji Kemampuan
+ * (5/kuis dikerjakan + 10 bonus kalau lulus ≥70%).
  *
- * "Baca/selesai ULANG materi/modul yang SAMA" (fitur baru, CHANGELOG.md): kunjungan ke-1
- * dapat EXP penuh (EXP_PER_MATERI_/EXP_PER_MODUL_), kunjungan ke-2 dst ke MATERI/MODUL YANG
- * SAMA cuma dapat EXP_ULANG_ kecil — supaya baca ulang untuk REVIEW tetap dihargai sedikit
- * (baik secara pedagogis), tapi TIDAK BISA dipakai membanjiri EXP dengan buka-tutup materi
- * yang sama berkali-kali. Ini BERBEDA dari materi/modul BERBEDA, yang masing-masing tetap
- * dapat EXP PENUH di kunjungan pertamanya. */
+ * "Baca/selesai ULANG materi/modul/pustaka yang SAMA" (fitur baru, CHANGELOG.md): kunjungan
+ * ke-1 dapat EXP penuh (EXP_PER_MATERI_/EXP_PER_MODUL_/EXP_PER_PUSTAKA_), kunjungan ke-2 dst
+ * ke MATERI/MODUL/PUSTAKA BELAJAR YANG SAMA cuma dapat EXP_ULANG_ kecil — supaya baca ulang
+ * untuk REVIEW tetap dihargai sedikit (baik secara pedagogis), tapi TIDAK BISA dipakai
+ * membanjiri EXP dengan buka-tutup materi yang sama berkali-kali. Ini BERBEDA dari
+ * materi/modul/pustaka BERBEDA, yang masing-masing tetap dapat EXP PENUH di kunjungan
+ * pertamanya. */
 const EXP_PER_MATERI_ = 10;
 const EXP_PER_MODUL_ = 25;
-const EXP_ULANG_ = 1; // baca/selesai ulang MATERI/MODUL YANG SAMA (kunjungan ke-2 dst.)
+// EXP_PER_PUSTAKA_ (BARU, ANTIREGRESI.md §55 — permintaan eksplisit Arif): 1 file Pustaka
+// Belajar memuat materi belajar yang LEBIH LENGKAP dibanding 1 topik Materi Ajar (PDF utuh
+// dari guru pendamping, bukan 1 potongan topik "Ingat Lagi"), jadi EXP-nya sengaja LEBIH
+// BESAR dari EXP_PER_MATERI_ — tapi TIDAK sebesar EXP_PER_MODUL_ (modul mencakup beberapa
+// bagian + kuis tertanam, usahanya lebih banyak dari SEKADAR membaca 1 file PDF sampai
+// ambang waktu). Ditaruh di antara keduanya. Angka ini direkomendasikan Claude, sama seperti
+// EXP_PER_MODUL_, mudah diubah di sini kalau dirasa kurang/lebih pas setelah dipakai.
+const EXP_PER_PUSTAKA_ = 15;
+const EXP_ULANG_ = 1; // baca/selesai ulang MATERI/MODUL/PUSTAKA BELAJAR YANG SAMA (kunjungan ke-2 dst.)
 const EXP_PER_KUIS_DIKERJAKAN_ = 5;
 const EXP_BONUS_KUIS_LULUS_ = 10;
 
@@ -2370,22 +2459,24 @@ function ambilLevelSiswaSaatIni_(nama) {
  * disalin-tempel ke 2 tempat — proyek ini baru saja kena bug nyata (PROGRES_MATERI_SHEET_NAME
  * hilang, lihat catatan di atas) akibat pola salin-tempel antar fungsi kembar yang lupa
  * disinkronkan, jadi 1 sumber logika di sini sengaja dijaga ketat. */
-function hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData) {
+function hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData, pustakaData) {
   const sebelum = ambilLevelSiswaSaatIni_(nama);
   const existingLengkap = ambilLevelSiswaLengkap_(nama); // supaya field `avatar` (kalau ada) tidak hilang tertimpa di bawah
   const levelData = hitungLevelDariRiwayat_(riwayat);
 
   // Streak harian (ANTIREGRESI.md §53): gabungkan tanggal aktif dari SEMUA sumber
-  // terpercaya-server — Materi & Modul (tanggalAktifList, sudah "yyyy-MM-dd" WIB dari
-  // sheet) + kuis (riwayat, timestamp ISO Firestore, dikonversi tanggalWib_ di sini).
+  // terpercaya-server — Materi, Modul & Pustaka Belajar (tanggalAktifList, sudah
+  // "yyyy-MM-dd" WIB dari sheet, lihat ANTIREGRESI.md §55 utk Pustaka Belajar) + kuis
+  // (riwayat, timestamp ISO Firestore, dikonversi tanggalWib_ di sini).
   const tanggalAktifGabungan = materiData.tanggalAktifList
     .concat(modulData.tanggalAktifList)
+    .concat(pustakaData.tanggalAktifList)
     .concat(riwayat.map((r) => tanggalWib_(r.timestamp)));
   const hariIniWib = formatTanggalUtc_(new Date(Date.now() + 7 * 60 * 60 * 1000));
   const streakData = hitungStreakDariTanggal_(tanggalAktifGabungan, hariIniWib);
   const bonusStreakExp = hitungBonusExpStreak_(streakData.streakTerpanjang, streakData.jumlahHariAktifUnik);
 
-  const exp = materiData.totalExp + modulData.totalExp + levelData.expDariKuis + bonusStreakExp;
+  const exp = materiData.totalExp + modulData.totalExp + pustakaData.totalExp + levelData.expDariKuis + bonusStreakExp;
   const level99Data = hitungLevel99DanRank_(exp);
   const baruSajaNaikLevel = (levelData.level !== sebelum.level) ||
     (levelData.mahirTercapai && !sebelum.mahirTercapai);
@@ -2396,6 +2487,7 @@ function hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulDat
   const dataLengkap = Object.assign({}, existingLengkap, levelData, {
     jumlahMateriDibaca: materiData.jumlahDistinct,
     jumlahModulSelesai: modulData.jumlahDistinct,
+    jumlahPustakaDibaca: pustakaData.jumlahDistinct, // BARU, lihat ANTIREGRESI.md §55
     exp: exp,
     streakSaatIni: streakData.streakSaatIni,
     streakTerpanjang: streakData.streakTerpanjang,
@@ -2413,7 +2505,8 @@ function doPostHitungGamifikasi_(body) {
     const riwayat = ambilRiwayatHasilLatihan_(nama);
     const materiData = hitungExpDenganBacaUlang_(getProgresMateriSheet_(), "Materi Slug", nama, EXP_PER_MATERI_);
     const modulData = hitungExpDenganBacaUlang_(getProgresModulSheet_(), "Modul Slug", nama, EXP_PER_MODUL_);
-    return jsonOut_(hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData));
+    const pustakaData = hitungExpDenganBacaUlang_(getProgresPustakaSheet_(), "Pustaka ID", nama, EXP_PER_PUSTAKA_);
+    return jsonOut_(hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData, pustakaData));
   } catch (err) {
     return jsonOut_({ status: "error", message: String(err) });
   }
@@ -2437,19 +2530,25 @@ function doPostHitungGamifikasi_(body) {
  * ATURAN penghitungan TIDAK BERUBAH SAMA SEKALI (tetap replay PENUH dari riwayat) — ini
  * MURNI optimasi cara membaca data sumbernya, lihat ANTIREGRESI.md §56 untuk alasan kenapa
  * opsi "hitung cuma sejak update terakhir" (lebih cepat lagi tapi kehilangan sifat
- * self-healing) SENGAJA tidak dipakai. */
+ * self-healing) SENGAJA tidak dipakai.
+ *
+ * v3 (ANTIREGRESI.md §55): sheet "Data Progres Pustaka Belajar" ikut dibaca SEKALI SAJA di
+ * sini juga (`rowsPustaka`) mengikuti pola v2 di atas PERSIS — BUKAN dibaca ulang di dalam
+ * loop per-siswa. */
 function doPostHitungGamifikasiSemua_(body) {
   const namaList = Array.isArray(body.namaList) ? body.namaList : [];
   if (!namaList.length) return jsonOut_({ status: "error", message: "namaList wajib diisi (array nama siswa)" });
   const rowsMateri = sheetToObjects_(getProgresMateriSheet_());
   const rowsModul = sheetToObjects_(getProgresModulSheet_());
+  const rowsPustaka = sheetToObjects_(getProgresPustakaSheet_()); // BARU, lihat ANTIREGRESI.md §55
   const hasilPerSiswa = namaList.map((namaMentah) => {
     const nama = String(namaMentah).trim();
     try {
       const riwayat = ambilRiwayatHasilLatihan_(nama);
       const materiData = hitungExpDenganBacaUlangDariRows_(rowsMateri, "Materi Slug", nama, EXP_PER_MATERI_);
       const modulData = hitungExpDenganBacaUlangDariRows_(rowsModul, "Modul Slug", nama, EXP_PER_MODUL_);
-      return Object.assign({ nama: nama }, hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData));
+      const pustakaData = hitungExpDenganBacaUlangDariRows_(rowsPustaka, "Pustaka ID", nama, EXP_PER_PUSTAKA_);
+      return Object.assign({ nama: nama }, hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData, pustakaData));
     } catch (err) {
       // 1 siswa gagal TIDAK BOLEH menggagalkan seluruh batch — siswa lain tetap lanjut
       // dihitung, statusnya dilaporkan per-baris ke admin.html.
@@ -2499,16 +2598,27 @@ function doPostHitungGamifikasiSemua_(body) {
  * definisinya) — sumber yang sama, TIDAK menambah sumber roster baru yang perlu disinkronkan
  * manual lagi. Logika penghitungan & optimasi baca sheet SEKALI SAJA PERSIS SAMA dengan
  * `doPostHitungGamifikasiSemua_` (lihat komentar di sana) — kalau nanti fungsi itu berubah,
- * cek juga apakah perubahan yang sama perlu diterapkan di sini. */
+ * cek juga apakah perubahan yang sama perlu diterapkan di sini.
+ *
+ * PENTING (ANTIREGRESI.md §55): `rowsPustaka` WAJIB ikut dibaca & `pustakaData` WAJIB ikut
+ * dioper ke `hitungDanSimpanGamifikasiSatuSiswa_` di sini juga — fungsi itu SEKARANG
+ * menerima 5 parameter (parameter ke-5 `pustakaData` WAJIB, bukan opsional), jadi kalau
+ * baris ini tertinggal tidak disinkronkan saat `doPostHitungGamifikasiSemua_` diubah lagi di
+ * masa depan, trigger 6-jam ini akan diam-diam gagal untuk SEMUA siswa (tertangkap try/catch
+ * di bawah sebagai "Cannot read properties of undefined", bukan crash keras, tapi artinya
+ * jaring pengaman otomatis ini BERHENTI BEKERJA tanpa ada yang sadar kecuali mengecek Log
+ * Eksekusi secara manual) — SELALU cek fungsi ini juga setiap kali menambah sumber EXP baru. */
 function hitungGamifikasiSemuaOtomatis_() {
   const rowsMateri = sheetToObjects_(getProgresMateriSheet_());
   const rowsModul = sheetToObjects_(getProgresModulSheet_());
+  const rowsPustaka = sheetToObjects_(getProgresPustakaSheet_());
   const hasil = SISWA_NAMA_VALID_.map((nama) => {
     try {
       const riwayat = ambilRiwayatHasilLatihan_(nama);
       const materiData = hitungExpDenganBacaUlangDariRows_(rowsMateri, "Materi Slug", nama, EXP_PER_MATERI_);
       const modulData = hitungExpDenganBacaUlangDariRows_(rowsModul, "Modul Slug", nama, EXP_PER_MODUL_);
-      return Object.assign({ nama: nama }, hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData));
+      const pustakaData = hitungExpDenganBacaUlangDariRows_(rowsPustaka, "Pustaka ID", nama, EXP_PER_PUSTAKA_);
+      return Object.assign({ nama: nama }, hitungDanSimpanGamifikasiSatuSiswa_(nama, riwayat, materiData, modulData, pustakaData));
     } catch (err) {
       return { nama: nama, status: "error", message: String(err) };
     }
