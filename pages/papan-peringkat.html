@@ -273,6 +273,7 @@
     { key: "rataRataSkor",        label: "Rata-rata",         numeric: true  },
     { key: "jumlahMateriDibaca",  label: "Ingat Lagi Dibaca", numeric: true  },
     { key: "jumlahModulSelesai",  label: "Ayo Belajar! Selesai", numeric: true },
+    { key: "jumlahPustakaDibaca", label: "Pustaka Belajar Dibaca", numeric: true }, // BARU, lihat ANTIREGRESI.md §55
   ];
 
   /** Rekap Lengkap: tabel satu layar berisi SEMUA siswa sekaligus (bukan satu-satu
@@ -335,6 +336,7 @@
           <td class="rk-num">${s.rataRataSkor ? s.rataRataSkor + "%" : "—"}</td>
           <td class="rk-num">${s.jumlahMateriDibaca || 0}</td>
           <td class="rk-num">${s.jumlahModulSelesai || 0}</td>
+          <td class="rk-num">${s.jumlahPustakaDibaca || 0}</td>
         </tr>`;
     }).join("");
 
