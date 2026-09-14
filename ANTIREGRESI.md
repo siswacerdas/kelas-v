@@ -3221,3 +3221,87 @@ tetap melempar setelah TEPAT 2x percobaan) — semua lulus.
       HARUS tetap berhasil tampil dengan data benar selama TIDAK KEDUA percobaan gagal
       sekaligus — kalau laporan masih sering gagal total, catat & laporkan lagi (mungkin
       butuh investigasi lebih lanjut di sisi kuota/performa Apps Script itu sendiri)
+
+---
+
+### 58. Pemulihan modul yang sudah terlanjur dibaca sebelum §57 tanpa perlu mengulang dari awal (`pages/modul.html`, `pages/modul/assets/cek-progres-tersimpan.js` [BARU], `pages/modul/assets/modul-index.js`, Sept 2026)
+
+**Pertanyaan Arif**: perbaikan §57 (banner hitung mundur) mengarah ke modul yang BELUM
+dipelajari (mencegah kegagalan BARU ke depan) — bagaimana dengan siswa yang SUDAH
+mempelajari modul tersebut SEBELUM perbaikan itu, supaya bisa tercatat tanpa mengulang dari
+awal?
+
+**Jawaban inti**: berkat kombinasi §55 (baca localStorage saat `init()`) + §57 (banner),
+`modul-progress-tracker.js` SUDAH BISA mendeteksi "sudah sampai halaman terakhir" LANGSUNG
+dari localStorage begitu modul yang sama dibuka LAGI — TANPA perlu mengklik ulang lewat
+semua halaman/kuis dari awal. Siswa cukup membuka lagi modul yang sama (di PERANGKAT/
+PERAMBAN YANG SAMA dipakai belajar sebelumnya — localStorage tidak ikut pindah ke perangkat
+lain) dan menunggu beberapa menit di halaman terakhir; banner langsung menghitung mundur
+dari situ. **Tidak perlu redeploy apa pun untuk ini** — mekanismenya sudah aktif sejak §57.
+
+**Masalah praktis yang MASIH ada**: siswa (apalagi anak kelas 5) tidak akan ingat modul MANA
+SAJA dari puluhan yang tersedia yang sudah mereka baca sampai akhir tapi belum tercatat.
+Fitur baru di sesi ini menjawab itu — sebuah tombol **"🔍 Cek Modul yang Mungkin Belum
+Tercatat"** di halaman `pages/modul.html` (daftar "Ayo Belajar!") yang memindai
+localStorage PERANGKAT INI untuk SEMUA modul yang dikenal, dan menunjukkan mana yang
+statusnya "sudah sampai halaman terakhir tersimpan di perangkat ini" — siswa tinggal klik
+"Buka →" langsung ke modul itu (otomatis restore ke halaman terakhir + banner langsung
+menghitung mundur berkat §55/§57).
+
+**Kenapa TIDAK dibandingkan dengan data server** (supaya daftar lebih presisi, tidak
+menyertakan modul yang sebenarnya SUDAH tercatat): endpoint `get_progres_modul` di
+`Code.gs` SENGAJA dibatasi hanya untuk guru/orangtua (`wajibAksesLaporan_`) — siswa TIDAK
+punya akses menanyakan progresnya sendiri lewat endpoint itu (keputusan keamanan yang
+SUDAH ADA sebelumnya, BUKAN dibuat baru di sesi ini). Menambah akses baru untuk siswa
+menanyakan data dirinya sendiri adalah keputusan arsitektur keamanan tersendiri yang
+SENGAJA TIDAK diambil di sesi ini tanpa didiskusikan eksplisit dengan Arif dulu — solusi di
+sini SEPENUHNYA client-side (localStorage saja, TIDAK ada panggilan ke server sama sekali),
+jadi aman ditambahkan tanpa perubahan akses apa pun. **Konsekuensinya**: daftar ini BISA
+SAJA menyertakan modul yang SEBENARNYA sudah tercatat (localStorage tidak tahu status
+server) — INI TIDAK MASALAH, karena membuka ulang modul yang sudah tercatat cuma memicu
+alur "baca ulang" yang SUDAH ADA sejak lama (EXP_ULANG_ kecil, bukan EXP_PER_MODUL_ penuh
+lagi — lihat komentar modul-progress-tracker.js) — tidak merusak apa pun, cuma sedikit EXP
+tambahan yang wajar untuk siswa yang memang membuka ulang materinya.
+
+**Perubahan teknis**:
+- `modul-index.js` — ditambahkan field BARU **`totalPages`** di SEMUA 43 entri, disalin
+  dari `TOTAL_PAGES` di file modul.html masing-masing (diekstrak & diverifikasi otomatis
+  cocok 100% dengan skrip sekali-jalan, bukan diketik manual — menghindari risiko salah
+  ketik seperti insiden field `slug` yang pernah terjadi di §39). Field ini WAJIB
+  diperbarui manual di masa depan kalau ada modul.html yang mengubah jumlah halamannya
+  (sama seperti field `slug` — sengaja tidak ada sinkronisasi otomatis dua arah).
+- `pages/modul/assets/cek-progres-tersimpan.js` (BARU) — memindai `localStorage` untuk key
+  `modulProgress:<slug>` semua entri di `MODUL_INDEX`, mencocokkan `state.page` dengan
+  `totalPages - 1`. Tombol & panel hasil muncul setelah event `role-verified` (sama seperti
+  konten lain di halaman ini) — hanya SEBAGAI TOMBOL OPSIONAL (tidak otomatis terbuka),
+  supaya tidak mengganggu siswa yang cuma ingin memilih modul baru seperti biasa.
+- `pages/modul.html` — ditambahkan `<div id="cek-progres-wrap">` (tempat tombol & panel
+  dirender) + CSS terkait + tag `<script>` baru memuat `cek-progres-tersimpan.js` (setelah
+  `modul-index.js`, sebelum `role-guard.js`, supaya `MODUL_INDEX` sudah tersedia & listener
+  `role-verified` sudah terpasang sebelum event itu ditembak).
+
+**Verifikasi logika**: `node --check` lulus untuk ketiga file JS. Skrip sekali-jalan
+memverifikasi SEMUA 43 nilai `totalPages` di `modul-index.js` cocok PERSIS dengan
+`TOTAL_PAGES` di file modul.html sumbernya (0 selisih). `scripts/test-cek-progres-tersimpan-58.js`
+(5 skenario: deteksi tunggal & jamak, localStorage kosong, localStorage corrupt tidak
+crash, entri lama tanpa `totalPages` dilewati dengan aman) — semua lulus.
+
+**Manual test checklist (Arif):**
+- [ ] Buka `pages/modul.html` sebagai siswa → tombol "🔍 Cek Modul yang Mungkin Belum
+      Tercatat" muncul di atas daftar filter mapel
+- [ ] Di modul APA SAJA, baca sampai halaman terakhir TAPI JANGAN tunggu 3 menit (tutup
+      tab lebih cepat, simulasi kasus §57) → kembali ke `pages/modul.html`, klik tombol
+      cek → modul itu HARUS muncul di daftar hasil dengan tombol "Buka →"
+- [ ] Klik "Buka →" pada hasil itu → modul harus LANGSUNG terbuka di halaman TERAKHIR
+      (bukan dari halaman 1) DAN banner hitung mundur (§57) harus LANGSUNG muncul tanpa
+      perlu klik apa pun lagi
+- [ ] Modul yang BELUM PERNAH dibuka SAMA SEKALI, atau baru dibaca separuh (belum sampai
+      halaman terakhir) → TIDAK BOLEH muncul di daftar hasil pengecekan
+- [ ] Klik tombol cek 2x berturut-turut → panel harus terbuka lalu tertutup (toggle),
+      tombol teks berubah sesuai status
+- [ ] Uji di HP Android Chrome (kondisi asli laporan Arif) — pastikan tombol & panel hasil
+      tidak merusak tata letak halaman daftar modul
+- [ ] Untuk siswa dari screenshot awal §57 yang 5 modulnya sudah terlanjur tidak tercatat:
+      minta mereka membuka `pages/modul.html` DI PERANGKAT YANG SAMA dipakai belajar
+      sebelumnya, klik tombol cek, lalu buka & tunggu di modul-modul yang muncul di daftar
+      hasil — TIDAK PERLU mengulang kuis dari awal sama sekali

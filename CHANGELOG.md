@@ -8,6 +8,32 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Ditambahkan — Pemulihan modul yang sudah terlanjur dibaca sebelum §57 tanpa perlu mengulang dari awal (lihat ANTIREGRESI.md §58)
+- **Pertanyaan Arif**: perbaikan §57 (banner hitung mundur) mengarah ke modul yang BELUM
+  dipelajari — bagaimana dengan siswa yang SUDAH mempelajari modul itu SEBELUMNYA, supaya
+  tercatat tanpa mengulang dari awal?
+- **Jawaban inti**: berkat §55 + §57, `modul-progress-tracker.js` SUDAH BISA mendeteksi
+  "sudah sampai halaman terakhir" langsung dari localStorage begitu modul yang sama dibuka
+  LAGI — tanpa perlu mengulang kuis dari awal. Siswa cukup membuka lagi modul yang sama (di
+  perangkat/peramban yang SAMA dipakai belajar sebelumnya) dan menunggu; banner langsung
+  menghitung mundur. Tidak perlu redeploy apa pun untuk ini — mekanismenya sudah aktif
+  sejak §57.
+- **Fitur baru**: tombol "🔍 Cek Modul yang Mungkin Belum Tercatat" di `pages/modul.html`
+  — memindai localStorage perangkat untuk semua modul yang dikenal (`MODUL_INDEX`), dan
+  menunjukkan mana yang sudah "sampai halaman terakhir tersimpan" tapi mungkin belum
+  tercatat, dengan tombol "Buka →" langsung ke modul itu (otomatis restore ke halaman
+  terakhir + banner langsung menghitung mundur berkat §55/§57).
+- **Sepenuhnya client-side** (localStorage saja, tidak ada panggilan server baru) — SENGAJA
+  tidak dibandingkan dengan data server karena `get_progres_modul` dibatasi hanya untuk
+  guru/orangtua (keputusan keamanan yang sudah ada, tidak diubah di sesi ini). Konsekuensi:
+  daftar bisa saja menyertakan modul yang sebenarnya sudah tercatat — tidak masalah, cuma
+  memicu alur "baca ulang" yang sudah ada (EXP kecil tambahan, bukan kerusakan apa pun).
+- `modul-index.js` mendapat field baru `totalPages` di semua 43 entri (diekstrak &
+  diverifikasi otomatis cocok 100% dengan `TOTAL_PAGES` di modul.html masing-masing, bukan
+  diketik manual).
+- Divalidasi `node --check` + `scripts/test-cek-progres-tersimpan-58.js` (5 skenario) — semua
+  lulus. Checklist manual lengkap di ANTIREGRESI.md §58.
+
 ### Diperbaiki — Penyelesaian Modul TETAP tidak tercatat setelah §55 (akar masalah sesungguhnya: timer diam-diam) + error 404 laporan intermiten (lihat ANTIREGRESI.md §57)
 - **Laporan Arif (dengan screenshot)**: 5 modul menunjukkan "100% selesai" di HP siswa
   TAPI dashboard tetap "0/43 Modul selesai" — dikonfirmasi terjadi SETELAH §55 di-deploy,
