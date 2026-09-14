@@ -14,6 +14,17 @@
 // Field "file" berisi path folder file yang sebenarnya.
 // Entri geometri-tp3 SENGAJA punya elemen:"Geometri" (bukan "Aljabar")
 // karena secara administratif tetap bagian resmi Elemen Geometri.
+//
+// FIELD "totalPages" (BARU, Sept 2026 — lihat ANTIREGRESI.md §58): jumlah halaman/langkah
+// modul ini, DISALIN PERSIS dari `TOTAL_PAGES` di file modul.html masing-masing (sudah
+// diverifikasi otomatis cocok 100% untuk semua 43 entri, lihat ANTIREGRESI.md §58). DIPAKAI
+// pages/modul.html (fitur "🔍 Cek Modul yang Mungkin Belum Tercatat") untuk mengecek dari
+// localStorage APAKAH siswa sudah pernah mencapai halaman TERAKHIR modul ini di perangkat
+// ini — TANPA perlu tahu jumlah halaman modul dengan cara lain. CATATAN: kalau modul.html
+// mana pun mengubah jumlah halamannya (menambah/mengurangi TOTAL_PAGES), field ini WAJIB
+// diperbarui manual juga di sini (sama seperti field "slug" — tidak ada mekanisme sinkron
+// otomatis antara modul.html dan index ini, lihat catatan "slug" di atas untuk alasan yang
+// sama: keduanya sengaja terpisah, bukan 1 sumber tunggal).
 // ====================================================================
 
 window.MODUL_INDEX = [
@@ -32,6 +43,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menyimak dan mencatat informasi penting dari teks yang dibacakan atau didengar.",
     status: "selesai",
     slug: "bi-menyimak-tp1",
+    totalPages: 7,
     file: "bahasa-indonesia/menyimak-tp1/modul.html"
   },
   {
@@ -48,6 +60,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menyimak dan memahami hubungan sebab-akibat serta urutan peristiwa dari teks aural.",
     status: "selesai",
     slug: "bi-menyimak-tp2",
+    totalPages: 8,
     file: "bahasa-indonesia/menyimak-tp2/modul.html"
   },
   {
@@ -64,6 +77,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menyampaikan gagasan dengan runtut dan percaya diri secara lisan.",
     status: "selesai",
     slug: "bi-berbicara-tp1",
+    totalPages: 7,
     file: "bahasa-indonesia/berbicara-tp1/modul.html"
   },
   {
@@ -80,6 +94,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mempresentasikan gagasan secara terstruktur di depan kelas.",
     status: "selesai",
     slug: "bi-berbicara-tp2",
+    totalPages: 9,
     file: "bahasa-indonesia/berbicara-tp2/modul.html"
   },
   {
@@ -96,6 +111,7 @@ window.MODUL_INDEX = [
     ringkasan: "Membaca dan memirsa teks multimoda (gabungan teks dan visual) secara kritis.",
     status: "selesai",
     slug: "bi-membaca-memirsa-tp2",
+    totalPages: 7,
     file: "bahasa-indonesia/membaca-memirsa-tp2/modul.html"
   },
   {
@@ -112,6 +128,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menulis cerita pengalaman pribadi dengan struktur yang runtut.",
     status: "selesai",
     slug: "bi-menulis-pengalaman",
+    totalPages: 7,
     file: "bahasa-indonesia/menulis-pengalaman/modul.html"
   },
   {
@@ -128,6 +145,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menulis laporan hasil pengamatan secara sistematis dan objektif.",
     status: "selesai",
     slug: "bi-menulis-pengamatan",
+    totalPages: 8,
     file: "bahasa-indonesia/menulis-pengamatan/modul.html"
   },
   // Entri lama "menulis-gagasan-tp3" DIHAPUS dari sini (Agustus 2026) — TP-nya
@@ -150,6 +168,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menulis cerita imajinatif dengan unsur tokoh, latar, dan alur.",
     status: "selesai",
     slug: "bi-menulis-imajinasi",
+    totalPages: 8,
     file: "bahasa-indonesia/menulis-imajinasi/modul.html"
   },
 
@@ -168,6 +187,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami sifat-sifat bunyi dan cahaya serta cara perambatannya.",
     status: "selesai",
     slug: "ipas-bunyi-cahaya-tp1",
+    totalPages: 8,
     file: "ipas/bunyi-cahaya-tp1/modul.html"
   },
   {
@@ -184,6 +204,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami komponen biotik-abiotik dan interaksi dalam ekosistem.",
     status: "selesai",
     slug: "ipas-ekosistem-tp1",
+    totalPages: 6,
     file: "ipas/ekosistem-tp1/modul.html"
   },
   {
@@ -200,6 +221,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami rantai makanan dan aliran energi dalam ekosistem.",
     status: "selesai",
     slug: "ipas-ekosistem-tp2",
+    totalPages: 8,
     file: "ipas/ekosistem-tp2/modul.html"
   },
   {
@@ -216,6 +238,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami bagaimana tubuh merespons aktivitas fisik.",
     status: "selesai",
     slug: "ipas-organ-tubuh-tp1",
+    totalPages: 9,
     file: "ipas/organ-tubuh-tp1/modul.html"
   },
   {
@@ -232,6 +255,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami struktur dan fungsi dasar organ tubuh manusia.",
     status: "selesai",
     slug: "ipas-organ-tubuh-tp2",
+    totalPages: 5,
     file: "ipas/organ-tubuh-tp2/modul.html"
   },
   {
@@ -248,6 +272,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami kegiatan ekonomi produksi, distribusi, dan konsumsi.",
     status: "selesai",
     slug: "ipas-ekonomi-tp1",
+    totalPages: 5,
     file: "ipas/ekonomi-tp1/modul.html"
   },
   {
@@ -264,6 +289,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami letak geografis dan kondisi wilayah Indonesia.",
     status: "selesai",
     slug: "ipas-geografis-tp1",
+    totalPages: 5,
     file: "ipas/geografis-tp1/modul.html"
   },
   {
@@ -280,6 +306,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami keragaman sejarah dan budaya di Indonesia.",
     status: "selesai",
     slug: "ipas-budaya-tp1",
+    totalPages: 4,
     file: "ipas/budaya-tp1/modul.html"
   },
 
@@ -298,6 +325,7 @@ window.MODUL_INDEX = [
     ringkasan: "Membaca, menulis, menentukan nilai tempat, membandingkan dan mengurutkan bilangan cacah sampai 100.000.",
     status: "selesai",
     slug: "mtk-nilai-tempat-tp1",
+    totalPages: 5,
     file: "matematika/nilai-tempat-tp1/modul.html"
   },
   {
@@ -314,6 +342,7 @@ window.MODUL_INDEX = [
     ringkasan: "Melatih pengurangan bersusun dengan peminjaman berganda, termasuk kasus angka nol di tengah.",
     status: "selesai",
     slug: "mtk-pengurangan-tp2",
+    totalPages: 7,
     file: "matematika/pengurangan-tp2/modul.html"
   },
   {
@@ -330,6 +359,7 @@ window.MODUL_INDEX = [
     ringkasan: "Pembagian bersusun pembagi lebih dari satu digit dengan estimasi-coba-koreksi.",
     status: "selesai",
     slug: "mtk-pembagian-tp3",
+    totalPages: 7,
     file: "matematika/pembagian-tp3/modul.html"
   },
   {
@@ -346,6 +376,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menyelesaikan soal cerita KPK dan FPB, mengidentifikasi sendiri konsep yang relevan.",
     status: "selesai",
     slug: "mtk-kpkfpb-tp4",
+    totalPages: 7,
     file: "matematika/kpk-fpb-tp4/modul.html"
   },
   {
@@ -362,6 +393,7 @@ window.MODUL_INDEX = [
     ringkasan: "Transaksi, kembalian, dan perbandingan harga menggunakan operasi hitung bilangan cacah.",
     status: "selesai",
     slug: "mtk-uang-tp5",
+    totalPages: 5,
     file: "matematika/uang-tp5/modul.html"
   },
   {
@@ -378,6 +410,7 @@ window.MODUL_INDEX = [
     ringkasan: "Pecahan sebagai bagian-dari-keseluruhan, perbandingan, dan operasi penjumlahan-pengurangan.",
     status: "selesai",
     slug: "mtk-pecahan-tp6",
+    totalPages: 9,
     file: "matematika/pecahan-tp6/modul.html"
   },
   {
@@ -394,6 +427,7 @@ window.MODUL_INDEX = [
     ringkasan: "Perkalian/pembagian pecahan dengan bilangan asli dan konversi bentuk pecahan.",
     status: "selesai",
     slug: "mtk-pecahan-lanjutan-tp7",
+    totalPages: 5,
     file: "matematika/pecahan-lanjutan-tp7/modul.html"
   },
 
@@ -412,6 +446,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami '=' sebagai relasi kesetaraan dua sisi menggunakan alat peraga timbangan.",
     status: "selesai",
     slug: "mtk-kesetaraan-tp1",
+    totalPages: 6,
     file: "matematika/kesetaraan-tp1/modul.html"
   },
   {
@@ -428,6 +463,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menemukan nilai belum diketahui, empat operasi, bilangan cacah sampai 1.000, termasuk soal cerita.",
     status: "selesai",
     slug: "mtk-notasi-simbolik-tp2",
+    totalPages: 6,
     file: "matematika/notasi-simbolik-tp2/modul.html"
   },
   {
@@ -452,6 +488,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mengonstruksi dan mengurai bangun ruang (kubus, balok, dan gabungannya) serta visualisasi spasial.",
     status: "selesai",
     slug: "mtk-bangun-ruang-tp1",
+    totalPages: 7,
     file: "matematika/bangun-ruang-tp1/modul.html"
   },
   {
@@ -468,6 +505,7 @@ window.MODUL_INDEX = [
     ringkasan: "TP resmi Elemen Geometri, disisipkan pengajarannya berdekatan dengan Aljabar TP2 karena konseptual aljabaris.",
     status: "selesai",
     slug: "mtk-sistem-berpetak-tp3",
+    totalPages: 5,
     file: "matematika/sistem-berpetak-tp3/modul.html"
   },
   {
@@ -484,6 +522,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mengidentifikasi, meniru, mengembangkan pola bilangan multiplikatif (perkalian/pembagian).",
     status: "selesai",
     slug: "mtk-pola-bilangan-tp3",
+    totalPages: 6,
     file: "matematika/pola-bilangan-tp3/modul.html"
   },
   {
@@ -500,6 +539,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menyelesaikan masalah sehari-hari (harga per satuan, kecepatan, resep) dengan rasio satuan.",
     status: "selesai",
     slug: "mtk-rasio-satuan-tp4",
+    totalPages: 5,
     file: "matematika/rasio-satuan-tp4/modul.html"
   },
 
@@ -522,6 +562,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menentukan keliling dan luas persegi, persegi panjang, segitiga, serta gabungannya lewat potong-susun fisik.",
     status: "selesai",
     slug: "mtk-keliling-luas-tp1",
+    totalPages: 8,
     file: "matematika/keliling-luas-tp1/modul.html"
   },
   {
@@ -538,6 +579,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menentukan keliling dan luas segi banyak beraturan serta bangun gabungan.",
     status: "selesai",
     slug: "mtk-segi-banyak-tp2",
+    totalPages: 5,
     file: "matematika/segi-banyak-tp2/modul.html"
   },
   {
@@ -554,6 +596,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menghitung durasi waktu, termasuk yang melintasi tengah malam.",
     status: "selesai",
     slug: "mtk-durasi-waktu-tp3",
+    totalPages: 5,
     file: "matematika/durasi-waktu-tp3/modul.html"
   },
   {
@@ -570,6 +613,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mengukur besar sudut pada bangun datar atau yang dibentuk dari dua garis berpotongan.",
     status: "selesai",
     slug: "mtk-sudut-protractor-tp4",
+    totalPages: 5,
     file: "matematika/sudut-protractor-tp4/modul.html"
   },
 
@@ -592,6 +636,7 @@ window.MODUL_INDEX = [
     ringkasan: "Memahami kronologi sejarah kelahiran Pancasila dan meneladani sikap para perumusnya dalam kehidupan sehari-hari.",
     status: "selesai",
     slug: "pp-pancasila-tp1-tp2",
+    totalPages: 11,
     file: "pendidikan-pancasila/pancasila-tp1-tp2/modul.html"
   },
   {
@@ -608,6 +653,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menghubungkan sila-sila Pancasila sebagai satu kesatuan nilai yang utuh sebagai dasar negara dan pandangan hidup bangsa.",
     status: "selesai",
     slug: "pp-pancasila-tp3",
+    totalPages: 6,
     file: "pendidikan-pancasila/pancasila-tp3/modul.html"
   },
   {
@@ -624,6 +670,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mengenal gagasan pokok dalam Pembukaan Undang-Undang Dasar Negara Republik Indonesia Tahun 1945.",
     status: "selesai",
     slug: "pp-uud1945-tp1",
+    totalPages: 8,
     file: "pendidikan-pancasila/uud1945-tp1/modul.html"
   },
   {
@@ -640,6 +687,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mengimplementasikan bentuk-bentuk norma, hak, dan kewajiban dalam kedudukan sebagai warga negara.",
     status: "selesai",
     slug: "pp-uud1945-tp2",
+    totalPages: 7,
     file: "pendidikan-pancasila/uud1945-tp2/modul.html"
   },
   {
@@ -656,6 +704,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mempraktikkan musyawarah untuk membuat kesepakatan dan aturan bersama di lingkungan keluarga dan sekolah.",
     status: "selesai",
     slug: "pp-uud1945-tp3",
+    totalPages: 8,
     file: "pendidikan-pancasila/uud1945-tp3/modul.html"
   },
   {
@@ -672,6 +721,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mengumpulkan dan menyajikan hasil identifikasi keberagaman asal keluarga teman sekelas.",
     status: "selesai",
     slug: "pp-bti-tp1",
+    totalPages: 6,
     file: "pendidikan-pancasila/bti-tp1/modul.html"
   },
   {
@@ -688,6 +738,7 @@ window.MODUL_INDEX = [
     ringkasan: "Membedakan sikap menghormati dan menjaga keberagaman, dipantau lewat jurnal mingguan berkelanjutan.",
     status: "selesai",
     slug: "pp-bti-tp2",
+    totalPages: 7,
     file: "pendidikan-pancasila/bti-tp2/modul.html"
   },
   {
@@ -704,6 +755,7 @@ window.MODUL_INDEX = [
     ringkasan: "Modul reflektif tanpa nilai — menumbuhkan rasa ingin tahu terhadap sejarah lokal tempat tinggal.",
     status: "selesai",
     slug: "pp-bti-tp3",
+    totalPages: 5,
     file: "pendidikan-pancasila/bti-tp3/modul.html"
   },
   {
@@ -720,6 +772,7 @@ window.MODUL_INDEX = [
     ringkasan: "Mengenal wilayahnya dalam konteks kabupaten/kota dan provinsi sebagai bagian dari wilayah NKRI.",
     status: "selesai",
     slug: "pp-nkri-tp1",
+    totalPages: 6,
     file: "pendidikan-pancasila/nkri-tp1/modul.html"
   },
   {
@@ -736,6 +789,7 @@ window.MODUL_INDEX = [
     ringkasan: "Menunjukkan perilaku gotong royong untuk menjaga persatuan sebagai wujud bela negara.",
     status: "selesai",
     slug: "pp-nkri-tp2",
+    totalPages: 6,
     file: "pendidikan-pancasila/nkri-tp2/modul.html"
   }
 ];
