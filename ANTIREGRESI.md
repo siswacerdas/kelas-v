@@ -3427,3 +3427,63 @@ merusak logika retry yang sudah ada.
 - [ ] Modul yang ditandai manual tadi harus ikut menambah EXP siswa (cek tombol "Hitung
       Ulang Gamifikasi" di admin.html atau papan peringkat) — ini SENGAJA (lihat
       "Konsekuensi" di atas), bukan bug kalau EXP-nya naik
+
+### 60. "Hitung Ulang Semua Siswa" (admin.html) sering gagal 404 proxy — `postKeAppsScript_` tidak punya retry seperti laporan (`pages/admin.html`, Sept 2026)
+
+**Keluhan Arif**: tombol "🔄 Hitung Ulang Semua Siswa" di admin.html sering gagal, dengan
+error console `script.googleusercontent.com/macros/echo ... 404` — pola yang PERSIS SAMA
+dengan yang sudah didiagnosis & diperbaiki di laporan "Perkembangan Belajar Mandiri"
+(§57): ketidakstabilan proxy redirect Apps Script Web App itu sendiri, TIDAK terkait
+ukuran/isi payload.
+
+**Akar masalah**: fungsi `postKeAppsScript_` (dipakai SEMUA panggilan Apps Script di
+admin.html, termasuk upload foto siswa & file Pustaka Belajar) TIDAK PERNAH punya retry
+otomatis — cuma 1x percobaan dengan timeout 90 detik. §57 sudah menemukan & menangani pola
+kegagalan proxy ini untuk laporan (lewat `fetchDenganRetry_`), tapi perbaikan itu HANYA
+diterapkan di `belajar-mandiri.js` — tidak pernah ikut diterapkan ke `postKeAppsScript_`
+di admin.html. Tombol "Hitung Ulang Semua Siswa" kemungkinan besar kena LEBIH SERING
+dibanding tombol lain di halaman yang sama karena requestnya PALING LAMA (server
+memproses ke-25 siswa dalam 1 eksekusi) — makin lama 1 request terbuka ke Apps Script
+Web App, makin besar kesempatan proxy-nya goyah di tengah jalan.
+
+**Kenapa TIDAK sekadar menambah retry ke `postKeAppsScript_` langsung** (yang otomatis
+akan berlaku ke SEMUA pemanggilnya): fungsi itu juga dipakai untuk operasi UPLOAD (foto
+siswa, file Pustaka Belajar, dst.) yang TIDAK idempoten — `appendRow`/buat file baru,
+bukan hitung ulang murni. Kalau responsnya gagal diterima klien PADAHAL server SUDAH
+selesai menyimpan (persis skenario yang sudah diperingatkan di pesan error timeout
+`postKeAppsScript_` sendiri), retry otomatis bisa membuat DATA/FILE TERDUPLIKASI. Endpoint
+gamifikasi (`hitung_gamifikasi`/`hitung_gamifikasi_semua`) BEDA — sudah didesain sejak
+awal MURNI/idempoten (selalu menghitung ulang PENUH dari `hasil_latihan` tersimpan, lihat
+komentar lama di admin.html & `learnings-and-workflow`), jadi memanggilnya ulang kapan
+saja SELALU aman.
+
+**Perbaikan**: fungsi BARU `postGamifikasiDenganRetry_` (pola SAMA PERSIS dengan
+`fetchDenganRetry_` §57 — timeout 90 detik + 1x retry otomatis KHUSUS kegagalan teknis,
+error valid dari server TIDAK diulang), dipakai **HANYA** oleh `gamifHitungSatu_` (tombol
+"1 siswa") dan `hitungUlangGamifikasiSemua` (tombol "Semua Siswa") — `postKeAppsScript_`
+ASLI (tanpa retry) TETAP dipakai apa adanya untuk semua operasi upload/tulis-baru lain di
+halaman ini, TIDAK diubah sama sekali.
+
+**Perubahan teknis**:
+- `pages/admin.html` — fungsi BARU `postGamifikasiDenganRetry_`; `gamifHitungSatu_` &
+  `hitungUlangGamifikasiSemua` diubah memanggil fungsi baru ini, bukan lagi
+  `postKeAppsScript_`. TIDAK ADA perubahan di `Code.gs` — murni perbaikan sisi klien,
+  **TIDAK PERLU redeploy Apps Script Web App** untuk perbaikan ini.
+
+**Verifikasi logika**: `node --check` lulus untuk blok `<script>` admin.html.
+`scripts/test-retry-gamifikasi-admin-60.js` (BARU, 7 skenario: retry berhasil setelah 1x
+gagal teknis, tidak retry kalau langsung berhasil, error valid dari server tidak diulang,
+kedua percobaan gagal -> pesan akhir jelas) — semua lulus. `scripts/test-hitung-exp-56.js`
+(logika penghitungan EXP, tidak disentuh sesi ini) tetap lulus tanpa perubahan.
+
+**Manual test checklist (Arif):**
+- [ ] Klik "🔄 Hitung Ulang Semua Siswa" beberapa kali di jam-jam yang sebelumnya sering
+      gagal → seharusnya jauh lebih jarang gagal (kalau proxy goyah di percobaan pertama,
+      klien otomatis coba sekali lagi tanpa perlu klik ulang manual)
+- [ ] Kalau tetap gagal (proxy goyah 2x berturut-turut, jarang tapi mungkin) → pesan error
+      yang tampil harus jelas ("bukan berarti perhitungannya salah, coba lagi"), bukan
+      pesan teknis mentah
+- [ ] Klik "1 siswa" untuk 1 nama → tetap berfungsi normal seperti biasa
+- [ ] Upload foto siswa / file Pustaka Belajar seperti biasa → PASTIKAN TIDAK ada
+      perubahan perilaku (masih 1x percobaan, timeout 90 detik, pesan peringatan duplikat
+      kalau timeout) — ini SENGAJA tidak disentuh sama sekali di perbaikan ini

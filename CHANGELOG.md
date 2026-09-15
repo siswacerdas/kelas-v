@@ -8,6 +8,19 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki — "Hitung Ulang Semua Siswa" sering gagal 404 proxy di admin.html (lihat ANTIREGRESI.md §60, TIDAK PERLU REDEPLOY APPS SCRIPT)
+- Akar masalah: pola ketidakstabilan proxy Apps Script Web App yang SAMA dengan §57
+  (laporan Perkembangan Belajar Mandiri), tapi `postKeAppsScript_` di admin.html belum
+  pernah diberi retry seperti perbaikan §57 itu. Tombol "Semua Siswa" paling sering kena
+  karena requestnya paling lama (25 siswa dalam 1 eksekusi server).
+- Fungsi BARU `postGamifikasiDenganRetry_` (pola sama persis dengan `fetchDenganRetry_`
+  §57) dipakai HANYA untuk tombol "1 siswa" & "Semua Siswa" — SENGAJA TIDAK diterapkan ke
+  `postKeAppsScript_` secara umum karena fungsi itu juga dipakai operasi UPLOAD yang tidak
+  idempoten (retry otomatis di situ berisiko menduplikasi data/file). Endpoint gamifikasi
+  aman diretry karena sudah murni/idempoten dari desain awal.
+- `node --check` lulus. `scripts/test-retry-gamifikasi-admin-60.js` (BARU, 7 skenario)
+  lulus semua; `scripts/test-hitung-exp-56.js` (lama) tetap lulus tanpa perubahan.
+
 ### Diperbaiki/Ditambahkan — Pustaka Belajar tidak pernah tercatat + belum masuk laporan + tandai manual modul oleh guru (lihat ANTIREGRESI.md §59, PERLU REDEPLOY APPS SCRIPT)
 - **Pustaka Belajar (akar masalah — bukan sekadar "belum di laporan")**: 2 file yang
   dibutuhkan tracker-nya (`pustaka-belajar-baca.js` versi terbaru & seluruh
