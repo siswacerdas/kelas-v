@@ -1364,6 +1364,59 @@
   // dari hasil_latihan tersimpan, tidak pernah mempercayai state lama) — jadi
   // memanggilnya ulang untuk siapa saja, kapan saja, SELALU aman dan tidak
   // pernah merusak data yang sudah benar.
+  //
+  // BARU (permintaan Arif, Sept 2026 — "Hitung Ulang Semua Siswa" sering gagal dengan
+  // error 404 "script.googleusercontent.com/macros/echo" di console): ini POLA YANG SAMA
+  // PERSIS dengan ketidakstabilan proxy Apps Script Web App yang sudah didiagnosis &
+  // ditangani di laporan "Perkembangan Belajar Mandiri" (lihat ANTIREGRESI.md §57,
+  // `fetchDenganRetry_` di belajar-mandiri.js) — proxy redirect-nya sendiri sesekali gagal
+  // begitu saja, TIDAK terkait ukuran/isi payload. Tombol "Hitung Ulang Semua Siswa"
+  // kemungkinan besar kena LEBIH SERING karena requestnya PALING LAMA di halaman admin ini
+  // (server memproses 25 siswa sekaligus dalam 1 eksekusi) — makin lama 1 request terbuka,
+  // makin besar kesempatan proxy itu goyah di tengah jalan.
+  //
+  // KENAPA retry ini SENGAJA dibuat sebagai fungsi TERPISAH dari `postKeAppsScript_` di
+  // atas (bukan menambah retry ke fungsi itu langsung, yang akan otomatis berlaku ke
+  // SEMUA pemanggilnya di halaman ini): `postKeAppsScript_` juga dipakai untuk operasi
+  // UPLOAD (foto siswa, file Pustaka Belajar, dst.) yang TIDAK idempoten — kalau
+  // responsnya gagal diterima klien PADAHAL server sudah selesai menyimpan (persis
+  // skenario yang sudah diperingatkan di pesan error timeout-nya sendiri), mengulang
+  // requestnya otomatis bisa membuat data ATAU FILE TERDUPLIKASI di Drive/Sheet. Retry
+  // otomatis HANYA aman untuk endpoint yang MURNI/IDEMPOTEN seperti gamifikasi ini —
+  // itulah kenapa dibuat fungsi baru `postGamifikasiDenganRetry_` khusus, dipakai HANYA
+  // oleh `gamifHitungSatu_`/`hitungUlangGamifikasiSemua` di bawah, TIDAK dipakai di mana
+  // pun operasi upload/tulis-baru lainnya.
+  async function postGamifikasiDenganRetry_(url, payload) {
+    async function sekaliCoba() {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 90000);
+      try {
+        const res = await fetch(url, { method: "POST", body: JSON.stringify(payload), signal: controller.signal });
+        return await res.json(); // melempar kalau bukan JSON (termasuk pola 404 proxy) -> ditangkap di bawah
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+    try {
+      return await sekaliCoba();
+    } catch (err) {
+      // Kegagalan TEKNIS (abort/network/bukan-JSON) — coba SATU kali lagi setelah jeda
+      // sebentar, PERSIS pola fetchDenganRetry_ di belajar-mandiri.js §57. Error VALID dari
+      // server (JSON berhasil di-parse, termasuk status:"error") TIDAK pernah masuk sini
+      // sama sekali karena tidak melempar apa pun — jadi tidak pernah diulang tanpa alasan.
+      await new Promise((r) => setTimeout(r, 800));
+      try {
+        return await sekaliCoba();
+      } catch (err2) {
+        throw new Error(
+          "Gagal memuat/mengirim (sudah dicoba 2x) — ini pola ketidakstabilan proxy Google " +
+          "yang dikenal, BUKAN berarti perhitungannya salah. Coba klik tombolnya sekali lagi " +
+          "beberapa saat lagi."
+        );
+      }
+    }
+  }
+
   (function () {
     const dl = document.getElementById("gamif-nama-list");
     if (dl && typeof MPLS_STUDENTS !== "undefined") {
@@ -1401,7 +1454,7 @@
   async function gamifHitungSatu_(nama) {
     gamifSetStatusBaris_(nama, "proses", "⏳ Menghitung…");
     try {
-      const data = await postKeAppsScript_(MPLS_CONFIG.APPS_SCRIPT_URL, { type: "hitung_gamifikasi", nama: nama });
+      const data = await postGamifikasiDenganRetry_(MPLS_CONFIG.APPS_SCRIPT_URL, { type: "hitung_gamifikasi", nama: nama });
       if (data.status !== "ok") {
         gamifSetStatusBaris_(nama, "gagal", "✗ " + (data.message || "Gagal, tanpa keterangan."));
         return false;
@@ -1445,7 +1498,7 @@
 
     let sukses = 0, gagal = 0;
     try {
-      const data = await postKeAppsScript_(MPLS_CONFIG.APPS_SCRIPT_URL, {
+      const data = await postGamifikasiDenganRetry_(MPLS_CONFIG.APPS_SCRIPT_URL, {
         type: "hitung_gamifikasi_semua",
         namaList: MPLS_STUDENTS,
       });
