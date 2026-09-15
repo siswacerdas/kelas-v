@@ -379,6 +379,15 @@ window.PustakaBelajarBaca = (function () {
       pdfDoc = await pdfjsLib.getDocument({ data: buffer }).promise;
       totalPages = pdfDoc.numPages;
       await renderPage(1);
+
+      // BARU (lihat ANTIREGRESI.md §55) — dipancarkan HANYA setelah halaman pertama
+      // BENAR-BENAR sudah dirender (bukan sekadar init() dipanggil), supaya
+      // pustaka-belajar-progress-tracker.js baru mulai menghitung "waktu terlihat"
+      // dari saat siswa SUNGGUH-SUNGGUH bisa membaca dokumennya, bukan ikut menghitung
+      // waktu fetch/loading (relay Google + parsing PDF bisa makan beberapa detik,
+      // lihat catatan performa di atas). qs("id") dikirim di detail supaya tracker
+      // tidak perlu membaca ulang query string sendiri (1 sumber kebenaran).
+      document.dispatchEvent(new CustomEvent("pb-dokumen-siap", { detail: { id: qs("id") } }));
     } catch (err) {
       document.getElementById("pb-canvas-wrap").innerHTML =
         `<div class="pb-viewer-loading">${(err && err.message) || "Gagal memuat dokumen."}</div>`;
