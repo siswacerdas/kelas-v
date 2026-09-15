@@ -552,6 +552,18 @@ const PROGRES_MODUL_HEADERS = [
   "Status",         // saat ini SELALU "Selesai" (beda dari materi yang "Dibaca" — modul baru
                     // tercatat kalau BENAR mencapai halaman terakhir, lihat
                     // modul-progress-tracker.js, bukan sekadar dibuka)
+  // BARU (permintaan Arif, laporan "Perkembangan Belajar Mandiri" masih ada modul yang
+  // sudah 100% dikerjakan siswa tapi TIDAK PERNAH tercatat, karena badge "100%" di header
+  // modul dihitung TERPISAH dari syarat pengiriman ke server — mencapai halaman TERAKHIR +
+  // diam minimal 3 menit di sana. Kalau siswa sudah menutup tab sebelum itu, satu-satunya
+  // jalan sebelumnya adalah siswa membuka ulang & menunggu lagi (atau "Mulai ulang dari
+  // awal" yang MENGHAPUS semua progres — bukan solusi). "Sumber" membedakan baris yang
+  // tercatat OTOMATIS dari modul-progress-tracker.js ("Otomatis") vs yang ditandai manual
+  // oleh guru dari laporan Pintu 2 ("Manual (Guru)") lewat doPostProgresModulManual_() di
+  // bawah — supaya tetap transparan/bisa ditelusuri baris mana yang bukan dari aksi siswa
+  // sendiri. Sheet lama tanpa kolom ini otomatis di-self-heal (lihat getProgresModulSheet_),
+  // baris lama akan kosong di kolom ini — dianggap "Otomatis" secara implisit saat dibaca.
+  "Sumber",
 ];
 
 /** Sama pola PERSIS dengan PROGRES_MATERI_SHEET_NAME/PROGRES_MATERI_HEADERS di atas — dibuat
@@ -1360,6 +1372,15 @@ function doPost(e) {
       return doPostProgresModul_(body);
     }
 
+    if (body.type === "progres_modul_manual") {
+      // BARU — LAPIS GURU WAJIB, beda dari "progres_modul" di atas: ini dipanggil GURU dari
+      // tombol "Tandai Selesai (Manual)" di laporan Pintu 2 (belajar-mandiri.js), BUKAN
+      // siswa lewat modul-progress-tracker.js. Lihat catatan panjang di
+      // doPostProgresModulManual_() untuk latar belakang lengkap kenapa ini dibutuhkan.
+      wajibGuru_(body.idToken);
+      return doPostProgresModulManual_(body);
+    }
+
     if (body.type === "progres_pustaka") {
       // Sama level keamanan & alasan persis dengan "progres_materi" di atas — pengirimnya
       // SISWA sendiri lewat pustaka-belajar-progress-tracker.js saat sudah menghabiskan
@@ -1399,6 +1420,18 @@ function doPost(e) {
       wajibAksesLaporan_(body.idToken, namaModul);
       const rowsModul = sheetToObjects_(getProgresModulSheet_()).filter((r) => r["Nama Siswa"] === namaModul);
       return jsonOut_({ data: rowsModul });
+    }
+
+    if (body.type === "get_progres_pustaka") {
+      // BARU — sama persis alasan & pola dengan "get_progres_materi"/"get_progres_modul" di
+      // atas, follow-up yang sebelumnya ditandai "belum dilakukan" di komentar cabang
+      // "progres_pustaka" (lihat di atas) — sekarang dipakai belajar-mandiri.js supaya
+      // Pustaka Belajar ikut muncul di laporan "Perkembangan Belajar Mandiri".
+      const namaPustaka = body.nama;
+      if (!namaPustaka) return jsonOut_({ status: "error", message: 'Parameter "nama" wajib diisi' });
+      wajibAksesLaporan_(body.idToken, namaPustaka);
+      const rowsPustaka = sheetToObjects_(getProgresPustakaSheet_()).filter((r) => r["Nama Siswa"] === namaPustaka);
+      return jsonOut_({ data: rowsPustaka });
     }
 
     if (body.type === "hitung_gamifikasi") {
@@ -1898,6 +1931,40 @@ function doPostProgresModul_(body) {
     "Nama Siswa": nama,
     "Modul Slug": slug,
     "Status": "Selesai",
+    "Sumber": "Otomatis",
+  };
+  sheet.appendRow(buildRowByHeaders_(sheet, record));
+  return jsonOut_({ status: "ok" });
+}
+
+/** BARU — override manual GURU untuk 1 siswa+1 modul, dipanggil dari tombol "Tandai Selesai
+ * (Manual)" di laporan "Perkembangan Belajar Mandiri" (Pintu 2), bukan dari modul-progress-
+ * tracker.js. Ditulis ke sheet YANG SAMA & dengan Status "Selesai" yang SAMA PERSIS dengan
+ * doPostProgresModul_() di atas (supaya laporan & perhitungan EXP tetap memperlakukannya
+ * sama seperti penyelesaian otomatis) — SATU-SATUNYA beda adalah "Sumber": "Manual (Guru)",
+ * untuk transparansi/audit (lihat catatan panjang di PROGRES_MODUL_HEADERS). LAPIS GURU
+ * WAJIB (wajibGuru_ dipanggil oleh doPost sebelum function ini, bukan reuse
+ * wajibAksesLaporan_ — orang tua TIDAK boleh menandai modul selesai untuk anaknya sendiri,
+ * hanya guru yang berwenang menilai itu). Append-only sama seperti versi otomatis (BUKAN
+ * upsert) — kalau modul itu sudah pernah tercatat (otomatis maupun manual), ini akan
+ * menambah baris SELESAI KEDUA yang ikut dihitung sebagai "selesai ulang" oleh
+ * hitungExpDenganBacaUlang_ — pemanggil (UI guru) SEBAIKNYA mengecek dulu modul itu belum
+ * tercatat sebelum menampilkan tombol ini (lihat belajar-mandiri.js), tapi endpoint ini
+ * sendiri SENGAJA tidak menolak baris duplikat — biar tetap konsisten dengan pola
+ * append-only yang sudah ada, dan supaya guru tetap bisa memakainya kalau memang perlu
+ * menandai ulang. */
+function doPostProgresModulManual_(body) {
+  const nama = String(body["Nama Siswa"] || "").trim();
+  const slug = String(body["Modul Slug"] || "").trim();
+  if (!nama || !slug) return jsonOut_({ status: "error", message: 'Parameter "Nama Siswa"/"Modul Slug" wajib diisi' });
+
+  const sheet = getProgresModulSheet_();
+  const record = {
+    "Timestamp": new Date(),
+    "Nama Siswa": nama,
+    "Modul Slug": slug,
+    "Status": "Selesai",
+    "Sumber": "Manual (Guru)",
   };
   sheet.appendRow(buildRowByHeaders_(sheet, record));
   return jsonOut_({ status: "ok" });
