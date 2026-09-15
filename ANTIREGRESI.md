@@ -3305,3 +3305,125 @@ crash, entri lama tanpa `totalPages` dilewati dengan aman) — semua lulus.
       minta mereka membuka `pages/modul.html` DI PERANGKAT YANG SAMA dipakai belajar
       sebelumnya, klik tombol cek, lalu buka & tunggu di modul-modul yang muncul di daftar
       hasil — TIDAK PERLU mengulang kuis dari awal sama sekali
+
+### 59. Pustaka Belajar tidak pernah tercatat (file salah lokasi) + laporan belum menyertakannya + tandai manual modul oleh guru (`apps-script/Code.gs`, `pages/pustaka-belajar/assets/pustaka-belajar-baca.js`, `pages/pustaka-belajar/assets/pustaka-belajar-progress-tracker.js` [dipindah], `pages/laporan-siswa/assets/belajar-mandiri.js`, `pages/laporan-siswa/belajar-mandiri.html`, `pages/laporan-siswa/assets/laporan.css`, Sept 2026)
+
+**Keluhan Arif**: laporan "Perkembangan Belajar Mandiri" (Pintu 2) masih dianggap
+bermasalah walau sudah 3 kali dibenahi (§55, §57, §58) — (1) modul yang siswa sudah 100%
+kerjakan kadang tetap tidak tercatat, dan modul TIDAK punya cara mengirim laporan selesai
+secara manual; (2) belajar lewat Pustaka Belajar sama sekali tidak masuk laporan.
+
+**Temuan #1 — Pustaka Belajar: bukan cuma "belum di laporan", TIDAK PERNAH tercatat sama
+sekali di kondisi repo yang diunggah**. `pages/pustaka-belajar/baca.html` memuat
+`assets/pustaka-belajar-progress-tracker.js`, tapi file itu TIDAK ADA di folder
+`assets/` — file itu (dan versi TERBARU `pustaka-belajar-baca.js`, yang memancarkan event
+`pb-dokumen-siap` pemicu tracker) tersasar di ROOT repo, bukan di
+`pages/pustaka-belajar/assets/`. Akibatnya tracker 404 di situs live, dan walau
+seandainya ada di lokasi benar, `pustaka-belajar-baca.js` yang AKTIF di `assets/` adalah
+versi LAMA yang belum memancarkan event itu — jadi progres membaca Pustaka Belajar tidak
+pernah terkirim ke server sama sekali. Tidak ada satu pun jejak fitur ini
+(`progres_pustaka`, `pb-dokumen-siap`) di CHANGELOG.md/ANTIREGRESI.md sebelumnya — sesi
+yang membangunnya kemungkinan besar belum sempat menyelesaikan deploy & dokumentasinya.
+**Perbaikan**: 2 file yang benar dipindah ke `pages/pustaka-belajar/assets/` (menimpa versi
+lama), 2 file yang tersasar di root DIHAPUS dari repo.
+
+**Temuan #2 — laporan memang sengaja belum menyertakan Pustaka Belajar** (lihat komentar
+lama di `Code.gs` cabang `progres_pustaka`: "di luar cakupan permintaan gamifikasi ini").
+Server-nya (sheet "Data Progres Pustaka Belajar", `getProgresPustakaSheet_`, EXP) sudah
+lengkap dari sesi sebelumnya, cuma belum ada endpoint laporan (`get_progres_pustaka`) dan
+belum dirender di `belajar-mandiri.js`. **Perbaikan**: endpoint POST `get_progres_pustaka`
+ditambahkan PERSIS meniru pola `get_progres_modul` (`wajibAksesLaporan_`, bentuk respons
+`{data:[...]}`). Pustaka Belajar dirender sebagai subseksi ke-3 (selain Ingat Lagi & Ayo
+Belajar!) di detail per-mapel, ikut masuk ringkasan keseluruhan & "Aktivitas Terbaru".
+BEDA dari Materi/Modul: daftar Pustaka Belajar TIDAK statis di kode (dikelola guru lewat
+admin.html) — diambil dari endpoint publik `?pustakaBelajar=1` yang SUDAH ADA (dipakai
+`pustaka-belajar-landing.js`), di-cache 1x per kunjungan halaman (`pustakaListAll`, tidak
+bergantung siswa), dan SENGAJA fail-soft (gagal ambil daftar ini TIDAK menggagalkan
+seluruh laporan, cuma subseksi Pustaka jadi kosong).
+
+**Temuan #3 — akar masalah Modul yang MASIH tersisa setelah §55/§57/§58**: ketiga
+perbaikan itu semua bertumpu pada 1 syarat yang sama — siswa harus BENAR-BENAR mencapai
+halaman/stepper TERAKHIR modul (bukan cuma badge "100%" dari kuis yang benar, itu
+dihitung TERPISAH) lalu diam 3 menit di sana. Kalau siswa menutup tab SEBELUM pernah
+mengklik sampai ke halaman itu (bukan lagi soal race condition/timer diam-diam yang sudah
+diperbaiki, murni siswa tidak pernah ke sana), tidak ada satu pun dari 3 perbaikan
+sebelumnya — termasuk tombol pemulihan §58 yang bergantung `state.page === totalPages-1`
+di localStorage — yang bisa mendeteksi/memperbaikinya. Tombol "Mulai ulang dari awal" yang
+sudah ada di semua 43 modul.html BUKAN solusi untuk ini (menghapus SEMUA progres, bukan
+mencatat yang sudah selesai). **Perbaikan**: endpoint BARU `progres_modul_manual`
+(LAPIS GURU WAJIB, `wajibGuru_` — orang tua tidak bisa memanggilnya) menulis ke sheet
+"Data Progres Modul" yang SAMA, Status "Selesai" yang SAMA PERSIS dengan penyelesaian
+otomatis (supaya laporan & EXP gamifikasi memperlakukannya sama), dibedakan lewat kolom
+BARU **"Sumber"** ("Otomatis" vs "Manual (Guru)") untuk transparansi/audit — sheet lama
+tanpa kolom ini otomatis di-self-heal (pola sama seperti kolom lain di proyek ini). Tombol
+"✏️ Tandai selesai" muncul di laporan Pintu 2 HANYA untuk akun guru, HANYA pada modul yang
+belum tercatat, dengan `window.confirm` dulu sebelum menulis.
+
+**Konsekuensi yang perlu Arif sadari (tradeoff, bukan bug)**: karena "Sumber" ditulis ke
+sheet yang SAMA yang dipakai perhitungan EXP gamifikasi (`EXP_PER_MODUL_`), modul yang
+ditandai manual oleh guru OTOMATIS ikut memberi EXP ke siswa persis seperti penyelesaian
+otomatis — ini keputusan yang masuk akal (modulnya memang benar-benar sudah dikerjakan),
+tapi berarti tombol ini punya efek nyata ke EXP/level siswa, bukan sekadar catatan
+administratif. Endpoint `progres_modul_manual` SENGAJA tidak menolak penandaan ganda
+(kalau modul itu ternyata sudah tercatat otomatis sebelumnya lalu ditandai manual lagi,
+akan ada 2 baris "Selesai" — sama seperti "baca ulang" yang sudah ada, ikut dihitung EXP
+kecil tambahan oleh `hitungExpDenganBacaUlang_`) — UI guru (`belajar-mandiri.js`) SUDAH
+menyembunyikan tombol untuk modul yang sudah tercatat, tapi endpoint sendiri tidak
+memvalidasi ulang di server.
+
+**Perubahan teknis:**
+- `apps-script/Code.gs` — kolom BARU **"Sumber"** di `PROGRES_MODUL_HEADERS`;
+  `doPostProgresModul_` menandai eksplisit `"Sumber": "Otomatis"`; fungsi BARU
+  `doPostProgresModulManual_` + cabang `doPost` `"progres_modul_manual"` (gerbang
+  `wajibGuru_`); cabang `doPost` BARU `"get_progres_pustaka"` (gerbang
+  `wajibAksesLaporan_`, pola identik `get_progres_modul`). **Perlu redeploy Apps Script
+  Web App** (lihat PANDUAN-UPDATE-MANUAL.md) — Code.gs berubah, tidak bisa dihindari untuk
+  fitur ini.
+- `pages/pustaka-belajar/assets/pustaka-belajar-baca.js` — DIGANTI dengan versi yang
+  memancarkan event `pb-dokumen-siap` (sebelumnya versi lama tanpa event ini tersasar di
+  lokasi yang benar, versi barunya nyasar di root).
+- `pages/pustaka-belajar/assets/pustaka-belajar-progress-tracker.js` (dipindah ke lokasi
+  yang benar dari root repo — sebelumnya tidak ada sama sekali di `assets/`).
+- `pages/laporan-siswa/assets/belajar-mandiri.js` — fetch `get_progres_pustaka` +
+  `?pustakaBelajar=1` (paralel dgn Materi/Modul, daftar Pustaka di-cache), fungsi BARU
+  `buildMapelGroupsPustaka`, `daftarMapelGabungan_` jadi 3-arah, subseksi "📚 Pustaka
+  Belajar" di detail mapel + ikut ringkasan & Aktivitas Terbaru, tombol
+  "✏️ Tandai selesai" (guru saja) + fungsi `tandaiModulManual_`.
+- `pages/laporan-siswa/belajar-mandiri.html` — tambah `<script>`
+  `pustaka-belajar-data.js` (untuk `PUSTAKA_BELAJAR_MAPEL`, dipakai mencocokkan nama mapel
+  Pustaka Belajar ke slug/ikon).
+- `pages/laporan-siswa/assets/laporan.css` — grid ringkasan jadi fleksibel (`auto-fit`,
+  sebelumnya `1fr 1fr` tetap, supaya rapi dengan 3 item bukan 2), style tombol
+  "✏️ Tandai selesai".
+
+**Verifikasi logika**: `node --check` lulus untuk `Code.gs`, `belajar-mandiri.js`,
+`pustaka-belajar-baca.js`, `pustaka-belajar-progress-tracker.js`.
+`scripts/test-laporan-pustaka-manual.js` (11 skenario: grouping Pustaka per mapel dikenal/
+tidak dikenal, fallback judul kosong, union 3-arah chip filter termasuk/tidak menduplikasi,
+`doPostProgresModulManual_` selalu Status "Selesai" + Sumber "Manual (Guru)", ditolak jelas
+kalau parameter kosong, penandaan manual & otomatis coexist sebagai 2 baris terpisah) —
+semua lulus. `scripts/test-retry-laporan-57.js` (retry laporan lama) tetap lulus tanpa
+perubahan — memverifikasi penambahan 1 panggilan `fetchDenganRetry_` baru (Pustaka) tidak
+merusak logika retry yang sudah ada.
+
+**Manual test checklist (Arif) — WAJIB setelah redeploy Apps Script Web App:**
+- [ ] Buka salah satu file di Pustaka Belajar sebagai siswa, baca ≥ waktu minimum tracker
+      (lihat `pustaka-belajar-progress-tracker.js` untuk ambang waktunya) → cek sheet
+      "Data Progres Pustaka Belajar" harus bertambah 1 baris baru
+- [ ] Buka laporan "Perkembangan Belajar Mandiri" (Pintu 2) sebagai guru/orang tua untuk
+      siswa itu → subseksi "📚 Pustaka Belajar" di mapel terkait harus menampilkan file
+      itu bercentang ✅, dan ringkasan "Pustaka dibaca" bertambah
+- [ ] Aktivitas Terbaru harus menampilkan entri "📚 ... Pustaka Belajar dibaca" dengan
+      waktu yang benar
+- [ ] Login sebagai GURU, buka laporan Pintu 2 untuk siswa yang punya modul BELUM
+      tercatat → tombol "✏️ Tandai selesai" harus muncul di baris modul itu
+- [ ] Klik tombol itu → muncul konfirmasi → setelah dikonfirmasi, laporan reload dan baris
+      itu harus jadi ✅ tercentang
+- [ ] Login sebagai ORANG TUA, buka laporan Pintu 2 untuk anaknya → tombol "✏️ Tandai
+      selesai" TIDAK BOLEH muncul sama sekali, di modul mana pun
+- [ ] Cek sheet "Data Progres Modul" untuk baris yang baru ditandai manual tadi → kolom
+      "Sumber" harus berisi "Manual (Guru)" (bandingkan dgn baris lama yang kosong/
+      "Otomatis")
+- [ ] Modul yang ditandai manual tadi harus ikut menambah EXP siswa (cek tombol "Hitung
+      Ulang Gamifikasi" di admin.html atau papan peringkat) — ini SENGAJA (lihat
+      "Konsekuensi" di atas), bukan bug kalau EXP-nya naik

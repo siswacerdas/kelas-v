@@ -8,6 +8,30 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diperbaiki/Ditambahkan — Pustaka Belajar tidak pernah tercatat + belum masuk laporan + tandai manual modul oleh guru (lihat ANTIREGRESI.md §59, PERLU REDEPLOY APPS SCRIPT)
+- **Pustaka Belajar (akar masalah — bukan sekadar "belum di laporan")**: 2 file yang
+  dibutuhkan tracker-nya (`pustaka-belajar-baca.js` versi terbaru & seluruh
+  `pustaka-belajar-progress-tracker.js`) tersasar di ROOT repo, bukan di
+  `pages/pustaka-belajar/assets/` — tracker-nya 404 di situs live, progres membaca TIDAK
+  PERNAH terkirim ke server sama sekali. Dipindah ke lokasi yang benar; 2 file di root
+  dihapus.
+- Endpoint laporan BARU `get_progres_pustaka` (POST, `Code.gs`) ditambahkan mengikuti pola
+  `get_progres_modul` persis. Pustaka Belajar sekarang tampil sebagai subseksi ke-3 di
+  laporan "Perkembangan Belajar Mandiri" (Pintu 2) — ikut ringkasan keseluruhan &
+  "Aktivitas Terbaru".
+- **Modul — tandai selesai manual oleh guru (BARU)**: akar masalah modul yang masih tidak
+  tercatat setelah §55/§57/§58 adalah siswa yang menutup tab SEBELUM pernah mencapai
+  halaman/stepper terakhir sama sekali (bukan lagi soal timer diam-diam yang sudah
+  diperbaiki) — tidak ada perbaikan sebelumnya yang bisa mendeteksi ini. Endpoint BARU
+  `progres_modul_manual` (LAPIS GURU WAJIB) + tombol "✏️ Tandai selesai" di laporan Pintu 2
+  (HANYA tampil untuk akun guru, HANYA pada modul yang belum tercatat). Kolom BARU
+  "Sumber" di sheet "Data Progres Modul" membedakan "Otomatis" vs "Manual (Guru)" untuk
+  transparansi. **Efek samping yang disengaja**: modul yang ditandai manual ikut menambah
+  EXP siswa persis seperti penyelesaian otomatis.
+- `node --check` lulus untuk semua file JS yang diubah/dipindah.
+  `scripts/test-laporan-pustaka-manual.js` (BARU, 11 skenario) lulus semua;
+  `scripts/test-retry-laporan-57.js` (lama) tetap lulus tanpa perubahan.
+
 ### Ditambahkan — Pemulihan modul yang sudah terlanjur dibaca sebelum §57 tanpa perlu mengulang dari awal (lihat ANTIREGRESI.md §58)
 - **Pertanyaan Arif**: perbaikan §57 (banner hitung mundur) mengarah ke modul yang BELUM
   dipelajari — bagaimana dengan siswa yang SUDAH mempelajari modul itu SEBELUMNYA, supaya
