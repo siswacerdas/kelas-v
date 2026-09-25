@@ -311,10 +311,16 @@
 <script>
   const allItems = window.MATERI_INDEX || [];
   let activeMapel = "Semua";
-  const collapsedMapel = new Set(); // menyimpan nama mapel yang sedang ditutup (collapsed)
+  const collapsedMapel = new Set();
 
   function esc(str) {
-    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" }[c]));
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      "&": "&" + "amp;",
+      "<": "&" + "lt;",
+      ">": "&" + "gt;",
+      '"': "&" + "quot;",
+      "'": "&#39;"
+    }[c]));
   }
 
   function renderFilters() {
@@ -343,9 +349,6 @@
     }
     const grouped = {};
     filtered.forEach((it) => { (grouped[it.mapel] = grouped[it.mapel] || []).push(it); });
-    // Catatan: TIDAK di-sort global di sini — "urutan" mulai dari 1 lagi di
-    // setiap tema/TP, jadi sort global akan mencampur urutan antar-TP.
-    // Pengurutan aman dilakukan per-tema di bawah (lihat byTema).
 
     wrap.innerHTML = "";
     Object.keys(grouped).sort().forEach((mapel) => {
@@ -371,8 +374,6 @@
       body.id = groupId;
       wrap.appendChild(body);
 
-      // Sub-kelompok per tema (untuk mapel yang sudah berbasis TP resmi,
-      // "tema" berisi label elemen+TP, lihat catatan skema di materi-index.js)
       const byTema = {};
       items.forEach((it) => { (byTema[it.tema || "Lainnya"] = byTema[it.tema || "Lainnya"] || []).push(it); });
 
@@ -416,9 +417,6 @@
     renderFilters();
     renderList();
   });
-  // v1.3: dibuka untuk orangtua juga (permintaan eksplisit Arif) — TIDAK berisiko
-  // tracker EXP salah kirim, karena materi-progress-tracker.js di tiap file konten
-  // SUDAH memfilter `data.role !== "siswa"` sebelum mengirim progres apa pun.
   document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru','orangtua'], '../index.html'));
 </script>
 </body>
