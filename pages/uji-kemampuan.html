@@ -6,100 +6,97 @@
 <title>Uji Kemampuan · Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;650&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/css/design-system.css" />
 <style>
   :root {
-    --ink: #1a1a2e; --ink-2: #3d3d5c; --ink-3: #7b7b9a;
-    --paper: #faf9f6; --paper-2: #f0eee8; --paper-3: #e2dfd6;
-    --accent: #2e6fbc; --purple: #9b59b6; --ok: #2a9d6f; --err: #c94040;
-    --border: rgba(26,26,46,0.10); --r: 10px;
+    --step-accent: #9b59b6;
+    --purple: #9b59b6;
+    --ok: #2a9d6f;
+    --err: #c94040;
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
-  #topbar {
-    position: sticky; top: 0; z-index: 100; background: var(--ink); color: #fff;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1.5rem; height: 52px; border-bottom: 2px solid var(--purple);
-  }
-  #topbar .brand { font-family: 'Playfair Display', serif; font-size: 1.05rem; }
-  #topbar .brand span { color: var(--purple); }
-  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12px; text-decoration: none; }
-  #topbar a.back:hover { color: #fff; }
-  .container { max-width: 700px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-  h1 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 0.25rem; }
-  .subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
   #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
-  .hidden { display: none !important; }
-  .back-link { font-size: 12.5px; color: var(--accent); cursor: pointer; display: inline-block; margin-bottom: 1rem; }
-
-  /* ── PILIH MAPEL ── */
-  .mapel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .mapel-btn {
-    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
-    padding: 1rem; text-align: left; cursor: pointer; font-family: inherit;
-  }
-  .mapel-btn .mb-title { font-weight: 700; font-size: 14px; }
-  .mapel-btn .mb-count { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
-  .mapel-btn:hover { border-color: var(--purple); }
-
-  /* ── PILIH TP ── */
-  .tp-card {
-    background: #fff; border: 1px solid var(--border); border-radius: var(--r);
-    padding: 0.9rem 1rem; margin-bottom: 10px; cursor: pointer;
-  }
-  .tp-card:hover { border-color: var(--purple); }
-  .tp-card .tp-judul { font-weight: 700; font-size: 14px; }
-  .tp-card .tp-elemen { font-size: 11.5px; color: var(--purple); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 2px; }
-  .tp-card .tp-count { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+  #topbar { border-bottom-color: var(--step-accent); }
+  #topbar .brand span { color: var(--step-accent); }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12.5px; text-decoration: none; font-weight: 500; }
+  #topbar a.back:hover { color: #fff; }
+  .bl-welcome { background: linear-gradient(180deg, #f3eaf8 0%, var(--paper) 100%); border-bottom: 1px solid var(--border); padding: 1.5rem var(--s-5) 1.35rem; }
+  .bl-welcome-inner { max-width: var(--content-max); margin: 0 auto; }
+  .bl-step-row { display: flex; align-items: center; gap: 10px; margin-bottom: 0.45rem; }
+  .bl-step-pill { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: var(--step-accent); padding: 4px 11px; border-radius: var(--r-full); }
+  .bl-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .bl-title { font-family: var(--font-display); font-size: clamp(1.45rem, 4vw, 1.9rem); font-weight: 700; color: var(--ink); line-height: 1.2; letter-spacing: -0.02em; }
+  .bl-sub { margin-top: 0.4rem; font-size: 13.5px; color: var(--ink-3); max-width: 40em; line-height: 1.55; }
+  .bl-container { max-width: var(--content-max); margin: 0 auto; padding: var(--s-6) var(--s-4) var(--s-10); }
+  .view-title { font-family: var(--font-display); font-size: clamp(1.3rem, 3.5vw, 1.65rem); font-weight: 700; color: var(--ink); letter-spacing: -0.015em; margin-bottom: 0.25rem; }
+  .view-sub { font-size: 13.5px; color: var(--ink-3); margin-bottom: 1.25rem; line-height: 1.5; }
+  .back-link { font-size: 12.5px; color: var(--accent); cursor: pointer; display: inline-flex; align-items: center; gap: 4px; margin-bottom: 1rem; font-weight: 600; }
+  .back-link:hover { text-decoration: underline; }
+  .mapel-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .mapel-btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1.15rem 1.05rem; text-align: left; cursor: pointer; font-family: inherit; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+  .mapel-btn::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--step-accent); transform: scaleX(0); transform-origin: left; transition: transform 0.22s ease; }
+  .mapel-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border-2); }
+  .mapel-btn:hover::after { transform: scaleX(1); }
+  .mapel-btn .mb-title { font-weight: 650; font-size: 14px; color: var(--ink); letter-spacing: -0.01em; }
+  .mapel-btn .mb-count { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+  .tp-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1rem 1.1rem; margin-bottom: 10px; cursor: pointer; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+  .tp-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--step-accent); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
+  .tp-card:hover { transform: translateY(-1px); box-shadow: var(--shadow); border-color: var(--border-2); }
+  .tp-card:hover::after { transform: scaleX(1); }
+  .tp-card .tp-elemen { font-size: 11px; font-weight: 700; color: var(--step-accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px; }
+  .tp-card .tp-judul { font-weight: 650; font-size: 14px; color: var(--ink); line-height: 1.35; }
+  .tp-card .tp-count { font-size: 12px; color: var(--ink-3); margin-top: 5px; }
   .tp-card .tp-count.kurang { color: var(--err); }
   .tp-card.disabled { opacity: 0.5; cursor: not-allowed; }
-
-  /* ── KUIS: SOAL ── */
-  .soal-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 1rem; margin-bottom: 12px; }
-  .soal-card .s-nomor { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .tp-card.disabled:hover { transform: none; box-shadow: var(--shadow-sm); }
+  .tp-card.disabled:hover::after { transform: none; }
+  .guru-filter-box { margin-bottom: 1.25rem; padding: 0.9rem 1.05rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); }
+  .guru-filter-box label { font-size: 12px; color: var(--ink-3); display: block; margin-bottom: 6px; font-weight: 600; }
+  .guru-filter-box select { font-family: inherit; font-size: 13px; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--paper-3); background: var(--surface); color: var(--ink); width: 100%; max-width: 320px; }
+  .level-status { margin-top: 10px; padding: 11px 13px; border-radius: 12px; background: rgba(155, 89, 182, 0.08); border: 1px solid rgba(155, 89, 182, 0.25); font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+  .level-status.level-naik { background: rgba(42, 157, 111, 0.1); border-color: rgba(42, 157, 111, 0.35); color: var(--ok); font-size: 14px; }
+  .level-status .level-exp { font-weight: 700; color: var(--step-accent); }
+  .soal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1.1rem 1.15rem; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+  .soal-card .s-nomor { font-size: 11px; font-weight: 700; color: var(--step-accent); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
   .soal-card .s-belum-dijawab { display: none; font-size: 11px; font-weight: 700; color: var(--err); margin-bottom: 4px; }
   .soal-card.tidak-dijawab .s-belum-dijawab { display: block; }
   .soal-card .s-jenis { font-size: 10.5px; font-weight: 600; color: var(--ink-3); background: var(--paper-2); border-radius: 999px; padding: 2px 8px; display: inline-block; margin-bottom: 6px; }
-  .soal-card .s-pertanyaan { font-size: 14.5px; font-weight: 600; margin-bottom: 0.8rem; line-height: 1.5; }
-
-  .pilihan-opsi { display: block; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 8px; margin-bottom: 7px; cursor: pointer; font-size: 13.5px; }
-  .pilihan-opsi:hover { border-color: var(--purple); }
+  .soal-card .s-pertanyaan { font-size: 14.5px; font-weight: 600; margin-bottom: 0.85rem; line-height: 1.5; color: var(--ink); }
+  .pilihan-opsi { display: block; padding: 10px 13px; border: 1px solid var(--paper-3); border-radius: 10px; margin-bottom: 8px; cursor: pointer; font-size: 13.5px; background: var(--surface); transition: border-color 0.15s, background 0.15s; }
+  .pilihan-opsi:hover { border-color: var(--step-accent); }
   .pilihan-opsi input { margin-right: 8px; }
-  .pilihan-opsi.correct { border-color: var(--ok); background: rgba(42,157,111,0.08); }
-  .pilihan-opsi.wrong { border-color: var(--err); background: rgba(201,64,64,0.08); }
+  .pilihan-opsi.correct { border-color: var(--ok); background: rgba(42, 157, 111, 0.08); }
+  .pilihan-opsi.wrong { border-color: var(--err); background: rgba(201, 64, 64, 0.08); }
   .soal-card.dinilai .pilihan-opsi { pointer-events: none; }
   .soal-card.dinilai select, .soal-card.dinilai .urut-item button { pointer-events: none; opacity: 0.75; }
-
-  .kat-row, .jodoh-row { display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    padding: 8px 12px; border: 1px solid var(--paper-3); border-radius: 8px; margin-bottom: 7px; font-size: 13.5px; }
-  .kat-row select, .jodoh-row select { font-family: inherit; font-size: 13px; padding: 5px 8px; border-radius: 6px; border: 1px solid var(--paper-3); }
-  .kat-row.correct, .jodoh-row.correct { border-color: var(--ok); background: rgba(42,157,111,0.08); }
-  .kat-row.wrong, .jodoh-row.wrong { border-color: var(--err); background: rgba(201,64,64,0.08); }
-
-  .urut-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--paper-3);
-    border-radius: 8px; margin-bottom: 7px; font-size: 13.5px; background: #fff; }
-  .urut-item.correct { border-color: var(--ok); background: rgba(42,157,111,0.08); }
-  .urut-item.wrong { border-color: var(--err); background: rgba(201,64,64,0.08); }
+  .kat-row, .jodoh-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 10px; margin-bottom: 8px; font-size: 13.5px; }
+  .kat-row select, .jodoh-row select { font-family: inherit; font-size: 13px; padding: 6px 9px; border-radius: 8px; border: 1px solid var(--paper-3); }
+  .kat-row.correct, .jodoh-row.correct { border-color: var(--ok); background: rgba(42, 157, 111, 0.08); }
+  .kat-row.wrong, .jodoh-row.wrong { border-color: var(--err); background: rgba(201, 64, 64, 0.08); }
+  .urut-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--paper-3); border-radius: 10px; margin-bottom: 8px; font-size: 13.5px; background: var(--surface); }
+  .urut-item.correct { border-color: var(--ok); background: rgba(42, 157, 111, 0.08); }
+  .urut-item.wrong { border-color: var(--err); background: rgba(201, 64, 64, 0.08); }
   .urut-item .urut-teks { flex: 1; }
   .urut-item .urut-btns { display: flex; gap: 4px; }
-  .urut-item .urut-btns button { background: var(--paper-2); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 11px; padding: 4px 7px; }
-
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; }
-  .btn-submit { background: var(--purple); color: #fff; width: 100%; }
+  .urut-item .urut-btns button { background: var(--paper-2); border: 1px solid var(--border); border-radius: 7px; cursor: pointer; font-size: 11px; padding: 5px 8px; font-family: inherit; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; font-family: inherit; transition: background 0.15s, transform 0.1s; }
+  .btn:active { transform: scale(0.98); }
+  .btn-submit { background: var(--step-accent); color: #fff; width: 100%; margin-top: 0.5rem; }
   .btn-submit:hover { background: #834a9e; }
-  .btn-submit:disabled { background: var(--paper-3); color: var(--ink-3); cursor: not-allowed; }
-
-  #hasil-skor { background: #fff; border: 2px solid var(--purple); border-radius: var(--r); padding: 1.25rem; text-align: center; margin-bottom: 1.25rem; }
-  #hasil-skor .skor-angka { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--purple); }
-  #hasil-skor .skor-label { font-size: 13px; color: var(--ink-3); margin-top: 2px; }
+  .btn-submit:disabled { background: var(--paper-3); color: var(--ink-3); cursor: not-allowed; transform: none; }
+  #hasil-skor { background: var(--surface); border: 2px solid var(--step-accent); border-radius: var(--r-xl); padding: 1.4rem 1.25rem; text-align: center; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
+  #hasil-skor .skor-angka { font-family: var(--font-display); font-size: 2.35rem; color: var(--step-accent); font-weight: 700; }
+  #hasil-skor .skor-label { font-size: 13.5px; color: var(--ink-3); margin-top: 4px; }
   #hasil-skor .skor-belum-dijawab { color: var(--err); font-weight: 600; }
-  .level-status { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(155,89,182,0.08); border: 1px solid rgba(155,89,182,0.25); font-size: 13px; color: var(--ink-2); }
-  .level-status.level-naik { background: rgba(42,157,111,0.1); border-color: rgba(42,157,111,0.35); color: var(--ok); font-size: 14px; }
-  .level-status .level-exp { font-weight: 700; color: var(--purple); }
-  #hasil-skor .skor-tersimpan { font-size: 11.5px; color: var(--ok); margin-top: 6px; }
-
-  .empty-state { padding: 2rem; text-align: center; color: var(--ink-3); font-size: 13px; }
-  .loading-inline { padding: 1rem; text-align: center; color: var(--ink-3); font-size: 12.5px; }
+  #hasil-skor .skor-tersimpan { font-size: 12px; color: var(--ok); margin-top: 8px; font-weight: 600; }
+  .empty-state { padding: 2.25rem 1.25rem; text-align: center; color: var(--ink-3); font-size: 13.5px; background: var(--paper-2); border-radius: var(--r-lg); border: 1px dashed var(--border); }
+  .loading-inline { padding: 1.25rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+  @media (max-width: 480px) {
+    .bl-welcome { padding: 1.25rem var(--s-4) 1.15rem; }
+    .bl-container { padding: var(--s-5) var(--s-3) var(--s-8); }
+    .mapel-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mapel-btn { padding: 1rem 0.9rem; }
+  }
 </style>
 </head>
 <body>
@@ -112,20 +109,23 @@
     <a class="back" href="../index.html">← Kembali ke Beranda</a>
   </div>
 
-  <div class="container">
+  <div id="welcome-strip" class="bl-welcome">
+    <div class="bl-welcome-inner">
+      <div class="bl-step-row">
+        <span class="bl-step-pill">Langkah 3</span>
+        <span class="bl-eyebrow">Jalur Belajar</span>
+      </div>
+      <h1 class="bl-title">💪 Uji Kemampuan</h1>
+      <p class="bl-sub">Pilih mata pelajaran, lalu pilih Tujuan Pembelajaran (TP) yang ingin kamu uji.</p>
+    </div>
+  </div>
 
-    <!-- ══ TAHAP 1: PILIH MAPEL ══ -->
+  <div class="bl-container">
+
     <div id="view-pilih-mapel">
-      <h1>💪 Uji Kemampuan</h1>
-      <p class="subtitle">Pilih mata pelajaran, lalu pilih Tujuan Pembelajaran (TP) yang ingin kamu uji.</p>
-      <!-- Mode guru saja — siswa TIDAK PERNAH melihat ini, soal siswa selalu
-           otomatis mengikuti Level Kemampuan-nya sendiri (lihat ANTIREGRESI §36). -->
-      <div id="guru-filter-kompleksitas" class="hidden" style="margin-bottom:1.25rem; padding:0.75rem 1rem; background:#fff; border:1px solid var(--border); border-radius:var(--r);">
-        <label for="guru-kompleksitas-select" style="font-size:12px; color:var(--ink-3); display:block; margin-bottom:5px;">
-          Mode guru — tampilkan soal tingkat:
-        </label>
-        <select id="guru-kompleksitas-select" onchange="window.__setGuruKompleksitas(this.value)"
-          style="font-family:inherit; font-size:13px; padding:6px 10px; border-radius:8px; border:1px solid var(--paper-3);">
+      <div id="guru-filter-kompleksitas" class="guru-filter-box hidden">
+        <label for="guru-kompleksitas-select">Mode guru — tampilkan soal tingkat:</label>
+        <select id="guru-kompleksitas-select" onchange="window.__setGuruKompleksitas(this.value)">
           <option value="semua" selected>Semua tingkat (seperti sebelumnya)</option>
           <option value="dasar">Dasar</option>
           <option value="menengah">Menengah</option>
@@ -135,21 +135,18 @@
       <div id="mapel-grid" class="mapel-grid"><div class="empty-state">Memuat…</div></div>
     </div>
 
-    <!-- ══ TAHAP 2: PILIH TP ══ -->
     <div id="view-pilih-tp" class="hidden">
       <span class="back-link" onclick="kembaliKePilihMapel()">← Pilih mapel lain</span>
-      <h1 id="tp-mapel-judul">Mapel</h1>
-      <p class="subtitle" id="tp-subtitle">Pilih TP yang ingin kamu uji.</p>
+      <h1 class="view-title" id="tp-mapel-judul">Mapel</h1>
+      <p class="view-sub" id="tp-subtitle">Pilih TP yang ingin kamu uji.</p>
       <div id="level-info-banner" class="level-status hidden" style="margin-bottom:1rem;"></div>
       <div id="tp-grid"><div class="empty-state">Memuat…</div></div>
     </div>
 
-    <!-- ══ TAHAP 3: KUIS ══ -->
     <div id="view-kuis" class="hidden">
       <span class="back-link" onclick="kembaliKePilihTp()">← Pilih TP lain</span>
-      <h1 id="kuis-judul">Latihan</h1>
-      <p class="subtitle" id="kuis-subtitle"></p>
-
+      <h1 class="view-title" id="kuis-judul">Latihan</h1>
+      <p class="view-sub" id="kuis-subtitle"></p>
       <div id="hasil-skor" class="hidden"></div>
       <div id="daftar-soal"></div>
       <button class="btn btn-submit" id="btn-submit-kuis" onclick="nilaiKuis()">Periksa Jawaban</button>
@@ -158,568 +155,6 @@
   </div>
 </div>
 
-<script src="materi/assets/tp-kko-index.js"></script>
-<script type="module" src="../assets/js/role-guard.js"></script>
-<script type="module">
-  import { getFirestore, collection, doc, getDoc, getDocs, getCountFromServer, addDoc, query, where, orderBy, limit, serverTimestamp }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
-  const app = getApps()[0];
-  const db = getFirestore(app);
-
-  const N_SOAL_PER_SESI = 15; // jumlah soal yang diambil acak dari pool tiap sesi tes
-  const MIN_SOAL_BISA_DIUJI = 5; // ambang minimal supaya sesi tidak kosong
-
-  // ═══ SOAL BERBASIS LEVEL KEMAMPUAN (lihat ANTIREGRESI §36) ═══
-  // "kompleksitas" bank_soal SENGAJA tetap 3 nilai (dasar/menengah/menantang),
-  // TIDAK ditambah jadi 4 — atas keputusan eksplisit Arif. "menantang" dipakai
-  // BERSAMA untuk Level Kemampuan Atas MAUPUN Mahir.
-  const LEVEL_TO_KOMPLEKSITAS = { dasar: "dasar", menengah: "menengah", atas: "menantang", mahir: "menantang" };
-  const KOMPLEKSITAS_LABEL = { dasar: "Dasar", menengah: "Menengah", menantang: "Menantang" };
-  // Rantai fallback: kalau kompleksitas target belum cukup soalnya di suatu TP,
-  // turun otomatis ke kompleksitas di bawahnya (keputusan eksplisit Arif).
-  const RANTAI_FALLBACK = {
-    dasar: ["dasar"],
-    menengah: ["menengah", "dasar"],
-    menantang: ["menantang", "menengah", "dasar"],
-  };
-
-  let currentUser = null;
-  let currentRole = "";   // "siswa" | "guru" (dari role-guard.js)
-  let namaSiswa = "";
-  let currentMapel = "";
-  let currentTp = null;   // entri dari TP_KKO_INDEX
-  let currentSoal = [];   // soal aktif dalam sesi kuis berjalan
-  let currentSoalKompleksitas = null; // kompleksitas soal sesi berjalan (null = mode guru "semua")
-  let levelSiswaInfo = null;   // { level, targetKompleksitas, chain } — hanya diisi utk role siswa
-  let guruKompleksitasPilihan = "semua"; // dipakai role guru saja
-  let poolSoalTpCache = {};   // tp.tp -> { kompleksitas, soal[] } | null — dari renderTpGrid, dipakai ulang di mulaiKuis supaya tidak query 2x
-
-  function escHtml(str) {
-    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  }
-  function shuffle(arr) {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  // ═══════════════════════ TAHAP 1: PILIH MAPEL ═══════════════════════
-  function renderMapelGrid() {
-    const wrap = document.getElementById("mapel-grid");
-    const mapelList = window.URUTAN_MAPEL || [];
-    wrap.innerHTML = "";
-    mapelList.forEach((mapel) => {
-      const jumlahTp = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel).length;
-      const btn = document.createElement("button");
-      btn.className = "mapel-btn";
-      btn.innerHTML = `<div class="mb-title">${escHtml(mapel)}</div><div class="mb-count">${jumlahTp} TP</div>`;
-      btn.onclick = () => pilihMapel(mapel);
-      wrap.appendChild(btn);
-    });
-  }
-
-  window.pilihMapel = async function (mapel) {
-    currentMapel = mapel;
-    document.getElementById("view-pilih-mapel").classList.add("hidden");
-    document.getElementById("view-pilih-tp").classList.remove("hidden");
-    document.getElementById("tp-mapel-judul").textContent = mapel;
-    renderLevelBanner();
-    await renderTpGrid(mapel);
-  };
-
-  window.kembaliKePilihMapel = function () {
-    document.getElementById("view-pilih-tp").classList.add("hidden");
-    document.getElementById("view-pilih-mapel").classList.remove("hidden");
-  };
-
-  // ═══ LEVEL KEMAMPUAN → KOMPLEKSITAS SOAL (baca dari level_siswa, sudah
-  // publik dibaca siapa saja yang login — lihat firestore.rules) ═══
-  async function ambilLevelSiswa(nama) {
-    try {
-      const snap = await getDoc(doc(db, "level_siswa", nama));
-      const level = snap.exists() && snap.data().level ? snap.data().level : "dasar";
-      const target = LEVEL_TO_KOMPLEKSITAS[level] || "dasar";
-      return { level, targetKompleksitas: target, chain: RANTAI_FALLBACK[target] };
-    } catch (e) {
-      // Gagal baca level (mis. offline sesaat) -> JANGAN blokir siswa, anggap
-      // Dasar dulu supaya tetap bisa berlatih; ini bukan keputusan level asli,
-      // cuma fallback aman di klien.
-      return { level: "dasar", targetKompleksitas: "dasar", chain: RANTAI_FALLBACK.dasar };
-    }
-  }
-
-  window.__setGuruKompleksitas = function (val) {
-    guruKompleksitasPilihan = val;
-    poolSoalTpCache = {};
-    if (currentMapel && !document.getElementById("view-pilih-tp").classList.contains("hidden")) {
-      renderLevelBanner();
-      renderTpGrid(currentMapel);
-    }
-  };
-
-  function renderLevelBanner() {
-    const banner = document.getElementById("level-info-banner");
-    const subtitle = document.getElementById("tp-subtitle");
-    if (currentRole === "siswa" && levelSiswaInfo) {
-      const labelLevel = LEVEL_LABEL[levelSiswaInfo.level] || levelSiswaInfo.level;
-      banner.classList.remove("hidden");
-      banner.innerHTML = `Level kemampuanmu saat ini: <strong>${labelLevel}</strong> — soal yang diujikan otomatis menyesuaikan levelmu.`;
-      subtitle.textContent = "Pilih TP yang ingin kamu uji.";
-    } else if (currentRole === "guru" && guruKompleksitasPilihan !== "semua") {
-      banner.classList.remove("hidden");
-      banner.innerHTML = `Mode guru — menampilkan soal tingkat <strong>${KOMPLEKSITAS_LABEL[guruKompleksitasPilihan]}</strong> untuk semua TP (bukan berdasarkan level, murni untuk pratinjau/cek pool soal).`;
-      subtitle.textContent = "Pilih TP yang ingin dicoba.";
-    } else {
-      banner.classList.add("hidden");
-      banner.innerHTML = "";
-      subtitle.textContent = "Pilih TP yang ingin kamu uji. Soal diambil acak dari pool setiap TP.";
-    }
-  }
-
-  // ═══════════════════════ TAHAP 2: PILIH TP ═══════════════════════
-  async function renderTpGrid(mapel) {
-    const wrap = document.getElementById("tp-grid");
-    wrap.innerHTML = '<div class="loading-inline">Memuat soal tiap TP…</div>';
-    const tpList = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel);
-    if (tpList.length === 0) {
-      wrap.innerHTML = '<div class="empty-state">Belum ada TP terdaftar untuk mapel ini.</div>';
-      return;
-    }
-
-    // ── Mode "Semua tingkat" (guru saja, JALUR LAMA — TIDAK diubah) ──
-    // Cuma hitung pakai aggregation query murah (tidak mengunduh isi
-    // dokumen), tanpa peduli kompleksitas sama sekali. Ini persis perilaku
-    // sebelum fitur soal-berbasis-level ada, sengaja dipertahankan supaya
-    // guru tetap bisa lihat & coba SELURUH pool soal apa adanya (termasuk
-    // soal lama yang belum ditandai `kompleksitas`).
-    if (currentRole === "guru" && guruKompleksitasPilihan === "semua") {
-      const counts = await Promise.all(tpList.map(async (tp) => {
-        try {
-          const snap = await getCountFromServer(query(collection(db, "bank_soal"), where("tp", "==", tp.tp)));
-          return snap.data().count;
-        } catch (e) { return 0; }
-      }));
-      wrap.innerHTML = "";
-      tpList.forEach((tp, i) => {
-        const jumlah = counts[i];
-        const bisaDiuji = jumlah >= MIN_SOAL_BISA_DIUJI;
-        const card = document.createElement("div");
-        card.className = "tp-card" + (bisaDiuji ? "" : " disabled");
-        card.innerHTML = `
-          <div class="tp-elemen">${escHtml(tp.elemen)}</div>
-          <div class="tp-judul">${escHtml(tp.judul)}</div>
-          <div class="tp-count ${jumlah < 200 ? "kurang" : ""}">${jumlah} soal tersedia${jumlah < 200 ? " (pool belum lengkap)" : ""}</div>`;
-        if (bisaDiuji) card.onclick = () => mulaiKuisSemua(tp, jumlah);
-        wrap.appendChild(card);
-      });
-      return;
-    }
-
-    // ── Mode BERBASIS LEVEL (siswa selalu; guru kalau pilih tingkat manual) ──
-    // Unduh SELURUH pool tiap TP (1 query equality tunggal, sama seperti versi
-    // lama — TIDAK butuh composite index), lalu kelompokkan per `kompleksitas`
-    // DI KLIEN. Hasilnya di-cache di poolSoalTpCache supaya mulaiKuis() tidak
-    // perlu query lagi. Lihat ANTIREGRESI §36 utk alasan lengkap pola ini.
-    const chain = currentRole === "guru" ? [guruKompleksitasPilihan] : levelSiswaInfo.chain;
-    const targetKompleksitas = chain[0];
-
-    const hasilPerTp = await Promise.all(tpList.map(async (tp) => {
-      try {
-        const snap = await getDocs(query(collection(db, "bank_soal"), where("tp", "==", tp.tp)));
-        const semua = [];
-        snap.forEach((d) => semua.push({ id: d.id, ...d.data() }));
-        for (const k of chain) {
-          const subset = semua.filter((s) => s.kompleksitas === k);
-          if (subset.length >= MIN_SOAL_BISA_DIUJI) return { totalPool: semua.length, resolved: { kompleksitas: k, soal: subset } };
-        }
-        return { totalPool: semua.length, resolved: null };
-      } catch (e) {
-        return { totalPool: 0, resolved: null };
-      }
-    }));
-
-    wrap.innerHTML = "";
-    tpList.forEach((tp, i) => {
-      const { totalPool, resolved } = hasilPerTp[i];
-      poolSoalTpCache[tp.tp] = resolved;
-      const card = document.createElement("div");
-      if (!resolved) {
-        card.className = "tp-card disabled";
-        card.innerHTML = `
-          <div class="tp-elemen">${escHtml(tp.elemen)}</div>
-          <div class="tp-judul">${escHtml(tp.judul)}</div>
-          <div class="tp-count kurang">Soal untuk TP ini belum cukup tersedia (${totalPool} soal total, belum ada yang cocok tingkat manapun di levelmu).</div>`;
-        wrap.appendChild(card);
-        return;
-      }
-      const isFallback = resolved.kompleksitas !== targetKompleksitas;
-      const labelResolved = KOMPLEKSITAS_LABEL[resolved.kompleksitas] || resolved.kompleksitas;
-      const catatanFallback = isFallback
-        ? `<div class="tp-count kurang">⚠ Soal tingkat ${KOMPLEKSITAS_LABEL[targetKompleksitas]} untuk TP ini belum tersedia — kamu akan mendapat soal tingkat ${labelResolved} dulu.</div>`
-        : "";
-      card.className = "tp-card";
-      card.innerHTML = `
-        <div class="tp-elemen">${escHtml(tp.elemen)}</div>
-        <div class="tp-judul">${escHtml(tp.judul)}</div>
-        <div class="tp-count">${resolved.soal.length} soal tingkat ${labelResolved} tersedia</div>
-        ${catatanFallback}`;
-      card.onclick = () => mulaiKuis(tp, resolved.kompleksitas, isFallback);
-      wrap.appendChild(card);
-    });
-  }
-
-  window.kembaliKePilihTp = function () {
-    document.getElementById("view-kuis").classList.add("hidden");
-    document.getElementById("view-pilih-tp").classList.remove("hidden");
-  };
-
-  // ═══════════════════════ TAHAP 3: AMBIL SOAL ACAK & RENDER KUIS ═══════════════════════
-  async function ambilSoalAcak(tpKode, jumlahTersedia) {
-    const n = Math.min(N_SOAL_PER_SESI, jumlahTersedia);
-    const colRef = collection(db, "bank_soal");
-    const threshold = Math.random();
-    const hasil = [];
-    const snap1 = await getDocs(query(colRef, where("tp", "==", tpKode), where("randKey", ">=", threshold), orderBy("randKey"), limit(n)));
-    snap1.forEach((d) => hasil.push({ id: d.id, ...d.data() }));
-    if (hasil.length < n) {
-      const sisa = n - hasil.length;
-      const snap2 = await getDocs(query(colRef, where("tp", "==", tpKode), where("randKey", "<", threshold), orderBy("randKey"), limit(sisa)));
-      snap2.forEach((d) => hasil.push({ id: d.id, ...d.data() }));
-    }
-    return shuffle(hasil);
-  }
-
-  // JALUR LAMA — khusus mode guru "Semua tingkat", TIDAK difilter kompleksitas
-  // sama sekali. Dipertahankan persis seperti sebelum fitur soal-berbasis-level
-  // ada (termasuk trik randKey dua-query), supaya guru tetap bisa uji-coba
-  // seluruh pool apa adanya (termasuk soal lama tanpa tag `kompleksitas`).
-  window.mulaiKuisSemua = async function (tpEntry, jumlahTersedia) {
-    currentTp = tpEntry;
-    currentSoalKompleksitas = null;
-    document.getElementById("view-pilih-tp").classList.add("hidden");
-    document.getElementById("view-kuis").classList.remove("hidden");
-    document.getElementById("kuis-judul").textContent = tpEntry.judul;
-    document.getElementById("kuis-subtitle").textContent = "Memuat soal…";
-    document.getElementById("hasil-skor").classList.add("hidden");
-    document.getElementById("daftar-soal").innerHTML = "";
-    document.getElementById("btn-submit-kuis").disabled = true;
-    document.getElementById("btn-submit-kuis").textContent = "Memuat…";
-
-    currentSoal = await ambilSoalAcak(tpEntry.tp, jumlahTersedia);
-    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal — jawab semua lalu klik \"Periksa Jawaban\".";
-    document.getElementById("btn-submit-kuis").disabled = false;
-    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
-    renderDaftarSoal();
-  };
-
-  // JALUR BARU — soal berbasis Level Kemampuan. Pool sudah diunduh & di-cache
-  // sewaktu renderTpGrid(), jadi di sini tinggal acak & potong N_SOAL_PER_SESI
-  // dari cache (tidak ada query Firestore tambahan).
-  window.mulaiKuis = async function (tpEntry, kompleksitas, isFallback) {
-    currentTp = tpEntry;
-    currentSoalKompleksitas = kompleksitas;
-    document.getElementById("view-pilih-tp").classList.add("hidden");
-    document.getElementById("view-kuis").classList.remove("hidden");
-    document.getElementById("kuis-judul").textContent = tpEntry.judul;
-    document.getElementById("hasil-skor").classList.add("hidden");
-    document.getElementById("daftar-soal").innerHTML = "";
-
-    const entriCache = poolSoalTpCache[tpEntry.tp];
-    const pool = (entriCache && entriCache.soal) || [];
-    const n = Math.min(N_SOAL_PER_SESI, pool.length);
-    currentSoal = shuffle(pool).slice(0, n);
-
-    const labelK = KOMPLEKSITAS_LABEL[kompleksitas] || kompleksitas;
-    const catatan = isFallback
-      ? ` tingkat ${labelK} (soal tingkat levelmu belum tersedia untuk TP ini, jadi diturunkan sementara)`
-      : ` tingkat ${labelK}`;
-    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal" + catatan + " — jawab semua lalu klik \"Periksa Jawaban\".";
-    document.getElementById("btn-submit-kuis").disabled = false;
-    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
-    renderDaftarSoal();
-  };
-
-  function renderDaftarSoal() {
-    const wrap = document.getElementById("daftar-soal");
-    wrap.innerHTML = "";
-    currentSoal.forEach((soal, i) => wrap.appendChild(buatKartuSoal(soal, i)));
-  }
-
-  const JENIS_LABEL = {
-    pg_tunggal: "Pilihan Ganda", pg_kompleks: "Pilihan Ganda Kompleks", pg_kategori: "Kategorikan",
-    mengurutkan: "Urutkan", menjodohkan: "Jodohkan",
-  };
-
-  function buatKartuSoal(soal, i) {
-    const card = document.createElement("div");
-    card.className = "soal-card";
-    card.dataset.soalId = soal.id;
-    const jenis = soal.jenisSoal || "pg_tunggal";
-
-    const header = `
-      <div class="s-nomor">Soal ${i + 1} dari ${currentSoal.length}</div>
-      <div class="s-belum-dijawab">⚠ Belum dijawab</div>
-      <div class="s-jenis">${escHtml(JENIS_LABEL[jenis] || "Pilihan Ganda")}</div>
-      <div class="s-pertanyaan">${escHtml(soal.pertanyaan || "")}</div>`;
-
-    let body = "";
-    if (jenis === "pg_kompleks") {
-      body = (soal.pilihan || []).map((p) => `
-        <label class="pilihan-opsi" data-pilihan="${escHtml(p)}">
-          <input type="checkbox" name="soal-${soal.id}" value="${escHtml(p)}" /> ${escHtml(p)}
-        </label>`).join("");
-    } else if (jenis === "pg_kategori") {
-      const opsi = (soal.kategori || []).map((k) => `<option value="${escHtml(k)}">${escHtml(k)}</option>`).join("");
-      body = (soal.item || []).map((it, j) => `
-        <div class="kat-row" data-item-idx="${j}" data-kategori-benar="${escHtml(it.kategoriBenar)}">
-          <span>${escHtml(it.teks)}</span>
-          <select data-item-idx="${j}"><option value="">— pilih —</option>${opsi}</select>
-        </div>`).join("");
-    } else if (jenis === "mengurutkan") {
-      const shuffled = shuffle((soal.item || []).map((teks, idx) => ({ teks, idx })));
-      body = `<div class="urut-wrap">` + shuffled.map((it) => `
-        <div class="urut-item" data-teks="${escHtml(it.teks)}">
-          <div class="urut-btns"><button type="button" onclick="geserUrut(this,-1)">▲</button><button type="button" onclick="geserUrut(this,1)">▼</button></div>
-          <span class="urut-teks">${escHtml(it.teks)}</span>
-        </div>`).join("") + `</div>`;
-    } else if (jenis === "menjodohkan") {
-      const kananShuffled = shuffle((soal.pasangan || []).map((p) => p.kanan));
-      const opsi = kananShuffled.map((k) => `<option value="${escHtml(k)}">${escHtml(k)}</option>`).join("");
-      body = (soal.pasangan || []).map((p, j) => `
-        <div class="jodoh-row" data-item-idx="${j}" data-kanan-benar="${escHtml(p.kanan)}">
-          <span>${escHtml(p.kiri)}</span>
-          <select data-item-idx="${j}"><option value="">— pilih —</option>${opsi}</select>
-        </div>`).join("");
-    } else {
-      // pg_tunggal (default)
-      body = (soal.pilihan || []).map((p) => `
-        <label class="pilihan-opsi" data-pilihan="${escHtml(p)}">
-          <input type="radio" name="soal-${soal.id}" value="${escHtml(p)}" /> ${escHtml(p)}
-        </label>`).join("");
-    }
-
-    card.innerHTML = header + body;
-    return card;
-  }
-
-  window.geserUrut = function (btn, dir) {
-    const item = btn.closest(".urut-item");
-    const parent = item.parentElement;
-    if (dir < 0 && item.previousElementSibling) parent.insertBefore(item, item.previousElementSibling);
-    else if (dir > 0 && item.nextElementSibling) parent.insertBefore(item.nextElementSibling, item);
-  };
-
-  // ═══════════════════════ PENILAIAN ═══════════════════════
-  window.nilaiKuis = async function () {
-    // Jaga-jaga terhadap kasus tepi (mis. sesi tab yang tidak wajar) di mana
-    // `namaSiswa` bisa kosong walau guard sudah lolos di awal — LEBIH BAIK
-    // TOLAK simpan & minta login ulang daripada diam-diam tersimpan ke
-    // `hasil_latihan` dengan nama kosong (jadi "(Tanpa nama)" yang tidak
-    // bisa dikenali guru di Riwayat Latihan — lihat CHANGELOG.md).
-    if (!namaSiswa || !namaSiswa.trim()) {
-      alert("Sesi login kamu bermasalah (nama tidak terbaca). Silakan keluar dan login ulang sebelum mengerjakan kuis ini, supaya hasilnya tersimpan dengan benar.");
-      return;
-    }
-
-    let benar = 0;
-    let belumDijawab = 0;
-    const detail = [];
-    const cards = document.querySelectorAll("#daftar-soal .soal-card");
-
-    cards.forEach((card) => {
-      const soalId = card.dataset.soalId;
-      const soal = currentSoal.find((s) => s.id === soalId);
-      const jenis = soal.jenisSoal || "pg_tunggal";
-      let isBenar = false;
-      let terjawab = true; // "mengurutkan" selalu punya urutan default, jadi selalu dianggap terjawab
-
-      if (jenis === "pg_tunggal") {
-        const checked = card.querySelector(`input[name="soal-${soalId}"]:checked`);
-        const dipilih = checked ? checked.value : null;
-        terjawab = dipilih !== null;
-        isBenar = dipilih === soal.jawaban;
-        card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
-          const val = opt.dataset.pilihan;
-          if (val === soal.jawaban) opt.classList.add("correct");
-          else if (val === dipilih && !isBenar) opt.classList.add("wrong");
-        });
-      } else if (jenis === "pg_kompleks") {
-        const dipilih = [...card.querySelectorAll(`input[name="soal-${soalId}"]:checked`)].map((el) => el.value);
-        const benarSet = soal.jawabanBenar || [];
-        terjawab = dipilih.length > 0;
-        isBenar = dipilih.length === benarSet.length && dipilih.every((v) => benarSet.includes(v));
-        card.querySelectorAll(".pilihan-opsi").forEach((opt) => {
-          const val = opt.dataset.pilihan;
-          const shouldBeChecked = benarSet.includes(val);
-          const wasChecked = dipilih.includes(val);
-          if (shouldBeChecked) opt.classList.add("correct");
-          else if (wasChecked) opt.classList.add("wrong");
-        });
-      } else if (jenis === "pg_kategori") {
-        const rows = [...card.querySelectorAll(".kat-row")];
-        isBenar = rows.length > 0;
-        terjawab = false;
-        rows.forEach((row) => {
-          const idx = row.dataset.itemIdx;
-          const sel = card.querySelector(`select[data-item-idx="${idx}"]`);
-          const dipilih = sel ? sel.value : "";
-          if (dipilih !== "") terjawab = true;
-          const benarItem = row.dataset.kategoriBenar;
-          const ok = dipilih === benarItem;
-          if (!ok) isBenar = false;
-          row.classList.add(ok ? "correct" : "wrong");
-        });
-      } else if (jenis === "mengurutkan") {
-        const urutDom = [...card.querySelectorAll(".urut-item")].map((el) => el.dataset.teks);
-        const urutBenar = soal.item || [];
-        isBenar = urutDom.length === urutBenar.length && urutDom.every((v, idx) => v === urutBenar[idx]);
-        card.querySelectorAll(".urut-item").forEach((el, idx) => {
-          el.classList.add(el.dataset.teks === urutBenar[idx] ? "correct" : "wrong");
-        });
-      } else if (jenis === "menjodohkan") {
-        const rows = [...card.querySelectorAll(".jodoh-row")];
-        isBenar = rows.length > 0;
-        terjawab = false;
-        rows.forEach((row) => {
-          const idx = row.dataset.itemIdx;
-          const sel = card.querySelector(`select[data-item-idx="${idx}"]`);
-          const dipilih = sel ? sel.value : "";
-          if (dipilih !== "") terjawab = true;
-          const benarItem = row.dataset.kananBenar;
-          const ok = dipilih === benarItem;
-          if (!ok) isBenar = false;
-          row.classList.add(ok ? "correct" : "wrong");
-        });
-      }
-
-      if (isBenar) benar++;
-      if (!terjawab) {
-        belumDijawab++;
-        card.classList.add("tidak-dijawab");
-      }
-      detail.push({ soalId, jenisSoal: jenis, benar: isBenar, terjawab });
-      card.classList.add("dinilai");
-    });
-
-    const total = cards.length;
-    const skorPersen = total > 0 ? Math.round((benar / total) * 100) : 0;
-    const belumDijawabHtml = belumDijawab > 0
-      ? ` <span class="skor-belum-dijawab">· ${belumDijawab} soal belum dijawab</span>`
-      : "";
-    const skorEl = document.getElementById("hasil-skor");
-    skorEl.classList.remove("hidden");
-    skorEl.innerHTML = `
-      <div class="skor-angka">${benar} / ${total}</div>
-      <div class="skor-label">jawaban benar (${skorPersen}%)${belumDijawabHtml}</div>
-      <div class="skor-tersimpan" id="skor-tersimpan-label">Menyimpan hasil…</div>`;
-    document.getElementById("btn-submit-kuis").disabled = true;
-    document.getElementById("btn-submit-kuis").textContent = "Sudah Dinilai";
-    skorEl.scrollIntoView({ behavior: "smooth" });
-
-    try {
-      await addDoc(collection(db, "hasil_latihan"), {
-        uid: currentUser.uid,
-        namaSiswa: namaSiswa,
-        mapel: currentMapel,
-        tp: currentTp.tp,
-        tpJudul: currentTp.judul,
-        jumlahBenar: benar,
-        jumlahSoal: total,
-        skor: skorPersen,
-        detailJawaban: detail,
-        kompleksitasSoal: currentSoalKompleksitas, // "dasar"/"menengah"/"menantang", null = mode guru "semua" — lihat ANTIREGRESI §36
-        timestamp: serverTimestamp(),
-      });
-      document.getElementById("skor-tersimpan-label").textContent = "✓ Hasil tersimpan — bisa dilihat lagi lewat Riwayat Latihan.";
-      panggilHitungLevel(namaSiswa);
-    } catch (err) {
-      document.getElementById("skor-tersimpan-label").style.color = "var(--err)";
-      document.getElementById("skor-tersimpan-label").textContent = "⚠️ Hasil belum tersimpan (" + err.message + "). Skormu tetap terlihat di atas.";
-    }
-  };
-
-  // ═══════════════ LEVEL & EXP UJI KEMAMPUAN (belum dirilis) ═══════════════
-  // Level & EXP DIHITUNG & DITULIS DI SERVER (Apps Script), BUKAN di sini —
-  // lihat catatan keamanan panjang di apps-script/Code.gs (doPostHitungGamifikasi_).
-  // Panggilan ini HASILNYA DIPAKAI (beda dari fire-and-forget progres_materi),
-  // tapi kegagalannya SENGAJA tidak ditampilkan sebagai error ke siswa — skor
-  // kuisnya sendiri sudah aman tersimpan (lihat blok di atas); status level
-  // cuma bonus, gagal mengecek level tidak boleh terasa seperti kuisnya gagal.
-  const APPS_SCRIPT_URL_LEVEL = "https://script.google.com/macros/s/AKfycbxdbmKVxG1EaD5jkRbRTg9p-PTDJtx-TR4H5iE8vJf_JMcIsMjMwB8J8WmDvC1LKho5mA/exec";
-  const LEVEL_LABEL = { dasar: "Dasar", menengah: "Menengah", atas: "Atas", mahir: "Mahir" };
-
-  async function panggilHitungLevel(nama) {
-    try {
-      // v1.6: `keepalive: true` ditambahkan — root cause sesi ini (lihat CHANGELOG.md):
-      // siswa lihat "✓ Hasil tersimpan" lalu langsung menutup/pindah tab SEBELUM fetch
-      // fire-and-forget ini sempat selesai, jadi level_siswa tidak pernah tertulis
-      // meski hasil_latihan aman. `keepalive` membuat browser TETAP mengirimkan request
-      // ini di background walau halaman sudah dibongkar — request tidak lagi terikat
-      // pada umur tab. Pola ini SUDAH TERBUKTI jalan di file lain (lihat komentar
-      // panjang "KEDUA panggilan di bawah SENGAJA ditembak BERSAMAAN" di
-      // pages/materi/assets/materi-progress-tracker.js dan pages/modul/assets/
-      // modul-progress-tracker.js — cuma file INI yang sebelumnya belum ikut memakainya.
-      // Batasan bawaan browser: total payload keepalive dibatasi ~64KB, jauh di atas
-      // ukuran body kecil ({type, nama}) di sini, jadi aman.
-      // Trade-off yang tetap sama seperti sebelumnya: kalau halaman SUDAH dibongkar saat
-      // respons kembali, `res`/`data` di bawah tidak akan pernah terbaca (konteks JS-nya
-      // sudah tidak ada) — banner "🎉 Level naik!" cuma sempat tampil kalau siswa masih
-      // membuka halaman ini ketika respons datang, persis seperti sebelumnya. Tidak ada
-      // regresi UX di jalur normal (siswa yang tetap menunggu), yang berubah HANYA
-      // jaminan pengiriman ke server pada jalur siswa yang langsung pergi.
-      const res = await fetch(APPS_SCRIPT_URL_LEVEL, {
-        method: "POST",
-        keepalive: true,
-        body: JSON.stringify({ type: "hitung_gamifikasi", nama: nama }),
-      });
-      const data = await res.json();
-      if (data.status !== "ok") return; // diam-diam abaikan, lihat catatan di atas
-      tampilkanStatusLevel(data);
-    } catch (e) { /* diamkan, lihat catatan di atas */ }
-  }
-
-  function tampilkanStatusLevel(d) {
-    const wrap = document.createElement("div");
-    wrap.className = "level-status";
-    const labelLevel = LEVEL_LABEL[d.level] || d.level;
-    const expHtml = ` <span class="level-exp">⭐ ${d.exp} EXP</span>`;
-    if (d.baruSajaNaikLevel) {
-      wrap.innerHTML = `🎉 <strong>Selamat! Level naik jadi ${labelLevel}.</strong>${expHtml}`;
-      wrap.classList.add("level-naik");
-    } else if (d.mahirTercapai) {
-      wrap.innerHTML = `🏆 Level <strong>Mahir</strong> — capaian tertinggi sudah diraih!${expHtml}`;
-    } else {
-      wrap.innerHTML = `Level saat ini: <strong>${labelLevel}</strong> — progres ${d.progress}/${d.butuhLulus} menuju level berikutnya (perlu skor &gt;${d.ambangLevelIni}%).${expHtml}`;
-    }
-    document.getElementById("hasil-skor").appendChild(wrap);
-  }
-
-  // ═══════════════════════ INISIALISASI ═══════════════════════
-  document.addEventListener("role-verified", async (e) => {
-    currentUser = e.detail.user;
-    document.getElementById("checking").remove();
-    document.getElementById("app-soal").classList.remove("hidden");
-    // v1.1 (role-guard.js): nama SUDAH benar dari event ini untuk kedua jenis
-    // akun (siswa anonim -> sessionStorage, guru/orangtua -> Firestore) — TIDAK
-    // baca ulang Firestore users/{uid} di sini seperti sebelumnya. Baca ulang
-    // itu SALAH untuk siswa sejak login siswa pakai Firebase Anonymous Auth:
-    // akun anonim tidak punya dokumen users/{uid} ATAU email sama sekali, jadi
-    // fallback lama "currentUser.email" akan jadi undefined untuk siswa.
-    namaSiswa = e.detail.nama;
-    currentRole = e.detail.role;
-    if (currentRole === "siswa") {
-      levelSiswaInfo = await ambilLevelSiswa(namaSiswa);
-    } else if (currentRole === "guru") {
-      document.getElementById("guru-filter-kompleksitas").classList.remove("hidden");
-    }
-    renderMapelGrid();
-  });
-  document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru'], '../index.html'));
-</script>
+PLACEHOLDER_SCRIPT
 </body>
 </html>
