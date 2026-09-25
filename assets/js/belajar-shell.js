@@ -1,12 +1,14 @@
 /**
- * belajar-shell.js — Navigasi Jalur Belajar (Langkah 1–3)
+ * belajar-shell.js — Navigasi Jalur Belajar (Langkah 1–3) + slot mapel (B-2)
  *
  * Usage:
  *   <body class="bl-has-shell" data-belajar-step="1">
  *   <link rel="stylesheet" href="../assets/css/belajar-shell.css" />
  *   <script src="../assets/js/belajar-shell.js"></script>
  *
- * Injects sidebar (desktop) + bottom bar (mobile) and highlights active step.
+ * Pages can fill mapel nav:
+ *   window.belajarShellRenderMapel(items, activeMapel, onSelect)
+ *   items: [{ name: "Matematika", count: 12 }, ...]
  */
 (function () {
   var step = document.body.getAttribute("data-belajar-step") || "1";
@@ -29,6 +31,10 @@
     '<span class="bl-step-text"><span class="bl-step-name">Uji Kemampuan</span>' +
     '<span class="bl-step-desc">Latihan soal</span></span></a>' +
     '</nav>' +
+    '<div class="bl-sidebar-section" id="bl-mapel-section" hidden>' +
+    '<div class="bl-sidebar-label">Mata pelajaran</div>' +
+    '<nav class="bl-mapel-nav" id="bl-mapel-nav"></nav>' +
+    '</div>' +
     '<div class="bl-sidebar-foot"><a href="../index.html">← Beranda</a></div>' +
     '</div></aside>';
 
@@ -100,6 +106,9 @@
     }
 
     app.insertAdjacentHTML("beforeend", BOTTOM_HTML);
+
+    var fr = app.querySelector("#filter-row");
+    if (fr) fr.classList.add("bl-sticky-filters");
   }
 
   function run() {
@@ -107,6 +116,46 @@
     mark(".bl-step-link");
     mark(".bl-bottom-link");
   }
+
+  window.belajarShellRenderMapel = function (items, active, onSelect) {
+    var nav = document.getElementById("bl-mapel-nav");
+    var section = document.getElementById("bl-mapel-section");
+    if (!nav || !section) return;
+
+    if (!items || items.length === 0) {
+      section.hidden = true;
+      nav.innerHTML = "";
+      return;
+    }
+
+    section.hidden = false;
+    nav.innerHTML = "";
+
+    items.forEach(function (it) {
+      var name = typeof it === "string" ? it : it.name;
+      var count = typeof it === "string" ? null : it.count;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bl-mapel-link" + (name === active ? " active" : "");
+      btn.setAttribute("data-mapel", name);
+
+      var label = document.createElement("span");
+      label.textContent = name;
+      btn.appendChild(label);
+
+      if (count != null && name !== "Semua") {
+        var c = document.createElement("span");
+        c.className = "bm-count";
+        c.textContent = String(count);
+        btn.appendChild(c);
+      }
+
+      btn.addEventListener("click", function () {
+        if (typeof onSelect === "function") onSelect(name);
+      });
+      nav.appendChild(btn);
+    });
+  };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", run);
