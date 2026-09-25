@@ -295,6 +295,13 @@
           <div class="card-desc">Materi presentasi (PDF) dari guru pendamping</div>
           <div class="card-badge">Pelengkap</div>
         </a>
+
+        <a href="pages/laporan-siswa.html" id="card-laporan-siswa" class="card hidden" style="--card-accent: #2a9d6f">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Laporan Siswa</div>
+          <div class="card-desc">Progres belajar, MPLS, dan latihan anak — pintu utama untuk orang tua</div>
+          <div class="card-badge">Guru &amp; Orang Tua</div>
+        </a>
         <a href="pages/mpls/index.html" class="card" data-akses="guru" style="--card-accent: #c76b98">
           <div class="card-icon">🧭</div>
           <div class="card-title">MPLS</div>
@@ -312,14 +319,7 @@
           <div class="card-title">Riwayat Latihan</div>
           <div class="card-desc">Semua hasil Uji Kemampuan yang tersimpan</div>
           <div class="card-badge">Hasil</div>
-        </a>
-        <a href="pages/laporan-siswa.html" id="card-laporan-siswa" class="card hidden" style="--card-accent: #2a9d6f">
-          <div class="card-icon">📊</div>
-          <div class="card-title">Laporan Siswa</div>
-          <div class="card-desc">Profil, asesmen MPLS, dan jurnal aktivitas</div>
-          <div class="card-badge">Guru &amp; Orang Tua</div>
-        </a>
-        <a href="pages/info.html" class="card" data-akses="orangtua guru" style="--card-accent: #c94040">
+        </a>        <a href="pages/info.html" class="card" data-akses="orangtua guru" style="--card-accent: #c94040">
           <div class="card-icon">📢</div>
           <div class="card-title">Pengumuman</div>
           <div class="card-desc">Informasi penting dan jadwal dari guru</div>
@@ -334,9 +334,24 @@
       </div>
     </section>
 
+    <!-- Tips orang tua (Tahap 4) -->
+    <section class="home-section home-ortu-tip" data-akses="orangtua" aria-label="Panduan orang tua">
+      <div class="ortu-tip-card">
+        <p class="ortu-tip-title">Untuk orang tua / wali</p>
+        <p class="ortu-tip-body">
+          Mulai dari <strong>Laporan Siswa</strong> untuk melihat progres anak.
+          Pengumuman dari guru ada di bawah. Menu Belajar menampilkan jalur yang sama dipakai anak di rumah.
+        </p>
+      </div>
+    </section>
+
     <!-- Pengumuman Terbaru -->
     <section class="home-section" data-akses="orangtua guru" aria-label="Pengumuman terbaru">
-      <div class="home-section-head">
+      <div class="home-section-head" data-akses="orangtua">
+        <h2 class="home-section-title">Pengumuman dari guru</h2>
+        <p class="home-section-desc">Informasi penting untuk orang tua dan siswa.</p>
+      </div>
+      <div class="home-section-head" data-akses="guru">
         <h2 class="home-section-title">Pengumuman Terbaru</h2>
       </div>
       <ul id="pengumuman-list">
@@ -452,8 +467,8 @@
       if (sub) sub.textContent = 'Mulai dari langkah 1. Kalau sudah selesai, lanjut ke langkah 2 dan 3.';
       if (belajarDesc) belajarDesc.textContent = 'Urutan ini biar belajarnya runtut — kerjakan satu per satu ya.';
     } else if (role === 'orangtua') {
-      if (sub) sub.textContent = 'Lihat progres belajar dan pengumuman terkait anakmu.';
-      if (belajarDesc) belajarDesc.textContent = 'Anak mengikuti urutan langkah ini di rumah atau di sekolah.';
+      if (sub) sub.textContent = 'Cek Laporan Siswa dan pengumuman guru. Data yang tampil hanya terkait anakmu.';
+      if (belajarDesc) belajarDesc.textContent = 'Ini jalur yang sama diikuti anak — berguna untuk mendampingi di rumah.';
     } else if (role === 'guru') {
       if (sub) sub.textContent = 'Kelola kelas atau buka menu belajar seperti yang dilihat siswa.';
       if (belajarDesc) belajarDesc.textContent = 'Urutan yang sama dipakai siswa — berguna untuk mendampingi.';
@@ -658,12 +673,19 @@
 
   // ── Auth state ─────────────────────────────────────────────
   onAuthStateChanged(auth, async (user) => {
-    document.getElementById('loading').style.opacity = '0';
-    setTimeout(() => document.getElementById('loading').style.display = 'none', 300);
-
+    // Loading SENGAJA tetap tampil sampai cabang UI selesai — mencegah flash
+    // ke layar login saat Firebase masih memulihkan sesi dari penyimpanan lokal
+    // (pola: null sebentar → user; atau jeda await getDoc).
+    try {
     // v1.2: reset dulu SEBELUM cabang mana pun di bawah — lihat catatan lengkap
     // di sembunyikanPanelKondisional_() kenapa ini wajib ada di sini.
     sembunyikanPanelKondisional_();
+
+    // Pastikan status auth awal sudah final sebelum menampilkan login.
+    if (!user) {
+      await auth.authStateReady();
+      user = auth.currentUser;
+    }
 
     if (user && user.isAnonymous) {
       // v2.0: cabang ini SENGAJA DIBIARKAN (bukan kode aktif lagi) — sejak
@@ -760,6 +782,13 @@
       document.getElementById('login-screen').classList.remove('hidden');
       document.getElementById('status-screen').classList.add('hidden');
       document.getElementById('app').classList.add('hidden');
+    }
+    } finally {
+      const loadEl = document.getElementById('loading');
+      if (loadEl) {
+        loadEl.style.opacity = '0';
+        setTimeout(() => { loadEl.style.display = 'none'; }, 300);
+      }
     }
   });
 
