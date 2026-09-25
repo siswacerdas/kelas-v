@@ -1,0 +1,271 @@
+/* ============================================================
+   belajar-shell.css — Shell navigasi Jalur Belajar (Langkah 1–3)
+   ------------------------------------------------------------
+   Desktop (≥900px): sidebar kiri sticky dengan 3 langkah
+   Mobile  (<900px): bottom bar 3 langkah
+   Dipakai oleh: modul.html, materi.html, uji-kemampuan.html
+   ============================================================ */
+
+:root {
+  --bl-sidebar-w: 220px;
+  --bl-bottom-h: 64px;
+  --bl-step-1: #2a9d6f;
+  --bl-step-2: #e8a020;
+  --bl-step-3: #9b59b6;
+}
+
+/* ── Layout wrapper ── */
+.bl-layout {
+  display: block;
+  max-width: calc(var(--content-max) + var(--bl-sidebar-w) + 2rem);
+  margin: 0 auto;
+}
+
+.bl-main {
+  min-width: 0;
+}
+
+/* ── Sidebar (desktop only) ── */
+.bl-sidebar {
+  display: none;
+}
+
+.bl-sidebar-inner {
+  position: sticky;
+  top: calc(var(--topbar-h) + 12px);
+  padding: 0.35rem 0;
+}
+
+.bl-sidebar-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 0 10px 8px;
+}
+
+.bl-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bl-step-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  line-height: 1.3;
+}
+
+.bl-step-link:hover {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+.bl-step-link .bl-step-num {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--paper-2);
+  color: var(--ink-3);
+}
+
+.bl-step-link .bl-step-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.bl-step-link .bl-step-name {
+  font-size: 13px;
+  font-weight: 650;
+  color: inherit;
+}
+
+.bl-step-link .bl-step-desc {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+/* Active states per step */
+.bl-step-link[data-step="1"].active {
+  background: rgba(42, 157, 111, 0.1);
+  border-color: rgba(42, 157, 111, 0.35);
+  color: var(--bl-step-1);
+}
+.bl-step-link[data-step="1"].active .bl-step-num {
+  background: var(--bl-step-1);
+  color: #fff;
+}
+.bl-step-link[data-step="1"].active .bl-step-name { color: var(--bl-step-1); }
+
+.bl-step-link[data-step="2"].active {
+  background: rgba(232, 160, 32, 0.12);
+  border-color: rgba(232, 160, 32, 0.4);
+  color: #b07800;
+}
+.bl-step-link[data-step="2"].active .bl-step-num {
+  background: var(--bl-step-2);
+  color: #fff;
+}
+.bl-step-link[data-step="2"].active .bl-step-name { color: #9a6800; }
+
+.bl-step-link[data-step="3"].active {
+  background: rgba(155, 89, 182, 0.1);
+  border-color: rgba(155, 89, 182, 0.35);
+  color: var(--bl-step-3);
+}
+.bl-step-link[data-step="3"].active .bl-step-num {
+  background: var(--bl-step-3);
+  color: #fff;
+}
+.bl-step-link[data-step="3"].active .bl-step-name { color: var(--bl-step-3); }
+
+.bl-sidebar-foot {
+  margin-top: 1.25rem;
+  padding: 0 10px;
+}
+.bl-sidebar-foot a {
+  font-size: 12px;
+  color: var(--ink-3);
+  text-decoration: none;
+  font-weight: 500;
+}
+.bl-sidebar-foot a:hover { color: var(--accent); text-decoration: underline; }
+
+/* ── Bottom bar (mobile only) ── */
+.bl-bottom {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  height: var(--bl-bottom-h);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -4px 16px rgba(26, 26, 46, 0.06);
+  padding: 0 max(8px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(8px, env(safe-area-inset-left));
+  justify-content: space-around;
+  align-items: stretch;
+}
+
+.bl-bottom-link {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--ink-3);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 6px 4px;
+  min-width: 0;
+  transition: color 0.15s;
+  position: relative;
+}
+
+.bl-bottom-link .bl-b-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.bl-bottom-link .bl-b-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.bl-bottom-link.active {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.bl-bottom-link[data-step="1"].active { color: var(--bl-step-1); }
+.bl-bottom-link[data-step="2"].active { color: #9a6800; }
+.bl-bottom-link[data-step="3"].active { color: var(--bl-step-3); }
+
+.bl-bottom-link.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 2.5px;
+  border-radius: 0 0 3px 3px;
+  background: currentColor;
+}
+
+body.bl-has-shell {
+  padding-bottom: 0;
+}
+
+/* ── Desktop ≥900px: show sidebar, hide bottom ── */
+@media (min-width: 900px) {
+  .bl-layout {
+    display: grid;
+    grid-template-columns: var(--bl-sidebar-w) minmax(0, 1fr);
+    gap: 0 1.5rem;
+    padding: 0 var(--s-5);
+    align-items: start;
+  }
+
+  .bl-sidebar {
+    display: block;
+    padding-top: 1.25rem;
+  }
+
+  .bl-main .bl-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .bl-bottom {
+    display: none !important;
+  }
+
+  body.bl-has-shell {
+    padding-bottom: 0;
+  }
+}
+
+/* ── Mobile <900px: hide sidebar, show bottom ── */
+@media (max-width: 899px) {
+  .bl-sidebar {
+    display: none !important;
+  }
+
+  .bl-bottom {
+    display: flex;
+  }
+
+  body.bl-has-shell {
+    padding-bottom: calc(var(--bl-bottom-h) + env(safe-area-inset-bottom));
+  }
+
+  .bl-layout {
+    max-width: var(--content-max);
+  }
+}
