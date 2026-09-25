@@ -20,21 +20,52 @@
     <a class="back" href="../index.html">← Kembali ke Beranda</a>
   </div>
 
-  <div class="container">
-    <h1>Panel Guru</h1>
-    <p class="subtitle">Tambah, ubah, atau hapus konten yang tampil di halaman Pengumuman, Modul, dan Uji Kemampuan.</p>
+  <div class="admin-shell">
+    <aside class="admin-nav" aria-label="Menu kelola konten">
+      <div class="admin-nav-brand">
+        <div class="admin-nav-title">Panel Guru</div>
+        <div class="admin-nav-desc">Kelola konten kelas</div>
+      </div>
 
-    <div class="tabs-wrap">
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="pengumuman" onclick="switchTab('pengumuman')">📢 Pengumuman</button>
-      <button class="tab-btn" data-tab="modul" onclick="switchTab('modul')">📚 Modul</button>
-      <button class="tab-btn" data-tab="soal" onclick="switchTab('soal')">💪 Uji Kemampuan</button>
-      <button class="tab-btn" data-tab="linimasa" onclick="switchTab('linimasa')">🗓️ Linimasa</button>
-      <button class="tab-btn" data-tab="pustaka-belajar" onclick="switchTab('pustaka-belajar')">📄 Pustaka Belajar</button>
-      <button class="tab-btn" data-tab="ortu" onclick="switchTab('ortu')">👪 Persetujuan Orang Tua</button>
-      <button class="tab-btn" data-tab="impor" onclick="switchTab('impor')">📥 Impor Massal</button>
-    </div>
-</div>
+      <div class="admin-nav-group">
+        <div class="admin-nav-label">Konten</div>
+        <button type="button" class="tab-btn active" data-tab="pengumuman" onclick="switchTab('pengumuman')">
+          <span class="tab-ico">📢</span><span class="tab-txt">Pengumuman</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="modul" onclick="switchTab('modul')">
+          <span class="tab-ico">📚</span><span class="tab-txt">Modul</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="soal" onclick="switchTab('soal')">
+          <span class="tab-ico">💪</span><span class="tab-txt">Uji Kemampuan</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="linimasa" onclick="switchTab('linimasa')">
+          <span class="tab-ico">🗓️</span><span class="tab-txt">Linimasa</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="pustaka-belajar" onclick="switchTab('pustaka-belajar')">
+          <span class="tab-ico">📄</span><span class="tab-txt">Pustaka Belajar</span>
+        </button>
+      </div>
+
+      <div class="admin-nav-group">
+        <div class="admin-nav-label">Akun</div>
+        <button type="button" class="tab-btn" data-tab="ortu" onclick="switchTab('ortu')">
+          <span class="tab-ico">👪</span><span class="tab-txt">Persetujuan Ortu</span>
+        </button>
+      </div>
+
+      <div class="admin-nav-group admin-nav-group-tools">
+        <div class="admin-nav-label">Alat</div>
+        <button type="button" class="tab-btn" data-tab="impor" onclick="switchTab('impor')">
+          <span class="tab-ico">📥</span><span class="tab-txt">Impor Massal</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-main-head">
+        <h1 id="admin-section-title">Pengumuman</h1>
+        <p class="subtitle" id="admin-section-desc">Tambah, ubah, atau hapus pengumuman yang tampil di beranda.</p>
+      </header>
 
     <!-- ══════════════ TAB: PENGUMUMAN ══════════════ -->
     <div id="tab-pengumuman" class="tab-panel active">
@@ -543,6 +574,7 @@
       </div>
     </div>
 
+    </main>
   </div>
 </div>
 
@@ -2156,6 +2188,22 @@
   window.switchTab = function (name) {
     document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
     document.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("active", p.id === "tab-" + name));
+    // Perbarui judul area konten (layout sidebar)
+    const meta = {
+      pengumuman: ["Pengumuman", "Tambah, ubah, atau hapus pengumuman yang tampil di beranda."],
+      modul: ["Modul Pembelajaran", "Unggah dan kelola modul yang dipakai siswa di Ayo Belajar."],
+      soal: ["Uji Kemampuan", "Kelola bank soal per Tujuan Pembelajaran."],
+      linimasa: ["Linimasa Materi", "Atur materi per bulan untuk kalender belajar."],
+      "pustaka-belajar": ["Pustaka Belajar", "Unggah PDF materi presentasi untuk siswa."],
+      ortu: ["Persetujuan Orang Tua", "Setujui atau tolak pendaftaran akun orang tua."],
+      impor: ["Impor Massal", "Impor banyak soal sekaligus lewat JSON."],
+    };
+    const m = meta[name] || ["Panel Guru", ""];
+    const t = document.getElementById("admin-section-title");
+    const d = document.getElementById("admin-section-desc");
+    if (t) t.textContent = m[0];
+    if (d) d.textContent = m[1];
+    try { history.replaceState(null, "", "#" + name); } catch (e) {}
   };
 
   function escHtml(str) {
