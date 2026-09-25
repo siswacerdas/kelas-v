@@ -1,13 +1,9 @@
 /**
- * kelas.js — logika halaman pages/kelas/index.html
- * Bergantung pada MPLS_CONFIG dari ../mpls/assets/config.js (dimuat sebelum file ini),
- * karena backend Apps Script yang dipakai sama dengan modul MPLS (1 spreadsheet).
+ * kelas.js — Hub Data Siswa (pages/kelas/index.html)
+ * Backend: MPLS_CONFIG.APPS_SCRIPT_URL (sama modul MPLS).
+ * UI: roster kartu → panel samping untuk tambah/edit.
  */
 
-/* ── ISI DROPDOWN NAMA DARI DAFTAR SISWA KELAS 5A ───────────────────
- * Memakai MPLS_STUDENTS yang sama dengan modul MPLS (mpls-data.js),
- * supaya nama di "Data Siswa" selalu konsisten dengan nama di penilaian MPLS.
- */
 function isiDropdownNama() {
   const select = document.getElementById("f-nama");
   MPLS_STUDENTS.forEach((nama) => {
@@ -21,13 +17,38 @@ isiDropdownNama();
 
 const state = {
   siswaList: [],
-  fotoResized: null, // { base64, mime } hasil resize, null kalau tidak ganti foto
+  fotoResized: null,
 };
 
-/* ── RESIZE FOTO DI KLIEN ────────────────────────────────────────────
- * Supaya ukuran file relevan & optimal untuk dilihat di smartphone:
- * perkecil sisi terpanjang maksimal 1280px, kompres JPEG kualitas 0.75.
- */
+/* ── Panel form ─────────────────────────────────────────── */
+function bukaPanelForm(mode) {
+  const wrap = document.getElementById("panel-form-wrap");
+  const title = document.getElementById("panel-form-title");
+  wrap.classList.remove("hidden");
+  wrap.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  if (title) title.textContent = mode === "edit" ? "Edit Data Siswa" : "Tambah / Lengkapi Data";
+}
+
+function tutupPanelForm() {
+  const wrap = document.getElementById("panel-form-wrap");
+  if (!wrap) return;
+  wrap.classList.add("hidden");
+  wrap.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("btn-buka-tambah").addEventListener("click", () => {
+  resetForm();
+  bukaPanelForm("tambah");
+});
+document.getElementById("btn-tutup-form").addEventListener("click", tutupPanelForm);
+document.getElementById("panel-form-backdrop").addEventListener("click", tutupPanelForm);
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") tutupPanelForm();
+});
+
+/* ── Resize foto ────────────────────────────────────────── */
 function resizeImageFile(file, maxDim, quality) {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -55,19 +76,6 @@ function resizeImageFile(file, maxDim, quality) {
   });
 }
 
-/**
- * v0.5.5 — Ambil response fetch dan urai sebagai JSON dengan aman.
- *
- * KENAPA PERLU INI: dilaporkan pengguna muncul error
- * `Unexpected token '<', "<!DOCTYPE "... is not valid JSON` setelah proses simpan terasa
- * lama. Ini terjadi karena Apps Script Web App (URL `?exec`) kadang mengembalikan HALAMAN
- * HTML generik dari infrastruktur Google — BUKAN JSON dari `Code.gs` — kalau eksekusi di
- * baliknya lambat (upload + set-sharing foto ke Drive bisa memakan beberapa detik lebih,
- * dan URL `/exec` diketahui kadang memotong/mengganti respons dengan halaman error kalau
- * dianggap terlalu lama, di luar kendali kode aplikasi ini). Kalau HTML ini langsung
- * dilempar ke `res.json()`, pesan errornya jadi membingungkan bagi pengguna awam. Fungsi ini
- * mendeteksi kondisi itu dan memberi pesan yang jelas & actionable sebagai gantinya.
- */
 async function parseJsonAman_(res) {
   const text = await res.text();
   try {
@@ -75,10 +83,8 @@ async function parseJsonAman_(res) {
   } catch (e) {
     if (/^\s*</.test(text)) {
       throw new Error(
-        "Google Apps Script tidak merespons dengan benar (kemungkinan lambat/timeout saat " +
-        "memproses, sering terjadi kalau upload foto). Data KEMUNGKINAN SUDAH tersimpan di " +
-        "baliknya walau muncul error ini — cek dulu daftar siswa di bawah (akan otomatis " +
-        "dimuat ulang) sebelum menyimpan ulang, supaya foto tidak ter-upload dobel ke Drive."
+        "Google Apps Script tidak merespons dengan benar (kemungkinan lambat/timeout). " +
+        "Data mungkin sudah tersimpan — cek daftar siswa sebelum menyimpan ulang."
       );
     }
     throw new Error("Respons tidak dikenali dari server: " + text.slice(0, 150));
@@ -107,15 +113,12 @@ async function handleFotoFile(file) {
   }
 }
 
-// Tombol "Ambil Foto" -> buka kamera langsung (capture="environment")
 document.getElementById("btn-ambil-foto").addEventListener("click", () => {
   document.getElementById("f-foto-kamera").click();
 });
 document.getElementById("f-foto-kamera").addEventListener("change", (e) => {
   handleFotoFile(e.target.files[0]);
 });
-
-// Tombol "Pilih dari Galeri" -> buka galeri/album foto (tanpa capture, jadi tidak memaksa kamera)
 document.getElementById("btn-pilih-galeri").addEventListener("click", () => {
   document.getElementById("f-foto-galeri").click();
 });
@@ -123,7 +126,6 @@ document.getElementById("f-foto-galeri").addEventListener("change", (e) => {
   handleFotoFile(e.target.files[0]);
 });
 
-/* ── FORM SIMPAN ─────────────────────────────────────────────────── */
 function resetForm() {
   document.getElementById("form-siswa").reset();
   state.fotoResized = null;
@@ -152,9 +154,6 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
     "Nama Panggilan": document.getElementById("f-panggilan").value.trim(),
     "Tempat Lahir": document.getElementById("f-tempat").value.trim(),
     "Tanggal Lahir": document.getElementById("f-tanggal").value,
-    // v1.1 (migrasi Firestore): NISN sekarang WAJIB diisi (jadi ID dokumen
-    // Firestore) — field ini "required" di HTML, jadi browser sudah menolak
-    // submit kalau kosong sebelum sampai sini.
     "NISN": document.getElementById("f-nisn").value.trim(),
   };
   if (state.fotoResized) {
@@ -163,10 +162,6 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
   }
 
   try {
-    // v0.9.3: ambil token TERBARU langsung dari SDK (bukan cache window.guruIdToken
-    // yang pernah kena race condition — lihat ANTIREGRESI.md §25), sekaligus di
-    // dalam try supaya kalau gagal (sesi habis di tengah pengisian form), pesannya
-    // tetap muncul rapi di statusEl, bukan error JS mentah yang tidak tertangani.
     payload.idToken = await window.getFreshGuruIdToken();
     const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
     const json = await parseJsonAman_(res);
@@ -177,14 +172,11 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
       showToast("Tersimpan: " + nama);
     }
     resetForm();
+    tutupPanelForm();
     loadSiswaList();
   } catch (err) {
     statusEl.textContent = "⚠️ Gagal menyimpan: " + err.message;
     statusEl.classList.add("err");
-    // v0.5.5: muat ulang daftar siswa juga saat GAGAL (bukan cuma saat berhasil) — respons
-    // error ini bisa saja muncul PADAHAL Apps Script sudah selesai menulis datanya di balik
-    // layar (lihat penjelasan di parseJsonAman_). Refresh di sini membantu guru memastikan
-    // status sebenarnya sebelum memutuskan menyimpan ulang.
     loadSiswaList();
   } finally {
     btn.disabled = false;
@@ -200,7 +192,6 @@ function showToast(msg, isErr) {
   showToast._t = setTimeout(() => t.classList.remove("show"), isErr ? 6000 : 2600);
 }
 
-/* ── DAFTAR SISWA ────────────────────────────────────────────────── */
 function fillFormFromSiswa(s) {
   document.getElementById("f-nama").value = s["Nama Lengkap"] || "";
   document.getElementById("f-panggilan").value = s["Nama Panggilan"] || "";
@@ -212,9 +203,6 @@ function fillFormFromSiswa(s) {
   document.getElementById("f-foto-kamera").value = "";
   document.getElementById("f-foto-galeri").value = "";
 
-  // v0.5.4: tampilkan status foto yang SUDAH tersimpan untuk siswa ini, supaya guru
-  // tahu apakah perlu mengambil foto baru atau tidak — sebelumnya form tidak menunjukkan
-  // apa-apa soal foto lama, jadi tidak kelihatan apakah upload sebelumnya benar berhasil.
   const currentWrap = document.getElementById("foto-current-wrap");
   const currentFrame = document.getElementById("foto-current-frame");
   currentFrame.innerHTML = s["URL Foto"]
@@ -222,69 +210,107 @@ function fillFormFromSiswa(s) {
     : '<div class="ph-empty">Belum ada<br/>foto tersimpan</div>';
   currentWrap.classList.remove("hidden");
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  bukaPanelForm("edit");
+}
+
+function escText(str) {
+  return String(str || "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+  );
 }
 
 function renderSiswaList(filterText) {
   const wrap = document.getElementById("list-siswa");
+  const countEl = document.getElementById("kelas-count");
   const filter = (filterText || "").trim().toLowerCase();
   const rows = state.siswaList.filter((s) => !filter || String(s["Nama Lengkap"]).toLowerCase().includes(filter));
 
+  if (countEl) {
+    countEl.textContent = rows.length
+      ? rows.length + " siswa" + (filter ? " (terfilter)" : "")
+      : "";
+  }
+
   if (!rows.length) {
-    wrap.innerHTML = '<div class="info-box">Belum ada data siswa tersimpan.</div>';
+    wrap.innerHTML = '<div class="kelas-empty">' +
+      (filter ? "Tidak ada nama yang cocok." : "Belum ada data siswa tersimpan. Ketuk “+ Tambah / Lengkapi”.") +
+      "</div>";
     return;
   }
 
-  wrap.innerHTML = rows.map((s, idx) => `
-    <div class="siswa-item" data-idx="${idx}">
-      ${s["URL Foto"]
-        ? fotoImgHtml(s["URL Foto"], "Foto " + (s["Nama Lengkap"] || ""), 'loading="lazy"', '<div class="siswa-noimg">🧒</div>')
-        : `<div class="siswa-noimg">🧒</div>`}
-      <div class="siswa-item-info">
-        <div class="siswa-item-name">${s["Nama Lengkap"] || "—"}</div>
-        <div class="siswa-item-meta">${s["Nama Panggilan"] ? "Panggilan: " + s["Nama Panggilan"] + " · " : ""}${s["Tempat Lahir"] || "-"}, ${s["Tanggal Lahir"] || "-"}</div>
-        <div class="siswa-item-meta">${s["NISN"] ? "NISN: " + s["NISN"] : "—"}</div>
-      </div>
-    </div>`
-  ).join("");
+  wrap.innerHTML = rows.map((s, idx) => {
+    const nama = escText(s["Nama Lengkap"] || "—");
+    const panggilan = s["Nama Panggilan"] ? escText(s["Nama Panggilan"]) : "";
+    const nisn = s["NISN"] ? escText(s["NISN"]) : "";
+    const foto = s["URL Foto"]
+      ? fotoImgHtml(s["URL Foto"], "Foto " + (s["Nama Lengkap"] || ""), 'loading="lazy" class="siswa-card-foto"', '<div class="siswa-noimg">🧒</div>')
+      : '<div class="siswa-noimg">🧒</div>';
+    return (
+      '<button type="button" class="siswa-card" data-idx="' + idx + '">' +
+        foto +
+        '<div class="siswa-card-name">' + nama + "</div>" +
+        (panggilan ? '<div class="siswa-card-meta">' + panggilan + "</div>" : "") +
+        '<span class="siswa-card-nisn' + (nisn ? "" : " missing") + '">' +
+          (nisn ? "NISN " + nisn : "NISN belum diisi") +
+        "</span>" +
+      "</button>"
+    );
+  }).join("");
 
-  wrap.querySelectorAll(".siswa-item").forEach((el) => {
+  wrap.querySelectorAll(".siswa-card").forEach((el) => {
     el.addEventListener("click", () => fillFormFromSiswa(rows[Number(el.dataset.idx)]));
   });
 }
 
-async function loadSiswaList() {
-  document.getElementById("list-siswa").innerHTML = '<div class="info-box">Memuat data…</div>';
-  try {
-    // v0.7.0: endpoint ?siswa=1 kini digerbang server-side, wajib idToken guru.
-    // v0.9.3: ambil token TERBARU langsung dari SDK (lihat ANTIREGRESI.md §25).
-    const idToken = await window.getFreshGuruIdToken();
-    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(idToken));
-    const json = await parseJsonAman_(res);
-    // PENTING (celah v0.7.0-v0.9.1, diperbaiki v0.9.2): sebelum ini, `json.data || []`
-    // membuat SEMUA jenis error (idToken kedaluwarsa, bukan akun guru, dll.) diam-diam
-    // jadi daftar kosong — guru melihat "Belum ada siswa" padahal datanya ADA, cuma
-    // gagal diverifikasi aksesnya. Sekarang errornya ditampilkan apa adanya.
-    if (json.status === "error") {
-      throw new Error(json.message || "(tidak ada pesan error dari server)");
+/** Muat daftar dengan 1x retry otomatis jika gagal teknis (404 proxy Apps Script). */
+async function fetchSiswaDenganRetry_() {
+  const idToken = await window.getFreshGuruIdToken();
+  const url = MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(idToken);
+  let lastErr;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok && res.status === 404 && attempt < 2) {
+        await new Promise((r) => setTimeout(r, 800));
+        continue;
+      }
+      const json = await parseJsonAman_(res);
+      if (json.status === "error") throw new Error(json.message || "(tidak ada pesan error dari server)");
+      return json;
+    } catch (err) {
+      lastErr = err;
+      const msg = String(err.message || err);
+      const teknis = /404|Failed to fetch|NetworkError|tidak merespons|timeout/i.test(msg);
+      if (teknis && attempt < 2) {
+        await new Promise((r) => setTimeout(r, 800));
+        continue;
+      }
+      throw err;
     }
+  }
+  throw lastErr;
+}
+
+async function loadSiswaList() {
+  document.getElementById("list-siswa").innerHTML = '<div class="kelas-empty">Memuat data…</div>';
+  try {
+    const json = await fetchSiswaDenganRetry_();
     state.siswaList = (json.data || []).slice().sort((a, b) =>
       String(a["Nama Lengkap"] || "").localeCompare(String(b["Nama Lengkap"] || ""), "id", { sensitivity: "base" })
     );
-    renderSiswaList("");
+    renderSiswaList(document.getElementById("search-siswa").value);
   } catch (err) {
-    document.getElementById("list-siswa").innerHTML = '<div class="info-box" style="border-color:var(--danger)">Gagal memuat data: ' + err.message + '</div>';
+    document.getElementById("list-siswa").innerHTML =
+      '<div class="kelas-empty" style="border-color:var(--danger);color:var(--danger)">Gagal memuat data: ' +
+      escText(err.message) +
+      "<br><button type=\"button\" class=\"btn btn-secondary\" id=\"btn-retry-load\" style=\"margin-top:12px\">Coba lagi</button></div>";
+    const btn = document.getElementById("btn-retry-load");
+    if (btn) btn.addEventListener("click", loadSiswaList);
   }
 }
 
 document.getElementById("search-siswa").addEventListener("input", (e) => renderSiswaList(e.target.value));
 
-/* ── IMPOR NISN MASSAL ──────────────────────────────────────────────
- * Parsing baris demi baris, format "Nama Lengkap, NISN". Baris kosong/rusak
- * dilewati di klien tanpa menghentikan yang lain; validasi format NISN (10
- * digit) & pencocokan nama tetap dilakukan lagi di server (doPostSiswaNisnBulk_)
- * sebagai sumber kebenaran, hasil di sini cuma pratinjau cepat sebelum kirim.
- */
 document.getElementById("btn-impor-nisn").addEventListener("click", async () => {
   const raw = document.getElementById("f-impor-nisn").value;
   const hasilEl = document.getElementById("impor-nisn-hasil");
@@ -299,7 +325,7 @@ document.getElementById("btn-impor-nisn").addEventListener("click", async () => 
     .filter(Boolean);
 
   if (!rows.length) {
-    hasilEl.innerHTML = '<p class="warn-line">Tidak ada baris valid untuk diimpor — pastikan formatnya "Nama, NISN" per baris.</p>';
+    hasilEl.innerHTML = '<p class="warn-line">Tidak ada baris valid — format "Nama, NISN" per baris.</p>';
     return;
   }
 
@@ -316,28 +342,28 @@ document.getElementById("btn-impor-nisn").addEventListener("click", async () => 
     const json = await parseJsonAman_(res);
     if (json.status !== "ok") throw new Error(json.message || "Gagal mengimpor");
 
-    let html = '<p class="ok-line">✓ ' + json.diperbarui.length + ' dari ' + rows.length + ' baris berhasil diperbarui.</p>';
+    let html = '<p class="ok-line">✓ ' + json.diperbarui.length + " dari " + rows.length + " baris berhasil diperbarui.</p>";
     if (json.diperbarui.length) {
-      html += "<ul>" + json.diperbarui.map((n) => "<li>" + n + "</li>").join("") + "</ul>";
+      html += "<ul>" + json.diperbarui.map((n) => "<li>" + escText(n) + "</li>").join("") + "</ul>";
     }
     if (json.tidakDitemukan && json.tidakDitemukan.length) {
-      html += '<p class="warn-line">⚠️ ' + json.tidakDitemukan.length + ' baris TIDAK berhasil (periksa manual):</p>';
+      html += '<p class="warn-line">⚠️ ' + json.tidakDitemukan.length + " baris TIDAK berhasil:</p>";
       html += "<ul>" + json.tidakDitemukan.map((r) =>
-        "<li>" + r.nama + " (" + r.nisn + ") — " + r.alasan + "</li>"
+        "<li>" + escText(r.nama) + " (" + escText(r.nisn) + ") — " + escText(r.alasan) + "</li>"
       ).join("") + "</ul>";
     }
     hasilEl.innerHTML = html;
     loadSiswaList();
   } catch (err) {
-    hasilEl.innerHTML = '<p class="warn-line">⚠️ Gagal mengimpor: ' + err.message + "</p>";
+    hasilEl.innerHTML = '<p class="warn-line">⚠️ Gagal mengimpor: ' + escText(err.message) + "</p>";
   } finally {
     btn.disabled = false;
   }
 });
 
-/* ── INIT (setelah lolos guard guru) ────────────────────────────── */
 document.addEventListener("guru-verified", () => {
-  document.getElementById("checking").remove();
+  const c = document.getElementById("checking");
+  if (c) c.remove();
   loadSiswaList();
 });
 document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../../index.html"));
