@@ -108,168 +108,209 @@
 
   <!-- Topbar -->
   <div id="topbar">
-    <div class="brand">Kelas <span>5</span> · 2026–2027</div>
+    <div class="brand">Kelas <span>5</span></div>
     <div id="user-info">
-      Halo, <strong id="display-name">—</strong>
+      <span class="user-greet">Halo, <strong id="display-name">—</strong></span>
       <button id="btn-logout" onclick="doLogout()">Keluar</button>
     </div>
   </div>
 
-  <!-- Hero -->
-  <div id="hero">
-    <h1>Pusat Belajar<br><em>Kelas Lima</em></h1>
-    <p>Semua yang kamu butuhkan untuk belajar ada di sini · TP 2026–2027</p>
+  <!-- Welcome (ringan, bukan hero gelap penuh) -->
+  <div class="home-welcome">
+    <div class="home-welcome-inner">
+      <p class="home-eyebrow">TP 2026–2027</p>
+      <h1 class="home-title">Halo, <em id="welcome-name">—</em></h1>
+      <p class="home-sub">Pilih menu di bawah untuk mulai belajar atau mengelola kelas.</p>
+    </div>
   </div>
 
-  <div class="container">
+  <div class="container home-container">
 
-    <!-- Admin Panel (only visible to guru) -->
-    <div id="admin-panel" class="hidden">
-      <h2>⚙️ Panel Guru</h2>
-      <div class="admin-actions">
-        <a href="pages/admin.html#pengumuman" class="btn btn-primary">+ Tambah Pengumuman</a>
-        <a href="pages/admin.html#modul" class="btn btn-secondary">Upload Modul</a>
-        <a href="pages/admin.html#soal" class="btn btn-secondary">Tambah Soal</a>
-        <a href="pages/admin.html#ortu" class="btn btn-secondary">👪 Persetujuan Orang Tua</a>
-        <a href="pages/admin.html" class="btn btn-secondary">Kelola Konten</a>
+    <!-- Ruang Kerja Guru (menggantikan panel tombol datar) -->
+    <section id="admin-panel" class="home-workspace hidden" aria-label="Ruang kerja guru">
+      <div class="home-section-head">
+        <h2 class="home-section-title">Ruang Kerja Guru</h2>
+        <p class="home-section-desc">Kelola konten, data siswa, dan persetujuan akun.</p>
       </div>
-    </div>
-
-    <!-- Kelas Panel (only visible to guru): data profil & foto siswa + Pustaka Belajar -->
-    <div id="kelas-panel" class="hidden">
-      <h2>🧑‍🎓 Kelas — Data Siswa</h2>
-      <div class="admin-actions">
-        <a href="pages/kelas/index.html" class="btn btn-primary">Kelola Data Siswa & Foto</a>
-        <a href="pages/mpls/rekap.html" class="btn btn-secondary">Rekap Hasil MPLS</a>
-        <a href="pages/admin.html#pustaka-belajar" class="btn btn-secondary">📄 Kelola Pustaka Belajar</a>
+      <div class="ws-grid">
+        <a href="pages/admin.html" class="ws-tile ws-tile-primary">
+          <span class="ws-ico">⚙️</span>
+          <span class="ws-body">
+            <span class="ws-title">Kelola Konten</span>
+            <span class="ws-desc">Pengumuman, modul, soal, linimasa, pustaka</span>
+          </span>
+        </a>
+        <a href="pages/admin.html#pengumuman" class="ws-tile">
+          <span class="ws-ico">📢</span>
+          <span class="ws-body">
+            <span class="ws-title">Pengumuman</span>
+            <span class="ws-desc">Tambah atau ubah pengumuman</span>
+          </span>
+        </a>
+        <a href="pages/admin.html#modul" class="ws-tile">
+          <span class="ws-ico">📚</span>
+          <span class="ws-body">
+            <span class="ws-title">Modul</span>
+            <span class="ws-desc">Upload modul pembelajaran</span>
+          </span>
+        </a>
+        <a href="pages/admin.html#soal" class="ws-tile">
+          <span class="ws-ico">💪</span>
+          <span class="ws-body">
+            <span class="ws-title">Soal</span>
+            <span class="ws-desc">Bank soal Uji Kemampuan</span>
+          </span>
+        </a>
+        <a href="pages/admin.html#ortu" class="ws-tile">
+          <span class="ws-ico">👪</span>
+          <span class="ws-body">
+            <span class="ws-title">Persetujuan Ortu</span>
+            <span class="ws-desc">Setujui pendaftaran orang tua</span>
+          </span>
+        </a>
       </div>
-    </div>
+    </section>
 
-    <!-- Menu Utama -->
-    <p class="section-label">Menu Utama</p>
-    <div class="card-grid">
-      <!-- data-akses: daftar role yang boleh lihat kartu ini (dipisah spasi).
-           Diterapkan lewat terapkanAksesMenu_() di skrip bawah — SEJAK v1.3,
-           SEMUA role (termasuk guru) difilter berdasarkan atribut ini, jadi
-           setiap kartu WAJIB mencantumkan role yang boleh melihatnya secara
-           eksplisit (kartu yang lupa mencantumkan "guru" akan ikut
-           tersembunyi dari guru juga, bukan lagi otomatis terlihat). -->
-      <a href="pages/mpls/index.html" class="card" data-akses="guru" style="--card-accent: #c76b98">
-        <div class="card-icon">🧭</div>
-        <div class="card-title">MPLS — Penilaian Non-Kognitif</div>
-        <div class="card-desc">Input observasi emosi, kemandirian, minat & kondisi fisik siswa selama MPLS</div>
-        <div class="card-badge">Aktif</div>
-      </a>
-      <a href="pages/cp-tp-atp.html" class="card" data-akses="guru" style="--card-accent: #2e6fbc">
-        <div class="card-icon">📋</div>
-        <div class="card-title">CP, TP & ATP</div>
-        <div class="card-desc">Capaian Pembelajaran, Tujuan Pembelajaran, dan Alur Tujuan Pembelajaran</div>
-        <div class="card-badge">Kurikulum</div>
-      </a>
-      <!-- Nama & badge kartu ini SENGAJA menunjukkan urutan belajar (Langkah 1/2/3) —
-           permintaan eksplisit Arif supaya siswa & orang tua paham harus mulai dari
-           "Ayo Belajar!" dulu, "Ingat Lagi" untuk mengulang, baru Uji Kemampuan untuk
-           menguji diri (lihat CHANGELOG.md untuk latar belakang rename dari "Modul
-           Pembelajaran"/"Materi Ajar"). Dibuka untuk orangtua juga sejak rename ini —
-           lihat catatan guardRolePage di pages/modul.html/materi.html/
-           pustaka-belajar.html. -->
-      <a href="pages/modul.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #2a9d6f">
-        <div class="card-icon">🚀</div>
-        <div class="card-title">Ayo Belajar!</div>
-        <div class="card-desc">Mulai dari sini — belajar langkah demi langkah sampai satu topik selesai</div>
-        <div class="card-badge">Langkah 1</div>
-      </a>
-      <a href="pages/materi.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #e8a020">
-        <div class="card-icon">🔁</div>
-        <div class="card-title">Ingat Lagi</div>
-        <div class="card-desc">Baca ulang apa yang sudah dipelajari biar makin nempel di kepala</div>
-        <div class="card-badge">Langkah 2</div>
-      </a>
-      <a href="pages/uji-kemampuan.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
-        <div class="card-icon">💪</div>
-        <div class="card-title">Uji Kemampuan</div>
-        <div class="card-desc">Latihan soal mandiri untuk menguji pemahamanmu per Tujuan Pembelajaran</div>
-        <div class="card-badge">Langkah 3 · Latihan</div>
-      </a>
-      <!-- Linimasa Materi (v1.3, permintaan Arif poin 2): dibuka untuk siswa/orangtua/guru
-           sekaligus sejak awal — SENGAJA read-only untuk SEMUA role di halaman ini
-           (termasuk guru); pengisian datanya cuma lewat tab "Linimasa" di admin.html. -->
-      <a href="pages/linimasa.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #1a7a8a">
-        <div class="card-icon">🗓️</div>
-        <div class="card-title">Linimasa Materi</div>
-        <div class="card-desc">Kalender bulanan: materi apa yang sudah, sedang, dan akan dipelajari per mata pelajaran</div>
-        <div class="card-badge">Info</div>
-      </a>
-      <!-- Pustaka Belajar (menggantikan Galeri Visual — lihat RANCANGAN-PUSTAKA-BELAJAR.md):
-           file PDF materi presentasi bebas dari guru pendamping, TIDAK terikat TP resmi.
-           Sama pola akses dengan Linimasa/Galeri Visual (siswa/guru/orangtua, read-only di
-           sini; pengisian lewat tab "Pustaka Belajar" di admin.html). -->
-      <a href="pages/pustaka-belajar.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #5b6ee1">
-        <div class="card-icon">📄</div>
-        <div class="card-title">Pustaka Belajar</div>
-        <div class="card-desc">Materi presentasi (PDF) yang dibagikan guru pendamping — dibaca langsung, tidak untuk diunduh</div>
-        <div class="card-badge">Pelengkap</div>
-      </a>
-      <!-- Profil & Level: SENGAJA siswa-only (bukan "siswa guru") — ini profil PRIBADI
-           siswa yang login, guru sudah punya jalur lain untuk melihat siswa lain (Riwayat
-           Latihan & Laporan Siswa Pintu 3), lihat ANTIREGRESI.md §35/36. -->
-      <a href="pages/profil-siswa.html" class="card" data-akses="siswa" style="--card-accent: #c9a227">
-        <div class="card-icon">🎮</div>
-        <div class="card-title">Profil & Level</div>
-        <div class="card-desc">Lihat level, progres, dan riwayat capaianmu di Uji Kemampuan</div>
-        <div class="card-badge">Baru</div>
-      </a>
-      <!-- Papan Peringkat: siswa DAN guru boleh lihat — data level/EXP memang dirancang
-           publik untuk siapa saja yang login (beda dari hasil_latihan yang privat),
-           lihat ANTIREGRESI.md §35. -->
-      <a href="pages/papan-peringkat.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
-        <div class="card-icon">🏅</div>
-        <div class="card-title">Papan Peringkat</div>
-        <div class="card-desc">Bandingkan level & EXP-mu dengan teman sekelas</div>
-        <div class="card-badge">Baru</div>
-      </a>
-      <!-- Riwayat Latihan: TIDAK termasuk 4 akses siswa yang diminta Arif
-           (Modul/Materi/Galeri/Uji Kemampuan saja) — jadi guru-only untuk saat
-           ini. Kalau ini tidak sengaja (siswa biasanya wajar melihat riwayat
-           latihannya sendiri), tinggal ganti data-akses jadi "siswa guru". -->
-      <a href="pages/riwayat-latihan.html" class="card" data-akses="guru" style="--card-accent: #6b4fa0">
-        <div class="card-icon">📈</div>
-        <div class="card-title">Riwayat Latihan</div>
-        <div class="card-desc">Lihat semua hasil Uji Kemampuan yang pernah dikerjakan — tersimpan permanen</div>
-        <div class="card-badge">Hasil</div>
-      </a>
-      <!-- Khusus guru & orang tua — disembunyikan lewat class "hidden", ditampilkan oleh skrip
-           role-check di bawah (bukan untuk akun siswa, lihat ANTIREGRESI.md §28).
-           Penegakan SESUNGGUHNYA tetap di server (wajibAksesLaporan_ di Code.gs) — ini cuma
-           supaya siswa tidak melihat kartunya di beranda. -->
-      <a href="pages/laporan-siswa.html" id="card-laporan-siswa" class="card hidden" style="--card-accent: #2a9d6f">
-        <div class="card-icon">📊</div>
-        <div class="card-title">Laporan Siswa</div>
-        <div class="card-desc">Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas</div>
-        <div class="card-badge">Guru & Orang Tua</div>
-      </a>
-      <a href="pages/info.html" class="card" data-akses="orangtua guru" style="--card-accent: #c94040">
-        <div class="card-icon">📢</div>
-        <div class="card-title">Pengumuman</div>
-        <div class="card-desc">Informasi penting, jadwal, dan pengumuman dari guru</div>
-        <div class="card-badge">Info</div>
-      </a>
-      <a href="pages/jadwal.html" class="card" data-akses="guru" style="--card-accent: #1a7a8a">
-        <div class="card-icon">🗓️</div>
-        <div class="card-title">Jadwal Pelajaran</div>
-        <div class="card-desc">Jadwal mingguan dan kalender akademik</div>
-        <div class="card-badge">Jadwal</div>
-      </a>
-    </div>
+    <section id="kelas-panel" class="home-workspace home-workspace-kelas hidden" aria-label="Data kelas">
+      <div class="home-section-head">
+        <h2 class="home-section-title">Data Kelas</h2>
+        <p class="home-section-desc">Profil siswa, rekap MPLS, dan pustaka.</p>
+      </div>
+      <div class="ws-grid">
+        <a href="pages/kelas/index.html" class="ws-tile ws-tile-accent">
+          <span class="ws-ico">🧑‍🎓</span>
+          <span class="ws-body">
+            <span class="ws-title">Data Siswa &amp; Foto</span>
+            <span class="ws-desc">Kelola profil dan foto siswa</span>
+          </span>
+        </a>
+        <a href="pages/mpls/rekap.html" class="ws-tile">
+          <span class="ws-ico">📋</span>
+          <span class="ws-body">
+            <span class="ws-title">Rekap MPLS</span>
+            <span class="ws-desc">Hasil asesmen non-kognitif</span>
+          </span>
+        </a>
+        <a href="pages/admin.html#pustaka-belajar" class="ws-tile">
+          <span class="ws-ico">📄</span>
+          <span class="ws-body">
+            <span class="ws-title">Pustaka Belajar</span>
+            <span class="ws-desc">Kelola file PDF materi</span>
+          </span>
+        </a>
+      </div>
+    </section>
 
-    <!-- Pengumuman Terbaru: sejajarkan dengan akses kartu "Pengumuman" di atas
-         (orang tua & guru — TIDAK untuk siswa, sesuai permintaan Arif). -->
-    <div data-akses="orangtua guru">
-      <p class="section-label">Pengumuman Terbaru</p>
+    <!-- Belajar: jalur utama siswa -->
+    <section class="home-section" aria-label="Jalur belajar">
+      <div class="home-section-head">
+        <h2 class="home-section-title">Belajar</h2>
+        <p class="home-section-desc">Ikuti urutan langkah agar materi lebih mudah dipahami.</p>
+      </div>
+      <div class="card-grid card-grid-feature">
+        <a href="pages/modul.html" class="card card-feature" data-akses="siswa guru orangtua" style="--card-accent: #2a9d6f">
+          <div class="card-step">1</div>
+          <div class="card-icon">🚀</div>
+          <div class="card-title">Ayo Belajar!</div>
+          <div class="card-desc">Mulai dari sini — belajar langkah demi langkah sampai satu topik selesai</div>
+          <div class="card-badge">Langkah 1</div>
+        </a>
+        <a href="pages/materi.html" class="card card-feature" data-akses="siswa guru orangtua" style="--card-accent: #e8a020">
+          <div class="card-step">2</div>
+          <div class="card-icon">🔁</div>
+          <div class="card-title">Ingat Lagi</div>
+          <div class="card-desc">Baca ulang apa yang sudah dipelajari biar makin nempel di kepala</div>
+          <div class="card-badge">Langkah 2</div>
+        </a>
+        <a href="pages/uji-kemampuan.html" class="card card-feature" data-akses="siswa guru" style="--card-accent: #9b59b6">
+          <div class="card-step">3</div>
+          <div class="card-icon">💪</div>
+          <div class="card-title">Uji Kemampuan</div>
+          <div class="card-desc">Latihan soal mandiri untuk menguji pemahamanmu per Tujuan Pembelajaran</div>
+          <div class="card-badge">Langkah 3</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Jelajah & info -->
+    <section class="home-section" aria-label="Jelajah">
+      <div class="home-section-head">
+        <h2 class="home-section-title">Jelajah</h2>
+        <p class="home-section-desc">Linimasa, pustaka, profil, dan menu pendukung lainnya.</p>
+      </div>
+      <div class="card-grid">
+        <a href="pages/mpls/index.html" class="card" data-akses="guru" style="--card-accent: #c76b98">
+          <div class="card-icon">🧭</div>
+          <div class="card-title">MPLS</div>
+          <div class="card-desc">Input observasi emosi, kemandirian, minat &amp; kondisi fisik</div>
+          <div class="card-badge">Guru</div>
+        </a>
+        <a href="pages/cp-tp-atp.html" class="card" data-akses="guru" style="--card-accent: #2e6fbc">
+          <div class="card-icon">📋</div>
+          <div class="card-title">CP, TP &amp; ATP</div>
+          <div class="card-desc">Capaian, tujuan, dan alur pembelajaran</div>
+          <div class="card-badge">Kurikulum</div>
+        </a>
+        <a href="pages/linimasa.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #1a7a8a">
+          <div class="card-icon">🗓️</div>
+          <div class="card-title">Linimasa Materi</div>
+          <div class="card-desc">Materi yang sudah, sedang, dan akan dipelajari</div>
+          <div class="card-badge">Info</div>
+        </a>
+        <a href="pages/pustaka-belajar.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #5b6ee1">
+          <div class="card-icon">📄</div>
+          <div class="card-title">Pustaka Belajar</div>
+          <div class="card-desc">Materi presentasi (PDF) dari guru pendamping</div>
+          <div class="card-badge">Pelengkap</div>
+        </a>
+        <a href="pages/profil-siswa.html" class="card" data-akses="siswa" style="--card-accent: #c9a227">
+          <div class="card-icon">🎮</div>
+          <div class="card-title">Profil &amp; Level</div>
+          <div class="card-desc">Level, progres, dan riwayat capaianmu</div>
+          <div class="card-badge">Baru</div>
+        </a>
+        <a href="pages/papan-peringkat.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
+          <div class="card-icon">🏅</div>
+          <div class="card-title">Papan Peringkat</div>
+          <div class="card-desc">Bandingkan level &amp; EXP dengan teman sekelas</div>
+          <div class="card-badge">Baru</div>
+        </a>
+        <a href="pages/riwayat-latihan.html" class="card" data-akses="guru" style="--card-accent: #6b4fa0">
+          <div class="card-icon">📈</div>
+          <div class="card-title">Riwayat Latihan</div>
+          <div class="card-desc">Semua hasil Uji Kemampuan yang tersimpan</div>
+          <div class="card-badge">Hasil</div>
+        </a>
+        <a href="pages/laporan-siswa.html" id="card-laporan-siswa" class="card hidden" style="--card-accent: #2a9d6f">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Laporan Siswa</div>
+          <div class="card-desc">Profil, asesmen MPLS, dan jurnal aktivitas</div>
+          <div class="card-badge">Guru &amp; Orang Tua</div>
+        </a>
+        <a href="pages/info.html" class="card" data-akses="orangtua guru" style="--card-accent: #c94040">
+          <div class="card-icon">📢</div>
+          <div class="card-title">Pengumuman</div>
+          <div class="card-desc">Informasi penting dan jadwal dari guru</div>
+          <div class="card-badge">Info</div>
+        </a>
+        <a href="pages/jadwal.html" class="card" data-akses="guru" style="--card-accent: #1a7a8a">
+          <div class="card-icon">🗓️</div>
+          <div class="card-title">Jadwal Pelajaran</div>
+          <div class="card-desc">Jadwal mingguan dan kalender akademik</div>
+          <div class="card-badge">Jadwal</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Pengumuman Terbaru -->
+    <section class="home-section" data-akses="orangtua guru" aria-label="Pengumuman terbaru">
+      <div class="home-section-head">
+        <h2 class="home-section-title">Pengumuman Terbaru</h2>
+      </div>
       <ul id="pengumuman-list">
         <li class="empty-state">Memuat pengumuman…</li>
       </ul>
-    </div>
+    </section>
 
   </div>
 
@@ -590,6 +631,8 @@
       document.getElementById('status-screen').classList.add('hidden');
       document.getElementById('app').classList.remove('hidden');
       document.getElementById('display-name').textContent = namaSiswa;
+      const _wn1 = document.getElementById('welcome-name');
+      if (_wn1) _wn1.textContent = namaSiswa;
       // role siswa: #admin-panel, #kelas-panel, #card-laporan-siswa TETAP
       // hidden (default HTML-nya) — tidak disentuh di sini sama sekali.
       terapkanAksesMenu_('siswa');
@@ -630,6 +673,8 @@
       document.getElementById('app').classList.remove('hidden');
 
       document.getElementById('display-name').textContent = namaUser;
+      const _wn2 = document.getElementById('welcome-name');
+      if (_wn2) _wn2.textContent = namaUser;
 
       // Tampilkan panel admin & kontainer Kelas kalau guru
       if (role === 'guru') {
