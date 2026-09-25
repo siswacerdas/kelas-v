@@ -11,7 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;650&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/css/design-system.css" />
 <style>
-  /* ── Ekstensi khusus halaman Ayo Belajar! (token dari design-system) ── */
   :root {
     --m-bahasa-indonesia: #8c3d5f;
     --m-matematika:       #1f6f78;
@@ -31,7 +30,6 @@
     font-size: 14px;
   }
 
-  /* Topbar: aksen hijau langkah 1 */
   #topbar { border-bottom-color: var(--step-accent); }
   #topbar .brand span { color: var(--step-accent); }
   #topbar a.back {
@@ -42,7 +40,6 @@
   }
   #topbar a.back:hover { color: #fff; }
 
-  /* Welcome strip (seperti home-welcome) */
   .bl-welcome {
     background: linear-gradient(180deg, #e8f5ef 0%, var(--paper) 100%);
     border-bottom: 1px solid var(--border);
@@ -100,7 +97,6 @@
     padding: var(--s-6) var(--s-4) var(--s-10);
   }
 
-  /* Filter chips */
   .filter-row {
     display: flex;
     gap: 8px;
@@ -129,7 +125,6 @@
     border-color: var(--ink);
   }
 
-  /* Group mapel */
   .group-title {
     display: flex;
     align-items: center;
@@ -175,7 +170,6 @@
     margin: 1rem 0 0.55rem 2px;
   }
 
-  /* Kartu modul — seirama .card beranda */
   .modul-card {
     display: flex;
     align-items: flex-start;
@@ -288,7 +282,6 @@
     border: 1px dashed var(--border);
   }
 
-  /* Cek progres (kelas dipakai cek-progres-tersimpan.js) */
   .cekprog-tombol {
     display: inline-flex;
     align-items: center;
@@ -401,9 +394,6 @@
   const app = getApps()[0];
   const db = getFirestore(app);
 
-  // Peta warna & ikon default per mapel, dipakai sebagai fallback untuk
-  // entri Firestore (link eksternal dari admin) yang tidak menyertakan
-  // mapelColor/mapelIcon sendiri — supaya tetap konsisten dengan modul lokal.
   const MAPEL_META = {
     "Bahasa Indonesia": { color: "var(--m-bahasa-indonesia)", icon: "📝" },
     "Matematika": { color: "var(--m-matematika)", icon: "🔢" },
@@ -421,15 +411,16 @@
   const collapsedMapel = new Set();
 
   function esc(str) {
-    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" }[c]));
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      "&": "&" + "amp;",
+      "<": "&" + "lt;",
+      ">": "&" + "gt;",
+      '"': "&" + "quot;",
+      "'": "&#39;"
+    }[c]));
   }
 
   async function loadModul() {
-    const wrap = document.getElementById("list-modul");
-
-    // 1) Modul lokal interaktif, dari modul-index.js (sumber statis di repo).
-    // Ini SELALU dirender terlebih dulu dan tidak bergantung pada Firestore —
-    // supaya modul lokal tetap tampil walau langkah 2 di bawah gagal.
     const local = (window.MODUL_INDEX || []).map((it) => {
       const meta = metaFor(it.mapel);
       return {
@@ -441,10 +432,6 @@
       };
     });
 
-    // 2) Modul eksternal (link Drive/PDF dsb.) yang diisi guru lewat admin.
-    // Dibungkus try/catch TERPISAH: kalau koleksi "modul" di Firestore belum
-    // ada / aturan keamanan menolak baca / jaringan gagal, modul lokal di
-    // atas tetap harus tampil — bukan malah ikut hilang.
     let external = [];
     try {
       const snap = await getDocs(collection(db, "modul"));
@@ -453,7 +440,7 @@
         const mapel = data.mapel || "(Tanpa Mapel)";
         const meta = metaFor(mapel);
         const urlOk = data.url_file && /^https?:\/\//.test(data.url_file);
-        if (!urlOk) return; // lewati entri tanpa link valid
+        if (!urlOk) return;
         external.push({
           mapel,
           mapelColor: meta.color,
@@ -577,9 +564,6 @@
     document.getElementById("app-modul").classList.remove("hidden");
     loadModul();
   });
-  // v1.3: dibuka untuk orangtua juga (permintaan eksplisit Arif) — TIDAK berisiko
-  // tracker EXP salah kirim, karena modul-progress-tracker.js di tiap file konten
-  // SUDAH memfilter `data.role !== "siswa"` sebelum mengirim progres apa pun.
   document.addEventListener("DOMContentLoaded", () => window.guardRolePage(['siswa','guru','orangtua'], '../index.html'));
 </script>
 </body>
