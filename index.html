@@ -395,8 +395,10 @@
   // sendiri (browserSessionPersistence -> hilang begitu tab ditutup).
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, limit }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager,
+    collection, getDocs, getDocsFromCache, doc, getDoc, getDocFromCache, query, orderBy, limit
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ──────────────────────────────────────────────────────────
   // TODO: Ganti nilai di bawah dengan config Firebase kamu!
@@ -413,7 +415,16 @@
 
   const app  = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const db   = getFirestore(app);
+  let db;
+  try {
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
+    });
+  } catch (e) {
+    db = getFirestore(app);
+  }
 
   const KEY_NAMA_SISWA = "kelas5_siswa_nama";
 
@@ -485,6 +496,36 @@
       setTimeout(run, 0);
     }
   }
+
+  function getDocCacheFirst_(ref) {
+    return getDocFromCache(ref).then((snap) => {
+      if (snap.exists()) return snap;
+      return getDoc(ref);
+    }).catch(() => getDoc(ref));
+  }
+
+  const KEY_PENGUMUMAN_CACHE = "kelas5_pengumuman_html";
+  const PENGUMUMAN_TTL_MS = 3 * 60 * 1000;
+
+  function bacaCachePengumumanHtml_() {
+    try {
+      const raw = sessionStorage.getItem(KEY_PENGUMUMAN_CACHE);
+      if (!raw) return null;
+      const o = JSON.parse(raw);
+      if (!o || Date.now() - (o.at || 0) > PENGUMUMAN_TTL_MS) return null;
+      return o.html || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function tulisCachePengumumanHtml_(htmlStr) {
+    try {
+      sessionStorage.setItem(KEY_PENGUMUMAN_CACHE, JSON.stringify({ html: htmlStr, at: Date.now() }));
+    } catch (e) {}
+  }
+
+
 
 
   /** Terapkan pembatasan kartu menu & bagian "Pengumuman Terbaru" per role
@@ -732,6 +773,7 @@
   window.doLogout = () => {
     sessionStorage.removeItem(KEY_NAMA_SISWA);
     hapusCacheUserMeta_();
+    try { sessionStorage.removeItem(KEY_PENGUMUMAN_CACHE); } catch (e) {}
     return signOut(auth);
   };
 
@@ -837,7 +879,7 @@
         return;
       }
 
-      const userSnap = await getDoc(doc(db, 'users', user.uid));
+      const userSnap = await getDocCacheFirst_(doc(db, 'users', user.uid));
       const userData = userSnap.exists() ? userSnap.data() : {};
       const namaUser = userData.nama || user.email;
       const role     = userData.role || 'siswa';
@@ -882,33 +924,65 @@
   // ── Muat pengumuman dari Firestore ────────────────────────
   async function loadPengumuman() {
     const list = document.getElementById('pengumuman-list');
-    try {
-      const q = query(
-        collection(db, 'pengumuman'),
-        orderBy('tanggal', 'desc'),
-        limit(5)
-      );
-      const snap = await getDocs(q);
+    if (!list) return;
+
+    // 1) HTML cache sesi (3 menit) — instan tanpa tunggu jaringan
+    const cachedHtml = bacaCachePengumumanHtml_();
+    if (cachedHtml) {
+      list.innerHTML = cachedHtml;
+    }
+
+    const q = query(
+      collection(db, 'pengumuman'),
+      orderBy('tanggal', 'desc'),
+      limit(5)
+    );
+
+    function renderSnap_(snap) {
       if (snap.empty) {
-        list.innerHTML = '<li class="empty-state">Belum ada pengumuman.</li>';
+        const empty = '<li class="empty-state">Belum ada pengumuman.</li>';
+        list.innerHTML = empty;
+        tulisCachePengumumanHtml_(empty);
         return;
       }
-      list.innerHTML = '';
+      let html = '';
       snap.forEach(d => {
         const data = d.data();
         const tgl = data.tanggal?.toDate?.()?.toLocaleDateString('id-ID', {
           day: 'numeric', month: 'long', year: 'numeric'
         }) || '';
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <div class="tgl">${tgl}</div>
-          <div class="judul">${data.judul || '—'}</div>
-          <div class="isi">${data.isi || ''}</div>
-        `;
-        list.appendChild(li);
+        const judul = String(data.judul || '—')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const isi = String(data.isi || '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        html += '<li>' +
+          '<div class="tgl">' + tgl + '</div>' +
+          '<div class="judul">' + judul + '</div>' +
+          '<div class="isi">' + isi + '</div>' +
+          '</li>';
       });
+      list.innerHTML = html;
+      tulisCachePengumumanHtml_(html);
+    }
+
+    try {
+      // 2) Coba IndexedDB Firestore cache dulu
+      try {
+        const fromCache = await getDocsFromCache(q);
+        if (!fromCache.empty || cachedHtml) {
+          if (!fromCache.empty) renderSnap_(fromCache);
+        }
+      } catch (e) {
+        // belum ada cache persistence — lanjut server
+      }
+      // 3) Server (revalidasi / kunjungan pertama)
+      const snap = await getDocs(q);
+      renderSnap_(snap);
     } catch (err) {
-      list.innerHTML = `<li class="empty-state">Gagal memuat pengumuman: ${err.message}</li>`;
+      if (!cachedHtml) {
+        list.innerHTML = '<li class="empty-state">Gagal memuat pengumuman: ' +
+          String(err.message || err).replace(/</g, '') + '</li>';
+      }
     }
   }
 </script>
