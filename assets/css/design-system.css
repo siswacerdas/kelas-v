@@ -770,3 +770,31 @@ footer {
 #app.role-siswa .home-welcome {
   background: linear-gradient(180deg, #e8f5ee 0%, var(--paper) 100%);
 }
+
+
+/* ── Tahap 4: orang tua ─────────────────────────────────── */
+#app.role-orangtua .home-welcome {
+  background: linear-gradient(180deg, #eef2fa 0%, var(--paper) 100%);
+}
+.ortu-tip-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  padding: 1rem 1.15rem;
+  box-shadow: var(--shadow-sm);
+}
+.ortu-tip-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.35rem;
+}
+.ortu-tip-body {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.55;
+  margin: 0;
+}
