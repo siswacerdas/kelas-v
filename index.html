@@ -3,7 +3,997 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RESTORE_MARKER_CHECK</title>
+  <title>Kelas 5 · Tahun Pelajaran 2026–2027</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:      #1a1a2e;
+      --ink-2:    #3d3d5c;
+      --ink-3:    #7b7b9a;
+      --paper:    #faf9f6;
+      --paper-2:  #f0eee8;
+      --paper-3:  #e2dfd6;
+      --accent:   #2e6fbc;
+      --accent-2: #e8a020;
+      --accent-3: #2a9d6f;
+      --danger:   #c94040;
+      --border:   rgba(26,26,46,0.10);
+      --r:        10px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── TOPBAR ─────────────────────────────── */
+    #topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--ink);
+      color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.5rem;
+      height: 52px;
+      border-bottom: 2px solid var(--accent-2);
+    }
+    #topbar .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+      color: #fff;
+    }
+    #topbar .brand span { color: var(--accent-2); }
+
+    #user-info {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: rgba(255,255,255,0.7);
+    }
+    #user-info strong { color: #fff; }
+    #btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.8);
+      padding: 4px 12px; border-radius: 6px;
+      cursor: pointer; font-size: 12px;
+      transition: all 0.2s;
+    }
+    #btn-logout:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+
+    /* ── HERO ───────────────────────────────── */
+    #hero {
+      background: var(--ink);
+      padding: 3.5rem 1.5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.02) 40px,
+        rgba(255,255,255,0.02) 41px
+      );
+    }
+    #hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #fff;
+      line-height: 1.15;
+      position: relative;
+    }
+    #hero h1 em {
+      font-style: normal;
+      color: var(--accent-2);
+    }
+    #hero p {
+      margin-top: 0.75rem;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      position: relative;
+    }
+
+    /* ── MAIN LAYOUT ────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* ── SECTION LABEL ──────────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── CARDS GRID ─────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--card-accent, var(--accent));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(26,26,46,0.08); border-color: rgba(26,26,46,0.18); }
+    .card:hover::after { transform: scaleX(1); }
+
+    .card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    .card-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .card-desc {
+      font-size: 12px;
+      color: var(--ink-3);
+      line-height: 1.5;
+    }
+    .card-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: var(--paper-2);
+      color: var(--ink-3);
+      margin-top: auto;
+      align-self: flex-start;
+    }
+
+    /* ── PENGUMUMAN ─────────────────────────── */
+    #pengumuman-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    #pengumuman-list li {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent-2);
+      border-radius: 0 var(--r) var(--r) 0;
+      padding: 0.75rem 1rem;
+    }
+    #pengumuman-list li .tgl { font-size: 11px; color: var(--ink-3); }
+    #pengumuman-list li .judul { font-size: 13px; font-weight: 600; margin-top: 2px; }
+    #pengumuman-list li .isi { font-size: 12px; color: var(--ink-2); margin-top: 3px; line-height: 1.5; }
+    .empty-state { padding: 1.5rem; text-align: center; color: var(--ink-3); font-size: 13px; }
+
+    /* ── ADMIN PANEL ────────────────────────── */
+    #admin-panel, #kelas-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--r);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    #kelas-panel { border-top-color: var(--accent-3); margin-bottom: 2.5rem; }
+    #admin-panel h2, #kelas-panel h2 { font-size: 14px; font-weight: 600; margin-bottom: 0.75rem; }
+    .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 7px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #2460a8; }
+    .btn-secondary { background: var(--paper-2); color: var(--ink); border-color: var(--border); }
+    .btn-secondary:hover { background: var(--paper-3); }
+
+    /* ── LOGIN SCREEN ───────────────────────── */
+    #login-screen, #status-screen {
+      position: fixed; inset: 0;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+      padding: 1.5rem;
+    }
+    #login-box, .status-box {
+      background: var(--paper);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 100%; max-width: 360px;
+      text-align: center;
+    }
+    .status-box .status-icon { font-size: 40px; margin-bottom: 0.75rem; }
+    .status-box h2 { font-size: 20px; margin-bottom: 0.5rem; }
+    .status-box p { font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-bottom: 1.5rem; }
+    .status-box button {
+      width: 100%; padding: 10px; border: none; border-radius: 7px;
+      background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    #login-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    #login-box p { font-size: 13px; color: var(--ink-3); margin-bottom: 1.5rem; }
+
+    /* ── TAB LOGIN (Siswa / Guru & Orang Tua) ────────── */
+    .login-tabs {
+      display: flex; gap: 4px; margin-bottom: 1.25rem;
+      background: var(--paper-2); border-radius: 8px; padding: 3px;
+    }
+    .login-tab {
+      flex: 1; padding: 8px 4px; border: none; background: transparent;
+      border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--ink-3);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .login-tab.active { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(26,26,46,0.12); }
+
+    .form-group { margin-bottom: 0.75rem; text-align: left; }
+    .form-group label { font-size: 12px; font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 9px 12px;
+      border: 1px solid var(--paper-3);
+      border-radius: 7px;
+      font-size: 14px; color: var(--ink);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    #btn-login, #btn-login-siswa {
+      width: 100%; margin-top: 0.5rem;
+      padding: 10px; border: none; border-radius: 7px;
+      background: var(--accent); color: #fff;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: background 0.2s;
+    }
+    #btn-login:hover, #btn-login-siswa:hover { background: #2460a8; }
+    #btn-login:disabled, #btn-login-siswa:disabled { opacity: 0.6; cursor: not-allowed; }
+    #login-error, #login-siswa-error, #lupa-pass-msg { font-size: 12px; color: var(--danger); margin-top: 8px; min-height: 18px; }
+    #lupa-pass-msg.ok { color: var(--accent-3); }
+
+    /* ── FOOTER ─────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      font-size: 11px;
+      color: var(--ink-3);
+    }
+
+    .hidden { display: none !important; }
+
+    /* ── LOADING ────────────────────────────── */
+    #loading {
+      position: fixed; inset: 0;
+      background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.3s;
+    }
+    #loading .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-2);
+      display: inline-block; margin: 0 4px;
+      animation: bounce 0.9s infinite;
+    }
+    #loading .dot:nth-child(2) { animation-delay: 0.15s; }
+    #loading .dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+  </style>
 </head>
-<body>test</body>
+<body>
+
+<!-- Loading -->
+<div id="loading">
+  <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+</div>
+
+<!-- Login Screen -->
+<div id="login-screen">
+  <div id="login-box">
+    <h2>Kelas <em style="color:var(--accent-2);font-style:normal">5</em></h2>
+    <p>Tahun Pelajaran 2026–2027<br>Silakan masuk untuk melanjutkan</p>
+
+    <div class="login-tabs">
+      <button type="button" class="login-tab active" id="tab-siswa">Siswa</button>
+      <button type="button" class="login-tab" id="tab-guru">Guru &amp; Orang Tua</button>
+    </div>
+
+    <!-- Login Siswa: pilih nama + NISN (Fase 3, lihat CHANGELOG.md v0.11.0) -->
+    <div id="form-login-siswa">
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <select id="inp-siswa-nama" autocomplete="off">
+          <option value="">— Pilih namamu —</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>NISN</label>
+        <input type="text" id="inp-siswa-nisn" placeholder="10 digit" inputmode="numeric" maxlength="10" autocomplete="off" />
+      </div>
+      <button id="btn-login-siswa">Masuk</button>
+      <div id="login-siswa-error"></div>
+    </div>
+
+    <!-- Login Guru & Orang Tua: email + kata sandi (tidak berubah) -->
+    <div id="form-login-guru" class="hidden">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="inp-email" placeholder="email@sekolah.sch.id" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Kata Sandi</label>
+        <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+      <button id="btn-login">Masuk</button>
+      <div id="login-error"></div>
+      <p style="font-size:12px;margin-top:14px;color:var(--ink-3)">
+        <a href="#" id="link-lupa-pass" style="color:var(--accent);font-weight:600">Lupa kata sandi?</a>
+        &nbsp;·&nbsp;
+        Orang tua/wali belum punya akun?
+        <a href="daftar-orangtua.html" style="color:var(--accent);font-weight:600">Daftar di sini</a>
+      </p>
+    </div>
+
+    <!-- Lupa Kata Sandi (Fase 5, lihat CHANGELOG.md v0.11.0) — SENGAJA
+         menggantikan tampilan form login guru/orangtua, bukan halaman/modal
+         terpisah, supaya alurnya sesederhana mungkin. Cuma untuk guru/orangtua
+         (email+password) — siswa tidak punya "kata sandi" dalam arti akun
+         Firebase (NISN dicek lewat Apps Script, bukan Firebase Auth). -->
+    <div id="form-lupa-pass" class="hidden">
+      <p style="font-size:13px;color:var(--ink-3);margin-bottom:1rem;text-align:left">
+        Masukkan email akunmu. Kalau email itu terdaftar, tautan untuk
+        membuat kata sandi baru akan dikirim ke email tersebut.
+      </p>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="inp-lupa-email" placeholder="email@sekolah.sch.id" autocomplete="email" />
+      </div>
+      <button id="btn-lupa-pass">Kirim Tautan Reset</button>
+      <div id="lupa-pass-msg"></div>
+      <p style="font-size:12px;margin-top:14px;color:var(--ink-3)">
+        <a href="#" id="link-balik-login" style="color:var(--accent);font-weight:600">← Kembali ke halaman masuk</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Layar status akun orang tua yang BELUM/TIDAK bisa masuk (Fase 4,
+     lihat CHANGELOG.md v0.11.0) — ditampilkan MENGGANTI #app sepenuhnya,
+     bukan cuma menyembunyikan sebagian menu, supaya tidak ada celah orang tua
+     yang belum disetujui melihat apa pun dari isi aplikasi. -->
+<div id="status-screen" class="hidden">
+  <div class="status-box">
+    <div id="status-icon" class="status-icon">⏳</div>
+    <h2 id="status-title">Menunggu Persetujuan</h2>
+    <p id="status-desc">
+      Pendaftaran akunmu sudah kami terima dan sedang menunggu persetujuan
+      guru. Silakan coba masuk lagi beberapa saat lagi, atau hubungi wali
+      kelas kalau sudah menunggu lebih dari 1-2 hari.
+    </p>
+    <button onclick="doLogout()">Keluar</button>
+  </div>
+</div>
+
+<!-- Main App (hidden until login) -->
+<div id="app" class="hidden">
+
+  <!-- Topbar -->
+  <div id="topbar">
+    <div class="brand">Kelas <span>5</span> · 2026–2027</div>
+    <div id="user-info">
+      Halo, <strong id="display-name">—</strong>
+      <button id="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div id="hero">
+    <h1>Pusat Belajar<br><em>Kelas Lima</em></h1>
+    <p>Semua yang kamu butuhkan untuk belajar ada di sini · TP 2026–2027</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Admin Panel (only visible to guru) -->
+    <div id="admin-panel" class="hidden">
+      <h2>⚙️ Panel Guru</h2>
+      <div class="admin-actions">
+        <a href="pages/admin.html#pengumuman" class="btn btn-primary">+ Tambah Pengumuman</a>
+        <a href="pages/admin.html#modul" class="btn btn-secondary">Upload Modul</a>
+        <a href="pages/admin.html#soal" class="btn btn-secondary">Tambah Soal</a>
+        <a href="pages/admin.html#ortu" class="btn btn-secondary">👪 Persetujuan Orang Tua</a>
+        <a href="pages/admin.html" class="btn btn-secondary">Kelola Konten</a>
+      </div>
+    </div>
+
+    <!-- Kelas Panel (only visible to guru): data profil & foto siswa + Pustaka Belajar -->
+    <div id="kelas-panel" class="hidden">
+      <h2>🧑‍🎓 Kelas — Data Siswa</h2>
+      <div class="admin-actions">
+        <a href="pages/kelas/index.html" class="btn btn-primary">Kelola Data Siswa & Foto</a>
+        <a href="pages/mpls/rekap.html" class="btn btn-secondary">Rekap Hasil MPLS</a>
+        <a href="pages/admin.html#pustaka-belajar" class="btn btn-secondary">📄 Kelola Pustaka Belajar</a>
+      </div>
+    </div>
+
+    <!-- Menu Utama -->
+    <p class="section-label">Menu Utama</p>
+    <div class="card-grid">
+      <!-- data-akses: daftar role yang boleh lihat kartu ini (dipisah spasi).
+           Diterapkan lewat terapkanAksesMenu_() di skrip bawah — SEJAK v1.3,
+           SEMUA role (termasuk guru) difilter berdasarkan atribut ini, jadi
+           setiap kartu WAJIB mencantumkan role yang boleh melihatnya secara
+           eksplisit (kartu yang lupa mencantumkan "guru" akan ikut
+           tersembunyi dari guru juga, bukan lagi otomatis terlihat). -->
+      <a href="pages/mpls/index.html" class="card" data-akses="guru" style="--card-accent: #c76b98">
+        <div class="card-icon">🧭</div>
+        <div class="card-title">MPLS — Penilaian Non-Kognitif</div>
+        <div class="card-desc">Input observasi emosi, kemandirian, minat & kondisi fisik siswa selama MPLS</div>
+        <div class="card-badge">Aktif</div>
+      </a>
+      <a href="pages/cp-tp-atp.html" class="card" data-akses="guru" style="--card-accent: #2e6fbc">
+        <div class="card-icon">📋</div>
+        <div class="card-title">CP, TP & ATP</div>
+        <div class="card-desc">Capaian Pembelajaran, Tujuan Pembelajaran, dan Alur Tujuan Pembelajaran</div>
+        <div class="card-badge">Kurikulum</div>
+      </a>
+      <!-- Nama & badge kartu ini SENGAJA menunjukkan urutan belajar (Langkah 1/2/3) —
+           permintaan eksplisit Arif supaya siswa & orang tua paham harus mulai dari
+           "Ayo Belajar!" dulu, "Ingat Lagi" untuk mengulang, baru Uji Kemampuan untuk
+           menguji diri (lihat CHANGELOG.md untuk latar belakang rename dari "Modul
+           Pembelajaran"/"Materi Ajar"). Dibuka untuk orangtua juga sejak rename ini —
+           lihat catatan guardRolePage di pages/modul.html/materi.html/
+           pustaka-belajar.html. -->
+      <a href="pages/modul.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #2a9d6f">
+        <div class="card-icon">🚀</div>
+        <div class="card-title">Ayo Belajar!</div>
+        <div class="card-desc">Mulai dari sini — belajar langkah demi langkah sampai satu topik selesai</div>
+        <div class="card-badge">Langkah 1</div>
+      </a>
+      <a href="pages/materi.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #e8a020">
+        <div class="card-icon">🔁</div>
+        <div class="card-title">Ingat Lagi</div>
+        <div class="card-desc">Baca ulang apa yang sudah dipelajari biar makin nempel di kepala</div>
+        <div class="card-badge">Langkah 2</div>
+      </a>
+      <a href="pages/uji-kemampuan.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
+        <div class="card-icon">💪</div>
+        <div class="card-title">Uji Kemampuan</div>
+        <div class="card-desc">Latihan soal mandiri untuk menguji pemahamanmu per Tujuan Pembelajaran</div>
+        <div class="card-badge">Langkah 3 · Latihan</div>
+      </a>
+      <!-- Linimasa Materi (v1.3, permintaan Arif poin 2): dibuka untuk siswa/orangtua/guru
+           sekaligus sejak awal — SENGAJA read-only untuk SEMUA role di halaman ini
+           (termasuk guru); pengisian datanya cuma lewat tab "Linimasa" di admin.html. -->
+      <a href="pages/linimasa.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #1a7a8a">
+        <div class="card-icon">🗓️</div>
+        <div class="card-title">Linimasa Materi</div>
+        <div class="card-desc">Kalender bulanan: materi apa yang sudah, sedang, dan akan dipelajari per mata pelajaran</div>
+        <div class="card-badge">Info</div>
+      </a>
+      <!-- Pustaka Belajar (menggantikan Galeri Visual — lihat RANCANGAN-PUSTAKA-BELAJAR.md):
+           file PDF materi presentasi bebas dari guru pendamping, TIDAK terikat TP resmi.
+           Sama pola akses dengan Linimasa/Galeri Visual (siswa/guru/orangtua, read-only di
+           sini; pengisian lewat tab "Pustaka Belajar" di admin.html). -->
+      <a href="pages/pustaka-belajar.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #5b6ee1">
+        <div class="card-icon">📄</div>
+        <div class="card-title">Pustaka Belajar</div>
+        <div class="card-desc">Materi presentasi (PDF) yang dibagikan guru pendamping — dibaca langsung, tidak untuk diunduh</div>
+        <div class="card-badge">Pelengkap</div>
+      </a>
+      <!-- Profil & Level: SENGAJA siswa-only (bukan "siswa guru") — ini profil PRIBADI
+           siswa yang login, guru sudah punya jalur lain untuk melihat siswa lain (Riwayat
+           Latihan & Laporan Siswa Pintu 3), lihat ANTIREGRESI.md §35/36. -->
+      <a href="pages/profil-siswa.html" class="card" data-akses="siswa" style="--card-accent: #c9a227">
+        <div class="card-icon">🎮</div>
+        <div class="card-title">Profil & Level</div>
+        <div class="card-desc">Lihat level, progres, dan riwayat capaianmu di Uji Kemampuan</div>
+        <div class="card-badge">Baru</div>
+      </a>
+      <!-- Papan Peringkat: siswa DAN guru boleh lihat — data level/EXP memang dirancang
+           publik untuk siapa saja yang login (beda dari hasil_latihan yang privat),
+           lihat ANTIREGRESI.md §35. -->
+      <a href="pages/papan-peringkat.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
+        <div class="card-icon">🏅</div>
+        <div class="card-title">Papan Peringkat</div>
+        <div class="card-desc">Bandingkan level & EXP-mu dengan teman sekelas</div>
+        <div class="card-badge">Baru</div>
+      </a>
+      <!-- Riwayat Latihan: TIDAK termasuk 4 akses siswa yang diminta Arif
+           (Modul/Materi/Galeri/Uji Kemampuan saja) — jadi guru-only untuk saat
+           ini. Kalau ini tidak sengaja (siswa biasanya wajar melihat riwayat
+           latihannya sendiri), tinggal ganti data-akses jadi "siswa guru". -->
+      <a href="pages/riwayat-latihan.html" class="card" data-akses="guru" style="--card-accent: #6b4fa0">
+        <div class="card-icon">📈</div>
+        <div class="card-title">Riwayat Latihan</div>
+        <div class="card-desc">Lihat semua hasil Uji Kemampuan yang pernah dikerjakan — tersimpan permanen</div>
+        <div class="card-badge">Hasil</div>
+      </a>
+      <!-- Khusus guru & orang tua — disembunyikan lewat class "hidden", ditampilkan oleh skrip
+           role-check di bawah (bukan untuk akun siswa, lihat ANTIREGRESI.md §28).
+           Penegakan SESUNGGUHNYA tetap di server (wajibAksesLaporan_ di Code.gs) — ini cuma
+           supaya siswa tidak melihat kartunya di beranda. -->
+      <a href="pages/laporan-siswa.html" id="card-laporan-siswa" class="card hidden" style="--card-accent: #2a9d6f">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Laporan Siswa</div>
+        <div class="card-desc">Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas</div>
+        <div class="card-badge">Guru & Orang Tua</div>
+      </a>
+      <a href="pages/info.html" class="card" data-akses="orangtua guru" style="--card-accent: #c94040">
+        <div class="card-icon">📢</div>
+        <div class="card-title">Pengumuman</div>
+        <div class="card-desc">Informasi penting, jadwal, dan pengumuman dari guru</div>
+        <div class="card-badge">Info</div>
+      </a>
+      <a href="pages/jadwal.html" class="card" data-akses="guru" style="--card-accent: #1a7a8a">
+        <div class="card-icon">🗓️</div>
+        <div class="card-title">Jadwal Pelajaran</div>
+        <div class="card-desc">Jadwal mingguan dan kalender akademik</div>
+        <div class="card-badge">Jadwal</div>
+      </a>
+    </div>
+
+    <!-- Pengumuman Terbaru: sejajarkan dengan akses kartu "Pengumuman" di atas
+         (orang tua & guru — TIDAK untuk siswa, sesuai permintaan Arif). -->
+    <div data-akses="orangtua guru">
+      <p class="section-label">Pengumuman Terbaru</p>
+      <ul id="pengumuman-list">
+        <li class="empty-state">Memuat pengumuman…</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <footer>
+    Website Kelas 5 · TP 2026–2027 · Dibuat dengan ❤️ &amp; GitHub Pages
+  </footer>
+</div>
+
+<!-- Sumber daftar nama siswa (MPLS_STUDENTS) & konfigurasi Apps Script (MPLS_CONFIG) —
+     dimuat sebagai script biasa (bukan module) supaya bisa dipakai lintas file,
+     sama seperti dipakai di pages/kelas/ & pages/mpls/. -->
+<script src="pages/mpls/assets/mpls-data.js"></script>
+<script src="pages/mpls/assets/config.js"></script>
+<!-- Peta nama siswa -> email akun Firebase (login siswa, sejak migrasi ke Firebase
+     Auth email+kata sandi — lihat CHANGELOG.md & assets/js/siswa-akun.js). -->
+<script src="assets/js/siswa-akun.js"></script>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  // v2.0 (login siswa via email/kata sandi Firebase): signInAnonymously TIDAK
+  // diimpor lagi di sini karena doLoginSiswa() tidak lagi memakainya (lihat
+  // catatan panjang di doLoginSiswa() di bawah) — TAPI cabang `user.isAnonymous`
+  // di onAuthStateChanged SENGAJA TETAP DIBIARKAN ADA (bukan dihapus), untuk
+  // siswa yang kebetulan masih punya sesi anonim lama tersimpan di browsernya
+  // dari SEBELUM migrasi ini dipasang (jarang, tapi mungkin) — supaya sesi lama
+  // itu tetap ditangani dengan benar alih-alih error, sampai sesi itu berakhir
+  // sendiri (browserSessionPersistence -> hilang begitu tab ditutup).
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence, browserSessionPersistence, sendPasswordResetEmail }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, query, orderBy, limit }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ──────────────────────────────────────────────────────────
+  // TODO: Ganti nilai di bawah dengan config Firebase kamu!
+  // Dapatkan dari: Firebase Console → Project Settings → Your apps
+  // ──────────────────────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyBcpuD90Qk7z4Bdxkm5KhXrsKVzZWFc3_k",
+    authDomain:        "kelas-v-2026.firebaseapp.com",
+    projectId:         "kelas-v-2026",
+    storageBucket:     "kelas-v-2026.firebasestorage.app",
+    messagingSenderId: "918314271457",
+    appId:             "1:918314271457:web:04df91f8cd856be49dada0"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  const KEY_NAMA_SISWA = "kelas5_siswa_nama";
+
+  /** Terapkan pembatasan kartu menu & bagian "Pengumuman Terbaru" per role
+   * (lihat CHANGELOG.md v0.11.0, diperbaiki lagi v1.3 — lihat catatan di
+   * dalam fungsi). SEMUA role, TERMASUK guru, difilter dengan aturan yang
+   * SAMA berdasarkan data-akses tiap elemen — guru bukan lagi kasus khusus. */
+  function terapkanAksesMenu_(role) {
+    // v1.2 (bug dilaporkan Arif): SEBELUM baris reset ini ada, fungsi ini cuma
+    // pernah MENAMBAH class "hidden", tidak pernah MELEPASNYA balik. Akibatnya
+    // kalau di TAB YANG SAMA ada pergantian akun tanpa reload halaman penuh
+    // (mis. guru login → lihat semua kartu → logout → orang tua login), kartu
+    // yang sempat disembunyikan dari sesi SEBELUMNYA (atau, kebalikannya,
+    // panel guru yang sempat ditampilkan) akan "nyangkut" dalam kondisi lama
+    // itu, tidak ikut menyesuaikan ke role akun yang baru login. Perbaikannya:
+    // SELALU reset ke kondisi default (semua terlihat) dulu di awal, baru
+    // terapkan pembatasan sesuai role SAAT INI — jadi fungsi ini idempotent,
+    // hasilnya selalu benar terlepas dari kondisi sebelumnya.
+    // v1.3 (bug dilaporkan Arif): SEBELUMNYA ada `if (role === "guru") return;`
+    // di sini — niatnya supaya guru tidak perlu menambahkan "guru" ke
+    // data-akses tiap kartu guru-only (memang semua kartu guru-only SUDAH
+    // mencantumkan "guru" secara eksplisit, lihat komentar di atas kartu
+    // MPLS). TAPI baris itu juga membuat kartu "Profil & Level"
+    // (data-akses="siswa", SENGAJA dibuat siswa-only karena ini profil
+    // PRIBADI siswa yang login — lihat komentar di kartunya) ikut selalu
+    // terlihat oleh guru, padahal halaman tujuannya (`profil-siswa.html`)
+    // sendiri sudah mengunci lewat `guardRolePage(['siswa'], ...)` — guru
+    // yang klik kartu ini cuma dilempar balik ke halaman ini, terlihat
+    // seperti kartu "rusak". Perbaikan: guru sekarang ikut difilter NORMAL
+    // seperti role lain di bawah — AMAN, karena SEMUA kartu guru-only lain
+    // sudah eksplisit mencantumkan "guru" di data-akses-nya (diverifikasi
+    // manual saat perbaikan ini), jadi satu-satunya kartu yang berubah
+    // perilakunya adalah "Profil & Level" ini.
+    document.querySelectorAll("[data-akses]").forEach((el) => el.classList.remove("hidden"));
+    document.querySelectorAll("[data-akses]").forEach((el) => {
+      const daftar = el.getAttribute("data-akses").split(/\s+/);
+      if (daftar.indexOf(role) === -1) el.classList.add("hidden");
+    });
+  }
+
+  /** Sama seperti masalah di terapkanAksesMenu_() di atas, tapi untuk 3 elemen
+   * yang diatur manual (admin-panel/kelas-panel/card-laporan-siswa) — SELALU
+   * dipanggil di awal alur onAuthStateChanged (termasuk cabang siswa anonim),
+   * SEBELUM menentukan mana yang boleh ditampilkan untuk role saat ini. */
+  function sembunyikanPanelKondisional_() {
+    document.getElementById('admin-panel').classList.add('hidden');
+    document.getElementById('kelas-panel').classList.add('hidden');
+    document.getElementById('card-laporan-siswa').classList.add('hidden');
+  }
+
+  // ── Tab Login (Siswa / Guru & Orang Tua) ──────────────────
+  function pilihTabLogin(tab) {
+    const isSiswa = tab === "siswa";
+    document.getElementById("tab-siswa").classList.toggle("active", isSiswa);
+    document.getElementById("tab-guru").classList.toggle("active", !isSiswa);
+    document.getElementById("form-login-siswa").classList.toggle("hidden", !isSiswa);
+    document.getElementById("form-login-guru").classList.toggle("hidden", isSiswa);
+    document.getElementById("login-siswa-error").textContent = "";
+    document.getElementById("login-error").textContent = "";
+  }
+  document.getElementById("tab-siswa").addEventListener("click", () => pilihTabLogin("siswa"));
+  document.getElementById("tab-guru").addEventListener("click", () => pilihTabLogin("guru"));
+
+  // ── Lupa Kata Sandi (Fase 5) ───────────────────────────────
+  // Menggantikan tampilan form login guru/orangtua sementara (bukan navigasi
+  // ke halaman lain), tab-tab di atas ikut disembunyikan biar tidak
+  // membingungkan (fokus cuma ke 1 aksi: kirim tautan reset).
+  document.getElementById("link-lupa-pass").addEventListener("click", (e) => {
+    e.preventDefault();
+    document.querySelector(".login-tabs").classList.add("hidden");
+    document.getElementById("form-login-guru").classList.add("hidden");
+    document.getElementById("form-lupa-pass").classList.remove("hidden");
+    document.getElementById("lupa-pass-msg").textContent = "";
+    document.getElementById("lupa-pass-msg").className = "";
+    document.getElementById("inp-lupa-email").value = document.getElementById("inp-email").value;
+  });
+  document.getElementById("link-balik-login").addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("form-lupa-pass").classList.add("hidden");
+    document.querySelector(".login-tabs").classList.remove("hidden");
+    pilihTabLogin("guru");
+  });
+  document.getElementById("btn-lupa-pass").addEventListener("click", async () => {
+    const email = document.getElementById("inp-lupa-email").value.trim();
+    const msgEl = document.getElementById("lupa-pass-msg");
+    const btn = document.getElementById("btn-lupa-pass");
+    if (!email) { msgEl.textContent = "Masukkan email dulu."; msgEl.className = ""; return; }
+
+    btn.disabled = true;
+    msgEl.textContent = "Mengirim…";
+    msgEl.className = "";
+    try {
+      await sendPasswordResetEmail(auth, email);
+    } catch (err) {
+      // v1.0: pesan SENGAJA SAMA baik email terdaftar maupun tidak (lihat blok
+      // catch di bawah) — TAPI kalau errornya soal FORMAT email (jelas-jelas
+      // bukan email valid), tidak apa kasih tahu itu secara spesifik, karena
+      // itu bukan info yang membocorkan siapa yang punya akun.
+      if (err.code === "auth/invalid-email") {
+        msgEl.textContent = "Format email tidak valid.";
+        btn.disabled = false;
+        return;
+      }
+      // Untuk kode error LAIN (termasuk "auth/user-not-found") SENGAJA tetap
+      // ditampilkan sebagai pesan sukses generik di bawah, bukan pesan error —
+      // supaya orang tidak bisa memakai fitur ini untuk mengecek email siapa
+      // saja yang terdaftar sebagai akun guru/orangtua (kebocoran privasi).
+    }
+    msgEl.textContent = "Kalau email itu terdaftar, tautan reset kata sandi sudah dikirim. Cek juga folder Spam/Promosi kalau belum kelihatan.";
+    msgEl.className = "ok";
+    btn.disabled = false;
+  });
+
+  // Isi dropdown nama dari MPLS_STUDENTS (pages/mpls/assets/mpls-data.js — sumber
+  // tunggal daftar 25 siswa, sudah dipakai di tempat lain juga, lihat
+  // CHANGELOG.md v0.11.0.
+  (function isiDropdownSiswa() {
+    const sel = document.getElementById("inp-siswa-nama");
+    (typeof MPLS_STUDENTS !== "undefined" ? MPLS_STUDENTS : []).forEach((nama) => {
+      const opt = document.createElement("option");
+      opt.value = nama;
+      opt.textContent = nama;
+      sel.appendChild(opt);
+    });
+  })();
+
+  // ── Expose helpers ke window ──────────────────────────────
+  window.doLogin = async () => {
+    const email = document.getElementById('inp-email').value.trim();
+    const pass  = document.getElementById('inp-pass').value;
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = '';
+    try {
+      // Guru/orang tua: sesi tersimpan lintas tab & lintas buka-tutup browser
+      // (perilaku default, tidak berubah) — beda dari siswa di bawah.
+      await setPersistence(auth, browserLocalPersistence);
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch (e) {
+      const map = {
+        'auth/invalid-credential': 'Email atau kata sandi salah.',
+        'auth/user-not-found':     'Akun tidak ditemukan.',
+        'auth/wrong-password':     'Kata sandi salah.',
+        'auth/too-many-requests':  'Terlalu banyak percobaan. Coba lagi nanti.',
+      };
+      errEl.textContent = map[e.code] || 'Login gagal: ' + e.message;
+    }
+  };
+
+  /** Login siswa — v2.0 (CHANGELOG.md, migrasi login siswa ke Firebase Auth):
+   * SEBELUMNYA (v1.x) nama+NISN diverifikasi lewat 1-2x panggilan HTTP ke Apps
+   * Script (`type: "siswa_login"`), yang MELEWATI Firestore lewat kredensial
+   * Service Account — lambat (butuh timeout 20 detik + auto-retry, lihat
+   * riwayat lengkap di CHANGELOG.md versi lama) dan rawan gagal di jaringan
+   * seluler/sekolah. SEKARANG nama dipetakan ke email lewat SISWA_EMAIL_MAP
+   * (assets/js/siswa-akun.js), lalu langsung dipakai signInWithEmailAndPassword
+   * — SAMA PERSIS mekanismenya dengan login Guru & Orang Tua di atas, cuma
+   * beda sumber emailnya (dipilih dari dropdown, bukan diketik manual) supaya
+   * siswa tetap tidak perlu tahu/ketik alamat emailnya sendiri. Ini menghapus
+   * SELURUH round-trip ke Apps Script dari proses login — Firebase Auth
+   * langsung menjawab dari Google, tanpa "cold start" Apps Script yang jadi
+   * akar keluhan lambat/sering error sebelumnya.
+   *
+   * Kolom "NISN" di form SENGAJA TIDAK diubah namanya walau sekarang isinya
+   * dipakai LANGSUNG sebagai kata sandi Firebase (bukan lagi dicocokkan ke
+   * data NISN sungguhan) — supaya siswa yang sudah terbiasa dengan angka yang
+   * sama persis tidak perlu belajar ulang apa pun. Validasi format "harus 10
+   * digit" DIHAPUS (sebelumnya wajib karena itu syarat pencarian data NISN) —
+   * sekarang cukup "tidak boleh kosong", supaya kalau suatu saat kata sandi
+   * siswa tertentu diganti manual jadi format lain (mis. lewat Firebase
+   * Console), form ini tidak ikut menolaknya secara keliru.
+   *
+   * Akun siswa TETAP BUKAN Anonymous Auth lagi — sesi tersimpan sebagai akun
+   * email+password sungguhan, dengan dokumen Firestore users/{uid} berisi
+   * {nama, role:"siswa", email} (dibuat lewat script sekali-jalan, lihat
+   * scripts/README.md — BUKAN dibuat sendiri oleh klien, lihat firestore.rules
+   * yang memang tidak mengizinkan client menulis role "siswa" untuk dirinya
+   * sendiri). onAuthStateChanged() TIDAK PERLU diubah sama sekali untuk ini —
+   * cabang "else" (bukan anonim) di bawah sudah menangani akun apa pun dengan
+   * dokumen users/{uid} sejak awal, apa pun rolenya. */
+  window.doLoginSiswa = async () => {
+    const nama = document.getElementById('inp-siswa-nama').value;
+    const kataSandi = document.getElementById('inp-siswa-nisn').value.trim();
+    const errEl = document.getElementById('login-siswa-error');
+    const btn = document.getElementById('btn-login-siswa');
+    errEl.textContent = '';
+
+    if (!nama) { errEl.textContent = 'Pilih namamu dulu dari daftar.'; return; }
+    if (!kataSandi) { errEl.textContent = 'Isi NISN/kata sandimu dulu.'; return; }
+
+    const email = (typeof SISWA_EMAIL_MAP !== 'undefined') ? SISWA_EMAIL_MAP[nama] : undefined;
+    if (!email) {
+      // Nama ada di dropdown (MPLS_STUDENTS) tapi tidak ada di SISWA_EMAIL_MAP —
+      // berarti akunnya belum dibuat/dipetakan, BUKAN kesalahan input siswa.
+      errEl.textContent = 'Akunmu belum terdaftar, minta tolong ke guru untuk mengeceknya.';
+      return;
+    }
+
+    btn.disabled = true;
+    errEl.textContent = 'Memeriksa…';
+    try {
+      // Sesi siswa SENGAJA per-tab (browserSessionPersistence), BUKAN ikut
+      // tersimpan lintas tab/buka-tutup browser seperti guru/orangtua di atas
+      // — supaya kalau HP/tablet dipakai bergantian antar siswa, sesi siswa
+      // sebelumnya tidak "nyangkut" ke siswa berikutnya yang memakai perangkat
+      // yang sama (kebijakan ini dipertahankan sama persis dari mekanisme lama).
+      await setPersistence(auth, browserSessionPersistence);
+      await signInWithEmailAndPassword(auth, email, kataSandi);
+      // Sengaja TIDAK set btn.disabled = false di sini — onAuthStateChanged akan
+      // langsung menyembunyikan seluruh #login-screen begitu sesi aktif.
+    } catch (e) {
+      const map = {
+        'auth/invalid-credential': 'Nama atau NISN salah.',
+        'auth/user-not-found':     'Akunmu belum terdaftar, minta tolong ke guru untuk mengeceknya.',
+        'auth/wrong-password':     'NISN salah.',
+        'auth/too-many-requests':  'Terlalu banyak percobaan. Coba lagi nanti.',
+      };
+      errEl.textContent = map[e.code] || 'Gagal masuk: ' + e.message;
+      btn.disabled = false;
+    }
+  };
+
+  window.doLogout = () => {
+    sessionStorage.removeItem(KEY_NAMA_SISWA);
+    return signOut(auth);
+  };
+
+  document.getElementById('btn-login').addEventListener('click', () => window.doLogin());
+  document.getElementById('btn-login-siswa').addEventListener('click', () => window.doLoginSiswa());
+
+  // Allow Enter key on password/NISN input
+  document.getElementById('inp-pass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.doLogin();
+  });
+  document.getElementById('inp-siswa-nisn').addEventListener('keydown', e => {
+    if (e.key === 'Enter') window.doLoginSiswa();
+  });
+
+  // ── Auth state ─────────────────────────────────────────────
+  onAuthStateChanged(auth, async (user) => {
+    document.getElementById('loading').style.opacity = '0';
+    setTimeout(() => document.getElementById('loading').style.display = 'none', 300);
+
+    // v1.2: reset dulu SEBELUM cabang mana pun di bawah — lihat catatan lengkap
+    // di sembunyikanPanelKondisional_() kenapa ini wajib ada di sini.
+    sembunyikanPanelKondisional_();
+
+    if (user && user.isAnonymous) {
+      // v2.0: cabang ini SENGAJA DIBIARKAN (bukan kode aktif lagi) — sejak
+      // migrasi login siswa ke Firebase Auth email+kata sandi (lihat
+      // doLoginSiswa() di bawah), doLoginSiswa() TIDAK PERNAH lagi memanggil
+      // signInAnonymously(), jadi cabang ini seharusnya tidak pernah ketemu
+      // user baru. Dipertahankan hanya untuk menangani siswa yang kebetulan
+      // masih bawa sesi anonim lama tersimpan dari SEBELUM migrasi ini (sesi
+      // itu otomatis hilang sendiri begitu tab lama ditutup, karena dulu
+      // dipakai browserSessionPersistence) — supaya sesi lama itu tetap
+      // ditangani dengan benar, bukan malah error, selama masa transisi.
+      // Akun siswa (Firebase Anonymous Auth) — TIDAK punya dokumen Firestore
+      // users/{uid} sama sekali, nama tampilan datang dari sessionStorage yang
+      // diisi doLoginSiswa() tepat sebelum signInAnonymously() dipanggil.
+      const namaSiswa = sessionStorage.getItem(KEY_NAMA_SISWA);
+      if (!namaSiswa) {
+        // Sesi anonim "nyasar" tanpa nama tersimpan (mis. sessionStorage sudah
+        // kehapus tapi Firebase masih ingat sesi anonimnya dari tab lain) —
+        // paksa keluar, supaya tidak ada siswa "tanpa nama" tersasar masuk.
+        await signOut(auth);
+        return;
+      }
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('status-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('display-name').textContent = namaSiswa;
+      // role siswa: #admin-panel, #kelas-panel, #card-laporan-siswa TETAP
+      // hidden (default HTML-nya) — tidak disentuh di sini sama sekali.
+      terapkanAksesMenu_('siswa');
+      loadPengumuman();
+      return;
+    }
+
+    if (user) {
+      // Ambil data user dari Firestore
+      const userSnap = await getDoc(doc(db, 'users', user.uid));
+      const userData = userSnap.exists() ? userSnap.data() : {};
+      const namaUser = userData.nama || user.email;
+      const role     = userData.role || 'siswa';
+
+      // Akun orang tua yang BELUM/TIDAK disetujui guru — tampilkan layar status,
+      // JANGAN buka #app sama sekali (lihat komentar di elemen #status-screen).
+      if (role === 'pending_orangtua' || role === 'rejected') {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('app').classList.add('hidden');
+        const statusScreen = document.getElementById('status-screen');
+        statusScreen.classList.remove('hidden');
+        if (role === 'rejected') {
+          document.getElementById('status-icon').textContent = '✕';
+          document.getElementById('status-title').textContent = 'Pendaftaran Ditolak';
+          document.getElementById('status-desc').textContent =
+            'Pendaftaran akun orang tua/wali ini belum bisa disetujui. Silakan hubungi wali kelas untuk info lebih lanjut, atau daftar ulang lewat halaman pendaftaran dengan data yang benar.';
+        } else {
+          document.getElementById('status-icon').textContent = '⏳';
+          document.getElementById('status-title').textContent = 'Menunggu Persetujuan';
+          document.getElementById('status-desc').textContent =
+            'Pendaftaran akunmu sudah kami terima dan sedang menunggu persetujuan guru. Silakan coba masuk lagi beberapa saat lagi, atau hubungi wali kelas kalau sudah menunggu lebih dari 1-2 hari.';
+        }
+        return;
+      }
+
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('status-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+
+      document.getElementById('display-name').textContent = namaUser;
+
+      // Tampilkan panel admin & kontainer Kelas kalau guru
+      if (role === 'guru') {
+        document.getElementById('admin-panel').classList.remove('hidden');
+        document.getElementById('kelas-panel').classList.remove('hidden');
+      }
+
+      // Kartu "Laporan Siswa" — guru (lihat siapa saja) & orangtua (lihat anaknya sendiri,
+      // dibatasi di server lewat wajibAksesLaporan_), TIDAK untuk siswa.
+      if (role === 'guru' || role === 'orangtua') {
+        document.getElementById('card-laporan-siswa').classList.remove('hidden');
+      }
+
+      terapkanAksesMenu_(role);
+
+      // Muat pengumuman
+      loadPengumuman();
+    } else {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('status-screen').classList.add('hidden');
+      document.getElementById('app').classList.add('hidden');
+    }
+  });
+
+  // ── Muat pengumuman dari Firestore ────────────────────────
+  async function loadPengumuman() {
+    const list = document.getElementById('pengumuman-list');
+    try {
+      const q = query(
+        collection(db, 'pengumuman'),
+        orderBy('tanggal', 'desc'),
+        limit(5)
+      );
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        list.innerHTML = '<li class="empty-state">Belum ada pengumuman.</li>';
+        return;
+      }
+      list.innerHTML = '';
+      snap.forEach(d => {
+        const data = d.data();
+        const tgl = data.tanggal?.toDate?.()?.toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'long', year: 'numeric'
+        }) || '';
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div class="tgl">${tgl}</div>
+          <div class="judul">${data.judul || '—'}</div>
+          <div class="isi">${data.isi || ''}</div>
+        `;
+        list.appendChild(li);
+      });
+    } catch (err) {
+      list.innerHTML = `<li class="empty-state">Gagal memuat pengumuman: ${err.message}</li>`;
+    }
+  }
+</script>
+</body>
 </html>
