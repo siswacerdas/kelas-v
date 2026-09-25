@@ -8,6 +8,20 @@ Format mengacu pada [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 ## [Unreleased]
 > Fitur dan perbaikan yang sedang dikerjakan, belum masuk ke versi rilis.
 
+### Diubah — Redesign UI beranda & Panel Admin + pengelompokan menu guru (lihat ANTIREGRESI.md §61, TIDAK PERLU REDEPLOY APPS SCRIPT)
+- **Panel Admin** (`pages/admin.html` + `assets/css/admin.css`): layout diganti ke
+  **sidebar + area kerja** (bukan 7 tab horizontal sesak). Kelas `.tab-btn` / `.tab-panel`
+  dan `switchTab()` + hash `#pengumuman`/`#modul`/… tetap sama.
+- **Beranda** (`index.html` + `assets/css/design-system.css`): welcome terang; Ruang Kerja
+  tile; menu **Belajar** (langkah 1–3) vs **Jelajah**.
+- **Sidebar hybrid guru**: hanya role `guru` + layar ≥900px; HP/siswa tidak pernah tampil.
+- **Pemisahan domain menu** (perbaikan rancangan dadakan):
+  - **Konten** — Kelola Konten, Pengumuman, Modul, Soal, Pustaka, Persetujuan Ortu
+  - **Data Siswa** — hanya Profil & Foto (`pages/kelas/`)
+  - **Asesmen MPLS** — Input MPLS, Rekap MPLS
+  - `#kelas-panel` di beranda hanya tile Data Siswa (bukan MPLS/Pustaka)
+- ID/guard tetap: `#admin-panel`, `#kelas-panel`, `#card-laporan-siswa`, `data-akses`.
+
 ### Diperbaiki — "Hitung Ulang Semua Siswa" sering gagal 404 proxy di admin.html (lihat ANTIREGRESI.md §60, TIDAK PERLU REDEPLOY APPS SCRIPT)
 - Akar masalah: pola ketidakstabilan proxy Apps Script Web App yang SAMA dengan §57
   (laporan Perkembangan Belajar Mandiri), tapi `postKeAppsScript_` di admin.html belum

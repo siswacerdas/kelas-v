@@ -3487,3 +3487,28 @@ kedua percobaan gagal -> pesan akhir jelas) — semua lulus. `scripts/test-hitun
 - [ ] Upload foto siswa / file Pustaka Belajar seperti biasa → PASTIKAN TIDAK ada
       perubahan perilaku (masih 1x percobaan, timeout 90 detik, pesan peringatan duplikat
       kalau timeout) — ini SENGAJA tidak disentuh sama sekali di perbaikan ini
+
+### 61. Redesign UI beranda & Panel Admin + pemisahan domain menu guru
+
+**Konteks**: UI beranda/admin sesak; menu cepat guru mencampur Data Siswa dengan MPLS,
+Rekap, dan Pustaka (sisa rancangan dadakan awal).
+
+**Keputusan layout**:
+- Panel Admin → sidebar (desktop) / strip horizontal (HP) — pola workspace.
+- Beranda → sidebar tipis **hanya guru + desktop ≥900px**. Siswa & HP tetap kartu.
+- Menu guru dikelompokkan per domain: Konten | Data Siswa | Asesmen MPLS.
+- `#kelas-panel` di beranda **hanya** tile Data Siswa (bukan MPLS/Rekap/Pustaka).
+
+**Yang TIDAK boleh rusak**:
+- [ ] Login siswa (nama + NISN → Firebase) & login guru/orangtua tetap jalan
+- [ ] `#admin-panel` & `#kelas-panel` hanya muncul untuk role `guru`
+- [ ] `#home-guru-nav` muncul di desktop guru; **tidak** muncul di HP (≤899px)
+- [ ] Siswa login: tidak ada sidebar, tidak ada Ruang Kerja Guru
+- [ ] Kartu `data-akses` tetap terfilter (`terapkanAksesMenu_`)
+- [ ] Link beranda ke `pages/admin.html#ortu` / `#modul` dll. tetap membuka tab yang benar
+- [ ] `#kelas-panel` hanya berisi Data Siswa — **bukan** MPLS/Rekap/Pustaka
+- [ ] MPLS & Rekap tetap terjangkau dari sidebar (grup Asesmen) & kartu Jelajah
+
+**File**: `index.html`, `assets/css/design-system.css`, `pages/admin.html`,
+`assets/css/admin.css`. Tidak mengubah `Code.gs` / Firestore rules.
+
