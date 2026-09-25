@@ -6,6 +6,10 @@
   <title>Kelas 5 · Tahun Pelajaran 2026–2027</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin />
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/design-system.css" />
 </head>
@@ -171,7 +175,7 @@
     <section id="admin-panel" class="home-workspace hidden" aria-label="Ruang kerja guru">
       <div class="home-section-head">
         <h2 class="home-section-title">Ruang Kerja Guru</h2>
-        <p class="home-section-desc">Kelola konten pembelajaran dan persetujuan akun orang tua.</p>
+        <p class="home-section-desc">Pengumuman, modul, soal, pustaka, dan persetujuan akun orang tua — satu pintu utama.</p>
       </div>
       <div class="ws-grid">
         <a href="pages/admin.html" class="ws-tile ws-tile-primary">
@@ -412,6 +416,76 @@
   const db   = getFirestore(app);
 
   const KEY_NAMA_SISWA = "kelas5_siswa_nama";
+
+
+  const KEY_USER_META = "kelas5_user_meta"; // { uid, role, nama, at }
+
+  function bacaCacheUserMeta_(uid) {
+    try {
+      const raw = sessionStorage.getItem(KEY_USER_META);
+      if (!raw) return null;
+      const o = JSON.parse(raw);
+      if (!o || o.uid !== uid) return null;
+      if (Date.now() - (o.at || 0) > 30 * 60 * 1000) return null;
+      if (o.role === "pending_orangtua" || o.role === "rejected") return null;
+      return o;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function tulisCacheUserMeta_(uid, role, nama) {
+    try {
+      if (role === "pending_orangtua" || role === "rejected") {
+        sessionStorage.removeItem(KEY_USER_META);
+        return;
+      }
+      sessionStorage.setItem(KEY_USER_META, JSON.stringify({
+        uid: uid,
+        role: role,
+        nama: nama || "",
+        at: Date.now(),
+      }));
+    } catch (e) { /* ignore */ }
+  }
+
+  function hapusCacheUserMeta_() {
+    try { sessionStorage.removeItem(KEY_USER_META); } catch (e) {}
+  }
+
+  function tampilkanAppGuruOrtuSiswa_(namaUser, role) {
+    document.getElementById("login-screen").classList.add("hidden");
+    document.getElementById("status-screen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    document.getElementById("display-name").textContent = namaUser;
+    const wn = document.getElementById("welcome-name");
+    if (wn) wn.textContent = namaUser;
+    if (role === "guru") {
+      document.getElementById("admin-panel").classList.remove("hidden");
+      document.getElementById("kelas-panel").classList.remove("hidden");
+      const nav = document.getElementById("home-guru-nav");
+      if (nav) nav.classList.remove("hidden");
+      document.getElementById("app").classList.add("has-guru-nav");
+    } else {
+      document.getElementById("app").classList.remove("has-guru-nav");
+    }
+    if (role === "guru" || role === "orangtua") {
+      const cardLap = document.getElementById("card-laporan-siswa");
+      if (cardLap) cardLap.classList.remove("hidden");
+    }
+    setHomeRoleUI_(role);
+    terapkanAksesMenu_(role);
+  }
+
+  function loadPengumumanDeferred_() {
+    const run = () => { try { loadPengumuman(); } catch (e) {} };
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(run, { timeout: 1200 });
+    } else {
+      setTimeout(run, 0);
+    }
+  }
+
 
   /** Terapkan pembatasan kartu menu & bagian "Pengumuman Terbaru" per role
    * (lihat CHANGELOG.md v0.11.0, diperbaiki lagi v1.3 — lihat catatan di
@@ -657,6 +731,7 @@
 
   window.doLogout = () => {
     sessionStorage.removeItem(KEY_NAMA_SISWA);
+    hapusCacheUserMeta_();
     return signOut(auth);
   };
 
@@ -718,20 +793,57 @@
       // hidden (default HTML-nya) — tidak disentuh di sini sama sekali.
       setHomeRoleUI_('siswa');
       terapkanAksesMenu_('siswa');
-      loadPengumuman();
+      loadPengumumanDeferred_();
       return;
     }
 
     if (user) {
-      // Ambil data user dari Firestore
+      // Optimasi latency: cache sesi → UI langsung; Firestore revalidasi di background.
+      // pending/rejected TIDAK di-cache (selalu tunggu server).
+      const cached = bacaCacheUserMeta_(user.uid);
+      if (cached) {
+        tampilkanAppGuruOrtuSiswa_(cached.nama || user.email, cached.role);
+        loadPengumumanDeferred_();
+        // Revalidasi tanpa menahan loading/layar
+        const uid = user.uid;
+        getDoc(doc(db, 'users', uid)).then((userSnap) => {
+          const userData = userSnap.exists() ? userSnap.data() : {};
+          const namaUser = userData.nama || (auth.currentUser && auth.currentUser.email) || cached.nama;
+          const role = userData.role || 'siswa';
+          if (role === 'pending_orangtua' || role === 'rejected') {
+            hapusCacheUserMeta_();
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app').classList.add('hidden');
+            const statusScreen = document.getElementById('status-screen');
+            statusScreen.classList.remove('hidden');
+            if (role === 'rejected') {
+              document.getElementById('status-icon').textContent = '✕';
+              document.getElementById('status-title').textContent = 'Pendaftaran Ditolak';
+              document.getElementById('status-desc').textContent =
+                'Pendaftaran akun orang tua/wali ini belum bisa disetujui. Silakan hubungi wali kelas untuk info lebih lanjut, atau daftar ulang lewat halaman pendaftaran dengan data yang benar.';
+            } else {
+              document.getElementById('status-icon').textContent = '⏳';
+              document.getElementById('status-title').textContent = 'Menunggu Persetujuan';
+              document.getElementById('status-desc').textContent =
+                'Pendaftaran akunmu sudah kami terima dan sedang menunggu persetujuan guru. Silakan coba masuk lagi beberapa saat lagi, atau hubungi wali kelas kalau sudah menunggu lebih dari 1-2 hari.';
+            }
+            return;
+          }
+          tulisCacheUserMeta_(uid, role, namaUser);
+          if (cached.role !== role || cached.nama !== namaUser) {
+            tampilkanAppGuruOrtuSiswa_(namaUser, role);
+          }
+        }).catch(() => { /* biarkan UI cache; kunjungan berikutnya coba lagi */ });
+        return;
+      }
+
       const userSnap = await getDoc(doc(db, 'users', user.uid));
       const userData = userSnap.exists() ? userSnap.data() : {};
       const namaUser = userData.nama || user.email;
       const role     = userData.role || 'siswa';
 
-      // Akun orang tua yang BELUM/TIDAK disetujui guru — tampilkan layar status,
-      // JANGAN buka #app sama sekali (lihat komentar di elemen #status-screen).
       if (role === 'pending_orangtua' || role === 'rejected') {
+        hapusCacheUserMeta_();
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('app').classList.add('hidden');
         const statusScreen = document.getElementById('status-screen');
@@ -750,34 +862,9 @@
         return;
       }
 
-      document.getElementById('login-screen').classList.add('hidden');
-      document.getElementById('status-screen').classList.add('hidden');
-      document.getElementById('app').classList.remove('hidden');
-
-      document.getElementById('display-name').textContent = namaUser;
-      const _wn2 = document.getElementById('welcome-name');
-      if (_wn2) _wn2.textContent = namaUser;
-
-      // Tampilkan panel admin & kontainer Kelas kalau guru
-      if (role === 'guru') {
-        document.getElementById('admin-panel').classList.remove('hidden');
-        document.getElementById('kelas-panel').classList.remove('hidden');
-        const gn = document.getElementById('home-guru-nav');
-        if (gn) gn.classList.remove('hidden');
-        document.getElementById('app').classList.add('has-guru-nav');
-      }
-
-      // Kartu "Laporan Siswa" — guru (lihat siapa saja) & orangtua (lihat anaknya sendiri,
-      // dibatasi di server lewat wajibAksesLaporan_), TIDAK untuk siswa.
-      if (role === 'guru' || role === 'orangtua') {
-        document.getElementById('card-laporan-siswa').classList.remove('hidden');
-      }
-
-      setHomeRoleUI_(role);
-      terapkanAksesMenu_(role);
-
-      // Muat pengumuman
-      loadPengumuman();
+      tulisCacheUserMeta_(user.uid, role, namaUser);
+      tampilkanAppGuruOrtuSiswa_(namaUser, role);
+      loadPengumumanDeferred_();
     } else {
       document.getElementById('login-screen').classList.remove('hidden');
       document.getElementById('status-screen').classList.add('hidden');
