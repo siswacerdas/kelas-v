@@ -173,6 +173,58 @@
     .mapel-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .mapel-btn { padding: 1rem 0.9rem; }
   }
+
+  /* ══ Mode kuis LMS: satu soal, navigasi, timer ══ */
+  .kuis-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap; margin-bottom: 1rem;
+    padding: 10px 12px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+  }
+  .kuis-progress { font-size: 13.5px; font-weight: 650; color: var(--ink); }
+  .kuis-progress span { color: var(--step-accent); }
+  .kuis-timer {
+    font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 700;
+    color: var(--ink); background: var(--paper-2); padding: 6px 12px; border-radius: var(--r-full);
+  }
+  .kuis-timer.warn { color: #b07800; background: rgba(232,160,32,0.15); }
+  .kuis-timer.danger { color: var(--err); background: rgba(201,64,64,0.12); animation: pulse-t 1s infinite; }
+  @keyframes pulse-t { 50% { opacity: 0.7; } }
+
+  .soal-nav {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.15rem;
+  }
+  .soal-nav-btn {
+    width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--ink-2); font-size: 13px; font-weight: 650;
+    font-family: inherit; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .soal-nav-btn:hover { border-color: var(--border-2); color: var(--ink); }
+  .soal-nav-btn.current {
+    background: var(--step-accent); color: #fff; border-color: var(--step-accent);
+  }
+  .soal-nav-btn.answered:not(.current) {
+    background: rgba(155, 89, 182, 0.12); border-color: rgba(155, 89, 182, 0.35); color: var(--step-accent);
+  }
+  .soal-nav-btn.flagged { box-shadow: inset 0 -3px 0 #e8a020; }
+
+  .kuis-footer {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 1.25rem; align-items: center;
+  }
+  .kuis-footer .btn-nav {
+    flex: 1; min-width: 120px; padding: 12px 16px; border-radius: var(--r-full);
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink);
+    font-size: 14px; font-weight: 650; font-family: inherit; cursor: pointer;
+  }
+  .kuis-footer .btn-nav:hover { border-color: var(--border-2); box-shadow: var(--shadow-sm); }
+  .kuis-footer .btn-nav:disabled { opacity: 0.45; cursor: not-allowed; }
+  .kuis-footer .btn-submit { flex: 1.2; min-width: 140px; margin-top: 0; }
+
+  #view-kuis.kuis-review .kuis-toolbar,
+  #view-kuis.kuis-review .soal-nav,
+  #view-kuis.kuis-review .kuis-footer { display: none; }
+  #view-kuis.kuis-review #daftar-soal .soal-card { display: block !important; }
+
 </style>
 </head>
 <body class="bl-has-shell" data-belajar-step="3">
@@ -220,12 +272,24 @@
     </div>
 
     <div id="view-kuis" class="hidden">
-      <span class="back-link" onclick="kembaliKePilihTp()">← Pilih TP lain</span>
+      <span class="back-link" id="kuis-back-link" onclick="kembaliKePilihTp()">← Pilih TP lain</span>
       <h1 class="view-title" id="kuis-judul">Latihan</h1>
       <p class="view-sub" id="kuis-subtitle"></p>
+
+      <div class="kuis-toolbar" id="kuis-toolbar">
+        <div class="kuis-progress" id="kuis-progress">Soal <span>1</span> / 1</div>
+        <div class="kuis-timer" id="kuis-timer" title="Sisa waktu">--:--</div>
+      </div>
+      <div class="soal-nav" id="soal-nav" aria-label="Navigasi nomor soal"></div>
+
       <div id="hasil-skor" class="hidden"></div>
       <div id="daftar-soal"></div>
-      <button class="btn btn-submit" id="btn-submit-kuis" onclick="nilaiKuis()">Periksa Jawaban</button>
+
+      <div class="kuis-footer" id="kuis-footer">
+        <button type="button" class="btn-nav" id="btn-prev" onclick="kuisPrev()">← Sebelumnya</button>
+        <button type="button" class="btn-nav" id="btn-next" onclick="kuisNext()">Berikutnya →</button>
+        <button type="button" class="btn btn-submit" id="btn-submit-kuis" onclick="nilaiKuis()">Selesai</button>
+      </div>
     </div>
 
   </div>
@@ -266,6 +330,13 @@
   let currentTp = null;   // entri dari TP_KKO_INDEX
   let currentSoal = [];   // soal aktif dalam sesi kuis berjalan
   let currentSoalKompleksitas = null; // kompleksitas soal sesi berjalan (null = mode guru "semua")
+  // Mode LMS (satu soal per layar) — Fase C-1
+  let currentIndex = 0;
+  let jawabanMap = {};   // soalId -> jawaban tersimpan (bentuk tergantung jenisSoal)
+  let timerId = null;
+  let timerLeft = 0;     // detik tersisa
+  let kuisSelesai = false;
+  const DETIK_PER_SOAL = 90; // waktu default per soal (kelas 5: longgar)
   let levelSiswaInfo = null;   // { level, targetKompleksitas, chain } — hanya diisi utk role siswa
   let guruKompleksitasPilihan = "semua"; // dipakai role guru saja
   let poolSoalTpCache = {};   // tp.tp -> { kompleksitas, soal[] } | null — dari renderTpGrid, dipakai ulang di mulaiKuis supaya tidak query 2x
@@ -308,6 +379,8 @@
   };
 
   window.kembaliKePilihMapel = function () {
+    resetKuisState();
+    document.getElementById("view-kuis").classList.add("hidden");
     document.getElementById("view-pilih-tp").classList.add("hidden");
     document.getElementById("view-pilih-mapel").classList.remove("hidden");
     const __ws2 = document.getElementById("welcome-strip"); if (__ws2) __ws2.classList.remove("hidden");
@@ -450,6 +523,7 @@
   }
 
   window.kembaliKePilihTp = function () {
+    resetKuisState();
     document.getElementById("view-kuis").classList.add("hidden");
     document.getElementById("view-pilih-tp").classList.remove("hidden");
   };
@@ -487,10 +561,12 @@
     document.getElementById("btn-submit-kuis").textContent = "Memuat…";
 
     currentSoal = await ambilSoalAcak(tpEntry.tp, jumlahTersedia);
-    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal — jawab semua lalu klik \"Periksa Jawaban\".";
+    resetKuisState();
+    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal — satu per satu. Navigasi nomor soal di atas. Waktu: " + formatWaktu(currentSoal.length * DETIK_PER_SOAL) + ".";
     document.getElementById("btn-submit-kuis").disabled = false;
-    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
+    document.getElementById("btn-submit-kuis").textContent = "Selesai";
     renderDaftarSoal();
+    startTimer(Math.max(DETIK_PER_SOAL, currentSoal.length * DETIK_PER_SOAL));
   };
 
   // JALUR BARU — soal berbasis Level Kemampuan. Pool sudah diunduh & di-cache
@@ -514,16 +590,213 @@
     const catatan = isFallback
       ? ` tingkat ${labelK} (soal tingkat levelmu belum tersedia untuk TP ini, jadi diturunkan sementara)`
       : ` tingkat ${labelK}`;
-    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal" + catatan + " — jawab semua lalu klik \"Periksa Jawaban\".";
+    resetKuisState();
+    document.getElementById("kuis-subtitle").textContent = currentSoal.length + " soal" + catatan + " — satu per satu. Waktu: " + formatWaktu(currentSoal.length * DETIK_PER_SOAL) + ".";
     document.getElementById("btn-submit-kuis").disabled = false;
-    document.getElementById("btn-submit-kuis").textContent = "Periksa Jawaban";
+    document.getElementById("btn-submit-kuis").textContent = "Selesai";
     renderDaftarSoal();
+    startTimer(Math.max(DETIK_PER_SOAL, currentSoal.length * DETIK_PER_SOAL));
   };
 
-  function renderDaftarSoal() {
+
+  // ═══════════════════════ MODE LMS (Fase C-1) ═══════════════════════
+  function stopTimer() {
+    if (timerId) { clearInterval(timerId); timerId = null; }
+  }
+
+  function formatWaktu(sec) {
+    const m = Math.floor(Math.max(0, sec) / 60);
+    const s = Math.max(0, sec) % 60;
+    return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  }
+
+  function updateTimerUI() {
+    const el = document.getElementById("kuis-timer");
+    if (!el) return;
+    el.textContent = formatWaktu(timerLeft);
+    el.classList.remove("warn", "danger");
+    if (timerLeft <= 60) el.classList.add("danger");
+    else if (timerLeft <= 180) el.classList.add("warn");
+  }
+
+  function startTimer(totalDetik) {
+    stopTimer();
+    timerLeft = totalDetik;
+    updateTimerUI();
+    timerId = setInterval(() => {
+      timerLeft -= 1;
+      updateTimerUI();
+      if (timerLeft <= 0) {
+        stopTimer();
+        alert("Waktu habis. Jawaban yang sudah diisi akan diperiksa.");
+        nilaiKuis();
+      }
+    }, 1000);
+  }
+
+  function simpanJawabanKartuAktif() {
+    if (kuisSelesai || !currentSoal.length) return;
+    const card = document.querySelector("#daftar-soal .soal-card");
+    if (!card) return;
+    const soalId = card.dataset.soalId;
+    const soal = currentSoal.find((s) => s.id === soalId);
+    if (!soal) return;
+    const jenis = soal.jenisSoal || "pg_tunggal";
+
+    if (jenis === "pg_tunggal") {
+      const checked = card.querySelector(`input[name="soal-${soalId}"]:checked`);
+      if (checked) jawabanMap[soalId] = checked.value;
+      else delete jawabanMap[soalId];
+    } else if (jenis === "pg_kompleks") {
+      const dipilih = [...card.querySelectorAll(`input[name="soal-${soalId}"]:checked`)].map((el) => el.value);
+      if (dipilih.length) jawabanMap[soalId] = dipilih;
+      else delete jawabanMap[soalId];
+    } else if (jenis === "pg_kategori") {
+      const rows = [...card.querySelectorAll(".kat-row")];
+      const ans = {};
+      let ada = false;
+      rows.forEach((row) => {
+        const sel = row.querySelector("select");
+        if (sel && sel.value) { ans[row.dataset.itemIdx] = sel.value; ada = true; }
+      });
+      if (ada) jawabanMap[soalId] = ans;
+      else delete jawabanMap[soalId];
+    } else if (jenis === "mengurutkan") {
+      const items = [...card.querySelectorAll(".urut-item .urut-teks")].map((el) => el.textContent);
+      jawabanMap[soalId] = items;
+    } else if (jenis === "menjodohkan") {
+      const rows = [...card.querySelectorAll(".jodoh-row")];
+      const ans = {};
+      let ada = false;
+      rows.forEach((row) => {
+        const sel = row.querySelector("select");
+        if (sel && sel.value) { ans[row.dataset.itemIdx] = sel.value; ada = true; }
+      });
+      if (ada) jawabanMap[soalId] = ans;
+      else delete jawabanMap[soalId];
+    }
+  }
+
+  function pulihkanJawabanKeKartu(card, soal) {
+    const soalId = soal.id;
+    const j = jawabanMap[soalId];
+    if (j == null) return;
+    const jenis = soal.jenisSoal || "pg_tunggal";
+    if (jenis === "pg_tunggal") {
+      const inp = card.querySelector(`input[name="soal-${soalId}"][value="${CSS.escape ? CSS.escape(String(j)) : String(j).replace(/"/g, '\\"')}"]`);
+      // fallback without CSS.escape for older browsers
+      card.querySelectorAll(`input[name="soal-${soalId}"]`).forEach((el) => {
+        if (el.value === j) el.checked = true;
+      });
+    } else if (jenis === "pg_kompleks" && Array.isArray(j)) {
+      card.querySelectorAll(`input[name="soal-${soalId}"]`).forEach((el) => {
+        if (j.includes(el.value)) el.checked = true;
+      });
+    } else if (jenis === "pg_kategori" && typeof j === "object") {
+      card.querySelectorAll(".kat-row").forEach((row) => {
+        const sel = row.querySelector("select");
+        const v = j[row.dataset.itemIdx];
+        if (sel && v != null) sel.value = v;
+      });
+    } else if (jenis === "mengurutkan" && Array.isArray(j)) {
+      // reorder DOM items to match saved order
+      const parent = card.querySelector(".urut-list") || card.querySelector("[class*='urut']");
+      // skip complex reorder if structure differs — jawaban tetap di map untuk skor
+    } else if (jenis === "menjodohkan" && typeof j === "object") {
+      card.querySelectorAll(".jodoh-row").forEach((row) => {
+        const sel = row.querySelector("select");
+        const v = j[row.dataset.itemIdx];
+        if (sel && v != null) sel.value = v;
+      });
+    }
+  }
+
+  function renderSoalNav() {
+    const nav = document.getElementById("soal-nav");
+    if (!nav) return;
+    nav.innerHTML = "";
+    currentSoal.forEach((soal, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "soal-nav-btn";
+      if (i === currentIndex) btn.classList.add("current");
+      if (jawabanMap[soal.id] != null) btn.classList.add("answered");
+      btn.textContent = String(i + 1);
+      btn.title = "Soal " + (i + 1);
+      btn.onclick = () => kuisGoto(i);
+      nav.appendChild(btn);
+    });
+  }
+
+  function updateKuisChrome() {
+    const n = currentSoal.length || 1;
+    const prog = document.getElementById("kuis-progress");
+    if (prog) prog.innerHTML = "Soal <span>" + (currentIndex + 1) + "</span> / " + n;
+    const prev = document.getElementById("btn-prev");
+    const next = document.getElementById("btn-next");
+    if (prev) prev.disabled = currentIndex <= 0;
+    if (next) next.disabled = currentIndex >= n - 1;
+    renderSoalNav();
+  }
+
+  function renderSoalAktif() {
     const wrap = document.getElementById("daftar-soal");
     wrap.innerHTML = "";
-    currentSoal.forEach((soal, i) => wrap.appendChild(buatKartuSoal(soal, i)));
+    if (!currentSoal.length) return;
+    const soal = currentSoal[currentIndex];
+    const card = buatKartuSoal(soal, currentIndex);
+    wrap.appendChild(card);
+    pulihkanJawabanKeKartu(card, soal);
+    updateKuisChrome();
+  }
+
+  window.kuisGoto = function (idx) {
+    if (kuisSelesai) return;
+    if (idx < 0 || idx >= currentSoal.length) return;
+    simpanJawabanKartuAktif();
+    currentIndex = idx;
+    renderSoalAktif();
+  };
+  window.kuisPrev = function () { kuisGoto(currentIndex - 1); };
+  window.kuisNext = function () { kuisGoto(currentIndex + 1); };
+
+  function resetKuisState() {
+    stopTimer();
+    currentIndex = 0;
+    jawabanMap = {};
+    kuisSelesai = false;
+    window.__nilaiKuisBusy = false;
+    const view = document.getElementById("view-kuis");
+    if (view) view.classList.remove("kuis-review");
+    const toolbar = document.getElementById("kuis-toolbar");
+    const nav = document.getElementById("soal-nav");
+    const foot = document.getElementById("kuis-footer");
+    if (toolbar) toolbar.style.display = "";
+    if (nav) nav.style.display = "";
+    if (foot) foot.style.display = "";
+  }
+
+  function masukModeReview() {
+    kuisSelesai = true;
+    stopTimer();
+    const view = document.getElementById("view-kuis");
+    if (view) view.classList.add("kuis-review");
+    // Tampilkan semua soal untuk feedback penilaian
+    const wrap = document.getElementById("daftar-soal");
+    wrap.innerHTML = "";
+    currentSoal.forEach((soal, i) => {
+      const card = buatKartuSoal(soal, i);
+      wrap.appendChild(card);
+      pulihkanJawabanKeKartu(card, soal);
+    });
+  }
+
+
+  function renderDaftarSoal() {
+    // Mode LMS: satu soal aktif (+ navigasi). Review mode mengisi semua kartu di masukModeReview().
+    if (kuisSelesai) return;
+    currentIndex = 0;
+    renderSoalAktif();
   }
 
   const JENIS_LABEL = {
@@ -601,6 +874,24 @@
       alert("Sesi login kamu bermasalah (nama tidak terbaca). Silakan keluar dan login ulang sebelum mengerjakan kuis ini, supaya hasilnya tersimpan dengan benar.");
       return;
     }
+
+    // Mode LMS: simpan jawaban soal aktif, lalu tampilkan semua kartu untuk penilaian + feedback
+    if (window.__nilaiKuisBusy) return;
+    if (!kuisSelesai) {
+      simpanJawabanKartuAktif();
+      const belum = currentSoal.filter((s) => jawabanMap[s.id] == null).length;
+      if (belum > 0 && timerLeft > 0) {
+        const lanjut = confirm(belum + " soal belum dijawab. Tetap selesai dan periksa?");
+        if (!lanjut) return;
+      }
+      masukModeReview();
+    } else {
+      // Sudah dinilai — jangan proses ulang
+      return;
+    }
+    window.__nilaiKuisBusy = true;
+    const btnSub = document.getElementById("btn-submit-kuis");
+    if (btnSub) { btnSub.disabled = true; btnSub.textContent = "Memeriksa…"; }
 
     let benar = 0;
     let belumDijawab = 0;
