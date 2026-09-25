@@ -115,6 +115,42 @@
     </div>
   </div>
 
+  <div class="home-shell">
+    <!-- Sidebar guru: hanya desktop + role guru (HP selalu tersembunyi via CSS) -->
+    <aside id="home-guru-nav" class="home-guru-nav hidden" aria-label="Menu cepat guru">
+      <div class="home-guru-nav-label">Menu cepat</div>
+      <a href="pages/admin.html" class="home-guru-link home-guru-link-primary">
+        <span class="hgl-ico">⚙️</span><span>Kelola Konten</span>
+      </a>
+      <a href="pages/admin.html#pengumuman" class="home-guru-link">
+        <span class="hgl-ico">📢</span><span>Pengumuman</span>
+      </a>
+      <a href="pages/admin.html#modul" class="home-guru-link">
+        <span class="hgl-ico">📚</span><span>Modul</span>
+      </a>
+      <a href="pages/admin.html#soal" class="home-guru-link">
+        <span class="hgl-ico">💪</span><span>Soal</span>
+      </a>
+      <a href="pages/admin.html#ortu" class="home-guru-link">
+        <span class="hgl-ico">👪</span><span>Persetujuan Ortu</span>
+      </a>
+      <div class="home-guru-nav-divider"></div>
+      <a href="pages/kelas/index.html" class="home-guru-link">
+        <span class="hgl-ico">🧑‍🎓</span><span>Data Siswa</span>
+      </a>
+      <a href="pages/mpls/index.html" class="home-guru-link">
+        <span class="hgl-ico">🧭</span><span>MPLS</span>
+      </a>
+      <a href="pages/mpls/rekap.html" class="home-guru-link">
+        <span class="hgl-ico">📋</span><span>Rekap MPLS</span>
+      </a>
+      <a href="pages/admin.html#pustaka-belajar" class="home-guru-link">
+        <span class="hgl-ico">📄</span><span>Pustaka</span>
+      </a>
+    </aside>
+
+    <div class="home-main">
+
   <!-- Welcome (ringan, bukan hero gelap penuh) -->
   <div class="home-welcome">
     <div class="home-welcome-inner">
@@ -317,6 +353,9 @@
   <footer>
     Website Kelas 5 · TP 2026–2027 · Dibuat dengan ❤️ &amp; GitHub Pages
   </footer>
+
+    </div><!-- .home-main -->
+  </div><!-- .home-shell -->
 </div>
 
 <!-- Sumber daftar nama siswa (MPLS_STUDENTS) & konfigurasi Apps Script (MPLS_CONFIG) —
@@ -408,6 +447,9 @@
     document.getElementById('admin-panel').classList.add('hidden');
     document.getElementById('kelas-panel').classList.add('hidden');
     document.getElementById('card-laporan-siswa').classList.add('hidden');
+    const gn = document.getElementById('home-guru-nav');
+    if (gn) gn.classList.add('hidden');
+    document.getElementById('app').classList.remove('has-guru-nav');
   }
 
   // ── Tab Login (Siswa / Guru & Orang Tua) ──────────────────
@@ -680,6 +722,9 @@
       if (role === 'guru') {
         document.getElementById('admin-panel').classList.remove('hidden');
         document.getElementById('kelas-panel').classList.remove('hidden');
+        const gn = document.getElementById('home-guru-nav');
+        if (gn) gn.classList.remove('hidden');
+        document.getElementById('app').classList.add('has-guru-nav');
       }
 
       // Kartu "Laporan Siswa" — guru (lihat siapa saja) & orangtua (lihat anaknya sendiri,
