@@ -10,8 +10,8 @@
 <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;650&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/css/design-system.css" />
+<link rel="stylesheet" href="../assets/css/belajar-shell.css" />
 <style>
-  /* ── Ekstensi khusus halaman Ingat Lagi (token dari design-system) ── */
   :root {
     --m-bahasa-indonesia: #8c3d5f;
     --m-matematika:       #1f6f78;
@@ -31,7 +31,6 @@
     font-size: 14px;
   }
 
-  /* Topbar: aksen emas langkah 2 */
   #topbar { border-bottom-color: var(--step-accent); }
   #topbar .brand span { color: var(--step-accent); }
   #topbar a.back {
@@ -42,7 +41,6 @@
   }
   #topbar a.back:hover { color: #fff; }
 
-  /* Welcome strip */
   .bl-welcome {
     background: linear-gradient(180deg, #fdf6e8 0%, var(--paper) 100%);
     border-bottom: 1px solid var(--border);
@@ -100,7 +98,6 @@
     padding: var(--s-6) var(--s-4) var(--s-10);
   }
 
-  /* Filter chips */
   .filter-row {
     display: flex;
     gap: 8px;
@@ -129,7 +126,6 @@
     border-color: var(--ink);
   }
 
-  /* Group mapel */
   .group-title {
     display: flex;
     align-items: center;
@@ -175,7 +171,6 @@
     margin: 1rem 0 0.55rem 2px;
   }
 
-  /* Kartu materi — seirama .card beranda */
   .materi-card {
     display: flex;
     align-items: flex-start;
@@ -279,7 +274,7 @@
   }
 </style>
 </head>
-<body>
+<body class="bl-has-shell" data-belajar-step="2">
 
 <div id="checking">Memeriksa akses…</div>
 
@@ -306,6 +301,7 @@
   </div>
 </div>
 
+<script src="../assets/js/belajar-shell.js"></script>
 <script type="module" src="../assets/js/role-guard.js"></script>
 <script src="materi/assets/materi-index.js"></script>
 <script>
