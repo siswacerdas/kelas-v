@@ -360,3 +360,97 @@
   padding-top: 0.75rem;
   border-top: 1px dashed var(--border);
 }
+
+
+/* ── Tahap 2: ringkasan belajar ─────────────────────────── */
+.kelas-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 1.15rem;
+}
+@media (max-width: 480px) {
+  .kelas-stat-grid { grid-template-columns: 1fr; }
+}
+.kelas-stat {
+  background: var(--paper-2, #f3f1eb);
+  border-radius: 14px;
+  padding: 1rem 0.85rem;
+  text-align: center;
+  border: 1px solid var(--border, rgba(26,26,46,0.08));
+}
+.kelas-stat-num {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--accent, #2e6fbc);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.kelas-stat-label {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-2);
+  margin-top: 6px;
+  line-height: 1.35;
+}
+.kelas-stat-label span {
+  font-weight: 500;
+  color: var(--ink-3);
+  font-size: 11px;
+}
+.kelas-ring-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 0.55rem;
+}
+.kelas-akt-list {
+  list-style: none;
+  margin: 0 0 1.15rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.kelas-akt-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0.7rem 0.9rem;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+.kelas-akt-list li:last-child { border-bottom: none; }
+.kelas-akt-label { font-weight: 650; color: var(--ink); }
+.kelas-akt-time { color: var(--ink-3); font-size: 12px; white-space: nowrap; }
+.kelas-ring-empty-note {
+  font-size: 13px;
+  color: var(--ink-3);
+  margin: 0 0 1.15rem;
+  line-height: 1.45;
+}
+.kelas-ring-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0.85rem;
+}
+.kelas-ring-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  background: var(--paper-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 650;
+  transition: border-color 0.15s, background 0.15s;
+}
+.kelas-ring-link:hover {
+  background: #fff;
+  border-color: var(--border-2, rgba(26,26,46,0.16));
+}
