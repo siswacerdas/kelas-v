@@ -20,34 +20,53 @@
 </header>
 
 <main class="kelas-shell">
-  <header class="kelas-page-head">
-    <div class="kelas-page-head-text">
-      <h1>Data Siswa</h1>
-      <p class="kelas-page-desc">Roster kelas — profil, foto, dan NISN. Nanti laporan belajar digabung di sini.</p>
-    </div>
-    <div class="kelas-page-actions">
-      <button type="button" class="btn btn-primary" id="btn-buka-tambah">+ Tambah / Lengkapi</button>
-    </div>
-  </header>
 
-  <div class="kelas-toolbar">
-    <input type="text" id="search-siswa" class="kelas-search" placeholder="Cari nama siswa…" autocomplete="off" />
-    <span id="kelas-count" class="kelas-count"></span>
-  </div>
-
-  <div id="list-siswa" class="kelas-roster" aria-label="Daftar siswa">
-    <div class="kelas-empty">Memuat data…</div>
-  </div>
-
-  <!-- Panel form: tambah / edit (overlay) -->
-  <div id="panel-form-wrap" class="kelas-panel-wrap hidden" aria-hidden="true">
-    <div class="kelas-panel-backdrop" id="panel-form-backdrop"></div>
-    <aside class="kelas-panel" role="dialog" aria-labelledby="panel-form-title">
-      <div class="kelas-panel-head">
-        <h2 id="panel-form-title">Tambah / Perbarui Data</h2>
-        <button type="button" class="kelas-panel-close" id="btn-tutup-form" aria-label="Tutup">×</button>
+  <!-- ===== VIEW: ROSTER ===== -->
+  <div id="view-roster">
+    <header class="kelas-page-head">
+      <div class="kelas-page-head-text">
+        <h1>Data Siswa</h1>
+        <p class="kelas-page-desc">Pilih siswa untuk melihat profil. Nanti ringkasan belajar digabung di sini.</p>
       </div>
-      <div class="kelas-panel-body">
+      <div class="kelas-page-actions">
+        <button type="button" class="btn btn-primary" id="btn-buka-tambah">+ Tambah / Lengkapi</button>
+      </div>
+    </header>
+
+    <div class="kelas-toolbar">
+      <input type="text" id="search-siswa" class="kelas-search" placeholder="Cari nama siswa…" autocomplete="off" />
+      <span id="kelas-count" class="kelas-count"></span>
+    </div>
+
+    <div id="list-siswa" class="kelas-roster" aria-label="Daftar siswa">
+      <div class="kelas-empty">Memuat data…</div>
+    </div>
+  </div>
+
+  <!-- ===== VIEW: DETAIL SISWA (Tahap 1) ===== -->
+  <div id="view-detail" class="hidden">
+    <button type="button" class="kelas-back-roster" id="btn-kembali-roster">← Kembali ke daftar</button>
+
+    <section class="kelas-detail-hero" aria-label="Profil siswa">
+      <div id="detail-foto" class="kelas-detail-foto"><div class="siswa-noimg">🧒</div></div>
+      <div class="kelas-detail-meta">
+        <h1 id="detail-nama">—</h1>
+        <p id="detail-panggilan" class="kelas-detail-sub"></p>
+        <p id="detail-nisn" class="kelas-detail-nisn"></p>
+      </div>
+    </section>
+
+    <nav class="kelas-tabs" role="tablist">
+      <button type="button" class="kelas-tab active" role="tab" aria-selected="true" data-tab="identitas" id="tab-btn-identitas">Identitas</button>
+      <button type="button" class="kelas-tab" role="tab" aria-selected="false" data-tab="ringkasan" id="tab-btn-ringkasan">Ringkasan belajar</button>
+    </nav>
+
+    <div id="tab-identitas" class="kelas-tab-panel" role="tabpanel">
+      <div class="kelas-card">
+        <div class="kelas-card-head">
+          <h2 id="panel-form-title">Data identitas</h2>
+          <p>Ubah profil, NISN, dan foto. NISN wajib 10 digit (login + ID data).</p>
+        </div>
         <form id="form-siswa" class="kelas-form">
           <div class="field-group">
             <label for="f-nama">Nama Lengkap</label>
@@ -65,7 +84,7 @@
               <input type="text" id="f-nisn" placeholder="10 digit" inputmode="numeric" maxlength="10" pattern="\d{10}" required autocomplete="off" />
             </div>
           </div>
-          <p class="field-hint">NISN = login siswa + ID data. Wajib 10 digit.</p>
+          <p class="field-hint">NISN dipakai login siswa dan sebagai kunci data.</p>
           <div class="kelas-form-grid">
             <div class="field-group">
               <label for="f-tempat">Tempat Lahir</label>
@@ -104,7 +123,7 @@
         <details class="kelas-impor">
           <summary>
             <span class="kelas-impor-title">Impor NISN massal</span>
-            <span class="kelas-impor-hint">Opsional</span>
+            <span class="kelas-impor-hint">Opsional — banyak siswa sekaligus</span>
           </summary>
           <div id="panel-impor-nisn" class="kelas-impor-body">
             <p class="kelas-impor-info">Format per baris: <strong>Nama Lengkap, NISN</strong></p>
@@ -114,8 +133,26 @@
           </div>
         </details>
       </div>
-    </aside>
+    </div>
+
+    <div id="tab-ringkasan" class="kelas-tab-panel hidden" role="tabpanel">
+      <div class="kelas-card kelas-ringkasan-placeholder">
+        <h2>Ringkasan belajar</h2>
+        <p class="kelas-placeholder-lead">
+          Tahap berikutnya: ringkasan modul, materi, uji kemampuan, dan tautan laporan lengkap
+          untuk siswa ini — tanpa berpindah ke banyak menu terpisah.
+        </p>
+        <ul class="kelas-placeholder-list">
+          <li>Progres Ayo Belajar / Ingat Lagi / Pustaka</li>
+          <li>Hasil Uji Kemampuan terakhir</li>
+          <li>Level &amp; EXP (jika aktif)</li>
+          <li>Tautan ke laporan detail &amp; MPLS</li>
+        </ul>
+        <p class="kelas-placeholder-note">Belum ada data yang dimuat di sini. Identitas tetap bisa diedit di tab sebelah.</p>
+      </div>
+    </div>
   </div>
+
 </main>
 
 <footer class="kelas-footer">Data Siswa · Kelas 5 · TP 2026–2027</footer>
