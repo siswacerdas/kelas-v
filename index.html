@@ -118,7 +118,7 @@
   <div class="home-shell">
     <!-- Sidebar guru: hanya desktop + role guru (HP selalu tersembunyi via CSS) -->
     <aside id="home-guru-nav" class="home-guru-nav hidden" aria-label="Menu cepat guru">
-      <div class="home-guru-nav-label">Menu cepat</div>
+      <div class="home-guru-nav-label">Konten</div>
       <a href="pages/admin.html" class="home-guru-link home-guru-link-primary">
         <span class="hgl-ico">⚙️</span><span>Kelola Konten</span>
       </a>
@@ -131,21 +131,26 @@
       <a href="pages/admin.html#soal" class="home-guru-link">
         <span class="hgl-ico">💪</span><span>Soal</span>
       </a>
+      <a href="pages/admin.html#pustaka-belajar" class="home-guru-link">
+        <span class="hgl-ico">📄</span><span>Pustaka Belajar</span>
+      </a>
       <a href="pages/admin.html#ortu" class="home-guru-link">
         <span class="hgl-ico">👪</span><span>Persetujuan Ortu</span>
       </a>
+
       <div class="home-guru-nav-divider"></div>
+      <div class="home-guru-nav-label">Data Siswa</div>
       <a href="pages/kelas/index.html" class="home-guru-link">
-        <span class="hgl-ico">🧑‍🎓</span><span>Data Siswa</span>
+        <span class="hgl-ico">🧑‍🎓</span><span>Profil &amp; Foto Siswa</span>
       </a>
+
+      <div class="home-guru-nav-divider"></div>
+      <div class="home-guru-nav-label">Asesmen MPLS</div>
       <a href="pages/mpls/index.html" class="home-guru-link">
-        <span class="hgl-ico">🧭</span><span>MPLS</span>
+        <span class="hgl-ico">🧭</span><span>Input MPLS</span>
       </a>
       <a href="pages/mpls/rekap.html" class="home-guru-link">
         <span class="hgl-ico">📋</span><span>Rekap MPLS</span>
-      </a>
-      <a href="pages/admin.html#pustaka-belajar" class="home-guru-link">
-        <span class="hgl-ico">📄</span><span>Pustaka</span>
       </a>
     </aside>
 
@@ -166,7 +171,7 @@
     <section id="admin-panel" class="home-workspace hidden" aria-label="Ruang kerja guru">
       <div class="home-section-head">
         <h2 class="home-section-title">Ruang Kerja Guru</h2>
-        <p class="home-section-desc">Kelola konten, data siswa, dan persetujuan akun.</p>
+        <p class="home-section-desc">Kelola konten pembelajaran dan persetujuan akun orang tua.</p>
       </div>
       <div class="ws-grid">
         <a href="pages/admin.html" class="ws-tile ws-tile-primary">
@@ -207,31 +212,17 @@
       </div>
     </section>
 
-    <section id="kelas-panel" class="home-workspace home-workspace-kelas hidden" aria-label="Data kelas">
+        <section id="kelas-panel" class="home-workspace home-workspace-kelas hidden" aria-label="Data siswa">
       <div class="home-section-head">
-        <h2 class="home-section-title">Data Kelas</h2>
-        <p class="home-section-desc">Profil siswa, rekap MPLS, dan pustaka.</p>
+        <h2 class="home-section-title">Data Siswa</h2>
+        <p class="home-section-desc">Profil, foto, dan identitas siswa kelas ini.</p>
       </div>
       <div class="ws-grid">
         <a href="pages/kelas/index.html" class="ws-tile ws-tile-accent">
           <span class="ws-ico">🧑‍🎓</span>
           <span class="ws-body">
-            <span class="ws-title">Data Siswa &amp; Foto</span>
-            <span class="ws-desc">Kelola profil dan foto siswa</span>
-          </span>
-        </a>
-        <a href="pages/mpls/rekap.html" class="ws-tile">
-          <span class="ws-ico">📋</span>
-          <span class="ws-body">
-            <span class="ws-title">Rekap MPLS</span>
-            <span class="ws-desc">Hasil asesmen non-kognitif</span>
-          </span>
-        </a>
-        <a href="pages/admin.html#pustaka-belajar" class="ws-tile">
-          <span class="ws-ico">📄</span>
-          <span class="ws-body">
-            <span class="ws-title">Pustaka Belajar</span>
-            <span class="ws-desc">Kelola file PDF materi</span>
+            <span class="ws-title">Profil &amp; Foto Siswa</span>
+            <span class="ws-desc">Kelola data identitas dan foto siswa</span>
           </span>
         </a>
       </div>
