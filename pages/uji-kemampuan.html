@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;650&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/css/design-system.css" />
+<link rel="stylesheet" href="../assets/css/belajar-shell.css" />
 <style>
   :root {
     --step-accent: #9b59b6;
@@ -174,7 +175,7 @@
   }
 </style>
 </head>
-<body>
+<body class="bl-has-shell" data-belajar-step="3">
 
 <div id="checking">Memeriksa akses…</div>
 
@@ -231,6 +232,7 @@
 </div>
 
 <script src="materi/assets/tp-kko-index.js"></script>
+<script src="../assets/js/belajar-shell.js"></script>
 <script type="module" src="../assets/js/role-guard.js"></script>
 <script type="module">
   import { getFirestore, collection, doc, getDoc, getDocs, getCountFromServer, addDoc, query, where, orderBy, limit, serverTimestamp }
