@@ -758,3 +758,15 @@ footer {
     display: block;
   }
 }
+
+
+/* ── Tahap 3: beranda per role ──────────────────────────── */
+#app.role-siswa .home-section-belajar .home-section-title {
+  font-size: 1.15rem;
+}
+#app.role-siswa .card-grid-feature {
+  margin-bottom: 0.5rem;
+}
+#app.role-siswa .home-welcome {
+  background: linear-gradient(180deg, #e8f5ee 0%, var(--paper) 100%);
+}
