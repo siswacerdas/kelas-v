@@ -1,7 +1,6 @@
 /**
- * kelas.js — Hub Data Siswa (pages/kelas/index.html)
- * Backend: MPLS_CONFIG.APPS_SCRIPT_URL (sama modul MPLS).
- * UI: roster kartu → panel samping untuk tambah/edit.
+ * kelas.js — Hub Data Siswa (Tahap 1: roster → detail profil)
+ * Backend: MPLS_CONFIG.APPS_SCRIPT_URL
  */
 
 function isiDropdownNama() {
@@ -18,34 +17,79 @@ isiDropdownNama();
 const state = {
   siswaList: [],
   fotoResized: null,
+  currentSiswa: null, // objek siswa yang sedang dibuka di detail
 };
 
-/* ── Panel form ─────────────────────────────────────────── */
-function bukaPanelForm(mode) {
-  const wrap = document.getElementById("panel-form-wrap");
-  const title = document.getElementById("panel-form-title");
-  wrap.classList.remove("hidden");
-  wrap.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-  if (title) title.textContent = mode === "edit" ? "Edit Data Siswa" : "Tambah / Lengkapi Data";
+/* ── Navigasi roster ↔ detail ───────────────────────────── */
+function tampilkanRoster() {
+  document.getElementById("view-roster").classList.remove("hidden");
+  document.getElementById("view-detail").classList.add("hidden");
+  state.currentSiswa = null;
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function tutupPanelForm() {
-  const wrap = document.getElementById("panel-form-wrap");
-  if (!wrap) return;
-  wrap.classList.add("hidden");
-  wrap.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+function tampilkanDetail() {
+  document.getElementById("view-roster").classList.add("hidden");
+  document.getElementById("view-detail").classList.remove("hidden");
+  pilihTabDetail("identitas");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function pilihTabDetail(nama) {
+  document.querySelectorAll(".kelas-tab").forEach((btn) => {
+    const on = btn.getAttribute("data-tab") === nama;
+    btn.classList.toggle("active", on);
+    btn.setAttribute("aria-selected", on ? "true" : "false");
+  });
+  document.getElementById("tab-identitas").classList.toggle("hidden", nama !== "identitas");
+  document.getElementById("tab-ringkasan").classList.toggle("hidden", nama !== "ringkasan");
+}
+
+document.getElementById("btn-kembali-roster").addEventListener("click", tampilkanRoster);
+document.querySelectorAll(".kelas-tab").forEach((btn) => {
+  btn.addEventListener("click", () => pilihTabDetail(btn.getAttribute("data-tab")));
+});
+
+function updateDetailHero(s) {
+  const fotoEl = document.getElementById("detail-foto");
+  const namaEl = document.getElementById("detail-nama");
+  const panggilEl = document.getElementById("detail-panggilan");
+  const nisnEl = document.getElementById("detail-nisn");
+  const titleForm = document.getElementById("panel-form-title");
+
+  if (!s) {
+    fotoEl.innerHTML = '<div class="siswa-noimg">🧒</div>';
+    namaEl.textContent = "Tambah / Lengkapi Data";
+    panggilEl.textContent = "Pilih nama resmi dari daftar kelas, lalu isi NISN.";
+    nisnEl.textContent = "";
+    if (titleForm) titleForm.textContent = "Data identitas baru";
+    return;
+  }
+
+  namaEl.textContent = s["Nama Lengkap"] || "—";
+  panggilEl.textContent = s["Nama Panggilan"]
+    ? "Panggilan: " + s["Nama Panggilan"]
+    : "Belum ada nama panggilan";
+  nisnEl.textContent = s["NISN"] ? "NISN " + s["NISN"] : "NISN belum diisi";
+  if (titleForm) titleForm.textContent = "Data identitas";
+
+  if (s["URL Foto"]) {
+    fotoEl.innerHTML = fotoImgHtml(
+      s["URL Foto"],
+      "Foto " + (s["Nama Lengkap"] || ""),
+      'class="siswa-card-foto"',
+      '<div class="siswa-noimg">🧒</div>'
+    );
+  } else {
+    fotoEl.innerHTML = '<div class="siswa-noimg">🧒</div>';
+  }
 }
 
 document.getElementById("btn-buka-tambah").addEventListener("click", () => {
   resetForm();
-  bukaPanelForm("tambah");
-});
-document.getElementById("btn-tutup-form").addEventListener("click", tutupPanelForm);
-document.getElementById("panel-form-backdrop").addEventListener("click", tutupPanelForm);
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") tutupPanelForm();
+  state.currentSiswa = null;
+  updateDetailHero(null);
+  tampilkanDetail();
 });
 
 /* ── Resize foto ────────────────────────────────────────── */
@@ -105,7 +149,8 @@ async function handleFotoFile(file) {
     state.fotoResized = resized;
     document.getElementById("foto-preview").src = resized.dataUrl;
     document.getElementById("foto-preview-wrap").classList.remove("hidden");
-    document.getElementById("foto-size-info").textContent = "≈ " + humanFileSize(resized.base64) + " setelah dikompres";
+    document.getElementById("foto-size-info").textContent =
+      "≈ " + humanFileSize(resized.base64) + " setelah dikompres";
     document.getElementById("form-status").textContent = "";
   } catch (err) {
     document.getElementById("form-status").textContent = "Gagal memproses foto: " + err.message;
@@ -163,7 +208,10 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
 
   try {
     payload.idToken = await window.getFreshGuruIdToken();
-    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
+    const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
     const json = await parseJsonAman_(res);
     if (json.status !== "ok") throw new Error(json.message || "Gagal menyimpan");
     if (json.fotoWarning) {
@@ -171,9 +219,14 @@ document.getElementById("form-siswa").addEventListener("submit", async (e) => {
     } else {
       showToast("Tersimpan: " + nama);
     }
-    resetForm();
-    tutupPanelForm();
-    loadSiswaList();
+    await loadSiswaList();
+    // Tetap di detail siswa yang baru disimpan jika ada di daftar
+    const updated = state.siswaList.find((s) => s["Nama Lengkap"] === nama);
+    if (updated) {
+      fillFormFromSiswa(updated);
+    } else {
+      tampilkanRoster();
+    }
   } catch (err) {
     statusEl.textContent = "⚠️ Gagal menyimpan: " + err.message;
     statusEl.classList.add("err");
@@ -193,6 +246,7 @@ function showToast(msg, isErr) {
 }
 
 function fillFormFromSiswa(s) {
+  state.currentSiswa = s;
   document.getElementById("f-nama").value = s["Nama Lengkap"] || "";
   document.getElementById("f-panggilan").value = s["Nama Panggilan"] || "";
   document.getElementById("f-tempat").value = s["Tempat Lahir"] || "";
@@ -206,11 +260,17 @@ function fillFormFromSiswa(s) {
   const currentWrap = document.getElementById("foto-current-wrap");
   const currentFrame = document.getElementById("foto-current-frame");
   currentFrame.innerHTML = s["URL Foto"]
-    ? fotoImgHtml(s["URL Foto"], "Foto tersimpan " + (s["Nama Lengkap"] || ""), "", '<div class="ph-empty">Foto<br/>gagal dimuat</div>')
+    ? fotoImgHtml(
+        s["URL Foto"],
+        "Foto tersimpan " + (s["Nama Lengkap"] || ""),
+        "",
+        '<div class="ph-empty">Foto<br/>gagal dimuat</div>'
+      )
     : '<div class="ph-empty">Belum ada<br/>foto tersimpan</div>';
   currentWrap.classList.remove("hidden");
 
-  bukaPanelForm("edit");
+  updateDetailHero(s);
+  tampilkanDetail();
 }
 
 function escText(str) {
@@ -223,7 +283,9 @@ function renderSiswaList(filterText) {
   const wrap = document.getElementById("list-siswa");
   const countEl = document.getElementById("kelas-count");
   const filter = (filterText || "").trim().toLowerCase();
-  const rows = state.siswaList.filter((s) => !filter || String(s["Nama Lengkap"]).toLowerCase().includes(filter));
+  const rows = state.siswaList.filter(
+    (s) => !filter || String(s["Nama Lengkap"]).toLowerCase().includes(filter)
+  );
 
   if (countEl) {
     countEl.textContent = rows.length
@@ -232,40 +294,56 @@ function renderSiswaList(filterText) {
   }
 
   if (!rows.length) {
-    wrap.innerHTML = '<div class="kelas-empty">' +
-      (filter ? "Tidak ada nama yang cocok." : "Belum ada data siswa tersimpan. Ketuk “+ Tambah / Lengkapi”.") +
+    wrap.innerHTML =
+      '<div class="kelas-empty">' +
+      (filter
+        ? "Tidak ada nama yang cocok."
+        : "Belum ada data siswa tersimpan. Ketuk “+ Tambah / Lengkapi”.") +
       "</div>";
     return;
   }
 
-  wrap.innerHTML = rows.map((s, idx) => {
-    const nama = escText(s["Nama Lengkap"] || "—");
-    const panggilan = s["Nama Panggilan"] ? escText(s["Nama Panggilan"]) : "";
-    const nisn = s["NISN"] ? escText(s["NISN"]) : "";
-    const foto = s["URL Foto"]
-      ? fotoImgHtml(s["URL Foto"], "Foto " + (s["Nama Lengkap"] || ""), 'loading="lazy" class="siswa-card-foto"', '<div class="siswa-noimg">🧒</div>')
-      : '<div class="siswa-noimg">🧒</div>';
-    return (
-      '<button type="button" class="siswa-card" data-idx="' + idx + '">' +
+  wrap.innerHTML = rows
+    .map((s, idx) => {
+      const nama = escText(s["Nama Lengkap"] || "—");
+      const panggilan = s["Nama Panggilan"] ? escText(s["Nama Panggilan"]) : "";
+      const nisn = s["NISN"] ? escText(s["NISN"]) : "";
+      const foto = s["URL Foto"]
+        ? fotoImgHtml(
+            s["URL Foto"],
+            "Foto " + (s["Nama Lengkap"] || ""),
+            'loading="lazy" class="siswa-card-foto"',
+            '<div class="siswa-noimg">🧒</div>'
+          )
+        : '<div class="siswa-noimg">🧒</div>';
+      return (
+        '<button type="button" class="siswa-card" data-idx="' +
+        idx +
+        '">' +
         foto +
-        '<div class="siswa-card-name">' + nama + "</div>" +
+        '<div class="siswa-card-name">' +
+        nama +
+        "</div>" +
         (panggilan ? '<div class="siswa-card-meta">' + panggilan + "</div>" : "") +
-        '<span class="siswa-card-nisn' + (nisn ? "" : " missing") + '">' +
-          (nisn ? "NISN " + nisn : "NISN belum diisi") +
+        '<span class="siswa-card-nisn' +
+        (nisn ? "" : " missing") +
+        '">' +
+        (nisn ? "NISN " + nisn : "NISN belum diisi") +
         "</span>" +
-      "</button>"
-    );
-  }).join("");
+        "</button>"
+      );
+    })
+    .join("");
 
   wrap.querySelectorAll(".siswa-card").forEach((el) => {
     el.addEventListener("click", () => fillFormFromSiswa(rows[Number(el.dataset.idx)]));
   });
 }
 
-/** Muat daftar dengan 1x retry otomatis jika gagal teknis (404 proxy Apps Script). */
 async function fetchSiswaDenganRetry_() {
   const idToken = await window.getFreshGuruIdToken();
-  const url = MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(idToken);
+  const url =
+    MPLS_CONFIG.APPS_SCRIPT_URL + "?siswa=1&idToken=" + encodeURIComponent(idToken);
   let lastErr;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
@@ -275,7 +353,9 @@ async function fetchSiswaDenganRetry_() {
         continue;
       }
       const json = await parseJsonAman_(res);
-      if (json.status === "error") throw new Error(json.message || "(tidak ada pesan error dari server)");
+      if (json.status === "error") {
+        throw new Error(json.message || "(tidak ada pesan error dari server)");
+      }
       return json;
     } catch (err) {
       lastErr = err;
@@ -292,29 +372,35 @@ async function fetchSiswaDenganRetry_() {
 }
 
 async function loadSiswaList() {
-  document.getElementById("list-siswa").innerHTML = '<div class="kelas-empty">Memuat data…</div>';
+  document.getElementById("list-siswa").innerHTML =
+    '<div class="kelas-empty">Memuat data…</div>';
   try {
     const json = await fetchSiswaDenganRetry_();
     state.siswaList = (json.data || []).slice().sort((a, b) =>
-      String(a["Nama Lengkap"] || "").localeCompare(String(b["Nama Lengkap"] || ""), "id", { sensitivity: "base" })
+      String(a["Nama Lengkap"] || "").localeCompare(String(b["Nama Lengkap"] || ""), "id", {
+        sensitivity: "base",
+      })
     );
     renderSiswaList(document.getElementById("search-siswa").value);
   } catch (err) {
     document.getElementById("list-siswa").innerHTML =
       '<div class="kelas-empty" style="border-color:var(--danger);color:var(--danger)">Gagal memuat data: ' +
       escText(err.message) +
-      "<br><button type=\"button\" class=\"btn btn-secondary\" id=\"btn-retry-load\" style=\"margin-top:12px\">Coba lagi</button></div>";
+      '<br><button type="button" class="btn btn-secondary" id="btn-retry-load" style="margin-top:12px">Coba lagi</button></div>';
     const btn = document.getElementById("btn-retry-load");
     if (btn) btn.addEventListener("click", loadSiswaList);
   }
 }
 
-document.getElementById("search-siswa").addEventListener("input", (e) => renderSiswaList(e.target.value));
+document.getElementById("search-siswa").addEventListener("input", (e) =>
+  renderSiswaList(e.target.value)
+);
 
 document.getElementById("btn-impor-nisn").addEventListener("click", async () => {
   const raw = document.getElementById("f-impor-nisn").value;
   const hasilEl = document.getElementById("impor-nisn-hasil");
-  const rows = raw.split("\n")
+  const rows = raw
+    .split("\n")
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => {
@@ -325,7 +411,8 @@ document.getElementById("btn-impor-nisn").addEventListener("click", async () => 
     .filter(Boolean);
 
   if (!rows.length) {
-    hasilEl.innerHTML = '<p class="warn-line">Tidak ada baris valid — format "Nama, NISN" per baris.</p>';
+    hasilEl.innerHTML =
+      '<p class="warn-line">Tidak ada baris valid — format "Nama, NISN" per baris.</p>';
     return;
   }
 
@@ -342,20 +429,44 @@ document.getElementById("btn-impor-nisn").addEventListener("click", async () => 
     const json = await parseJsonAman_(res);
     if (json.status !== "ok") throw new Error(json.message || "Gagal mengimpor");
 
-    let html = '<p class="ok-line">✓ ' + json.diperbarui.length + " dari " + rows.length + " baris berhasil diperbarui.</p>";
+    let html =
+      '<p class="ok-line">✓ ' +
+      json.diperbarui.length +
+      " dari " +
+      rows.length +
+      " baris berhasil diperbarui.</p>";
     if (json.diperbarui.length) {
-      html += "<ul>" + json.diperbarui.map((n) => "<li>" + escText(n) + "</li>").join("") + "</ul>";
+      html +=
+        "<ul>" +
+        json.diperbarui.map((n) => "<li>" + escText(n) + "</li>").join("") +
+        "</ul>";
     }
     if (json.tidakDitemukan && json.tidakDitemukan.length) {
-      html += '<p class="warn-line">⚠️ ' + json.tidakDitemukan.length + " baris TIDAK berhasil:</p>";
-      html += "<ul>" + json.tidakDitemukan.map((r) =>
-        "<li>" + escText(r.nama) + " (" + escText(r.nisn) + ") — " + escText(r.alasan) + "</li>"
-      ).join("") + "</ul>";
+      html +=
+        '<p class="warn-line">⚠️ ' +
+        json.tidakDitemukan.length +
+        " baris TIDAK berhasil:</p>";
+      html +=
+        "<ul>" +
+        json.tidakDitemukan
+          .map(
+            (r) =>
+              "<li>" +
+              escText(r.nama) +
+              " (" +
+              escText(r.nisn) +
+              ") — " +
+              escText(r.alasan) +
+              "</li>"
+          )
+          .join("") +
+        "</ul>";
     }
     hasilEl.innerHTML = html;
     loadSiswaList();
   } catch (err) {
-    hasilEl.innerHTML = '<p class="warn-line">⚠️ Gagal mengimpor: ' + escText(err.message) + "</p>";
+    hasilEl.innerHTML =
+      '<p class="warn-line">⚠️ Gagal mengimpor: ' + escText(err.message) + "</p>";
   } finally {
     btn.disabled = false;
   }
@@ -366,4 +477,6 @@ document.addEventListener("guru-verified", () => {
   if (c) c.remove();
   loadSiswaList();
 });
-document.addEventListener("DOMContentLoaded", () => window.guardGuruPage("../../index.html"));
+document.addEventListener("DOMContentLoaded", () =>
+  window.guardGuruPage("../../index.html")
+);

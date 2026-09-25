@@ -216,3 +216,147 @@
   .kelas-shell { padding: 1.1rem 0.85rem 2.5rem; }
   .kelas-roster { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
 }
+
+
+/* ── Tahap 1: detail siswa + tabs ───────────────────────── */
+.kelas-back-roster {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: transparent;
+  color: var(--accent, #2e6fbc);
+  font-size: 13.5px;
+  font-weight: 650;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+.kelas-back-roster:hover { text-decoration: underline; }
+
+.kelas-detail-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.15rem;
+  background: #fff;
+  border: 1px solid var(--border, rgba(26,26,46,0.1));
+  border-radius: 16px;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(26,26,46,0.04));
+}
+.kelas-detail-foto {
+  flex-shrink: 0;
+}
+.kelas-detail-foto img,
+.kelas-detail-foto .siswa-noimg {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--paper-3, #e8e5dc);
+  background: var(--paper-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+.kelas-detail-meta { min-width: 0; }
+.kelas-detail-meta h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.kelas-detail-sub {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  margin: 0 0 0.35rem;
+}
+.kelas-detail-nisn {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+.kelas-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--paper-2, #f3f1eb);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+.kelas-tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 650;
+  font-family: inherit;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.kelas-tab.active {
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 1px 4px rgba(26,26,46,0.1);
+}
+.kelas-tab-panel { margin-bottom: 1rem; }
+
+.kelas-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.2rem 1.15rem 1.35rem;
+  box-shadow: var(--shadow-sm);
+}
+.kelas-card-head {
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+.kelas-card-head h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+.kelas-card-head p {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.kelas-ringkasan-placeholder h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+.kelas-placeholder-lead {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.55;
+  margin: 0 0 0.85rem;
+}
+.kelas-placeholder-list {
+  margin: 0 0 1rem 1.15rem;
+  padding: 0;
+  font-size: 13px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+.kelas-placeholder-note {
+  font-size: 12px;
+  color: var(--ink-3);
+  font-style: italic;
+  margin: 0;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border);
+}
