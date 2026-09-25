@@ -3,109 +3,122 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Data Kelas · Kelas 5</title>
+<title>Data Siswa · Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../mpls/assets/mpls.css" />
+<link rel="stylesheet" href="../../assets/css/design-system.css" />
 <link rel="stylesheet" href="assets/kelas.css" />
 </head>
-<body>
+<body class="kelas-page">
 
-<div id="checking" style="position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-3);z-index:500">
-  Memeriksa akses…
-</div>
+<div id="checking" class="kelas-checking">Memeriksa akses…</div>
 
-<div id="topbar">
-  <a href="../../index.html" class="back">←</a>
-  <div class="brand">Kelas <em>5</em> · Data Kelas</div>
-</div>
+<header id="topbar" class="kelas-topbar">
+  <a href="../../index.html" class="back">← Beranda</a>
+  <div class="brand">Data Siswa <span>·</span> Kelas 5</div>
+</header>
 
-<div class="container">
+<main class="kelas-shell">
+  <header class="kelas-page-head">
+    <div class="kelas-page-head-text">
+      <h1>Data Siswa</h1>
+      <p class="kelas-page-desc">Roster kelas — profil, foto, dan NISN. Nanti laporan belajar digabung di sini.</p>
+    </div>
+    <div class="kelas-page-actions">
+      <button type="button" class="btn btn-primary" id="btn-buka-tambah">+ Tambah / Lengkapi</button>
+    </div>
+  </header>
 
-  <p class="section-label">Tambah / Perbarui Data Siswa</p>
-  <div class="info-box">
-    Foto bisa diambil langsung dari kamera HP. Foto akan otomatis diperkecil ukurannya
-    supaya cepat dimuat, lalu disimpan ke folder Google Drive yang sudah disiapkan.
-    Data nama & tanggal lahir disimpan di database <strong>Firestore</strong>
-    (koleksi "siswa"), bukan lagi di sheet "Data Siswa" — NISN dipakai sebagai
-    kunci penyimpanan, jadi wajib diisi.
+  <div class="kelas-toolbar">
+    <input type="text" id="search-siswa" class="kelas-search" placeholder="Cari nama siswa…" autocomplete="off" />
+    <span id="kelas-count" class="kelas-count"></span>
   </div>
 
-  <form id="form-siswa">
-    <div class="field-group">
-      <label for="f-nama">Nama Lengkap</label>
-      <select id="f-nama" required>
-        <option value="">— pilih nama siswa —</option>
-      </select>
-    </div>
-    <div class="field-group">
-      <label for="f-panggilan">Nama Panggilan</label>
-      <input type="text" id="f-panggilan" placeholder="mis. Rahman" />
-    </div>
-    <div class="field-group">
-      <label for="f-tempat">Tempat Lahir</label>
-      <input type="text" id="f-tempat" placeholder="mis. Jakarta" />
-    </div>
-    <div class="field-group">
-      <label for="f-tanggal">Tanggal Lahir</label>
-      <input type="date" id="f-tanggal" />
-    </div>
-    <div class="field-group">
-      <label for="f-nisn">NISN <span style="color:var(--danger)">*wajib</span></label>
-      <input type="text" id="f-nisn" placeholder="10 digit, mis. 0169932726" inputmode="numeric" maxlength="10" pattern="\d{10}" required />
-      <p class="field-hint">Dipakai siswa untuk login (nama + NISN) — sekaligus jadi kunci penyimpanan data di database, jadi wajib diisi 10 digit. Kalau diawali angka 0, tetap ketik semuanya.</p>
-    </div>
-    <div class="field-group">
-      <label>Foto Siswa</label>
-      <div id="foto-current-wrap" class="hidden">
-        <p class="foto-current-label">Foto tersimpan saat ini (guru pengamat lain juga bisa lihat status ini):</p>
-        <div id="foto-current-frame"></div>
-        <p class="foto-current-hint">Ambil/pilih foto baru di bawah ini untuk MENGGANTI foto di atas — kalau tidak, foto lama tetap dipakai.</p>
-      </div>
-      <div style="display:flex; gap:10px">
-        <button type="button" id="btn-ambil-foto" class="btn-full btn-secondary">📷 Ambil Foto</button>
-        <button type="button" id="btn-pilih-galeri" class="btn-full btn-secondary">🖼️ Pilih dari Galeri</button>
-      </div>
-      <input type="file" id="f-foto-kamera" accept="image/*" capture="environment" class="hidden" />
-      <input type="file" id="f-foto-galeri" accept="image/*" class="hidden" />
-      <div id="foto-preview-wrap" class="hidden">
-        <img id="foto-preview" alt="Pratinjau foto" />
-        <span id="foto-size-info"></span>
-      </div>
-    </div>
-    <div class="field-group" style="display:flex; gap:10px">
-      <button type="submit" class="btn-full" id="btn-simpan-siswa">Simpan Data Siswa</button>
-      <button type="button" class="btn-full btn-secondary" id="btn-reset-form">Kosongkan</button>
-    </div>
-    <div id="form-status"></div>
-  </form>
-
-  <p class="section-label" style="margin-top:2rem">Impor NISN Massal</p>
-  <div id="panel-impor-nisn">
-    <div class="info-box">
-      Untuk mengisi/mengoreksi NISN banyak siswa sekaligus. Tempel 1 baris per
-      siswa, format <strong>Nama Lengkap, NISN</strong> (dipisah koma) — nama
-      harus PERSIS SAMA dengan salah satu dari 25 nama resmi Kelas 5A. Data
-      lain (foto, tempat/tanggal lahir) yang sudah tersimpan tidak akan
-      berubah; kalau siswa itu belum punya profil sama sekali, akan dibuat
-      profil baru minimal (nama + NISN saja) yang bisa dilengkapi belakangan
-      lewat form di atas.
-    </div>
-    <textarea id="f-impor-nisn" placeholder="Abdurrahman Ar Ribery, 3153742941&#10;Arsyila Almahyira Azgefa, 0169932726&#10;..."></textarea>
-    <div class="field-group" style="display:flex; gap:10px; margin-top:10px">
-      <button type="button" class="btn-full" id="btn-impor-nisn">Impor NISN</button>
-    </div>
-    <div id="impor-nisn-hasil"></div>
+  <div id="list-siswa" class="kelas-roster" aria-label="Daftar siswa">
+    <div class="kelas-empty">Memuat data…</div>
   </div>
 
-  <p class="section-label" style="margin-top:2rem">Daftar Siswa Tersimpan</p>
-  <input type="text" id="search-siswa" class="rekap-search" placeholder="Cari nama siswa…" />
-  <div id="list-siswa"><div class="info-box">Memuat data…</div></div>
+  <!-- Panel form: tambah / edit (overlay) -->
+  <div id="panel-form-wrap" class="kelas-panel-wrap hidden" aria-hidden="true">
+    <div class="kelas-panel-backdrop" id="panel-form-backdrop"></div>
+    <aside class="kelas-panel" role="dialog" aria-labelledby="panel-form-title">
+      <div class="kelas-panel-head">
+        <h2 id="panel-form-title">Tambah / Perbarui Data</h2>
+        <button type="button" class="kelas-panel-close" id="btn-tutup-form" aria-label="Tutup">×</button>
+      </div>
+      <div class="kelas-panel-body">
+        <form id="form-siswa" class="kelas-form">
+          <div class="field-group">
+            <label for="f-nama">Nama Lengkap</label>
+            <select id="f-nama" required>
+              <option value="">— pilih nama siswa —</option>
+            </select>
+          </div>
+          <div class="kelas-form-grid">
+            <div class="field-group">
+              <label for="f-panggilan">Nama Panggilan</label>
+              <input type="text" id="f-panggilan" placeholder="mis. Rahman" autocomplete="off" />
+            </div>
+            <div class="field-group">
+              <label for="f-nisn">NISN <span class="req">wajib</span></label>
+              <input type="text" id="f-nisn" placeholder="10 digit" inputmode="numeric" maxlength="10" pattern="\d{10}" required autocomplete="off" />
+            </div>
+          </div>
+          <p class="field-hint">NISN = login siswa + ID data. Wajib 10 digit.</p>
+          <div class="kelas-form-grid">
+            <div class="field-group">
+              <label for="f-tempat">Tempat Lahir</label>
+              <input type="text" id="f-tempat" placeholder="mis. Jakarta" />
+            </div>
+            <div class="field-group">
+              <label for="f-tanggal">Tanggal Lahir</label>
+              <input type="date" id="f-tanggal" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Foto Siswa</label>
+            <div id="foto-current-wrap" class="hidden">
+              <p class="foto-current-label">Foto tersimpan saat ini</p>
+              <div id="foto-current-frame"></div>
+              <p class="foto-current-hint">Pilih foto baru untuk mengganti. Jika tidak, foto lama tetap dipakai.</p>
+            </div>
+            <div class="kelas-foto-actions">
+              <button type="button" id="btn-ambil-foto" class="btn btn-secondary">📷 Kamera</button>
+              <button type="button" id="btn-pilih-galeri" class="btn btn-secondary">🖼️ Galeri</button>
+            </div>
+            <input type="file" id="f-foto-kamera" accept="image/*" capture="environment" class="hidden" />
+            <input type="file" id="f-foto-galeri" accept="image/*" class="hidden" />
+            <div id="foto-preview-wrap" class="hidden">
+              <img id="foto-preview" alt="Pratinjau foto" />
+              <span id="foto-size-info"></span>
+            </div>
+          </div>
+          <div class="kelas-form-actions">
+            <button type="submit" class="btn btn-primary" id="btn-simpan-siswa">Simpan</button>
+            <button type="button" class="btn btn-secondary" id="btn-reset-form">Kosongkan</button>
+          </div>
+          <div id="form-status"></div>
+        </form>
 
-</div>
+        <details class="kelas-impor">
+          <summary>
+            <span class="kelas-impor-title">Impor NISN massal</span>
+            <span class="kelas-impor-hint">Opsional</span>
+          </summary>
+          <div id="panel-impor-nisn" class="kelas-impor-body">
+            <p class="kelas-impor-info">Format per baris: <strong>Nama Lengkap, NISN</strong></p>
+            <textarea id="f-impor-nisn" placeholder="Nama Siswa, 0123456789"></textarea>
+            <button type="button" class="btn btn-primary" id="btn-impor-nisn">Impor NISN</button>
+            <div id="impor-nisn-hasil"></div>
+          </div>
+        </details>
+      </div>
+    </aside>
+  </div>
+</main>
 
-<footer>Modul Data Kelas · Kelas 5</footer>
+<footer class="kelas-footer">Data Siswa · Kelas 5 · TP 2026–2027</footer>
 <div id="toast"></div>
 
 <script type="module" src="../../assets/js/guru-guard.js"></script>
