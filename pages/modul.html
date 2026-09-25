@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;650&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/css/design-system.css" />
+<link rel="stylesheet" href="../assets/css/belajar-shell.css" />
 <style>
   :root {
     --m-bahasa-indonesia: #8c3d5f;
@@ -355,7 +356,7 @@
   }
 </style>
 </head>
-<body>
+<body class="bl-has-shell" data-belajar-step="1">
 
 <div id="checking">Memeriksa akses…</div>
 
@@ -386,6 +387,7 @@
 
 <script src="modul/assets/modul-index.js"></script>
 <script src="modul/assets/cek-progres-tersimpan.js"></script>
+<script src="../assets/js/belajar-shell.js"></script>
 <script type="module" src="../assets/js/role-guard.js"></script>
 <script type="module">
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
