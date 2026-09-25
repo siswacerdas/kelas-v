@@ -17,7 +17,7 @@
 </div>
 
 <!-- Login Screen -->
-<div id="login-screen">
+<div id="login-screen" class="hidden">
   <div id="login-box">
     <h2>Kelas <em>5</em></h2>
     <p>Tahun Pelajaran 2026–2027<br>Silakan masuk untuk melanjutkan</p>
@@ -161,7 +161,7 @@
     <div class="home-welcome-inner">
       <p class="home-eyebrow">TP 2026–2027</p>
       <h1 class="home-title">Halo, <em id="welcome-name">—</em></h1>
-      <p class="home-sub">Pilih menu di bawah untuk mulai belajar atau mengelola kelas.</p>
+      <p class="home-sub" id="home-sub">Pilih menu di bawah untuk mulai belajar atau mengelola kelas.</p>
     </div>
   </div>
 
@@ -229,10 +229,10 @@
     </section>
 
     <!-- Belajar: jalur utama siswa -->
-    <section class="home-section" aria-label="Jalur belajar">
+    <section class="home-section home-section-belajar" aria-label="Jalur belajar">
       <div class="home-section-head">
         <h2 class="home-section-title">Belajar</h2>
-        <p class="home-section-desc">Ikuti urutan langkah agar materi lebih mudah dipahami.</p>
+        <p class="home-section-desc" id="belajar-desc">Ikuti urutan langkah agar materi lebih mudah dipahami.</p>
       </div>
       <div class="card-grid card-grid-feature">
         <a href="pages/modul.html" class="card card-feature" data-akses="siswa guru orangtua" style="--card-accent: #2a9d6f">
@@ -259,24 +259,29 @@
       </div>
     </section>
 
-    <!-- Jelajah & info -->
-    <section class="home-section" aria-label="Jelajah">
-      <div class="home-section-head">
+    <!-- Ruangku: fokus siswa (profil, peringkat, materi pendukung) -->
+    <section class="home-section home-section-ruangku" aria-label="Ruangku">
+      <div class="home-section-head" data-akses="siswa">
+        <h2 class="home-section-title">Ruangku</h2>
+        <p class="home-section-desc">Profil, peringkat, dan bahan belajar tambahan.</p>
+      </div>
+      <div class="home-section-head" data-akses="guru orangtua">
         <h2 class="home-section-title">Jelajah</h2>
-        <p class="home-section-desc">Linimasa, pustaka, profil, dan menu pendukung lainnya.</p>
+        <p class="home-section-desc">Linimasa, pustaka, laporan, dan menu pendukung lainnya.</p>
       </div>
       <div class="card-grid">
-        <a href="pages/mpls/index.html" class="card" data-akses="guru" style="--card-accent: #c76b98">
-          <div class="card-icon">🧭</div>
-          <div class="card-title">MPLS</div>
-          <div class="card-desc">Input observasi emosi, kemandirian, minat &amp; kondisi fisik</div>
-          <div class="card-badge">Guru</div>
+        <!-- Urutan: kartu siswa dulu, lalu guru/ortu -->
+        <a href="pages/profil-siswa.html" class="card" data-akses="siswa" style="--card-accent: #c9a227">
+          <div class="card-icon">🎮</div>
+          <div class="card-title">Profil &amp; Level</div>
+          <div class="card-desc">Level, progres, dan riwayat capaianmu</div>
+          <div class="card-badge">Papanmu</div>
         </a>
-        <a href="pages/cp-tp-atp.html" class="card" data-akses="guru" style="--card-accent: #2e6fbc">
-          <div class="card-icon">📋</div>
-          <div class="card-title">CP, TP &amp; ATP</div>
-          <div class="card-desc">Capaian, tujuan, dan alur pembelajaran</div>
-          <div class="card-badge">Kurikulum</div>
+        <a href="pages/papan-peringkat.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
+          <div class="card-icon">🏅</div>
+          <div class="card-title">Papan Peringkat</div>
+          <div class="card-desc">Bandingkan level &amp; EXP dengan teman sekelas</div>
+          <div class="card-badge">Kelas</div>
         </a>
         <a href="pages/linimasa.html" class="card" data-akses="siswa guru orangtua" style="--card-accent: #1a7a8a">
           <div class="card-icon">🗓️</div>
@@ -290,17 +295,17 @@
           <div class="card-desc">Materi presentasi (PDF) dari guru pendamping</div>
           <div class="card-badge">Pelengkap</div>
         </a>
-        <a href="pages/profil-siswa.html" class="card" data-akses="siswa" style="--card-accent: #c9a227">
-          <div class="card-icon">🎮</div>
-          <div class="card-title">Profil &amp; Level</div>
-          <div class="card-desc">Level, progres, dan riwayat capaianmu</div>
-          <div class="card-badge">Baru</div>
+        <a href="pages/mpls/index.html" class="card" data-akses="guru" style="--card-accent: #c76b98">
+          <div class="card-icon">🧭</div>
+          <div class="card-title">MPLS</div>
+          <div class="card-desc">Input observasi emosi, kemandirian, minat &amp; kondisi fisik</div>
+          <div class="card-badge">Guru</div>
         </a>
-        <a href="pages/papan-peringkat.html" class="card" data-akses="siswa guru" style="--card-accent: #9b59b6">
-          <div class="card-icon">🏅</div>
-          <div class="card-title">Papan Peringkat</div>
-          <div class="card-desc">Bandingkan level &amp; EXP dengan teman sekelas</div>
-          <div class="card-badge">Baru</div>
+        <a href="pages/cp-tp-atp.html" class="card" data-akses="guru" style="--card-accent: #2e6fbc">
+          <div class="card-icon">📋</div>
+          <div class="card-title">CP, TP &amp; ATP</div>
+          <div class="card-desc">Capaian, tujuan, dan alur pembelajaran</div>
+          <div class="card-badge">Kurikulum</div>
         </a>
         <a href="pages/riwayat-latihan.html" class="card" data-akses="guru" style="--card-accent: #6b4fa0">
           <div class="card-icon">📈</div>
@@ -434,6 +439,27 @@
    * yang diatur manual (admin-panel/kelas-panel/card-laporan-siswa) — SELALU
    * dipanggil di awal alur onAuthStateChanged (termasuk cabang siswa anonim),
    * SEBELUM menentukan mana yang boleh ditampilkan untuk role saat ini. */
+
+  function setHomeRoleUI_(role) {
+    const app = document.getElementById('app');
+    app.classList.remove('role-siswa', 'role-guru', 'role-orangtua');
+    if (role === 'siswa' || role === 'guru' || role === 'orangtua') {
+      app.classList.add('role-' + role);
+    }
+    const sub = document.getElementById('home-sub');
+    const belajarDesc = document.getElementById('belajar-desc');
+    if (role === 'siswa') {
+      if (sub) sub.textContent = 'Mulai dari langkah 1. Kalau sudah selesai, lanjut ke langkah 2 dan 3.';
+      if (belajarDesc) belajarDesc.textContent = 'Urutan ini biar belajarnya runtut — kerjakan satu per satu ya.';
+    } else if (role === 'orangtua') {
+      if (sub) sub.textContent = 'Lihat progres belajar dan pengumuman terkait anakmu.';
+      if (belajarDesc) belajarDesc.textContent = 'Anak mengikuti urutan langkah ini di rumah atau di sekolah.';
+    } else if (role === 'guru') {
+      if (sub) sub.textContent = 'Kelola kelas atau buka menu belajar seperti yang dilihat siswa.';
+      if (belajarDesc) belajarDesc.textContent = 'Urutan yang sama dipakai siswa — berguna untuk mendampingi.';
+    }
+  }
+
   function sembunyikanPanelKondisional_() {
     document.getElementById('admin-panel').classList.add('hidden');
     document.getElementById('kelas-panel').classList.add('hidden');
@@ -668,6 +694,7 @@
       if (_wn1) _wn1.textContent = namaSiswa;
       // role siswa: #admin-panel, #kelas-panel, #card-laporan-siswa TETAP
       // hidden (default HTML-nya) — tidak disentuh di sini sama sekali.
+      setHomeRoleUI_('siswa');
       terapkanAksesMenu_('siswa');
       loadPengumuman();
       return;
@@ -724,6 +751,7 @@
         document.getElementById('card-laporan-siswa').classList.remove('hidden');
       }
 
+      setHomeRoleUI_(role);
       terapkanAksesMenu_(role);
 
       // Muat pengumuman
