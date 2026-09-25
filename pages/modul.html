@@ -6,8 +6,6 @@
 <title>Ayo Belajar! · Kelas 5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
-<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;650&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../assets/css/design-system.css" />
 <link rel="stylesheet" href="../assets/css/belajar-shell.css" />
@@ -25,22 +23,15 @@
   .bl-welcome { background: linear-gradient(180deg, #e8f5ef 0%, var(--paper) 100%); border-bottom: 1px solid var(--border); padding: 1.5rem var(--s-5) 1.35rem; }
   .bl-welcome-inner { max-width: var(--content-max); margin: 0 auto; }
   .bl-step-row { display: flex; align-items: center; gap: 10px; margin-bottom: 0.45rem; }
-  .bl-step-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: var(--step-accent); padding: 4px 11px; border-radius: var(--r-full); }
+  .bl-step-pill { display: inline-flex; align-items: center; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: var(--step-accent); padding: 4px 11px; border-radius: var(--r-full); }
   .bl-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
-  .bl-title { font-family: var(--font-display); font-size: clamp(1.45rem, 4vw, 1.9rem); font-weight: 700; color: var(--ink); line-height: 1.2; letter-spacing: -0.02em; }
+  .bl-title { font-family: var(--font-display); font-size: clamp(1.45rem, 4vw, 1.9rem); font-weight: 700; color: var(--ink); line-height: 1.2; }
   .bl-sub { margin-top: 0.4rem; font-size: 13.5px; color: var(--ink-3); max-width: 40em; line-height: 1.55; }
   .bl-container { max-width: var(--content-max); margin: 0 auto; padding: var(--s-6) var(--s-4) var(--s-10); }
   .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.35rem; }
   .filter-chip { padding: 7px 14px; border-radius: var(--r-full); font-size: 12.5px; font-weight: 600; background: var(--surface); border: 1px solid var(--border); color: var(--ink-2); cursor: pointer; font-family: inherit; }
   .filter-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
-  .group-title { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; font-size: 13.5px; font-weight: 700; color: var(--ink); margin: 1.65rem 0 0.75rem; padding: 0.55rem 0.15rem; border-bottom: 1px solid var(--border); }
-  .group-title .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--m-color, var(--step-accent)); flex-shrink: 0; }
-  .group-title .count { font-weight: 500; color: var(--ink-3); font-size: 12px; }
-  .group-title .chevron { margin-left: auto; font-size: 11px; color: var(--ink-3); }
-  .group-title.collapsed .chevron { transform: rotate(-90deg); }
-  .group-body.collapsed { display: none; }
-  .subgroup-title { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--m-color, var(--ink-3)); margin: 1rem 0 0.55rem 2px; }
-  .modul-card { display: flex; align-items: flex-start; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1rem 1.05rem; margin-bottom: 10px; text-decoration: none; color: inherit; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; scroll-margin-top: calc(var(--topbar-h) + 12px); }
+  .modul-card { display: flex; align-items: flex-start; gap: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1rem 1.05rem; margin-bottom: 10px; text-decoration: none; color: inherit; box-shadow: var(--shadow-sm); position: relative; overflow: hidden; }
   .modul-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--m-color, var(--step-accent)); transform: scaleX(0); transform-origin: left; transition: transform 0.22s ease; }
   .modul-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border-2); }
   .modul-card:hover::after { transform: scaleX(1); }
@@ -48,14 +39,24 @@
   .modul-card .m-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
   .modul-card .m-title { font-weight: 650; font-size: 14px; color: var(--ink); line-height: 1.35; }
   .modul-card .m-ringkasan { font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
-  .modul-card .m-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+  .modul-card .m-meta { display: flex; flex-wrap: wrap; gap: 6px; }
   .modul-card .m-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: var(--r-full); background: var(--paper-2); color: var(--ink-3); }
   .modul-card .m-badge.interaktif { background: rgba(42, 157, 111, 0.12); color: #1e5c42; }
   .modul-card .m-badge.tautan { background: rgba(46, 111, 188, 0.1); color: #1e4a7a; }
   .modul-card .m-arrow { flex-shrink: 0; color: var(--ink-3); font-size: 15px; }
   .empty-state { padding: 2.25rem 1.25rem; text-align: center; color: var(--ink-3); font-size: 13.5px; background: var(--paper-2); border-radius: var(--r-lg); border: 1px dashed var(--border); }
-  .cekprog-tombol { display: inline-flex; align-items: center; gap: 6px; padding: 8px 15px; border-radius: var(--r-full); border: 1.5px solid rgba(46, 111, 188, 0.35); background: rgba(46, 111, 188, 0.08); color: var(--accent); font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: inherit; margin-bottom: 1.15rem; }
-  .cekprog-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 1.05rem 1.15rem; margin-bottom: 1.25rem; font-size: 13px; }
+  .bl-hint { font-size: 13.5px; color: var(--ink-3); margin-bottom: 1rem; line-height: 1.5; }
+  .bl-breadcrumb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 0.85rem; }
+  .bc-back { font-family: inherit; font-size: 12.5px; font-weight: 600; color: var(--accent); background: none; border: none; cursor: pointer; padding: 0; }
+  .bc-back:hover { text-decoration: underline; }
+  .bc-current { font-size: 13px; font-weight: 650; color: var(--ink); }
+  .elemen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .elemen-card { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; padding: 1.1rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); cursor: pointer; font-family: inherit; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+  .elemen-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--border-2); }
+  .elemen-card .el-icon { font-size: 1.5rem; line-height: 1; }
+  .elemen-card .el-name { font-size: 13.5px; font-weight: 650; color: var(--ink); line-height: 1.35; }
+  .elemen-card .el-count { font-size: 12px; color: var(--ink-3); font-weight: 500; }
+  @media (max-width: 480px) { .elemen-grid { grid-template-columns: 1fr 1fr; gap: 10px; } }
 </style>
 </head>
 <body class="bl-has-shell" data-belajar-step="1">
@@ -67,7 +68,6 @@
     <div class="brand">Ayo Belajar! <span>·</span> Kelas 5</div>
     <a class="back" href="../index.html">← Kembali ke Beranda</a>
   </div>
-
   <div class="bl-welcome">
     <div class="bl-welcome-inner">
       <div class="bl-step-row">
@@ -75,10 +75,9 @@
         <span class="bl-eyebrow">Jalur Belajar</span>
       </div>
       <h1 class="bl-title">🚀 Ayo Belajar!</h1>
-      <p class="bl-sub">Mulai dari sini — modul interaktif per tujuan pembelajaran. Pilih mata pelajaran, lalu ketuk judul untuk mulai.</p>
+      <p class="bl-sub">Pilih mapel, lalu elemen — baru muncul modul. Satu langkah demi satu langkah.</p>
     </div>
   </div>
-
   <div class="bl-container">
     <div id="cek-progres-wrap"></div>
     <div class="filter-row bl-sticky-filters" id="filter-row"></div>
@@ -93,10 +92,8 @@
 <script type="module">
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
   import { getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
   const app = getApps()[0];
   const db = getFirestore(app);
-
   const MAPEL_META = {
     "Bahasa Indonesia": { color: "var(--m-bahasa-indonesia)", icon: "📝" },
     "Matematika": { color: "var(--m-matematika)", icon: "🔢" },
@@ -111,7 +108,7 @@
 
   let allItems = [];
   let activeMapel = "Semua";
-  const collapsedMapel = new Set();
+  let activeElemen = null;
 
   function esc(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -119,6 +116,18 @@
       '"': "&" + "quot;", "'": "&#39;"
     }[c]));
   }
+  function itemsForMapel(mapel) { return allItems.filter((it) => it.mapel === mapel); }
+  function elemenList(mapel) {
+    const counts = {}, icons = {};
+    itemsForMapel(mapel).forEach((it) => {
+      const el = it.elemen || "Lainnya";
+      counts[el] = (counts[el] || 0) + 1;
+      if (!icons[el] && (it.icon || it.mapelIcon)) icons[el] = it.icon || it.mapelIcon;
+    });
+    return Object.keys(counts).sort().map((name) => ({ name, count: counts[name], icon: icons[name] || "📌" }));
+  }
+  function setMapel(m) { activeMapel = m; activeElemen = null; renderFilters(); renderList(); }
+  function setElemen(el) { activeElemen = el; renderList(); renderElemenNav(); }
 
   async function loadModul() {
     const local = (window.MODUL_INDEX || []).map((it) => {
@@ -135,14 +144,13 @@
         if (!(data.url_file && /^https?:\/\//.test(data.url_file))) return;
         external.push({
           mapel, mapelColor: meta.color, mapelIcon: meta.icon,
+          elemen: data.elemen || data.tema || "Lainnya",
           tema: data.tema || "Lainnya", urutan: data.urutan || 0,
           judul: data.judul || "-", ringkasan: "", status: "selesai",
           source: "external", href: data.url_file, file: data.judul || d.id
         });
       });
-    } catch (err) {
-      console.warn("Gagal memuat modul eksternal:", err);
-    }
+    } catch (err) { console.warn("Gagal memuat modul eksternal:", err); }
     allItems = [...local, ...external];
     renderFilters();
     renderList();
@@ -152,23 +160,39 @@
     const counts = {};
     allItems.forEach((it) => { counts[it.mapel] = (counts[it.mapel] || 0) + 1; });
     const mapelNames = Object.keys(counts).sort();
-    const mapelList = ["Semua", ...mapelNames];
     const wrap = document.getElementById("filter-row");
     wrap.innerHTML = "";
-    mapelList.forEach((m) => {
+    ["Semua", ...mapelNames].forEach((m) => {
       const chip = document.createElement("button");
       chip.className = "filter-chip" + (m === activeMapel ? " active" : "");
       chip.textContent = m;
-      chip.onclick = () => { activeMapel = m; renderFilters(); renderList(); };
+      chip.onclick = () => setMapel(m);
       wrap.appendChild(chip);
     });
     if (typeof window.belajarShellRenderMapel === "function") {
-      const sideItems = [
-        { name: "Semua", count: allItems.length },
-        ...mapelNames.map((n) => ({ name: n, count: counts[n] }))
-      ];
-      window.belajarShellRenderMapel(sideItems, activeMapel, (name) => {
-        activeMapel = name; renderFilters(); renderList();
+      window.belajarShellRenderMapel(
+        [{ name: "Semua", count: allItems.length }, ...mapelNames.map((n) => ({ name: n, count: counts[n] }))],
+        activeMapel, setMapel
+      );
+    }
+    renderElemenNav();
+  }
+
+  function renderElemenNav() {
+    if (typeof window.belajarShellRenderItems !== "function") return;
+    if (activeMapel === "Semua") {
+      if (typeof window.belajarShellClearItems === "function") window.belajarShellClearItems();
+      return;
+    }
+    const list = elemenList(activeMapel);
+    window.belajarShellRenderItems(
+      list.map((e) => ({ id: e.name, label: e.name + " (" + e.count + ")" })),
+      (id) => setElemen(id), "Elemen"
+    );
+    if (activeElemen) {
+      const nav = document.getElementById("bl-item-nav");
+      if (nav) nav.querySelectorAll(".bl-item-link").forEach((btn) => {
+        btn.classList.toggle("active", btn.getAttribute("data-item-id") === activeElemen);
       });
     }
   }
@@ -179,89 +203,63 @@
       wrap.innerHTML = '<div class="empty-state">Belum ada modul yang ditambahkan.</div>';
       return;
     }
-    const filtered = activeMapel === "Semua" ? allItems : allItems.filter((it) => it.mapel === activeMapel);
-    if (filtered.length === 0) {
-      wrap.innerHTML = '<div class="empty-state">Belum ada modul untuk mapel ini.</div>';
+    if (activeMapel === "Semua") {
+      wrap.innerHTML = '<p class="bl-hint">Pilih mata pelajaran dulu — biar daftarnya tidak terlalu banyak.</p>';
+      const grid = document.createElement("div");
+      grid.className = "elemen-grid";
+      const counts = {};
+      allItems.forEach((it) => { counts[it.mapel] = (counts[it.mapel] || 0) + 1; });
+      Object.keys(counts).sort().forEach((m) => {
+        const sample = allItems.find((it) => it.mapel === m);
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "elemen-card";
+        btn.innerHTML = `<span class="el-icon">${sample.mapelIcon || metaFor(m).icon}</span><span class="el-name">${esc(m)}</span><span class="el-count">${counts[m]} modul</span>`;
+        btn.onclick = () => setMapel(m);
+        grid.appendChild(btn);
+      });
+      wrap.appendChild(grid);
       return;
     }
-    const grouped = {};
-    filtered.forEach((it) => { (grouped[it.mapel] = grouped[it.mapel] || []).push(it); });
-
-    wrap.innerHTML = "";
-    Object.keys(grouped).sort().forEach((mapel) => {
-      const items = grouped[mapel];
-      const color = items[0].mapelColor;
-      const icon = items[0].mapelIcon;
-      const groupId = "grp-" + mapel.replace(/[^a-zA-Z0-9]/g, "-");
-      const wasCollapsed = collapsedMapel.has(mapel);
-      const singleMapel = activeMapel !== "Semua";
-      let body;
-      if (!singleMapel) {
-        const title = document.createElement("div");
-        title.className = "group-title" + (wasCollapsed ? " collapsed" : "");
-        title.style.setProperty("--m-color", color);
-        title.innerHTML = `<span class="dot"></span> ${esc(mapel)} <span class="count">(${items.length})</span><span class="chevron">▾</span>`;
-        title.onclick = () => {
-          if (collapsedMapel.has(mapel)) collapsedMapel.delete(mapel);
-          else collapsedMapel.add(mapel);
-          renderList();
-        };
-        wrap.appendChild(title);
-        body = document.createElement("div");
-        body.className = "group-body" + (wasCollapsed ? " collapsed" : "");
-        body.id = groupId;
-        wrap.appendChild(body);
-      } else {
-        body = wrap;
-      }
-
-      const byTema = {};
-      items.forEach((it) => { (byTema[it.tema || "Lainnya"] = byTema[it.tema || "Lainnya"] || []).push(it); });
-      Object.keys(byTema).forEach((tema) => {
-        byTema[tema].sort((a, b) => (a.urutan || 0) - (b.urutan || 0));
-        const subTitle = document.createElement("div");
-        subTitle.className = "subgroup-title";
-        subTitle.style.setProperty("--m-color", color);
-        subTitle.textContent = tema;
-        body.appendChild(subTitle);
-        byTema[tema].forEach((it) => {
-          const card = document.createElement("a");
-          card.className = "modul-card";
-          card.style.setProperty("--m-color", color);
-          const itemId = "bl-item-" + String(it.file || it.judul || "").replace(/[^a-zA-Z0-9_-]/g, "-");
-          card.id = itemId;
-          card.href = it.href;
-          if (it.source === "external") { card.target = "_blank"; card.rel = "noopener"; }
-          const badges = [];
-          if (it.source === "local") badges.push('<span class="m-badge interaktif">🧩 Interaktif</span>');
-          else badges.push('<span class="m-badge tautan">🔗 Tautan</span>');
-          card.innerHTML = `
-            <div class="m-icon">${it.icon || icon}</div>
-            <div class="m-body">
-              <div class="m-title">${esc(it.judul)}</div>
-              ${it.ringkasan ? `<div class="m-ringkasan">${esc(it.ringkasan)}</div>` : ""}
-              <div class="m-meta">${badges.join("")}</div>
-            </div>
-            <div class="m-arrow">→</div>`;
-          body.appendChild(card);
-        });
+    if (!activeElemen) {
+      const els = elemenList(activeMapel);
+      wrap.innerHTML = `<div class="bl-breadcrumb"><button type="button" class="bc-back" id="bc-mapel">← Semua mapel</button><span class="bc-current">${esc(activeMapel)}</span></div><p class="bl-hint">Pilih elemen — satu kelompok saja, biar lebih mudah fokus.</p>`;
+      document.getElementById("bc-mapel").onclick = () => setMapel("Semua");
+      const grid = document.createElement("div");
+      grid.className = "elemen-grid";
+      els.forEach((e) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "elemen-card";
+        btn.innerHTML = `<span class="el-icon">${e.icon}</span><span class="el-name">${esc(e.name)}</span><span class="el-count">${e.count} modul</span>`;
+        btn.onclick = () => setElemen(e.name);
+        grid.appendChild(btn);
       });
-    });
-
-    if (typeof window.belajarShellRenderItems === "function") {
-      if (activeMapel !== "Semua") {
-        const jumpItems = filtered.map((it) => {
-          const id = "bl-item-" + String(it.file || it.judul || "").replace(/[^a-zA-Z0-9_-]/g, "-");
-          return { id, label: it.judul || id };
-        });
-        window.belajarShellRenderItems(jumpItems, (id) => {
-          const el = document.getElementById(id);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, "Modul");
-      } else if (typeof window.belajarShellClearItems === "function") {
-        window.belajarShellClearItems();
-      }
+      wrap.appendChild(grid);
+      return;
     }
+    const filtered = itemsForMapel(activeMapel).filter((it) => (it.elemen || "Lainnya") === activeElemen);
+    const color = (filtered[0] && filtered[0].mapelColor) || "var(--step-accent)";
+    const icon = (filtered[0] && (filtered[0].mapelIcon || filtered[0].icon)) || "📚";
+    wrap.innerHTML = `<div class="bl-breadcrumb"><button type="button" class="bc-back" id="bc-elemen">← ${esc(activeMapel)}</button><span class="bc-current">${esc(activeElemen)}</span></div>`;
+    document.getElementById("bc-elemen").onclick = () => setElemen(null);
+    if (filtered.length === 0) {
+      wrap.innerHTML += '<div class="empty-state">Belum ada modul di elemen ini.</div>';
+      return;
+    }
+    filtered.sort((a, b) => (a.urutan || 0) - (b.urutan || 0));
+    filtered.forEach((it) => {
+      const card = document.createElement("a");
+      card.className = "modul-card";
+      card.style.setProperty("--m-color", color);
+      card.href = it.href;
+      if (it.source === "external") { card.target = "_blank"; card.rel = "noopener"; }
+      const badges = it.source === "local"
+        ? '<span class="m-badge interaktif">🧩 Interaktif</span>'
+        : '<span class="m-badge tautan">🔗 Tautan</span>';
+      card.innerHTML = `<div class="m-icon">${it.icon || icon}</div><div class="m-body"><div class="m-title">${esc(it.judul)}</div>${it.ringkasan ? `<div class="m-ringkasan">${esc(it.ringkasan)}</div>` : ""}<div class="m-meta">${badges}</div></div><div class="m-arrow">→</div>`;
+      wrap.appendChild(card);
+    });
   }
 
   document.addEventListener("role-verified", () => {
