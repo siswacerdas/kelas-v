@@ -1,14 +1,10 @@
 /**
- * belajar-shell.js — Navigasi Jalur Belajar (Langkah 1–3) + slot mapel (B-2)
+ * belajar-shell.js — Jalur Belajar: langkah 1–3, mapel, daftar materi (loncat)
  *
- * Usage:
- *   <body class="bl-has-shell" data-belajar-step="1">
- *   <link rel="stylesheet" href="../assets/css/belajar-shell.css" />
- *   <script src="../assets/js/belajar-shell.js"></script>
- *
- * Pages can fill mapel nav:
- *   window.belajarShellRenderMapel(items, activeMapel, onSelect)
- *   items: [{ name: "Matematika", count: 12 }, ...]
+ * body.bl-has-shell data-belajar-step="1|2|3"
+ * window.belajarShellRenderMapel(items, active, onSelect)
+ * window.belajarShellRenderItems(items, onSelect, labelTitle)
+ * window.belajarShellClearItems()
  */
 (function () {
   var step = document.body.getAttribute("data-belajar-step") || "1";
@@ -34,6 +30,10 @@
     '<div class="bl-sidebar-section" id="bl-mapel-section" hidden>' +
     '<div class="bl-sidebar-label">Mata pelajaran</div>' +
     '<nav class="bl-mapel-nav" id="bl-mapel-nav"></nav>' +
+    '</div>' +
+    '<div class="bl-sidebar-section" id="bl-item-section" hidden>' +
+    '<div class="bl-sidebar-label" id="bl-item-label">Materi</div>' +
+    '<nav class="bl-item-nav" id="bl-item-nav"></nav>' +
     '</div>' +
     '<div class="bl-sidebar-foot"><a href="../index.html">← Beranda</a></div>' +
     '</div></aside>';
@@ -83,27 +83,19 @@
       nodes.push(child);
       child = next;
     }
-
     if (nodes.length === 0) return;
 
     var layout = document.createElement("div");
     layout.className = "bl-layout";
-
     var main = document.createElement("main");
     main.className = "bl-main";
-
-    nodes.forEach(function (n) {
-      main.appendChild(n);
-    });
+    nodes.forEach(function (n) { main.appendChild(n); });
 
     layout.insertAdjacentHTML("afterbegin", SIDEBAR_HTML);
     layout.appendChild(main);
 
-    if (topbar) {
-      topbar.after(layout);
-    } else {
-      app.insertBefore(layout, app.firstChild);
-    }
+    if (topbar) topbar.after(layout);
+    else app.insertBefore(layout, app.firstChild);
 
     app.insertAdjacentHTML("beforeend", BOTTOM_HTML);
 
@@ -121,16 +113,13 @@
     var nav = document.getElementById("bl-mapel-nav");
     var section = document.getElementById("bl-mapel-section");
     if (!nav || !section) return;
-
     if (!items || items.length === 0) {
       section.hidden = true;
       nav.innerHTML = "";
       return;
     }
-
     section.hidden = false;
     nav.innerHTML = "";
-
     items.forEach(function (it) {
       var name = typeof it === "string" ? it : it.name;
       var count = typeof it === "string" ? null : it.count;
@@ -138,20 +127,54 @@
       btn.type = "button";
       btn.className = "bl-mapel-link" + (name === active ? " active" : "");
       btn.setAttribute("data-mapel", name);
-
       var label = document.createElement("span");
       label.textContent = name;
       btn.appendChild(label);
-
       if (count != null && name !== "Semua") {
         var c = document.createElement("span");
         c.className = "bm-count";
         c.textContent = String(count);
         btn.appendChild(c);
       }
-
       btn.addEventListener("click", function () {
         if (typeof onSelect === "function") onSelect(name);
+      });
+      nav.appendChild(btn);
+    });
+  };
+
+  window.belajarShellClearItems = function () {
+    var nav = document.getElementById("bl-item-nav");
+    var section = document.getElementById("bl-item-section");
+    if (nav) nav.innerHTML = "";
+    if (section) section.hidden = true;
+  };
+
+  window.belajarShellRenderItems = function (items, onSelect, labelTitle) {
+    var nav = document.getElementById("bl-item-nav");
+    var section = document.getElementById("bl-item-section");
+    var label = document.getElementById("bl-item-label");
+    if (!nav || !section) return;
+    if (label && labelTitle) label.textContent = labelTitle;
+    if (!items || items.length === 0) {
+      section.hidden = true;
+      nav.innerHTML = "";
+      return;
+    }
+    section.hidden = false;
+    nav.innerHTML = "";
+    items.forEach(function (it) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bl-item-link";
+      btn.setAttribute("data-item-id", it.id);
+      btn.textContent = it.label;
+      btn.title = it.label;
+      btn.addEventListener("click", function () {
+        var links = nav.querySelectorAll(".bl-item-link");
+        for (var i = 0; i < links.length; i++) links[i].classList.remove("active");
+        btn.classList.add("active");
+        if (typeof onSelect === "function") onSelect(it.id);
       });
       nav.appendChild(btn);
     });
@@ -162,7 +185,6 @@
   } else {
     run();
   }
-
   document.addEventListener("role-verified", function () {
     setTimeout(run, 0);
   });
