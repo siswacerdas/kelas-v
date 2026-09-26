@@ -95,6 +95,8 @@ window.PustakaBelajarBaca = (function () {
     ctx.restore();
   }
 
+  // LAZY PAGE RENDER: hanya halaman aktif yang di-raster ke canvas.
+  // Halaman lain tidak di-render sampai navigasi — hemat memori & CPU HP.
   async function renderPage(num) {
     if (rendering || !pdfDoc) return;
     rendering = true;

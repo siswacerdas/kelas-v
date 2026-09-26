@@ -121,6 +121,9 @@
   gap: 12px;
 }
 .pb-card {
+  /* lazy paint: browser boleh lewati layout/paint kartu di luar viewport */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 140px;
   display: flex;
   flex-direction: column;
   gap: 8px;
