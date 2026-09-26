@@ -279,51 +279,86 @@
 
 
 
-  .setup-hint { font-size: 12.5px; color: var(--ink-3); margin: -0.25rem 0 0.65rem; line-height: 1.45; }
-  .setup-tp-list { display: flex; flex-direction: column; gap: 1.25rem; }
-  .setup-el-group { margin: 0; }
+  .setup-hint { font-size: 13px; color: var(--ink-3); margin: 0 0 0.75rem; line-height: 1.45; }
+  .setup-toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    flex-wrap: wrap; margin-bottom: 0.85rem;
+  }
+  .setup-count-pill {
+    font-size: 12.5px; font-weight: 700; color: var(--step-accent);
+    background: rgba(155, 89, 182, 0.1); border: 1px solid rgba(155, 89, 182, 0.25);
+    padding: 5px 12px; border-radius: var(--r-full); white-space: nowrap;
+  }
+  .setup-count-pill.is-zero { color: var(--ink-3); background: var(--paper-2); border-color: var(--border); }
+  .setup-toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .setup-toolbar-actions button {
+    font-family: inherit; font-size: 12px; font-weight: 600; color: var(--accent);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-full);
+    padding: 5px 12px; cursor: pointer;
+  }
+  .setup-toolbar-actions button:hover { border-color: var(--border-2); background: var(--paper-2); }
+
+  .setup-tp-list { display: flex; flex-direction: column; gap: 1.15rem; }
+  .setup-el-group {
+    background: var(--paper-2); border: 1px solid var(--border); border-radius: var(--r-lg);
+    padding: 0.75rem 0.75rem 0.85rem;
+  }
   .setup-el-head {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    margin-bottom: 0.55rem; padding: 0 2px;
-    font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em;
-    text-transform: uppercase; color: var(--ink-3);
+    margin-bottom: 0.65rem; padding: 0 2px;
   }
-  .setup-el-head button {
+  .setup-el-title {
+    font-size: 12.5px; font-weight: 700; color: var(--ink-2); line-height: 1.3;
+  }
+  .setup-el-title span { color: var(--ink-3); font-weight: 600; }
+  .setup-el-head .el-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .setup-el-head .el-actions button {
     font-family: inherit; font-size: 11.5px; font-weight: 600; color: var(--accent);
-    background: none; border: none; cursor: pointer; padding: 0;
-    text-transform: none; letter-spacing: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+    padding: 3px 10px; cursor: pointer;
   }
-  .setup-el-head button:hover { text-decoration: underline; }
+  .setup-el-head .el-actions button:hover { border-color: var(--border-2); }
+
   .setup-tp-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
     gap: 10px;
   }
   .setup-tp-item {
-    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
-    text-align: left; padding: 1rem 0.95rem;
-    border-radius: var(--r-lg); border: 1.5px solid var(--border);
-    background: var(--surface); cursor: pointer; font-family: inherit;
+    position: relative;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    text-align: left;
+    min-height: 96px;
+    padding: 0.9rem 0.85rem 0.85rem;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    font-family: inherit;
     box-shadow: var(--shadow-sm);
-    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, transform 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, transform 0.12s;
   }
   .setup-tp-item:hover {
-    border-color: var(--border-2); box-shadow: var(--shadow-md); transform: translateY(-1px);
+    border-color: rgba(155, 89, 182, 0.35);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
   }
+  .setup-tp-item:active { transform: translateY(0); }
   .setup-tp-item.active {
     border-color: var(--step-accent);
-    background: rgba(155, 89, 182, 0.08);
-    box-shadow: 0 0 0 1px rgba(155, 89, 182, 0.28), var(--shadow-sm);
+    background: linear-gradient(180deg, rgba(155, 89, 182, 0.12) 0%, rgba(155, 89, 182, 0.05) 100%);
+    box-shadow: 0 0 0 1px rgba(155, 89, 182, 0.2), var(--shadow-sm);
   }
-  .setup-tp-item:disabled,
   .setup-tp-item.is-empty {
-    opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none;
+    opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none;
+    border-style: dashed;
   }
   .setup-tp-check {
-    width: 20px; height: 20px; border-radius: 6px;
-    border: 1.5px solid var(--border-2); background: var(--surface);
+    position: absolute; top: 10px; right: 10px;
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--border-2); background: var(--surface);
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 12px; color: #fff; flex-shrink: 0;
+    font-size: 12px; font-weight: 700; color: #fff; line-height: 1;
   }
   .setup-tp-item.active .setup-tp-check {
     background: var(--step-accent); border-color: var(--step-accent);
@@ -331,12 +366,27 @@
   .setup-tp-item.active .setup-tp-check::after { content: "✓"; }
   .setup-tp-judul {
     font-size: 13.5px; font-weight: 650; color: var(--ink); line-height: 1.35;
+    padding-right: 28px;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  .setup-tp-meta { font-size: 12px; color: var(--ink-3); font-weight: 500; }
+  .setup-tp-meta {
+    margin-top: auto;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+    color: var(--ink-3);
+    background: var(--paper-2);
+    border-radius: 999px;
+    padding: 3px 9px;
+  }
+  .setup-tp-item.active .setup-tp-meta {
+    color: var(--step-accent);
+    background: rgba(155, 89, 182, 0.12);
+  }
   @media (max-width: 480px) {
     .setup-tp-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .setup-tp-item { padding: 0.85rem 0.75rem; }
-    .setup-tp-judul { font-size: 12.5px; }
+    .setup-tp-item { min-height: 88px; padding: 0.8rem 0.7rem; }
+    .setup-tp-judul { font-size: 12.5px; -webkit-line-clamp: 3; }
+    .setup-el-group { padding: 0.65rem; }
   }
 
 
@@ -386,7 +436,14 @@
 
       <div class="setup-section">
         <div class="setup-label">Materi / TP</div>
-        <p class="setup-hint" id="setup-hint">Ketuk kartu TP yang ingin diuji. Dikelompokkan per elemen.</p>
+        <p class="setup-hint" id="setup-hint">Ketuk kartu materi/TP yang ingin diuji. Boleh lebih dari satu.</p>
+        <div class="setup-toolbar">
+          <span class="setup-count-pill is-zero" id="setup-count-pill">0 TP dipilih</span>
+          <div class="setup-toolbar-actions">
+            <button type="button" onclick="setSetupSemuaTp(true)">Pilih semua</button>
+            <button type="button" onclick="setSetupSemuaTp(false)">Hapus semua</button>
+          </div>
+        </div>
         <div class="setup-tp-list" id="setup-elemen-grid"><div class="loading-inline">Memuat…</div></div>
       </div>
 
@@ -741,10 +798,16 @@
   function updateSetupInfo() {
     const info = document.getElementById("setup-info");
     const btn = document.getElementById("btn-mulai-setup");
-    if (!info || !btn) return;
+    const pill = document.getElementById("setup-count-pill");
     const selected = [...setupTpSelected];
-    if (selected.length === 0) {
-      info.innerHTML = "Pilih minimal <strong>satu TP / materi</strong> untuk melihat perkiraan soal.";
+    const nTp = selected.length;
+    if (pill) {
+      pill.textContent = nTp + " TP dipilih";
+      pill.classList.toggle("is-zero", nTp === 0);
+    }
+    if (!info || !btn) return;
+    if (nTp === 0) {
+      info.innerHTML = "Pilih minimal <strong>satu kartu TP</strong> di atas, lalu atur jumlah soal.";
       btn.disabled = true;
       return;
     }
@@ -754,11 +817,24 @@
       total += arr.length;
     });
     const bisa = Math.min(setupJumlah, total);
-    const nTp = selected.length;
-    info.innerHTML = "Terpilih <strong>" + nTp + " TP</strong> · tersedia sekitar <strong>" + total + " soal</strong>. "
-      + "Akan diambil <strong>" + bisa + "</strong> soal dengan proporsi merata antar TP yang dipilih.";
+    info.innerHTML = "Tersedia ≈ <strong>" + total + " soal</strong> dari " + nTp + " TP. "
+      + "Paket latihan: <strong>" + bisa + " soal</strong> (proporsi merata).";
     btn.disabled = total < 1 || bisa < 1;
   }
+
+  window.setSetupSemuaTp = function (on) {
+    Object.keys(setupTpMeta).forEach((code) => {
+      const n = (setupPoolByTp[code] && setupPoolByTp[code].semua) ? setupPoolByTp[code].semua.length : 0;
+      if (n < 1) return;
+      if (on) setupTpSelected.add(code);
+      else setupTpSelected.delete(code);
+    });
+    document.querySelectorAll(".setup-tp-item").forEach((el) => {
+      const code = el.getAttribute("data-tp");
+      el.classList.toggle("active", setupTpSelected.has(code));
+    });
+    updateSetupInfo();
+  };
 
   function toggleSetupTp(tpCode, btnEl) {
     if (setupTpSelected.has(tpCode)) {
@@ -851,16 +927,19 @@
 
       const head = document.createElement("div");
       head.className = "setup-el-head";
-      head.innerHTML = "<span>" + escHtml(el) + " · " + byEl[el].length + " TP</span>";
-      const actions = document.createElement("span");
+      const title = document.createElement("div");
+      title.className = "setup-el-title";
+      title.innerHTML = escHtml(el) + " <span>· " + byEl[el].length + " TP</span>";
+      head.appendChild(title);
+      const actions = document.createElement("div");
+      actions.className = "el-actions";
       const btnAll = document.createElement("button");
       btnAll.type = "button";
-      btnAll.textContent = "Pilih semua";
+      btnAll.textContent = "Semua";
       btnAll.onclick = (e) => { e.stopPropagation(); setSetupElemenAll(el, true); };
       const btnNone = document.createElement("button");
       btnNone.type = "button";
-      btnNone.textContent = "Hapus";
-      btnNone.style.marginLeft = "10px";
+      btnNone.textContent = "Kosongkan";
       btnNone.onclick = (e) => { e.stopPropagation(); setSetupElemenAll(el, false); };
       actions.appendChild(btnAll);
       actions.appendChild(btnNone);
@@ -876,10 +955,7 @@
         item.type = "button";
         item.className = "setup-tp-item" + (nSemua < 1 ? " is-empty" : "");
         item.setAttribute("data-tp", tp.tp);
-        if (nSemua > 0) {
-          setupTpSelected.add(tp.tp);
-          item.classList.add("active");
-        }
+        // Default tidak terpilih — siswa memilih sengaja (hindari banjir kartu ungu)
         item.innerHTML =
           '<span class="setup-tp-check" aria-hidden="true"></span>' +
           '<div class="setup-tp-judul">' + escHtml(tp.judul || tp.tp) + '</div>' +
