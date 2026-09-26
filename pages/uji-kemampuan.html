@@ -277,6 +277,43 @@
   }
   .setup-secondary:hover { text-decoration: underline; }
 
+
+  .setup-hint { font-size: 12.5px; color: var(--ink-3); margin: -0.25rem 0 0.65rem; line-height: 1.45; }
+  .setup-tp-list { display: flex; flex-direction: column; gap: 1rem; max-height: min(52vh, 420px); overflow-y: auto; padding-right: 4px; }
+  .setup-el-group { border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); overflow: hidden; }
+  .setup-el-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 10px 12px; background: var(--paper-2); border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 700; color: var(--ink-2);
+  }
+  .setup-el-head button {
+    font-family: inherit; font-size: 11.5px; font-weight: 600; color: var(--accent);
+    background: none; border: none; cursor: pointer; padding: 0;
+  }
+  .setup-el-head button:hover { text-decoration: underline; }
+  .setup-tp-item {
+    display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left;
+    padding: 10px 12px; border: none; border-bottom: 1px solid var(--border);
+    background: transparent; cursor: pointer; font-family: inherit;
+    transition: background 0.12s;
+  }
+  .setup-tp-item:last-child { border-bottom: none; }
+  .setup-tp-item:hover { background: rgba(155, 89, 182, 0.04); }
+  .setup-tp-item.active { background: rgba(155, 89, 182, 0.1); }
+  .setup-tp-check {
+    flex-shrink: 0; width: 18px; height: 18px; margin-top: 2px; border-radius: 5px;
+    border: 1.5px solid var(--border-2); background: var(--surface);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #fff;
+  }
+  .setup-tp-item.active .setup-tp-check {
+    background: var(--step-accent); border-color: var(--step-accent);
+  }
+  .setup-tp-item.active .setup-tp-check::after { content: "✓"; }
+  .setup-tp-body { flex: 1; min-width: 0; }
+  .setup-tp-judul { font-size: 13px; font-weight: 650; color: var(--ink); line-height: 1.35; }
+  .setup-tp-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; }
+
 </style>
 </head>
 <body class="bl-has-shell" data-belajar-step="3">
@@ -322,8 +359,9 @@
       <div id="level-info-banner" class="level-status hidden" style="margin-bottom:1rem;"></div>
 
       <div class="setup-section">
-        <div class="setup-label">Materi (elemen)</div>
-        <div class="setup-elemen-grid" id="setup-elemen-grid"><div class="loading-inline">Memuat…</div></div>
+        <div class="setup-label">Materi / TP</div>
+        <p class="setup-hint" id="setup-hint">Pilih satu atau beberapa Tujuan Pembelajaran. Dikelompokkan per elemen.</p>
+        <div class="setup-tp-list" id="setup-elemen-grid"><div class="loading-inline">Memuat…</div></div>
       </div>
 
       <div class="setup-section">
@@ -332,6 +370,8 @@
           <button type="button" class="setup-pill" data-n="5" onclick="setSetupJumlah(5)">5</button>
           <button type="button" class="setup-pill active" data-n="10" onclick="setSetupJumlah(10)">10</button>
           <button type="button" class="setup-pill" data-n="15" onclick="setSetupJumlah(15)">15</button>
+          <button type="button" class="setup-pill" data-n="20" onclick="setSetupJumlah(20)">20</button>
+          <button type="button" class="setup-pill" data-n="25" onclick="setSetupJumlah(25)">25</button>
         </div>
       </div>
 
@@ -342,7 +382,7 @@
 
       <p class="setup-info" id="setup-info">Pilih minimal satu materi untuk melihat perkiraan soal.</p>
       <button type="button" class="btn-mulai-setup" id="btn-mulai-setup" disabled onclick="mulaiDariSetup()">Mulai uji</button>
-      <button type="button" class="setup-secondary" onclick="bukaLatihanPerTp()">Atau: latihan fokus per TP →</button>
+      <button type="button" class="setup-secondary" onclick="bukaLatihanPerTp()">Atau: buka daftar TP satu per satu →</button>
     </div>
 
     <div id="view-pilih-tp" class="hidden">
@@ -425,8 +465,9 @@
   // Fase C-2: setup latihan
   let setupJumlah = 10;
   let setupTingkat = "otomatis"; // otomatis | dasar | menengah | menantang | campuran | semua
-  let setupElemenSelected = new Set(); // nama elemen
-  let setupPoolByElemen = {}; // elemen -> { dasar:[], menengah:[], menantang:[], semua:[] }
+  let setupTpSelected = new Set(); // kode TP (tp.tp)
+  let setupTpMeta = {}; // tpCode -> { tp, elemen, judul, mapel }
+  let setupPoolByTp = {}; // tpCode -> { dasar:[], menengah:[], menantang:[], semua:[] }
   let setupLoading = false;
 
   function escHtml(str) {
@@ -675,46 +716,80 @@
     const info = document.getElementById("setup-info");
     const btn = document.getElementById("btn-mulai-setup");
     if (!info || !btn) return;
-    const selected = [...setupElemenSelected];
+    const selected = [...setupTpSelected];
     if (selected.length === 0) {
-      info.innerHTML = "Pilih minimal <strong>satu materi</strong> untuk melihat perkiraan soal.";
+      info.innerHTML = "Pilih minimal <strong>satu TP / materi</strong> untuk melihat perkiraan soal.";
       btn.disabled = true;
       return;
     }
     let total = 0;
-    const perEl = [];
-    selected.forEach((el) => {
-      const bucket = setupPoolByElemen[el];
-      const arr = hitungPoolTingkat(bucket);
+    selected.forEach((tpCode) => {
+      const arr = hitungPoolTingkat(setupPoolByTp[tpCode]);
       total += arr.length;
-      perEl.push(escHtml(el) + ": " + arr.length);
     });
     const bisa = Math.min(setupJumlah, total);
-    info.innerHTML = "Tersedia sekitar <strong>" + total + " soal</strong> (" + perEl.join(" · ") + "). "
-      + "Akan diambil <strong>" + bisa + "</strong> soal dengan proporsi merata antar materi.";
+    const nTp = selected.length;
+    info.innerHTML = "Terpilih <strong>" + nTp + " TP</strong> · tersedia sekitar <strong>" + total + " soal</strong>. "
+      + "Akan diambil <strong>" + bisa + "</strong> soal dengan proporsi merata antar TP yang dipilih.";
     btn.disabled = total < 1 || bisa < 1;
+  }
+
+  function toggleSetupTp(tpCode, btnEl) {
+    if (setupTpSelected.has(tpCode)) {
+      setupTpSelected.delete(tpCode);
+      if (btnEl) btnEl.classList.remove("active");
+    } else {
+      setupTpSelected.add(tpCode);
+      if (btnEl) btnEl.classList.add("active");
+    }
+    updateSetupInfo();
+  }
+
+  function setSetupElemenAll(elemen, on) {
+    Object.keys(setupTpMeta).forEach((code) => {
+      if (setupTpMeta[code].elemen !== elemen) return;
+      const n = (setupPoolByTp[code] && setupPoolByTp[code].semua) ? setupPoolByTp[code].semua.length : 0;
+      if (n < 1) return;
+      if (on) setupTpSelected.add(code);
+      else setupTpSelected.delete(code);
+    });
+    // refresh active classes
+    document.querySelectorAll(".setup-tp-item").forEach((el) => {
+      const code = el.getAttribute("data-tp");
+      el.classList.toggle("active", setupTpSelected.has(code));
+    });
+    updateSetupInfo();
   }
 
   async function loadSetupUntukMapel(mapel) {
     const grid = document.getElementById("setup-elemen-grid");
     grid.innerHTML = '<div class="loading-inline">Memuat materi & pool soal…</div>';
-    setupElemenSelected = new Set();
-    setupPoolByElemen = {};
+    setupTpSelected = new Set();
+    setupTpMeta = {};
+    setupPoolByTp = {};
     setupLoading = true;
     const btn = document.getElementById("btn-mulai-setup");
     if (btn) btn.disabled = true;
 
     const tpList = (window.TP_KKO_INDEX || []).filter((e) => e.mapel === mapel);
-    // group TP by elemen
-    const byEl = {};
-    tpList.forEach((tp) => {
-      const el = tp.elemen || "Lainnya";
-      (byEl[el] = byEl[el] || []).push(tp);
-    });
+    if (tpList.length === 0) {
+      grid.innerHTML = '<div class="empty-state">Belum ada TP terdaftar untuk mapel ini.</div>';
+      setupLoading = false;
+      updateSetupInfo();
+      return;
+    }
 
-    // load pools for all TPs (cache shared with renderTpGrid)
+    // unduh pool per TP (cache bersama renderTpGrid)
     await Promise.all(tpList.map(async (tp) => {
-      if (poolSoalTpCache[tp.tp] && poolSoalTpCache[tp.tp].soalRaw) return;
+      setupTpMeta[tp.tp] = { tp: tp.tp, elemen: tp.elemen || "Lainnya", judul: tp.judul || tp.tp, mapel: tp.mapel };
+      if (poolSoalTpCache[tp.tp] && poolSoalTpCache[tp.tp].soalRaw) {
+        const c = poolSoalTpCache[tp.tp];
+        setupPoolByTp[tp.tp] = {
+          dasar: c.dasar || [], menengah: c.menengah || [], menantang: c.menantang || [],
+          semua: c.soalRaw || c.soal || []
+        };
+        return;
+      }
       try {
         const snap = await getDocs(query(collection(db, "bank_soal"), where("tp", "==", tp.tp)));
         const all = [];
@@ -727,94 +802,113 @@
           else if (k === "menantang") menantang.push(s);
         });
         poolSoalTpCache[tp.tp] = {
-          soalRaw: all,
-          dasar, menengah, menantang,
-          // kompatibilitas C-1 mulaiKuis (diisi ulang di renderTpGrid)
-          soal: all,
-          kompleksitas: null,
+          soalRaw: all, dasar, menengah, menantang, soal: all, kompleksitas: null
         };
+        setupPoolByTp[tp.tp] = { dasar, menengah, menantang, semua: all };
       } catch (e) {
         poolSoalTpCache[tp.tp] = { soalRaw: [], dasar: [], menengah: [], menantang: [], soal: [], kompleksitas: null };
+        setupPoolByTp[tp.tp] = { dasar: [], menengah: [], menantang: [], semua: [] };
       }
     }));
 
-    // aggregate per elemen
-    Object.keys(byEl).forEach((el) => {
-      const dasar = [], menengah = [], menantang = [], semua = [];
-      byEl[el].forEach((tp) => {
-        const c = poolSoalTpCache[tp.tp] || {};
-        (c.dasar || []).forEach((s) => dasar.push(s));
-        (c.menengah || []).forEach((s) => menengah.push(s));
-        (c.menantang || []).forEach((s) => menantang.push(s));
-        (c.soalRaw || c.soal || []).forEach((s) => semua.push(s));
-      });
-      setupPoolByElemen[el] = { dasar, menengah, menantang, semua };
+    // kelompokkan per elemen untuk tampilan
+    const byEl = {};
+    tpList.forEach((tp) => {
+      const el = tp.elemen || "Lainnya";
+      (byEl[el] = byEl[el] || []).push(tp);
     });
 
-    // render elemen cards — default select all with any soal
     grid.innerHTML = "";
-    const elemenNames = Object.keys(byEl).sort();
-    if (elemenNames.length === 0) {
-      grid.innerHTML = '<div class="empty-state">Belum ada elemen/TP untuk mapel ini.</div>';
-      setupLoading = false;
-      updateSetupInfo();
-      return;
-    }
-    elemenNames.forEach((el) => {
-      const nSemua = (setupPoolByElemen[el].semua || []).length;
-      const card = document.createElement("button");
-      card.type = "button";
-      card.className = "setup-elemen";
-      card.dataset.elemen = el;
-      if (nSemua > 0) {
-        setupElemenSelected.add(el);
-        card.classList.add("active");
-      }
-      card.innerHTML = '<div class="se-name">' + escHtml(el) + '</div>'
-        + '<div class="se-meta">' + nSemua + ' soal · ' + byEl[el].length + ' TP</div>';
-      card.onclick = () => {
-        if (setupElemenSelected.has(el)) {
-          setupElemenSelected.delete(el);
-          card.classList.remove("active");
-        } else {
-          setupElemenSelected.add(el);
-          card.classList.add("active");
+    Object.keys(byEl).sort().forEach((el) => {
+      const group = document.createElement("div");
+      group.className = "setup-el-group";
+
+      const head = document.createElement("div");
+      head.className = "setup-el-head";
+      const tpsWithSoal = byEl[el].filter((tp) => ((setupPoolByTp[tp.tp] || {}).semua || []).length > 0);
+      head.innerHTML = "<span>" + escHtml(el) + " · " + byEl[el].length + " TP</span>";
+      const actions = document.createElement("span");
+      const btnAll = document.createElement("button");
+      btnAll.type = "button";
+      btnAll.textContent = "Pilih semua";
+      btnAll.onclick = (e) => { e.stopPropagation(); setSetupElemenAll(el, true); };
+      const btnNone = document.createElement("button");
+      btnNone.type = "button";
+      btnNone.textContent = "Hapus";
+      btnNone.style.marginLeft = "10px";
+      btnNone.onclick = (e) => { e.stopPropagation(); setSetupElemenAll(el, false); };
+      actions.appendChild(btnAll);
+      actions.appendChild(btnNone);
+      head.appendChild(actions);
+      group.appendChild(head);
+
+      byEl[el].forEach((tp) => {
+        const nSemua = ((setupPoolByTp[tp.tp] || {}).semua || []).length;
+        const item = document.createElement("button");
+        item.type = "button";
+        item.className = "setup-tp-item";
+        item.setAttribute("data-tp", tp.tp);
+        // default: pilih TP yang punya soal
+        if (nSemua > 0) {
+          setupTpSelected.add(tp.tp);
+          item.classList.add("active");
         }
-        updateSetupInfo();
-      };
-      grid.appendChild(card);
+        item.innerHTML =
+          '<span class="setup-tp-check" aria-hidden="true"></span>' +
+          '<span class="setup-tp-body">' +
+            '<div class="setup-tp-judul">' + escHtml(tp.judul || tp.tp) + '</div>' +
+            '<div class="setup-tp-meta">' + nSemua + ' soal' +
+              (nSemua < 1 ? " · belum ada soal" : "") +
+            '</div>' +
+          '</span>';
+        if (nSemua > 0) {
+          item.onclick = () => toggleSetupTp(tp.tp, item);
+        } else {
+          item.style.opacity = "0.45";
+          item.style.cursor = "not-allowed";
+          item.title = "Belum ada soal di bank untuk TP ini";
+        }
+        group.appendChild(item);
+      });
+      grid.appendChild(group);
     });
+
     setupLoading = false;
     updateSetupInfo();
   }
 
   window.mulaiDariSetup = function () {
     if (setupLoading) return;
-    const selected = [...setupElemenSelected];
+    const selected = [...setupTpSelected];
     if (selected.length === 0) return;
 
     let paket = [];
     if (setupTingkat === "campuran") {
-      const buckets = selected.map((el) => setupPoolByElemen[el]);
+      const buckets = selected.map((code) => setupPoolByTp[code] || { dasar: [], menengah: [], menantang: [], semua: [] });
       paket = proporsiCampuranGlobal(buckets, setupJumlah);
     } else {
-      const poolsByEl = {};
-      selected.forEach((el) => {
-        poolsByEl[el] = hitungPoolTingkat(setupPoolByElemen[el]);
+      const poolsByTp = {};
+      selected.forEach((code) => {
+        poolsByTp[code] = hitungPoolTingkat(setupPoolByTp[code]);
       });
-      paket = proporsiAmbil(poolsByEl, setupJumlah);
+      paket = proporsiAmbil(poolsByTp, setupJumlah);
     }
 
     if (paket.length === 0) {
-      alert("Belum ada soal yang cocok untuk pilihan ini. Coba ubah materi atau tingkat.");
+      alert("Belum ada soal yang cocok untuk pilihan ini. Coba ubah TP atau tingkat.");
       return;
     }
 
+    const judulTp = selected.map((c) => (setupTpMeta[c] && setupTpMeta[c].judul) || c);
+    const labelPendek = judulTp.length <= 2
+      ? judulTp.join(" · ")
+      : (judulTp[0] + " + " + (judulTp.length - 1) + " TP lain");
+
     currentTp = {
-      tp: "SETUP-MIX",
+      tp: selected.length === 1 ? selected[0] : "SETUP-MIX",
       mapel: currentMapel,
-      elemen: selected.join(", "),
-      judul: currentMapel + " · " + selected.join(", "),
+      elemen: [...new Set(selected.map((c) => (setupTpMeta[c] && setupTpMeta[c].elemen) || ""))].filter(Boolean).join(", "),
+      judul: labelPendek,
     };
     currentSoalKompleksitas = setupTingkat === "otomatis"
       ? ((levelSiswaInfo && levelSiswaInfo.targetKompleksitas) || "dasar")
@@ -834,7 +928,7 @@
       : (KOMPLEKSITAS_LABEL[setupTingkat] || setupTingkat);
     resetKuisState();
     document.getElementById("kuis-subtitle").textContent =
-      currentSoal.length + " soal · " + selected.length + " materi · tingkat " + labelT
+      currentSoal.length + " soal · " + selected.length + " TP · tingkat " + labelT
       + " — satu per satu. Waktu: " + formatWaktu(currentSoal.length * DETIK_PER_SOAL) + ".";
     document.getElementById("btn-submit-kuis").disabled = false;
     document.getElementById("btn-submit-kuis").textContent = "Selesai";
