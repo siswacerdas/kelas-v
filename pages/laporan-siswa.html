@@ -9,71 +9,82 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin />
 <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
 <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/css/design-system.css" />
 <link rel="stylesheet" href="materi/assets/materi.css" />
 <link rel="stylesheet" href="laporan-siswa/assets/laporan.css" />
 <style>
-  .ma-page-container { max-width: 640px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
-  .ma-page-container h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.25rem; }
-  .ma-subtitle { font-size: 13px; color: var(--ink-3); margin-bottom: 1.25rem; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  #topbar { border-bottom-color: #2e6fbc; }
+  #topbar .brand span { color: #6a9fd4; }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12.5px; text-decoration: none; font-weight: 500; }
+  #topbar a.back:hover { color: #fff; }
+  .ma-hidden, .hidden { display: none !important; }
+#lap-blocked:not(.ma-hidden) ~ #lap-menu-wrap { display: none !important; }
 </style>
 </head>
-<body class="ma-root">
+<body>
 
 <div id="checking">Memeriksa akses…</div>
 
 <div id="app-laporan" class="ma-hidden">
-  <div class="ma-topbar">
-    <div class="ma-brand">Laporan Siswa <span>·</span> Kelas 5</div>
-    <a class="ma-back" href="../index.html">← Kembali ke Beranda</a>
+  <div id="topbar">
+    <div class="brand">Laporan Siswa <span>·</span> Kelas 5</div>
+    <a class="back" href="../index.html">← Kembali ke Beranda</a>
   </div>
 
-  <div class="ma-page-container">
-    <h1>📊 Laporan Siswa</h1>
-    <p class="ma-subtitle">Pilih jenis laporan yang ingin dilihat.</p>
-
+  <main class="lap-page">
     <div id="lap-blocked" class="ma-hidden">
-      <div class="ma-empty">
-        Halaman ini khusus untuk akun <strong>guru</strong> dan <strong>orang tua</strong> —
-        tidak tersedia untuk akun siswa.
-        <br /><br />
-        <a href="../index.html">← Kembali ke Beranda</a>
+      <div class="lap-welcome">
+        <h1>Akses terbatas</h1>
+        <p>Halaman ini khusus akun <strong>guru</strong> dan <strong>orang tua</strong> — tidak tersedia untuk akun siswa.</p>
+        <p style="margin-top:0.75rem"><a href="../index.html">← Kembali ke Beranda</a></p>
       </div>
     </div>
 
-    <div class="lap-menu-grid" id="lap-menu" style="display:none">
-      <a href="laporan-siswa/mpls.html" class="lap-menu-card" style="--menu-accent:#2e6fbc">
-        <div class="lap-menu-icon">🧭</div>
-        <div>
-          <div class="lap-menu-title">MPLS</div>
-          <div class="lap-menu-desc">Kesiapan belajar, kesiapan akademik, dan jurnal aktivitas dari masa MPLS</div>
-        </div>
-        <div class="lap-menu-arrow">→</div>
-      </a>
-      <a href="laporan-siswa/belajar-mandiri.html" class="lap-menu-card" style="--menu-accent:#2a9d6f">
-        <div class="lap-menu-icon">📖</div>
-        <div>
-          <div class="lap-menu-title">Perkembangan Belajar Mandiri</div>
-          <div class="lap-menu-desc">Ketuntasan Ingat Lagi & Ayo Belajar! yang sudah dipelajari siswa</div>
-        </div>
-        <div class="lap-menu-arrow">→</div>
-      </a>
-      <a href="laporan-siswa/latihan-mandiri.html" class="lap-menu-card" style="--menu-accent:#9b59b6">
-        <div class="lap-menu-icon">💪</div>
-        <div>
-          <div class="lap-menu-title">Latihan Mandiri Siswa</div>
-          <div class="lap-menu-desc">Hasil latihan dari Uji Kemampuan per Tujuan Pembelajaran</div>
-        </div>
-        <div class="lap-menu-arrow">→</div>
-      </a>
+    <div id="lap-menu-wrap">
+      <div class="lap-welcome">
+        <h1>📊 Laporan Siswa</h1>
+        <p>Pilih jenis laporan. Data diambil dari progres belajar anak di kelas digital.</p>
+      </div>
+
+      <div class="lap-menu-grid" id="lap-menu">
+        <a href="laporan-siswa/mpls.html" class="lap-menu-card" style="--menu-accent:#2e6fbc">
+          <div class="lap-menu-icon">🧭</div>
+          <div>
+            <div class="lap-menu-title">MPLS</div>
+            <div class="lap-menu-desc">Kesiapan belajar, kesiapan akademik, dan jurnal aktivitas masa MPLS</div>
+          </div>
+          <div class="lap-menu-arrow">→</div>
+        </a>
+        <a href="laporan-siswa/belajar-mandiri.html" class="lap-menu-card" style="--menu-accent:#2a9d6f">
+          <div class="lap-menu-icon">📖</div>
+          <div>
+            <div class="lap-menu-title">Perkembangan Belajar Mandiri</div>
+            <div class="lap-menu-desc">Progres materi ajar, modul, dan pustaka belajar per mapel</div>
+          </div>
+          <div class="lap-menu-arrow">→</div>
+        </a>
+        <a href="laporan-siswa/latihan-mandiri.html" class="lap-menu-card" style="--menu-accent:#c9861f">
+          <div class="lap-menu-icon">💪</div>
+          <div>
+            <div class="lap-menu-title">Latihan Mandiri</div>
+            <div class="lap-menu-desc">Hasil Uji Kemampuan per Tujuan Pembelajaran</div>
+          </div>
+          <div class="lap-menu-arrow">→</div>
+        </a>
+      </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <script type="module" src="laporan-siswa/assets/laporan-guard.js"></script>
 <script>
+  // Guard sudah membuka #app-laporan & menampilkan #lap-blocked untuk non-guru/ortu.
+  // Sembunyikan menu jika blocked tampil.
   document.addEventListener("laporan-context-ready", () => {
-    document.getElementById("lap-menu").style.display = "flex";
+    const menu = document.getElementById("lap-menu-wrap");
+    if (menu) menu.style.display = "";
   });
 </script>
 </body>
