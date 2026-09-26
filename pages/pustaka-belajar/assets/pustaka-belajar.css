@@ -59,20 +59,25 @@
   color: var(--ink-3, #78716c);
 }
 
-/* chips mapel */
+/* chips mapel — responsif, tidak terpotong */
 .pb-filter-chips {
   display: flex;
-  flex-wrap: wrap;           /* jangan potong — semua mapel terlihat */
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   overflow: visible;
   padding: 2px 0 12px;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
+  contain: layout style;
 }
 .pb-chip {
-  flex-shrink: 0;
+  box-sizing: border-box;
+  flex: 0 1 auto;              /* boleh menyusut tipis, tapi lebih baik pindah baris */
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  min-height: 40px;            /* target sentuh */
   padding: 8px 14px;
   border-radius: 999px;
   border: 1.5px solid var(--border, #e8e4dc);
@@ -81,15 +86,21 @@
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   transition: border-color .15s, background .15s, color .15s, box-shadow .15s;
-  /* cegah teks mapel terpotong di dalam chip */
   white-space: nowrap;
-  max-width: none;
+  max-width: 100%;             /* di layar sempit tidak keluar viewport */
 }
 .pb-chip:hover {
   border-color: var(--border-2, #d6d3d1);
   box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.06));
+}
+.pb-chip:focus-visible {
+  outline: 2px solid var(--pb-accent);
+  outline-offset: 2px;
 }
 .pb-chip-active {
   background: var(--pb-accent);
@@ -97,7 +108,11 @@
   color: #fff;
   box-shadow: 0 2px 8px rgba(91, 110, 225, .28);
 }
-.pb-chip-icon { font-size: 14px; line-height: 1; }
+.pb-chip-icon {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
 
 /* grid kartu */
 .pb-grid {
@@ -420,9 +435,46 @@
   bottom: 16px;
 }
 
+/* Tablet */
+@media (max-width: 720px) {
+  .pb-filter-chips { gap: 7px; }
+  .pb-chip {
+    min-height: 38px;
+    padding: 7px 12px;
+    font-size: 12.5px;
+  }
+  .pb-grid, .pb-skel-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+/* HP */
 @media (max-width: 560px) {
-  .pb-grid, .pb-skel-grid { grid-template-columns: 1fr; }
   .pb-page { padding: 1rem 0.9rem 4rem; }
+  .pb-toolbar { margin-bottom: 0.5rem; }
+  .pb-filter-chips {
+    gap: 6px;
+    padding-bottom: 10px;
+  }
+  .pb-chip {
+    min-height: 36px;
+    padding: 6px 11px;
+    font-size: 12px;
+    gap: 5px;
+  }
+  .pb-chip-icon { font-size: 13px; }
+  /* Nama mapel panjang tetap utuh; baris chip boleh 2–3 lapis */
+  .pb-grid, .pb-skel-grid { grid-template-columns: 1fr; }
   .pb-viewer-stage { padding: 8px 40px 12px; }
   .pb-viewer-arrow { width: 36px; height: 36px; font-size: 18px; }
+}
+
+/* HP sangat sempit */
+@media (max-width: 360px) {
+  .pb-chip {
+    min-height: 34px;
+    padding: 5px 10px;
+    font-size: 11.5px;
+  }
+  .pb-chip-icon { font-size: 12px; }
 }
