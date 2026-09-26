@@ -165,7 +165,15 @@ function daftarMapelGabungan_(materiGroups, modulGroups, pustakaGroups) {
 
 async function loadReport(nama) {
   const wrap = document.getElementById("lap-report");
-  wrap.innerHTML = '<div class="ma-empty">Memuat laporan…</div>';
+  wrap.innerHTML = '<div class="lap-loading-panel" id="lap-loading-panel">'
+      + '<div class="lap-loading-title">Memuat laporan…</div>'
+      + '<div class="lap-loading-steps" id="lap-loading-steps">'
+      + '<div class="lap-load-step" data-src="materi">📖 Materi Ajar <span>…</span></div>'
+      + '<div class="lap-load-step" data-src="modul">📚 Modul <span>…</span></div>'
+      + '<div class="lap-load-step" data-src="pustaka">📄 Pustaka Belajar <span>…</span></div>'
+      + '</div>'
+      + '<div class="lap-load-bar"><i></i></div>'
+      + '</div>';
   document.getElementById("lap-subtitle").textContent = "Laporan untuk " + nama;
   try {
     const idToken = await window.getFreshLaporanIdToken();
@@ -190,17 +198,55 @@ async function loadReport(nama) {
     // server (mis. `status:"error"` dengan pesan yang jelas, itu tidak diulang, langsung
     // ditampilkan apa adanya). Diterapkan lewat `fetchDenganRetry_` di bawah, dipakai KEDUA
     // panggilan (materi & modul) — laporan baru dianggap gagal kalau retry-nya JUGA gagal.
-    const [jsonMateri, jsonModul, jsonPustaka] = await Promise.all([
-      fetchDenganRetry_(base, { type: "get_progres_materi", nama: nama, idToken: idToken }),
-      fetchDenganRetry_(base, { type: "get_progres_modul", nama: nama, idToken: idToken }),
-      fetchDenganRetry_(base, { type: "get_progres_pustaka", nama: nama, idToken: idToken }),
+    // Fase L-1: soft-fail per sumber. Dulu 1 endpoint error → SELURUH laporan gagal.
+    // Sekarang tiap sumber independen; yang gagal ditandai, yang sukses tetap ditampilkan.
+    const sumberStatus = { materi: "loading", modul: "loading", pustaka: "loading" };
+    function setStep_(src, state, detail) {
+      sumberStatus[src] = state;
+      const el = document.querySelector('.lap-load-step[data-src="' + src + '"]');
+      if (!el) return;
+      el.classList.remove("is-ok", "is-err", "is-loading");
+      el.classList.add(state === "ok" ? "is-ok" : state === "err" ? "is-err" : "is-loading");
+      const sp = el.querySelector("span");
+      if (sp) sp.textContent = detail || (state === "ok" ? "✓" : state === "err" ? "gagal" : "…");
+    }
+
+    async function ambilSumber_(type, src) {
+      setStep_(src, "loading", "mengunduh…");
+      try {
+        const json = await fetchDenganRetry_(base, { type: type, nama: nama, idToken: idToken });
+        if (json && json.status === "error") {
+          setStep_(src, "err", "error");
+          return { ok: false, data: [], message: json.message || "Error server" };
+        }
+        setStep_(src, "ok", "✓");
+        return { ok: true, data: (json && json.data) || [] };
+      } catch (err) {
+        setStep_(src, "err", "gagal");
+        return { ok: false, data: [], message: (err && err.message) || "Gagal jaringan" };
+      }
+    }
+
+    const [resMateri, resModul, resPustaka] = await Promise.all([
+      ambilSumber_("get_progres_materi", "materi"),
+      ambilSumber_("get_progres_modul", "modul"),
+      ambilSumber_("get_progres_pustaka", "pustaka"),
     ]);
-    if (jsonMateri.status === "error") throw new Error(jsonMateri.message || "Gagal memuat laporan materi");
-    if (jsonModul.status === "error") throw new Error(jsonModul.message || "Gagal memuat laporan modul");
-    if (jsonPustaka.status === "error") throw new Error(jsonPustaka.message || "Gagal memuat laporan Pustaka Belajar");
-    dataMateriRows = jsonMateri.data || [];
-    dataModulRows = jsonModul.data || [];
-    dataPustakaRows = jsonPustaka.data || [];
+
+    dataMateriRows = resMateri.data;
+    dataModulRows = resModul.data;
+    dataPustakaRows = resPustaka.data;
+
+    const gagalSemua = !resMateri.ok && !resModul.ok && !resPustaka.ok;
+    if (gagalSemua) {
+      throw new Error("Semua sumber laporan gagal dimuat. Periksa koneksi lalu coba lagi.");
+    }
+
+    // simpan peringatan parsial untuk banner di renderReport
+    window.__lapPartialErrors = [];
+    if (!resMateri.ok) window.__lapPartialErrors.push("Materi Ajar: " + (resMateri.message || "gagal"));
+    if (!resModul.ok) window.__lapPartialErrors.push("Modul: " + (resModul.message || "gagal"));
+    if (!resPustaka.ok) window.__lapPartialErrors.push("Pustaka Belajar: " + (resPustaka.message || "gagal"));
 
     // Daftar SEMUA file Pustaka Belajar (bukan data per-siswa) — sama untuk semua siswa,
     // cukup diambil sekali per kunjungan halaman (lihat komentar `pustakaListAll` di atas).
@@ -234,25 +280,34 @@ async function loadReport(nama) {
  * `status:"error"`) TIDAK diulang — itu bukan kegagalan teknis, server SUDAH menjawab
  * dengan jelas, mengulang tidak akan mengubah jawabannya. */
 async function fetchDenganRetry_(url, payload) {
+  // Timeout 15 dtk, max 3 percobaan (1 + 2 retry), jeda 600ms / 1200ms.
+  // Hanya untuk kegagalan TEKNIS; JSON status:"error" tidak di-retry.
   async function sekaliCoba() {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     try {
-      const res = await fetch(url, { method: "POST", body: JSON.stringify(payload), signal: controller.signal });
-      return await res.json(); // melempar SyntaxError kalau respons bukan JSON — ditangkap di bawah
+      const res = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return await res.json();
     } finally {
       clearTimeout(timeoutId);
     }
   }
-  try {
-    return await sekaliCoba();
-  } catch (err) {
-    // Kegagalan teknis (AbortError / TypeError jaringan / SyntaxError bukan-JSON) — coba
-    // SATU kali lagi sebelum benar-benar menyerah, jeda sebentar dulu (bukan langsung
-    // beruntun) supaya tidak menabrak masalah proxy yang sama persis kalau itu sesaat.
-    await new Promise((r) => setTimeout(r, 800));
-    return await sekaliCoba();
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await sekaliCoba();
+    } catch (err) {
+      lastErr = err;
+      if (attempt < 2) await new Promise((r) => setTimeout(r, 600 * (attempt + 1)));
+    }
   }
+  throw lastErr || new Error("Gagal menghubungi server laporan");
 }
 
 function renderReport(nama) {
@@ -265,6 +320,12 @@ function renderReport(nama) {
   const modulGroups = buildMapelGroupsModul();
   const pustakaGroups = buildMapelGroupsPustaka(pustakaListAll);
   const daftarMapel = daftarMapelGabungan_(materiGroups, modulGroups, pustakaGroups);
+
+  const partialErrs = window.__lapPartialErrors || [];
+  const partialBanner = partialErrs.length
+    ? '<div class="lap-partial-warn">Sebagian data tidak termuat: ' + partialErrs.map(esc).join(" · ") +
+      '. <button type="button" class="lap-retry-btn" id="lap-retry-partial">Coba muat ulang</button></div>'
+    : "";
 
   const ganti = ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak.length > 1)
     ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">← Pilih siswa lain</button>'
@@ -401,7 +462,7 @@ function renderReport(nama) {
       </div>`;
   }
 
-  wrap.innerHTML = ganti + `
+  wrap.innerHTML = ganti + partialBanner + `
     <div class="lap-progres-overall">
       <div class="lap-ringkasan-grid">
         <div class="lap-ringkasan-item">
@@ -437,6 +498,9 @@ function renderReport(nama) {
   wrap.querySelectorAll(".lap-tandai-manual-btn").forEach((btn) => {
     btn.addEventListener("click", () => tandaiModulManual_(nama, btn.dataset.slug, btn.dataset.judul, btn));
   });
+
+  const retryPartial = document.getElementById("lap-retry-partial");
+  if (retryPartial) retryPartial.addEventListener("click", () => loadReport(nama));
 
   const gantiBtn = document.getElementById("lap-ganti-btn");
   if (gantiBtn) gantiBtn.addEventListener("click", () => {
