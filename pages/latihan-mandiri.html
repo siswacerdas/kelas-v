@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Latihan Mandiri · Laporan Siswa · Kelas 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../assets/css/design-system.css" />
+<link rel="stylesheet" href="../materi/assets/materi.css" />
+<link rel="stylesheet" href="assets/laporan.css" />
+<style>
+  :root { --lap-accent: #c9861f; }
+  #checking { padding: 4rem 1.5rem; text-align: center; color: var(--ink-3); font-size: 14px; }
+  #topbar { border-bottom-color: #c9861f; }
+  #topbar .brand span { opacity: 0.85; }
+  #topbar a.back { color: rgba(255,255,255,0.75); font-size: 12.5px; text-decoration: none; font-weight: 500; }
+  #topbar a.back:hover { color: #fff; }
+  .ma-hidden { display: none !important; }
+  #lap-blocked:not(.ma-hidden) ~ .lap-welcome,
+  #lap-blocked:not(.ma-hidden) ~ #lap-picker,
+  #lap-blocked:not(.ma-hidden) ~ #lap-report { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="checking">Memeriksa akses…</div>
+
+<div id="app-laporan" class="ma-hidden">
+  <div id="topbar">
+    <div class="brand">Latihan Mandiri <span>·</span> Kelas 5</div>
+    <a class="back" href="../laporan-siswa.html">← Semua Laporan</a>
+  </div>
+
+  <main class="lap-page">
+    <div id="lap-blocked" class="ma-hidden">
+      <div class="lap-welcome">
+        <h1>Akses terbatas</h1>
+        <p>Halaman ini khusus akun <strong>guru</strong> dan <strong>orang tua</strong>.</p>
+        <p style="margin-top:0.75rem"><a href="../../index.html">← Kembali ke Beranda</a></p>
+      </div>
+    </div>
+
+    <div class="lap-welcome" id="lap-welcome-main">
+      <div class="lap-pill-row"><span class="lap-pill">Laporan</span></div>
+      <h1>💪 Latihan Mandiri</h1>
+      <p class="lap-sub" id="lap-subtitle">Hasil latihan dari Uji Kemampuan per Tujuan Pembelajaran.</p>
+    </div>
+
+    <div id="lap-picker"></div>
+    <div id="lap-report"></div>
+  </main>
+</div>
+
+<script type="module" src="assets/laporan-guard.js"></script>
+<script src="../mpls/assets/config.js"></script>
+<script src="../materi/assets/tp-kko-index.js"></script>
+<script src="assets/laporan-picker.js"></script>
+<script type="module" src="assets/latihan-mandiri.js"></script>
+</body>
+</html>
