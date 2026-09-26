@@ -42,7 +42,7 @@ window.getFreshLaporanIdToken = async () => {
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "../index.html";
+    window.location.href = (function(){ var p=location.pathname; return p.indexOf("/laporan-siswa/")>=0 ? "../../index.html" : "../index.html"; })();
     return;
   }
   const snap = await getDoc(doc(db, "users", user.uid));
@@ -66,7 +66,7 @@ onAuthStateChanged(auth, async (user) => {
     } else {
       // Fallback aman kalau halaman lupa menyediakan elemen #lap-blocked — jangan biarkan
       // pengguna tetap berdiri di halaman ini tanpa pesan apa pun.
-      window.location.href = "../index.html";
+      window.location.href = (function(){ var p=location.pathname; return p.indexOf("/laporan-siswa/")>=0 ? "../../index.html" : "../index.html"; })();
     }
     return;
   }
