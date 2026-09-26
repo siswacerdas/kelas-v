@@ -278,41 +278,67 @@
   .setup-secondary:hover { text-decoration: underline; }
 
 
+
   .setup-hint { font-size: 12.5px; color: var(--ink-3); margin: -0.25rem 0 0.65rem; line-height: 1.45; }
-  .setup-tp-list { display: flex; flex-direction: column; gap: 1rem; max-height: min(52vh, 420px); overflow-y: auto; padding-right: 4px; }
-  .setup-el-group { border: 1px solid var(--border); border-radius: var(--r-lg); background: var(--surface); overflow: hidden; }
+  .setup-tp-list { display: flex; flex-direction: column; gap: 1.25rem; }
+  .setup-el-group { margin: 0; }
   .setup-el-head {
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    padding: 10px 12px; background: var(--paper-2); border-bottom: 1px solid var(--border);
-    font-size: 12px; font-weight: 700; color: var(--ink-2);
+    margin-bottom: 0.55rem; padding: 0 2px;
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--ink-3);
   }
   .setup-el-head button {
     font-family: inherit; font-size: 11.5px; font-weight: 600; color: var(--accent);
     background: none; border: none; cursor: pointer; padding: 0;
+    text-transform: none; letter-spacing: 0;
   }
   .setup-el-head button:hover { text-decoration: underline; }
-  .setup-tp-item {
-    display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left;
-    padding: 10px 12px; border: none; border-bottom: 1px solid var(--border);
-    background: transparent; cursor: pointer; font-family: inherit;
-    transition: background 0.12s;
+  .setup-tp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
   }
-  .setup-tp-item:last-child { border-bottom: none; }
-  .setup-tp-item:hover { background: rgba(155, 89, 182, 0.04); }
-  .setup-tp-item.active { background: rgba(155, 89, 182, 0.1); }
+  .setup-tp-item {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+    text-align: left; padding: 1rem 0.95rem;
+    border-radius: var(--r-lg); border: 1.5px solid var(--border);
+    background: var(--surface); cursor: pointer; font-family: inherit;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s, transform 0.15s;
+  }
+  .setup-tp-item:hover {
+    border-color: var(--border-2); box-shadow: var(--shadow-md); transform: translateY(-1px);
+  }
+  .setup-tp-item.active {
+    border-color: var(--step-accent);
+    background: rgba(155, 89, 182, 0.08);
+    box-shadow: 0 0 0 1px rgba(155, 89, 182, 0.28), var(--shadow-sm);
+  }
+  .setup-tp-item:disabled,
+  .setup-tp-item.is-empty {
+    opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none;
+  }
   .setup-tp-check {
-    flex-shrink: 0; width: 18px; height: 18px; margin-top: 2px; border-radius: 5px;
+    width: 20px; height: 20px; border-radius: 6px;
     border: 1.5px solid var(--border-2); background: var(--surface);
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 11px; color: #fff;
+    font-size: 12px; color: #fff; flex-shrink: 0;
   }
   .setup-tp-item.active .setup-tp-check {
     background: var(--step-accent); border-color: var(--step-accent);
   }
   .setup-tp-item.active .setup-tp-check::after { content: "✓"; }
-  .setup-tp-body { flex: 1; min-width: 0; }
-  .setup-tp-judul { font-size: 13px; font-weight: 650; color: var(--ink); line-height: 1.35; }
-  .setup-tp-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; }
+  .setup-tp-judul {
+    font-size: 13.5px; font-weight: 650; color: var(--ink); line-height: 1.35;
+  }
+  .setup-tp-meta { font-size: 12px; color: var(--ink-3); font-weight: 500; }
+  @media (max-width: 480px) {
+    .setup-tp-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .setup-tp-item { padding: 0.85rem 0.75rem; }
+    .setup-tp-judul { font-size: 12.5px; }
+  }
+
 
 </style>
 </head>
@@ -360,7 +386,7 @@
 
       <div class="setup-section">
         <div class="setup-label">Materi / TP</div>
-        <p class="setup-hint" id="setup-hint">Pilih satu atau beberapa Tujuan Pembelajaran. Dikelompokkan per elemen.</p>
+        <p class="setup-hint" id="setup-hint">Ketuk kartu TP yang ingin diuji. Dikelompokkan per elemen.</p>
         <div class="setup-tp-list" id="setup-elemen-grid"><div class="loading-inline">Memuat…</div></div>
       </div>
 
@@ -825,7 +851,6 @@
 
       const head = document.createElement("div");
       head.className = "setup-el-head";
-      const tpsWithSoal = byEl[el].filter((tp) => ((setupPoolByTp[tp.tp] || {}).semua || []).length > 0);
       head.innerHTML = "<span>" + escHtml(el) + " · " + byEl[el].length + " TP</span>";
       const actions = document.createElement("span");
       const btnAll = document.createElement("button");
@@ -842,34 +867,32 @@
       head.appendChild(actions);
       group.appendChild(head);
 
+      const cards = document.createElement("div");
+      cards.className = "setup-tp-grid";
+
       byEl[el].forEach((tp) => {
         const nSemua = ((setupPoolByTp[tp.tp] || {}).semua || []).length;
         const item = document.createElement("button");
         item.type = "button";
-        item.className = "setup-tp-item";
+        item.className = "setup-tp-item" + (nSemua < 1 ? " is-empty" : "");
         item.setAttribute("data-tp", tp.tp);
-        // default: pilih TP yang punya soal
         if (nSemua > 0) {
           setupTpSelected.add(tp.tp);
           item.classList.add("active");
         }
         item.innerHTML =
           '<span class="setup-tp-check" aria-hidden="true"></span>' +
-          '<span class="setup-tp-body">' +
-            '<div class="setup-tp-judul">' + escHtml(tp.judul || tp.tp) + '</div>' +
-            '<div class="setup-tp-meta">' + nSemua + ' soal' +
-              (nSemua < 1 ? " · belum ada soal" : "") +
-            '</div>' +
-          '</span>';
+          '<div class="setup-tp-judul">' + escHtml(tp.judul || tp.tp) + '</div>' +
+          '<div class="setup-tp-meta">' + (nSemua > 0 ? (nSemua + " soal") : "Belum ada soal") + '</div>';
         if (nSemua > 0) {
           item.onclick = () => toggleSetupTp(tp.tp, item);
         } else {
-          item.style.opacity = "0.45";
-          item.style.cursor = "not-allowed";
+          item.disabled = true;
           item.title = "Belum ada soal di bank untuk TP ini";
         }
-        group.appendChild(item);
+        cards.appendChild(item);
       });
+      group.appendChild(cards);
       grid.appendChild(group);
     });
 
