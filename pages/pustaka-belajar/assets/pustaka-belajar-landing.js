@@ -45,47 +45,38 @@ window.PustakaBelajarLanding = (function () {
 
   function renderList() {
     const listEl = document.getElementById("pb-list");
-    const filtered =
-      activeSlug === "semua"
-        ? allRows
-        : allRows.filter((r) => {
-            const m = findMapel(r["Mapel"]);
-            return m && m.mapelSlug === activeSlug;
-          });
-
-    if (filtered.length === 0) {
-      listEl.innerHTML = `<div class="pb-empty">Belum ada file untuk kategori ini.</div>`;
+    if (!listEl) return;
+    let rows = allRows || [];
+    if (activeSlug && activeSlug !== "semua") {
+      rows = rows.filter((r) => {
+        const m = findMapel(r["Mapel"]);
+        return m && m.mapelSlug === activeSlug;
+      });
+    }
+    if (rows.length === 0) {
+      listEl.innerHTML = `<div class="pb-empty">Belum ada file untuk kategori ini.<br><span style="font-size:12.5px;opacity:.8">Guru dapat mengunggah PDF dari menu Admin → Pustaka Belajar.</span></div>`;
       return;
     }
-
-    // Terbaru di atas — Timestamp ditulis server saat baris ditambahkan (lihat doPostPustakaBelajar_).
-    const sorted = filtered.slice().sort((a, b) => {
-      return new Date(b["Timestamp"] || 0) - new Date(a["Timestamp"] || 0);
+    const sorted = rows.slice().sort((a, b) => {
+      const ta = a["Timestamp"] || a["Tanggal"] || "";
+      const tb = b["Timestamp"] || b["Tanggal"] || "";
+      return String(tb).localeCompare(String(ta));
     });
-
     listEl.innerHTML = `<div class="pb-grid">${sorted
       .map((r) => {
-        const m = findMapel(r["Mapel"]) || { mapelSlug: "", mapelIcon: "📄" };
-        const halaman = r["Jumlah Halaman"] ? `${r["Jumlah Halaman"]} halaman` : "";
-        const tanggal = formatTanggal(r["Timestamp"]);
-        // "judul" & "file" (Drive File ID) SENGAJA ikut disisipkan di URL viewer —
-        // supaya baca.html TIDAK PERLU fetch ulang ?pustakaBelajar=1 lagi cuma untuk
-        // mencari 1 baris yang sudah kita punya datanya di sini. Apps Script sudah
-        // pelan per-permintaan (relay Google, ~1.5-2.5 detik), jadi menghilangkan 1
-        // round-trip penuh di jalur kritis pembukaan PDF ini dampaknya besar. Kalau
-        // parameter ini hilang (mis. tautan lama di-bookmark), baca.html tetap punya
-        // jalur cadangan fetch seperti sebelumnya — lihat ambilMetadataDanFile_().
+        const m = findMapel(r["Mapel"]) || { mapelSlug: "", mapelIcon: "📄", mapel: r["Mapel"] || "" };
+        const tgl = formatTanggal(r["Timestamp"] || r["Tanggal"] || "");
         return `
-        <a class="pb-card ${slugClass(m.mapelSlug)}" href="pustaka-belajar/baca.html?id=${encodeURIComponent(r["ID"])}&judul=${encodeURIComponent(r["Judul"] || "")}&file=${encodeURIComponent(r["Drive File ID"] || "")}">
+        <a class="pb-card ${slugClass(m.mapelSlug)}" href="pustaka-belajar/baca.html?id=${encodeURIComponent(r["ID"] || "")}&judul=${encodeURIComponent(r["Judul"] || "")}&file=${encodeURIComponent(r["Drive File ID"] || "")}">
           <div class="pb-card-top">
             <span class="pb-card-icon">${m.mapelIcon}</span>
-            <span class="pb-card-badge">${r["Mapel"] || ""}</span>
+            <span class="pb-card-badge">${escapeHtml_(r["Mapel"] || "")}</span>
           </div>
           <div class="pb-card-title">${escapeHtml_(r["Judul"] || "(Tanpa judul)")}</div>
           ${r["Deskripsi"] ? `<div class="pb-card-desc">${escapeHtml_(r["Deskripsi"])}</div>` : ""}
           <div class="pb-card-meta">
-            ${halaman ? `<span>${halaman}</span>` : ""}
-            ${tanggal ? `<span>${tanggal}</span>` : ""}
+            <span>${tgl || "PDF"}</span>
+            <span class="pb-card-cta">Baca →</span>
           </div>
         </a>`;
       })
@@ -167,6 +158,10 @@ window.PustakaBelajarLanding = (function () {
           }).catch(() => {});
           return;
         }
+      }
+      listEl = document.getElementById("pb-list");
+      if (listEl && !(opts && opts.force)) {
+        /* skeleton already in HTML on first paint */
       }
       allRows = await fetchListNetwork_();
       tulisListCache_(allRows);

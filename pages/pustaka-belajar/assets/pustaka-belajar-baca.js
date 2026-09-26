@@ -29,6 +29,37 @@ window.PustakaBelajarBaca = (function () {
     document.getElementById("pb-title").textContent = text;
   }
 
+
+  function setLoadStatus(title, msg, pct) {
+    const panel = document.getElementById("pb-loading");
+    if (!panel) return;
+    const t = panel.querySelector(".pb-load-title");
+    const m = document.getElementById("pb-load-msg");
+    const bar = document.getElementById("pb-load-bar");
+    const fill = document.getElementById("pb-load-fill");
+    if (t && title) t.textContent = title;
+    if (m && msg != null) m.textContent = msg;
+    if (bar && fill && pct != null && pct >= 0) {
+      bar.classList.add("is-pct");
+      fill.style.width = Math.min(100, Math.max(0, pct)) + "%";
+    } else if (bar) {
+      bar.classList.remove("is-pct");
+      if (fill) fill.style.width = "";
+    }
+  }
+
+  function showLoadError(message) {
+    const wrap = document.getElementById("pb-canvas-wrap");
+    if (!wrap) return;
+    wrap.innerHTML =
+      '<div class="pb-load-panel">' +
+        '<div class="pb-load-icon">⚠️</div>' +
+        '<div class="pb-load-title">Tidak bisa membuka</div>' +
+        '<div class="pb-load-error">' + (message || "Gagal memuat dokumen.") + '</div>' +
+        '<button type="button" class="pb-load-retry" onclick="location.reload()">Coba lagi</button>' +
+      '</div>';
+  }
+
   function updateArrows() {
     document.getElementById("pb-prev").disabled = currentPage <= 1;
     document.getElementById("pb-next").disabled = currentPage >= totalPages;
@@ -430,11 +461,14 @@ window.PustakaBelajarBaca = (function () {
 
     // Cek cache lokal (IndexedDB) DULU sebelum ke jaringan — lihat catatan panjang
     // di modul cache PDF di atas soal kenapa ini aman dilakukan tanpa kedaluwarsa.
+    setLoadStatus("Menyiapkan dokumen", "Memeriksa cache perangkat…", 10);
     const tersimpan = await ambilDariCache_(driveFileId);
-    if (tersimpan && tersimpan.bytes) {
-      return tersimpan.bytes;
+    if (tersimpan) {
+      setLoadStatus("Hampir siap", "Membuka dari cache…", 75);
+      return tersimpan;
     }
 
+    setLoadStatus("Mengunduh", "Mengambil file dari server… (bisa beberapa detik)", 18);
     // cache: "no-store" WAJIB di sini — URL relay yang dipakai Apps Script untuk
     // mengirim isi file (script.googleusercontent.com/macros/echo?user_content_key=...)
     // SEKALI PAKAI dan berubah setiap request. Kalau browser sempat meng-cache
@@ -453,13 +487,14 @@ window.PustakaBelajarBaca = (function () {
     if (jsonBin.status === "error") throw new Error(jsonBin.message || "Gagal membaca file PDF");
     if (!jsonBin.base64) throw new Error("Server tidak mengirim isi PDF. Coba muat ulang halaman.");
 
-    // Base64 di JSON (bukan Blob) — CORS Apps Script. Decode → validasi → cache.
+    setLoadStatus("Mengunduh", "Memproses data file…", 55);
     let buffer;
     try {
       buffer = Uint8Array.from(atob(jsonBin.base64), (c) => c.charCodeAt(0));
     } catch (e) {
       throw new Error("Gagal membaca data PDF dari server. Coba muat ulang halaman.");
     }
+    setLoadStatus("Mengunduh", "File diterima (" + Math.round(buffer.byteLength / 1024) + " KB)", 65);
     if (!isPdfBuffer_(buffer)) {
       throw new Error("File yang diterima bukan PDF yang valid. Coba muat ulang halaman (Ctrl+Shift+R).");
     }
@@ -474,24 +509,19 @@ window.PustakaBelajarBaca = (function () {
     pasangNavigasi();
     pasangLayarPenuh_();
     try {
+      setLoadStatus("Menyiapkan dokumen", "Menghubungkan…", 5);
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
       const buffer = await ambilMetadataDanFile_();
+      setLoadStatus("Menyiapkan dokumen", "Membaca halaman PDF…", 85);
       pdfDoc = await pdfjsLib.getDocument({ data: buffer }).promise;
       totalPages = pdfDoc.numPages;
+      setLoadStatus("Hampir siap", "Menampilkan halaman 1…", 95);
       await renderPage(1);
 
-      // BARU (lihat ANTIREGRESI.md §55) — dipancarkan HANYA setelah halaman pertama
-      // BENAR-BENAR sudah dirender (bukan sekadar init() dipanggil), supaya
-      // pustaka-belajar-progress-tracker.js baru mulai menghitung "waktu terlihat"
-      // dari saat siswa SUNGGUH-SUNGGUH bisa membaca dokumennya, bukan ikut menghitung
-      // waktu fetch/loading (relay Google + parsing PDF bisa makan beberapa detik,
-      // lihat catatan performa di atas). qs("id") dikirim di detail supaya tracker
-      // tidak perlu membaca ulang query string sendiri (1 sumber kebenaran).
       document.dispatchEvent(new CustomEvent("pb-dokumen-siap", { detail: { id: qs("id") } }));
     } catch (err) {
-      document.getElementById("pb-canvas-wrap").innerHTML =
-        `<div class="pb-viewer-loading">${(err && err.message) || "Gagal memuat dokumen."}</div>`;
+      showLoadError((err && err.message) || "Gagal memuat dokumen.");
     }
   }
 

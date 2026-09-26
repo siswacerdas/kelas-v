@@ -1,121 +1,428 @@
-/* ============================================================
-   pustaka-belajar.css — gaya khusus fitur Pustaka Belajar.
-   Dipakai BERSAMA materi.css (memuat ../materi/assets/materi.css
-   untuk topbar/token warna --m-{slug} yang sudah ada), supaya
-   tampilannya konsisten dengan Materi Ajar/Linimasa tanpa
-   duplikasi kode. Lihat RANCANGAN-PUSTAKA-BELAJAR.md.
-   ============================================================ */
+/* Pustaka Belajar — selaras design-system (paper, kartu, accent)
+   Landing + viewer baca PDF */
 
-/* ── Filter mapel (chip, bisa diklik) — landing pustaka-belajar.html ── */
+:root {
+  --pb-accent: #5b6ee1;
+  --pb-accent-soft: rgba(91, 110, 225, 0.12);
+  --pb-radius: 14px;
+}
+
+/* ── Landing shell ── */
+.pb-page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 1.25rem 1.15rem 4.5rem;
+}
+.pb-welcome {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e8e4dc);
+  border-radius: var(--pb-radius);
+  padding: 1.15rem 1.25rem 1.2rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.04));
+  position: relative;
+  overflow: hidden;
+}
+.pb-welcome::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+  background: var(--pb-accent);
+  border-radius: 4px 0 0 4px;
+}
+.pb-welcome h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--ink, #1c1917);
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.02em;
+}
+.pb-welcome p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-3, #78716c);
+}
+.pb-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+.pb-toolbar-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3, #78716c);
+}
+
+/* chips mapel */
 .pb-filter-chips {
-  display: flex; flex-wrap: wrap; gap: 7px; margin: 1rem 0 1.25rem;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px 2px 10px;
+  margin-bottom: 0.35rem;
+  scrollbar-width: none;
 }
+.pb-filter-chips::-webkit-scrollbar { display: none; }
 .pb-chip {
-  font-size: 12px; font-weight: 600; padding: 7px 13px; border-radius: 999px;
-  border: 1px solid var(--border); background: #fff; color: var(--ink-2);
-  cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border, #e8e4dc);
+  background: var(--surface, #fff);
+  color: var(--ink-2, #44403c);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s, box-shadow .15s;
 }
-.pb-chip .pb-chip-icon { font-size: 13px; }
-.pb-chip.pb-chip-active {
-  background: var(--m-color, var(--ink)); border-color: var(--m-color, var(--ink)); color: #fff;
+.pb-chip:hover {
+  border-color: var(--border-2, #d6d3d1);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.06));
 }
+.pb-chip-active {
+  background: var(--pb-accent);
+  border-color: var(--pb-accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(91, 110, 225, .28);
+}
+.pb-chip-icon { font-size: 14px; line-height: 1; }
 
-/* ── Grid kartu PDF ── */
-.pb-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 0.5rem; }
-
+/* grid kartu */
+.pb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
 .pb-card {
-  display: block; text-decoration: none; color: inherit;
-  background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg);
-  padding: 0.95rem 1.05rem; border-left: 4px solid var(--m-color, var(--accent));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 1.05rem 1rem 1rem;
+  border-radius: var(--pb-radius);
+  border: 1.5px solid var(--border, #e8e4dc);
+  background: var(--surface, #fff);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.04));
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+  position: relative;
+  overflow: hidden;
+  min-height: 132px;
 }
-.pb-card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.pb-card::before {
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--card-accent, var(--pb-accent));
+  opacity: 0.85;
+}
+.pb-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md, 0 6px 16px rgba(0,0,0,.08));
+  border-color: var(--border-2, #d6d3d1);
+}
+.pb-card:active { transform: translateY(0); }
+.pb-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-left: 4px;
+}
+.pb-card-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--pb-accent-soft);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
 .pb-card-badge {
-  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
-  color: var(--m-color, var(--accent)); background: color-mix(in srgb, var(--m-color, var(--accent)) 12%, #fff);
-  padding: 3px 8px; border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--card-accent, var(--pb-accent));
+  background: color-mix(in srgb, var(--card-accent, var(--pb-accent)) 12%, transparent);
+  padding: 3px 9px;
+  border-radius: 999px;
+  max-width: 55%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.pb-card-icon { font-size: 15px; }
-.pb-card-title { font-weight: 700; font-size: 14px; line-height: 1.35; }
+.pb-card-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink, #1c1917);
+  line-height: 1.35;
+  padding-left: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 .pb-card-desc {
-  font-size: 12px; color: var(--ink-3); margin-top: 3px; line-height: 1.45;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: 12.5px;
+  color: var(--ink-3, #78716c);
+  line-height: 1.4;
+  padding-left: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
-.pb-card-meta { font-size: 11px; color: var(--ink-3); margin-top: 7px; display: flex; gap: 10px; }
-
+.pb-card-meta {
+  margin-top: auto;
+  padding-left: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-3, #a8a29e);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pb-card-cta {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--pb-accent);
+}
 .pb-empty {
-  text-align: center; color: var(--ink-3); font-size: 13px; padding: 2.5rem 1rem;
-  border: 1.5px dashed var(--border); border-radius: var(--r-lg); background: #fff;
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--ink-3, #78716c);
+  font-size: 14px;
+  background: var(--surface, #fff);
+  border: 1px dashed var(--border, #e8e4dc);
+  border-radius: var(--pb-radius);
 }
 
-/* ============================================================
-   VIEWER (baca.html) — slideshow mobile-first, tanpa tombol
-   unduh/bagikan sama sekali.
-   ============================================================ */
+/* skeleton loading */
+.pb-skel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.pb-skel {
+  height: 132px;
+  border-radius: var(--pb-radius);
+  background: linear-gradient(90deg, #f0ebe3 25%, #f7f3ec 50%, #f0ebe3 75%);
+  background-size: 200% 100%;
+  animation: pb-shimmer 1.2s ease-in-out infinite;
+  border: 1px solid var(--border, #e8e4dc);
+}
+@keyframes pb-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* mapel accent helpers (from materi.css vars if present) */
+.pb-m-bahasa-indonesia { --card-accent: #8c3d5f; }
+.pb-m-matematika { --card-accent: #1f6f78; }
+.pb-m-ipas { --card-accent: #3f7d4a; }
+.pb-m-pai { --card-accent: #0f6b52; }
+.pb-m-pancasila { --card-accent: #a13d3d; }
+.pb-m-seni-budaya { --card-accent: #c9861f; }
+.pb-m-pjok { --card-accent: #d9541c; }
+.pb-m-bahasa-inggris { --card-accent: #4a5d8c; }
+
+/* ── Viewer (baca) ── */
 .pb-viewer-root {
-  position: fixed; inset: 0; background: #15151f; display: flex; flex-direction: column;
-  touch-action: pan-y;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: #1a1a22;
+  color: #f5f5f4;
 }
 .pb-viewer-topbar {
-  flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
-  padding: 0.75rem 1rem; color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(20, 20, 28, 0.92);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 .pb-viewer-back {
-  color: #fff; text-decoration: none; font-size: 13px; font-weight: 600;
-  display: flex; align-items: center; gap: 5px; opacity: 0.85;
+  flex-shrink: 0;
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.pb-viewer-back:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
 }
 .pb-viewer-title {
-  font-size: 12.5px; font-weight: 600; opacity: 0.9; max-width: 60%;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  flex: 1;
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fafaf9;
 }
-
+.pb-viewer-fullscreen-btn {
+  position: fixed;
+  right: 14px;
+  bottom: 64px;
+  z-index: 30;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(30,30,40,0.9);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
 .pb-viewer-stage {
-  flex: 1; position: relative; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 12px 48px 16px;
+  min-height: 0;
 }
 .pb-viewer-canvas-wrap {
-  max-width: 100%; max-height: 100%; overflow: auto; touch-action: pinch-zoom pan-x pan-y;
-  display: flex; align-items: flex-start; justify-content: center;
+  max-width: 100%;
+  max-height: calc(100dvh - 120px);
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .pb-viewer-canvas-wrap canvas {
-  max-width: 100%; height: auto; display: block; background: #fff;
-  user-select: none; -webkit-touch-callout: none;
+  max-width: 100%;
+  height: auto !important;
+  border-radius: 4px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
 }
-
-.pb-viewer-loading {
-  color: #fff; font-size: 13px; opacity: 0.75; text-align: center;
-}
-
 .pb-viewer-arrow {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  width: 40px; height: 40px; border-radius: 50%; border: none; cursor: pointer;
-  background: rgba(255,255,255,0.14); color: #fff; font-size: 16px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(30,30,40,0.75);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 10;
   display: flex; align-items: center; justify-content: center;
 }
 .pb-viewer-arrow:disabled { opacity: 0.25; cursor: default; }
-.pb-viewer-arrow-left { left: 10px; }
-.pb-viewer-arrow-right { right: 10px; }
-@media (hover: none) { .pb-viewer-arrow { display: none; } }
-
+.pb-viewer-arrow-left { left: 8px; }
+.pb-viewer-arrow-right { right: 8px; }
 .pb-viewer-footer {
-  flex-shrink: 0; padding: 0.75rem 1rem calc(0.9rem + env(safe-area-inset-bottom));
-  text-align: center; color: #fff; font-size: 12.5px; opacity: 0.85;
+  text-align: center;
+  padding: 10px 14px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  background: rgba(20,20,28,0.9);
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
-/* ── Tombol layar penuh — SENGAJA elemen terpisah dari topbar/footer (bukan di
-   dalamnya), supaya TETAP terlihat & bisa dipencet lagi walau topbar/footer
-   sedang disembunyikan dalam mode fokus (lihat .pb-focus-mode di bawah). ── */
-.pb-viewer-fullscreen-btn {
-  position: fixed; top: calc(0.6rem + env(safe-area-inset-top)); right: 0.75rem; z-index: 20;
-  width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer;
-  background: rgba(255,255,255,0.16); color: #fff; font-size: 16px;
-  display: flex; align-items: center; justify-content: center;
+/* loading panel (baca) */
+.pb-load-panel {
+  width: min(340px, 92vw);
+  padding: 1.75rem 1.35rem;
+  border-radius: 16px;
+  background: rgba(40, 40, 52, 0.95);
+  border: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+.pb-load-icon {
+  font-size: 2rem;
+  margin-bottom: 0.65rem;
+  line-height: 1;
+}
+.pb-load-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fafaf9;
+  margin-bottom: 0.35rem;
+}
+.pb-load-msg {
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  min-height: 1.4em;
+}
+.pb-load-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+.pb-load-bar > i {
+  display: block;
+  height: 100%;
+  width: 30%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5b6ee1, #8b9cf5);
+  animation: pb-indeterminate 1.1s ease-in-out infinite;
+}
+.pb-load-bar.is-pct > i {
+  animation: none;
+  transition: width 0.25s ease;
+}
+@keyframes pb-indeterminate {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(400%); }
+}
+.pb-load-error {
+  color: #fca5a5;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.pb-load-retry {
+  margin-top: 1rem;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: none;
+  background: var(--pb-accent);
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-/* Mode fokus/layar-penuh: sembunyikan topbar & footer supaya area baca maksimal.
-   Dipicu terlepas dari berhasil-tidaknya Fullscreen API asli (lihat catatan di
-   toggleFullscreen() pustaka-belajar-baca.js — di iPhone Fullscreen API TIDAK
-   didukung untuk elemen biasa, jadi mode CSS ini yang jadi andalan utama di sana). */
-.pb-focus-mode .pb-viewer-topbar,
-.pb-focus-mode .pb-viewer-footer {
-  display: none;
+/* fokus / fullscreen mode */
+.pb-viewer-root.is-fokus .pb-viewer-topbar,
+.pb-viewer-root.is-fokus .pb-viewer-footer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.pb-viewer-root.is-fokus .pb-viewer-fullscreen-btn {
+  bottom: 16px;
+}
+
+@media (max-width: 560px) {
+  .pb-grid, .pb-skel-grid { grid-template-columns: 1fr; }
+  .pb-page { padding: 1rem 0.9rem 4rem; }
+  .pb-viewer-stage { padding: 8px 40px 12px; }
+  .pb-viewer-arrow { width: 36px; height: 36px; font-size: 18px; }
 }
