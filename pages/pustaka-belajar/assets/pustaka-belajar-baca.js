@@ -224,14 +224,26 @@ window.PustakaBelajarBaca = (function () {
      mengembalikan null / diam-diam) — cache murni optimisasi, bukan sumber
      kebenaran, dan tidak boleh membuat pembaca gagal memuat dokumen. Lihat
      ANTIREGRESI.md §52 untuk rincian & checklist uji. */
+  // ─── Cache lokal PDF (IndexedDB) + cache sesi (memori) ───
+  // HTTP cache browser TIDAK dipakai untuk Apps Script (URL relay sekali pakai → 404).
+  // Semua fetch Apps Script tetap { cache: "no-store" }.
+  // Lapisan cache yang AMAN:
+  //   1) memori sesi (Map) — buka ulang PDF yang sama tanpa sentuh disk
+  //   2) IndexedDB — buka PDF yang sama di kunjungan berikutnya
+  // LRU sejati: timestamp di-update saat DIBACA, bukan hanya saat disimpan.
+  // Eviction: max entri + max total byte (HP low-storage).
+  // Baca cache selalu divalidasi magic "%PDF-" — cache korup dibuang otomatis.
   const CACHE_DB_NAMA = "pustakaBelajarCache";
   const CACHE_STORE_NAMA = "pdf";
-  const CACHE_MAKS_ENTRI = 20; // batas jumlah file tersimpan sekaligus per HP — cegah storage device tergerus tanpa batas
+  const CACHE_DB_VERSI = 2;
+  const CACHE_MAKS_ENTRI = 15;
+  const CACHE_MAKS_BYTE = 45 * 1024 * 1024; // ~45 MB total
+  const memCachePdf_ = new Map(); // fileId -> Uint8Array (sesi tab ini saja)
 
   function bukaDbCache_() {
     return new Promise((resolve, reject) => {
       if (!window.indexedDB) { reject(new Error("IndexedDB tidak didukung")); return; }
-      const req = indexedDB.open(CACHE_DB_NAMA, 1);
+      const req = indexedDB.open(CACHE_DB_NAMA, CACHE_DB_VERSI);
       req.onupgradeneeded = () => {
         const db = req.result;
         if (!db.objectStoreNames.contains(CACHE_STORE_NAMA)) {
@@ -243,17 +255,68 @@ window.PustakaBelajarBaca = (function () {
     });
   }
 
-  async function ambilDariCache_(fileId) {
+  function isPdfBuffer_(buf) {
+    if (!buf || buf.length < 5) return false;
+    // Uint8Array atau ArrayBuffer
+    const u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+    return u8[0] === 0x25 && u8[1] === 0x50 && u8[2] === 0x44 && u8[3] === 0x46 && u8[4] === 0x2d; // %PDF-
+  }
+
+  async function sentuhLru_(fileId) {
     try {
       const db = await bukaDbCache_();
-      return await new Promise((resolve) => {
+      await new Promise((resolve) => {
+        const tx = db.transaction(CACHE_STORE_NAMA, "readwrite");
+        const store = tx.objectStore(CACHE_STORE_NAMA);
+        const req = store.get(fileId);
+        req.onsuccess = () => {
+          const row = req.result;
+          if (row) {
+            row.terakhirDipakai = Date.now();
+            store.put(row);
+          }
+        };
+        tx.oncomplete = resolve;
+        tx.onerror = resolve;
+      });
+    } catch (e) { /* diamkan */ }
+  }
+
+  async function ambilDariCache_(fileId) {
+    // 1) memori sesi
+    if (memCachePdf_.has(fileId)) {
+      const buf = memCachePdf_.get(fileId);
+      if (isPdfBuffer_(buf)) {
+        sentuhLru_(fileId); // fire-and-forget
+        return buf;
+      }
+      memCachePdf_.delete(fileId);
+    }
+    // 2) IndexedDB
+    try {
+      const db = await bukaDbCache_();
+      const row = await new Promise((resolve) => {
         const tx = db.transaction(CACHE_STORE_NAMA, "readonly");
         const req = tx.objectStore(CACHE_STORE_NAMA).get(fileId);
         req.onsuccess = () => resolve(req.result || null);
         req.onerror = () => resolve(null);
       });
+      if (!row || !row.bytes) return null;
+      const u8 = row.bytes instanceof Uint8Array ? row.bytes : new Uint8Array(row.bytes);
+      if (!isPdfBuffer_(u8)) {
+        // cache korup — hapus
+        try {
+          const db2 = await bukaDbCache_();
+          const tx = db2.transaction(CACHE_STORE_NAMA, "readwrite");
+          tx.objectStore(CACHE_STORE_NAMA).delete(fileId);
+        } catch (e) {}
+        return null;
+      }
+      memCachePdf_.set(fileId, u8);
+      sentuhLru_(fileId);
+      return u8;
     } catch (e) {
-      return null; // anggap cache kosong, lanjut ke jalur network seperti biasa
+      return null;
     }
   }
 
@@ -264,10 +327,27 @@ window.PustakaBelajarBaca = (function () {
       const req = store.getAll();
       req.onsuccess = () => {
         const semua = req.result || [];
-        if (semua.length > CACHE_MAKS_ENTRI) {
-          // LRU sederhana berdasar kapan TERAKHIR disimpan/dipakai — buang yang paling lama
-          semua.sort((a, b) => a.disimpanPada - b.disimpanPada);
-          semua.slice(0, semua.length - CACHE_MAKS_ENTRI).forEach((item) => store.delete(item.fileId));
+        // urut paling lama dipakai dulu (fallback disimpanPada)
+        semua.sort((a, b) => {
+          const ta = a.terakhirDipakai || a.disimpanPada || 0;
+          const tb = b.terakhirDipakai || b.disimpanPada || 0;
+          return ta - tb;
+        });
+        let totalByte = 0;
+        semua.forEach((item) => {
+          const n = item.bytes ? (item.bytes.byteLength || item.bytes.length || 0) : 0;
+          totalByte += n;
+        });
+        // buang sampai entri & byte di bawah batas
+        while (
+          semua.length > 0 &&
+          (semua.length > CACHE_MAKS_ENTRI || totalByte > CACHE_MAKS_BYTE)
+        ) {
+          const buang = semua.shift();
+          const n = buang.bytes ? (buang.bytes.byteLength || buang.bytes.length || 0) : 0;
+          totalByte -= n;
+          store.delete(buang.fileId);
+          memCachePdf_.delete(buang.fileId);
         }
       };
       tx.oncomplete = resolve;
@@ -276,18 +356,47 @@ window.PustakaBelajarBaca = (function () {
   }
 
   async function simpanKeCache_(fileId, buffer) {
+    if (!isPdfBuffer_(buffer)) return;
+    const u8 = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+    memCachePdf_.set(fileId, u8);
     try {
       const db = await bukaDbCache_();
       await new Promise((resolve) => {
         const tx = db.transaction(CACHE_STORE_NAMA, "readwrite");
-        tx.objectStore(CACHE_STORE_NAMA).put({ fileId, bytes: buffer, disimpanPada: Date.now() });
+        const now = Date.now();
+        tx.objectStore(CACHE_STORE_NAMA).put({
+          fileId,
+          bytes: u8,
+          disimpanPada: now,
+          terakhirDipakai: now,
+          ukuran: u8.byteLength
+        });
         tx.oncomplete = resolve;
-        tx.onerror = resolve; // gagal simpan cache BUKAN error fatal — dokumen sudah tampil dari network
+        tx.onerror = resolve;
       });
       await bersihkanCacheLama_(db);
     } catch (e) {
-      // diamkan — lihat catatan panjang di atas kenapa cache boleh diam-diam gagal
+      // gagal simpan disk bukan fatal — memori sesi tetap dipakai
     }
+  }
+
+  /** Fetch Apps Script dengan no-store + 1× retry (relay URL rawan 404 sesaat). */
+  async function fetchAppsScript_(url, opt) {
+    const opts = Object.assign({ cache: "no-store" }, opt || {});
+    let lastErr = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(url, opts);
+        if (res.ok) return res;
+        // 404/5xx pada attempt pertama → tunggu sebentar, coba lagi
+        lastErr = new Error("Server merespons kode " + res.status);
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 400));
+      } catch (e) {
+        lastErr = e;
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 400));
+      }
+    }
+    throw lastErr || new Error("Gagal menghubungi server");
   }
 
   async function ambilMetadataDanFile_() {
@@ -310,8 +419,7 @@ window.PustakaBelajarBaca = (function () {
     } else {
       // JALUR CADANGAN (tautan lama tanpa parameter file/judul, mis. hasil bookmark
       // sebelum perbaikan ini, atau dibuka manual) — fetch daftar seperti sebelumnya.
-      const resMeta = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
-      if (!resMeta.ok) throw new Error("Server tidak merespons (kode " + resMeta.status + "). Coba muat ulang halaman.");
+      const resMeta = await fetchAppsScript_(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1");
       const jsonMeta = await resMeta.json();
       if (jsonMeta.status === "error") throw new Error(jsonMeta.message || "Gagal memuat data");
       const row = (jsonMeta.data || []).find((r) => r["ID"] === id);
@@ -333,11 +441,9 @@ window.PustakaBelajarBaca = (function () {
     // respons ini, permintaan berikutnya akan terarah ke URL relay basi yang
     // sudah tidak berlaku (404) — persis pola yang bikin daftar file sempat tidak
     // muncul sebelumnya, cuma kali ini kena di file biner-nya, bukan daftarnya.
-    const resBin = await fetch(
-      MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBinary=" + encodeURIComponent(driveFileId),
-      { cache: "no-store" }
+    const resBin = await fetchAppsScript_(
+      MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBinary=" + encodeURIComponent(driveFileId)
     );
-    if (!resBin.ok) throw new Error("Gagal mengambil file PDF (kode " + resBin.status + "). Coba muat ulang halaman.");
     let jsonBin;
     try {
       jsonBin = await resBin.json();
@@ -345,25 +451,20 @@ window.PustakaBelajarBaca = (function () {
       throw new Error("Respons server tidak dikenali. Coba muat ulang halaman.");
     }
     if (jsonBin.status === "error") throw new Error(jsonBin.message || "Gagal membaca file PDF");
+    if (!jsonBin.base64) throw new Error("Server tidak mengirim isi PDF. Coba muat ulang halaman.");
 
-    // Dibungkus base64 di JSON (BUKAN Blob mentah) — lihat catatan panjang di
-    // servePustakaBinary_() (Code.gs) soal kenapa: Apps Script tidak konsisten
-    // menambahkan header CORS saat doGet mengembalikan Blob langsung, sedangkan
-    // ContentService JSON SELALU dapat header itu. Decode di sini sebelum
-    // diserahkan ke pdf.js.
-    const buffer = Uint8Array.from(atob(jsonBin.base64), (c) => c.charCodeAt(0));
-
-    // Pengaman tambahan: PDF asli SELALU diawali tanda "%PDF-" (magic bytes).
-    // Kalau tidak ada, berarti yang kebaca bukan PDF asli (mis. sisa cache/relay
-    // basi yang lolos dari pengecekan di atas) — hentikan di sini dengan pesan
-    // jelas, jangan lanjut ke pdf.js supaya tidak keluar warning membingungkan.
-    const header = String.fromCharCode.apply(null, buffer.slice(0, 5));
-    if (header !== "%PDF-") {
+    // Base64 di JSON (bukan Blob) — CORS Apps Script. Decode → validasi → cache.
+    let buffer;
+    try {
+      buffer = Uint8Array.from(atob(jsonBin.base64), (c) => c.charCodeAt(0));
+    } catch (e) {
+      throw new Error("Gagal membaca data PDF dari server. Coba muat ulang halaman.");
+    }
+    if (!isPdfBuffer_(buffer)) {
       throw new Error("File yang diterima bukan PDF yang valid. Coba muat ulang halaman (Ctrl+Shift+R).");
     }
 
-    // Fire-and-forget: simpan ke cache untuk kunjungan berikutnya. SENGAJA tidak
-    // di-await — menulis ke IndexedDB tidak boleh menunda halaman pertama tampil.
+    // Fire-and-forget: jangan tunda tampilan halaman pertama.
     simpanKeCache_(driveFileId, buffer);
 
     return buffer;

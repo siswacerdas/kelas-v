@@ -98,24 +98,96 @@ window.PustakaBelajarLanding = (function () {
     return div.innerHTML;
   }
 
-  async function loadData() {
+  // Cache daftar di sessionStorage (bukan HTTP cache browser).
+  // Apps Script URL relay SEKALI PAKAI → fetch tetap { cache: "no-store" }.
+  // sessionStorage hanya menyimpan JSON daftar agar kembali ke landing tidak
+  // menunggu 1.5–2.5 dtk tiap kali. TTL pendek supaya unggahan guru muncul cepat.
+  const LIST_CACHE_KEY = "pb_list_v1";
+  const LIST_CACHE_TTL_MS = 3 * 60 * 1000; // 3 menit
+
+  function bacaListCache_() {
+    try {
+      const raw = sessionStorage.getItem(LIST_CACHE_KEY);
+      if (!raw) return null;
+      const obj = JSON.parse(raw);
+      if (!obj || !Array.isArray(obj.data) || !obj.ts) return null;
+      if (Date.now() - obj.ts > LIST_CACHE_TTL_MS) return null;
+      return obj.data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function tulisListCache_(data) {
+    try {
+      sessionStorage.setItem(LIST_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: data || [] }));
+    } catch (e) { /* quota / private mode — abaikan */ }
+  }
+
+  window.pbInvalidateListCache = function () {
+    try { sessionStorage.removeItem(LIST_CACHE_KEY); } catch (e) {}
+  };
+
+  async function fetchListNetwork_() {
+    let lastErr = null;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
+        if (!res.ok) throw new Error("kode " + res.status);
+        const json = await res.json();
+        if (json.status === "error") throw new Error(json.message || "Gagal memuat");
+        return json.data || [];
+      } catch (e) {
+        lastErr = e;
+        if (attempt === 0) await new Promise((r) => setTimeout(r, 400));
+      }
+    }
+    throw lastErr || new Error("Gagal memuat");
+  }
+
+  async function loadData(opts) {
     renderChips();
     if (typeof MPLS_CONFIG === "undefined" || !MPLS_CONFIG.APPS_SCRIPT_URL) {
       document.getElementById("pb-list").innerHTML =
         `<div class="pb-empty">Fitur ini belum siap dikonfigurasi.</div>`;
       return;
     }
+    const force = opts && opts.force;
     try {
-      const res = await fetch(MPLS_CONFIG.APPS_SCRIPT_URL + "?pustakaBelajar=1", { cache: "no-store" });
-      const json = await res.json();
-      if (json.status === "error") throw new Error(json.message || "Gagal memuat");
-      allRows = json.data || [];
+      if (!force) {
+        const cached = bacaListCache_();
+        if (cached) {
+          allRows = cached;
+          renderList();
+          // revalidasi diam-diam di latar — daftar tetap tampil dari cache
+          fetchListNetwork_().then((data) => {
+            tulisListCache_(data);
+            allRows = data;
+            renderList();
+          }).catch(() => {});
+          return;
+        }
+      }
+      allRows = await fetchListNetwork_();
+      tulisListCache_(allRows);
       renderList();
     } catch (err) {
+      // fallback: tampilkan cache kedaluwarsa jika ada
+      try {
+        const raw = sessionStorage.getItem(LIST_CACHE_KEY);
+        if (raw) {
+          const obj = JSON.parse(raw);
+          if (obj && Array.isArray(obj.data) && obj.data.length) {
+            allRows = obj.data;
+            renderList();
+            return;
+          }
+        }
+      } catch (e2) {}
       document.getElementById("pb-list").innerHTML =
         `<div class="pb-empty">Gagal memuat daftar. Coba muat ulang halaman.</div>`;
     }
   }
 
-  return { init: loadData };
+  return { init: loadData, reload: () => loadData({ force: true }) };
 })();
