@@ -58,6 +58,27 @@ let pustakaListAll = null;   // cache daftar SEMUA file Pustaka Belajar (?pustak
 function esc(str) {
   return String(str || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+function lapInitial_(nama) {
+  const p = String(nama || "?").trim().split(/\s+/);
+  if (!p.length) return "?";
+  if (p.length === 1) return p[0].slice(0, 1).toUpperCase();
+  return (p[0].slice(0, 1) + p[p.length - 1].slice(0, 1)).toUpperCase();
+}
+function lapHidePicker_(hide) {
+  const el = document.getElementById("lap-picker");
+  if (el) el.style.display = hide ? "none" : "";
+}
+function lapSiswaHeader_(nama, metaHtml) {
+  const ganti = ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1))
+    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    : "";
+  return '<div class="lap-siswa-header">' +
+    '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
+    '<div class="lap-siswa-header-info">' +
+      '<div class="lap-siswa-header-nama">' + esc(nama) + '</div>' +
+      (metaHtml ? '<div class="lap-siswa-header-meta">' + metaHtml + '</div>' : '') +
+    '</div>' + ganti + '</div>';
+}
 
 function materiSlugFromFile_(file) {
   return String(file || "").replace(/\.html$/i, "");
@@ -327,9 +348,7 @@ function renderReport(nama) {
       '. <button type="button" class="lap-retry-btn" id="lap-retry-partial">Coba muat ulang</button></div>'
     : "";
 
-  const ganti = ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak.length > 1)
-    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">← Pilih siswa lain</button>'
-    : "";
+  lapHidePicker_(true);
 
   // ── Ringkasan keseluruhan — lintas SEMUA mapel, TIDAK terpengaruh filter mapel di bawah,
   // supaya orang tua tetap dapat gambaran total meski sedang fokus lihat 1 mapel. ──
@@ -462,28 +481,33 @@ function renderReport(nama) {
       </div>`;
   }
 
-  wrap.innerHTML = ganti + partialBanner + `
-    <div class="lap-progres-overall">
-      <div class="lap-ringkasan-grid">
-        <div class="lap-ringkasan-item">
-          <div class="lap-progres-overall-angka">${dibacaMateriSemua}/${totalMateriSemua}</div>
-          <div class="lap-progres-overall-label">📖 Materi dibaca</div>
-        </div>
-        <div class="lap-ringkasan-item">
-          <div class="lap-progres-overall-angka">${selesaiModulSemua}/${totalModulSemua}</div>
-          <div class="lap-progres-overall-label">🧩 Modul selesai</div>
-        </div>
-        <div class="lap-ringkasan-item">
-          <div class="lap-progres-overall-angka">${dibacaPustakaSemua}/${totalPustakaSemua}</div>
-          <div class="lap-progres-overall-label">📚 Pustaka dibaca</div>
-        </div>
+  const pctM = totalMateriSemua ? Math.round((dibacaMateriSemua / totalMateriSemua) * 100) : 0;
+  const pctO = totalModulSemua ? Math.round((selesaiModulSemua / totalModulSemua) * 100) : 0;
+  const pctP = totalPustakaSemua ? Math.round((dibacaPustakaSemua / totalPustakaSemua) * 100) : 0;
+
+  wrap.innerHTML = partialBanner + lapSiswaHeader_(nama, "Perkembangan belajar mandiri") + `
+    <div class="lap-metrics">
+      <div class="lap-metric">
+        <div class="lap-metric-value">${dibacaMateriSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalMateriSemua}</span></div>
+        <div class="lap-metric-label">📖 Materi dibaca</div>
+        <div class="lap-metric-bar"><i style="width:${pctM}%"></i></div>
+      </div>
+      <div class="lap-metric">
+        <div class="lap-metric-value">${selesaiModulSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalModulSemua}</span></div>
+        <div class="lap-metric-label">🧩 Modul selesai</div>
+        <div class="lap-metric-bar"><i style="width:${pctO}%"></i></div>
+      </div>
+      <div class="lap-metric">
+        <div class="lap-metric-value">${dibacaPustakaSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalPustakaSemua}</span></div>
+        <div class="lap-metric-label">📚 Pustaka dibaca</div>
+        <div class="lap-metric-bar"><i style="width:${pctP}%"></i></div>
       </div>
     </div>
 
     <div class="lap-section-title-plain">🕐 Aktivitas Terbaru</div>
     ${aktivitasHtml}
 
-    <div class="lap-section-title-plain" style="margin-top:1.25rem;">Rincian per Mata Pelajaran</div>
+    <div class="lap-section-title-plain">Rincian per Mata Pelajaran</div>
     <div class="lap-mapel-chips">${chipHtml || '<div class="lap-kosong">Belum ada data untuk ditampilkan.</div>'}</div>
     ${detailHtml}
   `;
@@ -505,7 +529,8 @@ function renderReport(nama) {
   const gantiBtn = document.getElementById("lap-ganti-btn");
   if (gantiBtn) gantiBtn.addEventListener("click", () => {
     wrap.innerHTML = "";
-    document.getElementById("lap-subtitle").textContent = "Ketuntasan Ingat Lagi & Ayo Belajar! yang sudah dipelajari siswa.";
+    lapHidePicker_(false);
+    document.getElementById("lap-subtitle").textContent = "Progres materi ajar, modul, dan pustaka belajar per mapel.";
     if (ctx.role === "orangtua") {
       document.querySelectorAll(".lap-anak-chip").forEach((b) => b.classList.remove("lap-active"));
     } else {

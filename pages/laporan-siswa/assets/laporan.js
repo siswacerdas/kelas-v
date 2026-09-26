@@ -18,6 +18,27 @@ const collapsedSections = new Set(); // label section yang sedang ditutup, sama 
 function esc(str) {
   return String(str || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+function lapInitial_(nama) {
+  const p = String(nama || "?").trim().split(/\s+/);
+  if (!p.length) return "?";
+  if (p.length === 1) return p[0].slice(0, 1).toUpperCase();
+  return (p[0].slice(0, 1) + p[p.length - 1].slice(0, 1)).toUpperCase();
+}
+function lapHidePicker_(hide) {
+  const p = document.getElementById("lap-picker");
+  if (p) p.style.display = hide ? "none" : "";
+}
+function lapSiswaHeader_(nama, metaHtml) {
+  const ganti = ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1))
+    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    : "";
+  return '<div class="lap-siswa-header">' +
+    '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
+    '<div class="lap-siswa-header-info">' +
+      '<div class="lap-siswa-header-nama">' + esc(nama) + '</div>' +
+      (metaHtml ? '<div class="lap-siswa-header-meta">' + metaHtml + '</div>' : '') +
+    '</div>' + ganti + '</div>';
+}
 
 /* ── Langkah 2: muat & render laporan 1 siswa ───────────────────────────── */
 async function loadReport(nama) {
@@ -108,23 +129,16 @@ function renderSection(key, title, bodyHtml) {
 function renderReport(nama, data) {
   const wrap = document.getElementById("lap-report");
   const profil = data.profil;
+  lapHidePicker_(true);
 
-  const ganti = ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak.length > 1)
-    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">← Pilih siswa lain</button>'
-    : "";
+  const meta = profil
+    ? ((profil["Nama Panggilan"] ? "Dipanggil " + esc(profil["Nama Panggilan"]) + " · " : "") +
+       esc(profil["Tempat Lahir"] || "") +
+       (profil["Tempat Lahir"] && profil["Tanggal Lahir"] ? ", " : "") +
+       esc(profil["Tanggal Lahir"] || "") || "Profil MPLS")
+    : "Profil belum terdaftar di Data Siswa";
 
-  const profilCard = profil
-    ? `<div class="lap-profil-card">
-        <div class="lap-profil-nama">${esc(profil["Nama Lengkap"] || nama)}</div>
-        <div class="lap-profil-meta">
-          ${profil["Nama Panggilan"] ? "Dipanggil " + esc(profil["Nama Panggilan"]) + " · " : ""}
-          ${esc(profil["Tempat Lahir"] || "")}${profil["Tempat Lahir"] && profil["Tanggal Lahir"] ? ", " : ""}${esc(profil["Tanggal Lahir"] || "")}
-        </div>
-      </div>`
-    : `<div class="lap-profil-card"><div class="lap-profil-nama">${esc(nama)}</div>
-        <div class="lap-profil-meta">Profil belum terdaftar di Data Siswa.</div></div>`;
-
-  wrap.innerHTML = ganti + profilCard +
+  wrap.innerHTML = lapSiswaHeader_(nama, meta) +
     renderSection("mpls", "🧭 Kesiapan Belajar (Emosi, Kemandirian, Minat, Fisik)", renderNarasi(MplsScoring, data.mpls)) +
     renderSection("kognitif", "📚 Kesiapan Akademik (Literasi & Numerasi)", renderNarasi(MplsScoringKognitif, data.mplsKognitif)) +
     renderSection("jurnal", "📝 Jurnal Aktivitas Menulis", renderNarasi(MplsScoringJurnal, data.jurnal));
@@ -140,7 +154,8 @@ function renderReport(nama, data) {
   const gantiBtn = document.getElementById("lap-ganti-btn");
   if (gantiBtn) gantiBtn.addEventListener("click", () => {
     wrap.innerHTML = "";
-    document.getElementById("lap-subtitle").textContent = "Ringkasan profil, hasil asesmen MPLS, dan jurnal aktivitas.";
+    lapHidePicker_(false);
+    document.getElementById("lap-subtitle").textContent = "Ringkasan kesiapan belajar, kesiapan akademik, dan jurnal aktivitas.";
     if (ctx.role === "orangtua") {
       document.querySelectorAll(".lap-anak-chip").forEach((b) => b.classList.remove("lap-active"));
     } else {

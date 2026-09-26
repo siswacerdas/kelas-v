@@ -479,3 +479,237 @@
   border: 1px solid var(--border); border-radius: 999px;
   padding: 5px 12px; cursor: pointer;
 }
+
+
+/* ══ Fase L-3: isi laporan — header, metrik, section ══ */
+.lap-siswa-header {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 12px 14px; margin-bottom: 1rem;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e8e4dc);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.04));
+}
+.lap-siswa-header .lap-avatar {
+  width: 44px; height: 44px; font-size: 15px;
+  background: color-mix(in srgb, var(--lap-accent, #2e6fbc) 18%, transparent);
+  color: var(--lap-accent, #2e6fbc);
+}
+.lap-siswa-header-info { flex: 1; min-width: 0; }
+.lap-siswa-header-nama {
+  font-size: 16px; font-weight: 700; color: var(--ink, #1c1917);
+  line-height: 1.25;
+}
+.lap-siswa-header-meta {
+  font-size: 12.5px; color: var(--ink-3, #78716c); margin-top: 2px;
+}
+.lap-ganti {
+  margin: 0 !important;
+  padding: 7px 12px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--paper-2, #f5f2eb) !important;
+  color: var(--lap-accent, #2e6fbc) !important;
+  font-size: 12.5px !important; font-weight: 650 !important;
+}
+.lap-ganti:hover { border-color: var(--border-2) !important; background: #fff !important; }
+
+/* Metrik ringkasan */
+.lap-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 1.15rem;
+}
+@media (max-width: 520px) {
+  .lap-metrics { grid-template-columns: 1fr; }
+}
+.lap-metric {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e8e4dc);
+  border-radius: 14px;
+  padding: 12px 14px;
+  text-align: center;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.04));
+}
+.lap-metric-value {
+  font-size: 1.45rem; font-weight: 800; color: var(--ink);
+  letter-spacing: -0.02em; line-height: 1.15;
+}
+.lap-metric-label {
+  font-size: 11.5px; font-weight: 650; color: var(--ink-3);
+  margin-top: 4px; line-height: 1.3;
+}
+.lap-metric-bar {
+  height: 5px; border-radius: 999px; background: rgba(0,0,0,.06);
+  margin-top: 8px; overflow: hidden;
+}
+.lap-metric-bar > i {
+  display: block; height: 100%; border-radius: 999px;
+  background: var(--lap-accent, #2e6fbc);
+  max-width: 100%;
+}
+
+/* Section cards */
+.lap-section {
+  margin-bottom: 0.85rem;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e8e4dc);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.04));
+}
+.lap-section-title {
+  font-size: 13.5px; font-weight: 700; color: var(--ink);
+  cursor: pointer; user-select: none;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0.9rem 1rem;
+  background: var(--surface, #fff);
+  border: none;
+  border-bottom: 1px solid transparent;
+}
+.lap-section:not(:has(.lap-collapsed)) .lap-section-title,
+.lap-section-title:not(.lap-collapsed-title) {
+  border-bottom-color: var(--border, #e8e4dc);
+}
+.lap-section-title .lap-chevron {
+  margin-left: auto; transition: transform 0.15s ease;
+  color: var(--ink-3); font-size: 11px;
+}
+.lap-section-title.lap-collapsed-title .lap-chevron { transform: rotate(-90deg); }
+.lap-section-title.lap-collapsed-title { border-bottom-color: transparent; }
+.lap-section-body {
+  padding: 0.85rem 1rem 1rem;
+  background: var(--paper, #faf9f6);
+  border: none;
+  border-radius: 0;
+}
+.lap-section-body.lap-collapsed { display: none; }
+
+.lap-section-title-plain {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink-3);
+  margin: 1.1rem 0 0.55rem;
+}
+
+/* Profil (MPLS) */
+.lap-profil-card {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e8e4dc);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,.04));
+}
+.lap-profil-nama { font-weight: 700; font-size: 16px; }
+.lap-profil-meta { font-size: 12.5px; color: var(--ink-3); margin-top: 3px; }
+
+/* MPLS narasi */
+.lap-overall {
+  border-radius: 12px; padding: 12px 14px; margin-bottom: 0.85rem;
+  background: #fff; border: 1px solid var(--border);
+}
+.lap-overall-badge {
+  display: inline-block; font-size: 12px; font-weight: 700;
+  padding: 3px 10px; border-radius: 999px; margin-bottom: 6px;
+  background: var(--lap-accent, #2e6fbc); color: #fff;
+}
+.lap-overall-narasi { font-size: 13.5px; line-height: 1.5; color: var(--ink-2); margin: 0; }
+.lap-overall-line { font-size: 13px; margin-top: 6px; color: var(--ink-2); }
+.lap-cat-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px; margin-top: 0.75rem;
+}
+.lap-cat-card {
+  background: #fff; border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px; border-top: 3px solid var(--cat-accent, var(--lap-accent));
+}
+.lap-cat-title { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.lap-cat-level {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px; margin-bottom: 6px;
+  background: var(--paper-2); color: var(--ink-2);
+}
+.lap-cat-simpulan { font-size: 12.5px; line-height: 1.45; color: var(--ink-3); margin: 0; }
+.lap-rekom-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0.75rem;
+}
+@media (max-width: 520px) { .lap-rekom-grid { grid-template-columns: 1fr; } }
+.lap-rekom-col {
+  background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 12px;
+}
+.lap-rekom-title { font-size: 12.5px; font-weight: 700; margin-bottom: 6px; }
+.lap-rekom-col ul { margin: 0; padding-left: 1.1rem; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+
+/* Aktivitas terbaru */
+.lap-aktivitas-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 0.5rem; }
+.lap-aktivitas-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; background: var(--surface, #fff);
+  border: 1px solid var(--border); border-radius: 12px; font-size: 13px;
+}
+.lap-aktivitas-item .lap-akt-icon { font-size: 16px; flex-shrink: 0; line-height: 1.2; }
+.lap-aktivitas-item .lap-akt-body { flex: 1; min-width: 0; }
+.lap-aktivitas-item .lap-akt-judul { font-weight: 650; color: var(--ink); line-height: 1.3; }
+.lap-aktivitas-item .lap-akt-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 2px; }
+
+/* Mapel chips detail */
+.lap-mapel-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 0.85rem; }
+.lap-mapel-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border-radius: 999px;
+  border: 1.5px solid var(--border); background: var(--surface, #fff);
+  font-family: inherit; font-size: 12.5px; font-weight: 650;
+  color: var(--ink-2); cursor: pointer;
+}
+.lap-mapel-chip.lap-active {
+  background: var(--lap-accent, #2a9d6f); border-color: var(--lap-accent, #2a9d6f); color: #fff;
+}
+
+/* Checklist item */
+.lap-check-item {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 6px 0; font-size: 13px; line-height: 1.35;
+  border-bottom: 1px solid rgba(0,0,0,.04);
+}
+.lap-check-item:last-child { border-bottom: none; }
+.lap-check-mark { flex-shrink: 0; font-size: 14px; }
+
+/* TP latihan rows */
+.lap-tp-row {
+  padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,.05);
+}
+.lap-tp-row:last-child { border-bottom: none; }
+.lap-tp-row-top {
+  display: flex; justify-content: space-between; gap: 8px; align-items: baseline;
+  margin-bottom: 6px;
+}
+.lap-tp-nama { font-size: 13.5px; font-weight: 650; color: var(--ink); line-height: 1.3; }
+.lap-tp-angka { font-size: 12px; font-weight: 700; color: var(--ink-3); white-space: nowrap; }
+.lap-tp-bar-track {
+  height: 8px; border-radius: 999px; background: rgba(0,0,0,.06); overflow: hidden;
+}
+.lap-tp-bar-fill {
+  height: 100%; border-radius: 999px;
+  background: var(--m-color, var(--lap-accent));
+  transition: width 0.3s ease;
+}
+.lm-tp-meta { font-size: 11.5px; color: var(--ink-3); margin-top: 4px; }
+
+/* Hero skor latihan */
+.lap-hero-score {
+  text-align: center;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+.lap-hero-score-value {
+  font-size: 2.4rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1;
+}
+.lap-hero-score-label {
+  font-size: 13px; color: var(--ink-3); margin-top: 6px; line-height: 1.4;
+}

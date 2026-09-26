@@ -35,6 +35,27 @@ const MAPEL_ICON = {
 function esc(str) {
   return String(str || "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+function lapInitial_(nama) {
+  const p = String(nama || "?").trim().split(/\s+/);
+  if (!p.length) return "?";
+  if (p.length === 1) return p[0].slice(0, 1).toUpperCase();
+  return (p[0].slice(0, 1) + p[p.length - 1].slice(0, 1)).toUpperCase();
+}
+function lapHidePicker_(hide) {
+  const el = document.getElementById("lap-picker");
+  if (el) el.style.display = hide ? "none" : "";
+}
+function lapSiswaHeader_(nama, metaHtml) {
+  const ganti = ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1))
+    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    : "";
+  return '<div class="lap-siswa-header">' +
+    '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
+    '<div class="lap-siswa-header-info">' +
+      '<div class="lap-siswa-header-nama">' + esc(nama) + '</div>' +
+      (metaHtml ? '<div class="lap-siswa-header-meta">' + metaHtml + '</div>' : '') +
+    '</div>' + ganti + '</div>';
+}
 function fmtTanggal(ts) {
   // Firestore Timestamp (SDK) punya .toDate(); tapi hasil serverTimestamp() yang baru saja
   // ditulis lokal bisa null sesaat — dijaga sama seperti riwayat-latihan.html.
@@ -115,35 +136,33 @@ async function loadReport(nama) {
 
 function renderReport(nama, hasilList) {
   const wrap = document.getElementById("lap-report");
-  const mapelGroups = kelompokkanPerMapel(hasilList);
+  lapHidePicker_(true);
 
-  const ganti = ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak.length > 1)
-    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">← Pilih siswa lain</button>'
-    : "";
-
-  if (hasilList.length === 0) {
-    wrap.innerHTML = ganti + `
-      <div class="ma-empty">${esc(nama)} belum pernah mengerjakan Uji Kemampuan sama sekali.</div>`;
+  if (!hasilList.length) {
+    wrap.innerHTML = lapSiswaHeader_(nama, "Belum ada data latihan") +
+      '<div class="lap-kosong">Siswa ini belum mengerjakan Uji Kemampuan. Hasil akan muncul di sini setelah ada latihan.</div>';
     attachGantiHandler(wrap);
     return;
   }
 
-  const tpUnikDicoba = mapelGroups.reduce((n, mg) => n + mg.tpList.length, 0);
+  const mapelGroups = kelompokkanPerMapel(hasilList);
+  const tpUnikDicoba = mapelGroups.reduce((s, mg) => s + mg.tpList.length, 0);
   const totalTpTersedia = (window.TP_KKO_INDEX || []).length;
   const totalSesi = hasilList.length;
   const rataRataSkorTerbaik = Math.round(
     mapelGroups.reduce((s, mg) => s + mg.tpList.reduce((s2, tp) => s2 + tp.skorTerbaik, 0), 0) / (tpUnikDicoba || 1)
   );
+  const pctCakupan = totalTpTersedia ? Math.round((tpUnikDicoba / totalTpTersedia) * 100) : 0;
 
   const mapelHtml = mapelGroups.map((mg) => {
     const tpRows = mg.tpList.map((tp) => `
       <div class="lap-tp-row">
         <div class="lap-tp-row-top">
           <span class="lap-tp-nama">${esc(tp.judul)}</span>
-          <span class="lap-tp-angka">${tp.skorTerbaik}% terbaik · ${tp.jumlahPercobaan}× dicoba</span>
+          <span class="lap-tp-angka">${tp.skorTerbaik}% · ${tp.jumlahPercobaan}×</span>
         </div>
         <div class="lap-tp-bar-track"><div class="lap-tp-bar-fill" style="width:${tp.skorTerbaik}%; --m-color:${warnaSkor(tp.skorTerbaik)}"></div></div>
-        <div class="lm-tp-meta">Percobaan terakhir: ${tp.skorTerakhir}% · ${fmtTanggal(tp.tanggalTerakhir)}</div>
+        <div class="lm-tp-meta">Terakhir: ${tp.skorTerakhir}% · ${fmtTanggal(tp.tanggalTerakhir)}</div>
       </div>`).join("");
 
     return `
@@ -155,11 +174,27 @@ function renderReport(nama, hasilList) {
       </div>`;
   }).join("");
 
-  wrap.innerHTML = ganti + `
-    <div class="lap-progres-overall">
-      <div class="lap-progres-overall-angka" style="color:${warnaSkor(rataRataSkorTerbaik)}">${rataRataSkorTerbaik}%</div>
-      <div class="lap-progres-overall-label">rata-rata skor terbaik · ${tpUnikDicoba} dari ${totalTpTersedia} TP tersedia sudah dicoba (${totalSesi} sesi latihan total)</div>
+  wrap.innerHTML = lapSiswaHeader_(nama, totalSesi + " sesi latihan tercatat") + `
+    <div class="lap-hero-score">
+      <div class="lap-hero-score-value" style="color:${warnaSkor(rataRataSkorTerbaik)}">${rataRataSkorTerbaik}%</div>
+      <div class="lap-hero-score-label">Rata-rata skor terbaik</div>
     </div>
+    <div class="lap-metrics">
+      <div class="lap-metric">
+        <div class="lap-metric-value">${tpUnikDicoba}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalTpTersedia}</span></div>
+        <div class="lap-metric-label">TP sudah dicoba</div>
+        <div class="lap-metric-bar"><i style="width:${pctCakupan}%"></i></div>
+      </div>
+      <div class="lap-metric">
+        <div class="lap-metric-value">${totalSesi}</div>
+        <div class="lap-metric-label">Total sesi latihan</div>
+      </div>
+      <div class="lap-metric">
+        <div class="lap-metric-value">${mapelGroups.length}</div>
+        <div class="lap-metric-label">Mapel dilatih</div>
+      </div>
+    </div>
+    <div class="lap-section-title-plain">Rincian per mapel</div>
     ${mapelHtml}`;
 
   wrap.querySelectorAll(".lap-section-title").forEach((el) => {
@@ -176,6 +211,7 @@ function attachGantiHandler(wrap) {
   const gantiBtn = document.getElementById("lap-ganti-btn");
   if (gantiBtn) gantiBtn.addEventListener("click", () => {
     wrap.innerHTML = "";
+    lapHidePicker_(false);
     document.getElementById("lap-subtitle").textContent = "Hasil latihan dari Uji Kemampuan per Tujuan Pembelajaran.";
     if (ctx.role === "orangtua") {
       document.querySelectorAll(".lap-anak-chip").forEach((b) => b.classList.remove("lap-active"));
