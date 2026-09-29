@@ -48,6 +48,7 @@
 
 let ctx = null;
 let mapelAktif = null;       // slug mapel yang sedang dipilih untuk detail, null = belum pilih
+let paneAktif = "ringkasan"; // ringkasan | aktivitas | mapel:<slug>
 let dataMateriRows = [];     // hasil ?progresMateri=1 apa adanya (dengan Timestamp)
 let dataModulRows = [];      // hasil ?progresModul=1 apa adanya (dengan Timestamp)
 let dataPustakaRows = [];    // hasil ?progresPustaka=1 apa adanya (dengan Timestamp)
@@ -67,6 +68,8 @@ function lapInitial_(nama) {
 function lapHidePicker_(hide) {
   const el = document.getElementById("lap-picker");
   if (el) el.style.display = hide ? "none" : "";
+  const wel = document.getElementById("lap-welcome-main");
+  if (wel) wel.style.display = hide ? "none" : "";
 }
 function lapSiswaHeader_(nama, metaHtml) {
   const ganti = ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1))
@@ -416,105 +419,162 @@ function renderReport(nama) {
         </div>`).join("") + "</div>"
     : '<div class="lap-kosong">Belum ada aktivitas belajar mandiri tercatat.</div>';
 
-  // ── Chip filter mapel ──
-  const chipHtml = daftarMapel.map((m) => `
-    <button type="button" class="lap-mapel-chip ${mapelAktif === m.mapelSlug ? "lap-active" : ""}" data-mapel="${esc(m.mapelSlug)}">
-      ${m.mapelIcon || "📚"} ${esc(m.mapel)}
-    </button>`).join("");
+  // ── Detail 1 mapel ──
+  function buildDetailMapel_(slug) {
+    const mg = materiGroups.find((g) => g.mapelSlug === slug);
+    const mdg = modulGroups.find((g) => g.mapelSlug === slug);
+    const pbg = pustakaGroups.find((g) => g.mapelSlug === slug);
+    if (!mg && !mdg && !pbg) return '<div class="lap-kosong">Tidak ada data untuk mapel ini.</div>';
 
-  // ── Detail 1 mapel terpilih (Materi + Modul) ──
-  let detailHtml = '<div class="lap-kosong">Pilih salah satu mata pelajaran di atas untuk melihat rinciannya.</div>';
-  if (mapelAktif) {
-    const mg = materiGroups.find((g) => g.mapelSlug === mapelAktif);
-    const mdg = modulGroups.find((g) => g.mapelSlug === mapelAktif);
-    const pbg = pustakaGroups.find((g) => g.mapelSlug === mapelAktif);
-
-    const materiSectionHtml = mg ? mg.tpList.map((tp) => {
-      const total = tp.items.length;
-      const dibaca = tp.items.filter((m) => sudahDibacaMateri.has(materiSlugFromFile_(m.file))).length;
-      const pct = total > 0 ? Math.round((dibaca / total) * 100) : 0;
-      const selesai = dibaca === total && total > 0;
-      return `
-        <div class="lap-tp-row ${selesai ? "lap-tp-selesai" : ""}">
-          <div class="lap-tp-row-top">
-            <span class="lap-tp-nama">${selesai ? "✅ " : ""}${esc(tp.tema)}</span>
-            <span class="lap-tp-angka">${dibaca}/${total} materi</span>
-          </div>
-          <div class="lap-tp-bar-track"><div class="lap-tp-bar-fill" style="width:${pct}%"></div></div>
+    let html = "";
+    if (mg) {
+      html += '<div class="lap-block"><div class="lap-block-title">📖 Materi Ajar (Ingat Lagi)</div>';
+      html += mg.tpList.map((tp) => {
+        const total = tp.items.length;
+        const dibaca = tp.items.filter((m) => sudahDibacaMateri.has(materiSlugFromFile_(m.file))).length;
+        const pct = total ? Math.round((dibaca / total) * 100) : 0;
+        const items = tp.items.map((m) => {
+          const done = sudahDibacaMateri.has(materiSlugFromFile_(m.file));
+          return `<div class="lap-check-item ${done ? "is-done" : ""}">
+            <span class="lap-check-mark">${done ? "✅" : "⬜"}</span>
+            <span class="lap-check-text">${esc(m.judul || m.file || "")}</span>
+          </div>`;
+        }).join("");
+        return `<div class="lap-subblock">
+          <div class="lap-subblock-title">${esc(tp.tpNama || tp.tp || "TP")}<span class="lap-pct">${dibaca}/${total} · ${pct}%</span></div>
+          <div class="lap-check-list">${items}</div>
         </div>`;
-    }).join("") : '<div class="lap-kosong">Belum ada Ingat Lagi untuk mapel ini.</div>';
-
-    // Tombol "Tandai selesai (manual)" HANYA untuk guru (ctx.role === "guru") & HANYA pada
-    // modul yang BELUM tercatat selesai — lihat catatan panjang di header file untuk latar
-    // belakang. Orang tua tidak pernah melihat tombol ini sama sekali (bukan cuma
-    // disembunyikan tampilannya — endpoint server juga menolak kalau bukan akun guru).
-    const modulSectionHtml = mdg ? mdg.items.map((it) => {
-      const selesai = sudahSelesaiModul.has(it.slug);
-      const tandaiBtn = (!selesai && ctx.role === "guru")
-        ? `<button type="button" class="lap-tandai-manual-btn" data-slug="${esc(it.slug)}" data-judul="${esc(it.judul)}">✏️ Tandai selesai</button>`
-        : "";
-      return `
-        <div class="lap-modul-row ${selesai ? "lap-modul-selesai" : ""}">
-          <span class="lap-modul-check">${selesai ? "✅" : "⬜"}</span>
-          <span class="lap-modul-judul">${esc(it.judul)}</span>
-          ${tandaiBtn}
+      }).join("");
+      html += "</div>";
+    }
+    if (mdg) {
+      html += '<div class="lap-block"><div class="lap-block-title">🧩 Modul (Ayo Belajar)</div>';
+      html += mdg.items.map((it) => {
+        const done = sudahSelesaiModul.has(it.slug);
+        const manualBtn = (!done && ctx && ctx.role === "guru")
+          ? `<button type="button" class="lap-tandai-manual-btn" data-slug="${esc(it.slug)}" data-judul="${esc(it.judul)}">Tandai selesai</button>`
+          : "";
+        return `<div class="lap-check-item ${done ? "is-done" : ""}">
+          <span class="lap-check-mark">${done ? "✅" : "⬜"}</span>
+          <span class="lap-check-text">${esc(it.judul)}${manualBtn}</span>
         </div>`;
-    }).join("") : '<div class="lap-kosong">Belum ada Ayo Belajar! untuk mapel ini.</div>';
-
-    const pustakaSectionHtml = pbg ? pbg.items.map((it) => {
-      const dibaca = sudahDibacaPustaka.has(it.id);
-      return `
-        <div class="lap-modul-row ${dibaca ? "lap-modul-selesai" : ""}">
-          <span class="lap-modul-check">${dibaca ? "✅" : "⬜"}</span>
-          <span class="lap-modul-judul">${esc(it.judul)}</span>
+      }).join("");
+      html += "</div>";
+    }
+    if (pbg) {
+      html += '<div class="lap-block"><div class="lap-block-title">📚 Pustaka Belajar</div><div class="lap-check-list">';
+      html += pbg.items.map((it) => {
+        const done = sudahDibacaPustaka.has(it.id);
+        return `<div class="lap-check-item ${done ? "is-done" : ""}">
+          <span class="lap-check-mark">${done ? "✅" : "⬜"}</span>
+          <span class="lap-check-text">${esc(it.judul)}</span>
         </div>`;
-    }).join("") : '<div class="lap-kosong">Belum ada Pustaka Belajar untuk mapel ini.</div>';
-
-    detailHtml = `
-      <div class="lap-detail-mapel">
-        <div class="lap-subsection-title">🔁 Ingat Lagi</div>
-        ${materiSectionHtml}
-        <div class="lap-subsection-title" style="margin-top:1rem;">🚀 Ayo Belajar!</div>
-        ${modulSectionHtml}
-        <div class="lap-subsection-title" style="margin-top:1rem;">📚 Pustaka Belajar</div>
-        ${pustakaSectionHtml}
-      </div>`;
+      }).join("");
+      html += "</div></div>";
+    }
+    return html;
   }
 
   const pctM = totalMateriSemua ? Math.round((dibacaMateriSemua / totalMateriSemua) * 100) : 0;
   const pctO = totalModulSemua ? Math.round((selesaiModulSemua / totalModulSemua) * 100) : 0;
   const pctP = totalPustakaSemua ? Math.round((dibacaPustakaSemua / totalPustakaSemua) * 100) : 0;
 
-  wrap.innerHTML = partialBanner + lapSiswaHeader_(nama, "Perkembangan belajar mandiri") + `
-    <div class="lap-metrics">
-      <div class="lap-metric">
-        <div class="lap-metric-value">${dibacaMateriSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalMateriSemua}</span></div>
-        <div class="lap-metric-label">📖 Materi dibaca</div>
-        <div class="lap-metric-bar"><i style="width:${pctM}%"></i></div>
-      </div>
-      <div class="lap-metric">
-        <div class="lap-metric-value">${selesaiModulSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalModulSemua}</span></div>
-        <div class="lap-metric-label">🧩 Modul selesai</div>
-        <div class="lap-metric-bar"><i style="width:${pctO}%"></i></div>
-      </div>
-      <div class="lap-metric">
-        <div class="lap-metric-value">${dibacaPustakaSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalPustakaSemua}</span></div>
-        <div class="lap-metric-label">📚 Pustaka dibaca</div>
-        <div class="lap-metric-bar"><i style="width:${pctP}%"></i></div>
-      </div>
-    </div>
+  // Pastikan pane valid
+  if (paneAktif && paneAktif.startsWith("mapel:")) {
+    const s = paneAktif.slice(6);
+    if (!daftarMapel.some((m) => m.mapelSlug === s)) paneAktif = "ringkasan";
+  }
+  if (!paneAktif) paneAktif = "ringkasan";
 
-    <div class="lap-section-title-plain">🕐 Aktivitas Terbaru</div>
-    ${aktivitasHtml}
+  // Nav items
+  let navHtml =
+    `<button type="button" class="lap-nav-item ${paneAktif === "ringkasan" ? "is-active" : ""}" data-pane="ringkasan">
+      <span class="nav-ico">📊</span> Ringkasan
+    </button>
+    <button type="button" class="lap-nav-item ${paneAktif === "aktivitas" ? "is-active" : ""}" data-pane="aktivitas">
+      <span class="nav-ico">🕐</span> Aktivitas
+      <span class="nav-badge">${aktivitasTerbaru.length}</span>
+    </button>
+    <div class="lap-nav-label">Mata pelajaran</div>`;
+  daftarMapel.forEach((m) => {
+    const key = "mapel:" + m.mapelSlug;
+    navHtml += `<button type="button" class="lap-nav-item ${paneAktif === key ? "is-active" : ""}" data-pane="${esc(key)}">
+      <span class="nav-ico">${m.mapelIcon || "📚"}</span> ${esc(m.mapel)}
+    </button>`;
+  });
+  if (!daftarMapel.length) {
+    navHtml += '<div class="lap-kosong" style="padding:0.5rem 10px;font-size:12px">Belum ada mapel</div>';
+  }
 
-    <div class="lap-section-title-plain">Rincian per Mata Pelajaran</div>
-    <div class="lap-mapel-chips">${chipHtml || '<div class="lap-kosong">Belum ada data untuk ditampilkan.</div>'}</div>
-    ${detailHtml}
-  `;
+  // Main pane content
+  let mainTitle = "Ringkasan";
+  let mainSub = "Gambaran keseluruhan progres belajar mandiri.";
+  let mainBody = "";
+  if (paneAktif === "ringkasan") {
+    mainBody = `
+      <div class="lap-metrics">
+        <div class="lap-metric">
+          <div class="lap-metric-value">${dibacaMateriSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalMateriSemua}</span></div>
+          <div class="lap-metric-label">📖 Materi dibaca</div>
+          <div class="lap-metric-bar"><i style="width:${pctM}%"></i></div>
+        </div>
+        <div class="lap-metric">
+          <div class="lap-metric-value">${selesaiModulSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalModulSemua}</span></div>
+          <div class="lap-metric-label">🧩 Modul selesai</div>
+          <div class="lap-metric-bar"><i style="width:${pctO}%"></i></div>
+        </div>
+        <div class="lap-metric">
+          <div class="lap-metric-value">${dibacaPustakaSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalPustakaSemua}</span></div>
+          <div class="lap-metric-label">📚 Pustaka dibaca</div>
+          <div class="lap-metric-bar"><i style="width:${pctP}%"></i></div>
+        </div>
+      </div>
+      <div class="lap-block">
+        <div class="lap-block-title">Aktivitas terbaru</div>
+        ${aktivitasHtml}
+      </div>`;
+  } else if (paneAktif === "aktivitas") {
+    mainTitle = "Aktivitas Terbaru";
+    mainSub = "Urutan waktu — materi, modul, dan pustaka yang baru dikerjakan.";
+    mainBody = aktivitasHtml;
+  } else if (paneAktif.startsWith("mapel:")) {
+    const slug = paneAktif.slice(6);
+    const info = daftarMapel.find((m) => m.mapelSlug === slug);
+    mainTitle = (info ? (info.mapelIcon || "") + " " + info.mapel : "Mapel");
+    mainSub = "Rincian materi, modul, dan pustaka untuk mapel ini.";
+    mainBody = buildDetailMapel_(slug);
+  }
 
-  wrap.querySelectorAll(".lap-mapel-chip").forEach((btn) => {
+  const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
+    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    : "";
+
+  wrap.innerHTML = partialBanner + `
+    <div class="lap-dash">
+      <aside class="lap-aside">
+        <div class="lap-aside-student">
+          <div class="lap-aside-student-row">
+            <span class="lap-avatar">${esc(lapInitial_(nama))}</span>
+            <div>
+              <div class="lap-aside-nama">${esc(nama)}</div>
+              <div class="lap-aside-meta">Belajar mandiri</div>
+            </div>
+          </div>
+          <div class="lap-aside-actions">${gantiBtn}</div>
+        </div>
+        <nav class="lap-aside-nav">${navHtml}</nav>
+      </aside>
+      <div class="lap-main">
+        <h2 class="lap-main-title">${esc(mainTitle)}</h2>
+        <p class="lap-main-sub">${esc(mainSub)}</p>
+        ${mainBody}
+      </div>
+    </div>`;
+
+  wrap.querySelectorAll(".lap-nav-item").forEach((btn) => {
     btn.addEventListener("click", () => {
-      mapelAktif = mapelAktif === btn.dataset.mapel ? null : btn.dataset.mapel;
+      paneAktif = btn.getAttribute("data-pane") || "ringkasan";
+      if (paneAktif.startsWith("mapel:")) mapelAktif = paneAktif.slice(6);
       renderReport(nama);
     });
   });
@@ -526,9 +586,10 @@ function renderReport(nama) {
   const retryPartial = document.getElementById("lap-retry-partial");
   if (retryPartial) retryPartial.addEventListener("click", () => loadReport(nama));
 
-  const gantiBtn = document.getElementById("lap-ganti-btn");
-  if (gantiBtn) gantiBtn.addEventListener("click", () => {
+  const gantiEl = document.getElementById("lap-ganti-btn");
+  if (gantiEl) gantiEl.addEventListener("click", () => {
     wrap.innerHTML = "";
+    paneAktif = "ringkasan";
     lapHidePicker_(false);
     document.getElementById("lap-subtitle").textContent = "Progres materi ajar, modul, dan pustaka belajar per mapel.";
     if (ctx.role === "orangtua") {

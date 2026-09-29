@@ -27,6 +27,8 @@ function lapInitial_(nama) {
 function lapHidePicker_(hide) {
   const p = document.getElementById("lap-picker");
   if (p) p.style.display = hide ? "none" : "";
+  const wel = document.getElementById("lap-welcome-main");
+  if (wel) wel.style.display = hide ? "none" : "";
 }
 function lapSiswaHeader_(nama, metaHtml) {
   const ganti = ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1))
@@ -131,29 +133,73 @@ function renderReport(nama, data) {
   const profil = data.profil;
   lapHidePicker_(true);
 
+  if (!window.__lapMplsPane) window.__lapMplsPane = "mpls";
+  const pane = window.__lapMplsPane;
+
   const meta = profil
     ? ((profil["Nama Panggilan"] ? "Dipanggil " + esc(profil["Nama Panggilan"]) + " · " : "") +
        esc(profil["Tempat Lahir"] || "") +
        (profil["Tempat Lahir"] && profil["Tanggal Lahir"] ? ", " : "") +
-       esc(profil["Tanggal Lahir"] || "") || "Profil MPLS")
+       esc(profil["Tanggal Lahir"] || "")) || "Profil MPLS"
     : "Profil belum terdaftar di Data Siswa";
 
-  wrap.innerHTML = lapSiswaHeader_(nama, meta) +
-    renderSection("mpls", "🧭 Kesiapan Belajar (Emosi, Kemandirian, Minat, Fisik)", renderNarasi(MplsScoring, data.mpls)) +
-    renderSection("kognitif", "📚 Kesiapan Akademik (Literasi & Numerasi)", renderNarasi(MplsScoringKognitif, data.mplsKognitif)) +
-    renderSection("jurnal", "📝 Jurnal Aktivitas Menulis", renderNarasi(MplsScoringJurnal, data.jurnal));
+  const panes = [
+    { key: "mpls", ico: "🧭", label: "Kesiapan Belajar", body: renderNarasi(MplsScoring, data.mpls),
+      sub: "Emosi, kemandirian, minat, dan fisik." },
+    { key: "kognitif", ico: "📚", label: "Kesiapan Akademik", body: renderNarasi(MplsScoringKognitif, data.mplsKognitif),
+      sub: "Literasi dan numerasi." },
+    { key: "jurnal", ico: "📝", label: "Jurnal Menulis", body: renderNarasi(MplsScoringJurnal, data.jurnal),
+      sub: "Aktivitas menulis selama MPLS." },
+  ];
+  const active = panes.find((p) => p.key === pane) || panes[0];
 
-  wrap.querySelectorAll(".lap-section-title").forEach((el) => {
-    el.addEventListener("click", () => {
-      const key = el.dataset.key;
-      if (collapsedSections.has(key)) collapsedSections.delete(key); else collapsedSections.add(key);
+  const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
+    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    : "";
+
+  let navHtml = "";
+  panes.forEach((p) => {
+    navHtml += `<button type="button" class="lap-nav-item ${p.key === active.key ? "is-active" : ""}" data-pane="${p.key}">
+      <span class="nav-ico">${p.ico}</span> ${p.label}
+    </button>`;
+  });
+
+  wrap.innerHTML = `
+    <div class="lap-dash">
+      <aside class="lap-aside">
+        <div class="lap-aside-student">
+          <div class="lap-aside-student-row">
+            <span class="lap-avatar">${esc(lapInitial_(nama))}</span>
+            <div>
+              <div class="lap-aside-nama">${esc(nama)}</div>
+              <div class="lap-aside-meta">${meta}</div>
+            </div>
+          </div>
+          <div class="lap-aside-actions">${gantiBtn}</div>
+        </div>
+        <nav class="lap-aside-nav">
+          <div class="lap-nav-label">Aspek MPLS</div>
+          ${navHtml}
+        </nav>
+      </aside>
+      <div class="lap-main">
+        <h2 class="lap-main-title">${active.ico} ${esc(active.label)}</h2>
+        <p class="lap-main-sub">${esc(active.sub)}</p>
+        ${active.body}
+      </div>
+    </div>`;
+
+  wrap.querySelectorAll(".lap-nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      window.__lapMplsPane = btn.getAttribute("data-pane");
       renderReport(nama, data);
     });
   });
 
-  const gantiBtn = document.getElementById("lap-ganti-btn");
-  if (gantiBtn) gantiBtn.addEventListener("click", () => {
+  const gantiEl = document.getElementById("lap-ganti-btn");
+  if (gantiEl) gantiEl.addEventListener("click", () => {
     wrap.innerHTML = "";
+    window.__lapMplsPane = "mpls";
     lapHidePicker_(false);
     document.getElementById("lap-subtitle").textContent = "Ringkasan kesiapan belajar, kesiapan akademik, dan jurnal aktivitas.";
     if (ctx.role === "orangtua") {
