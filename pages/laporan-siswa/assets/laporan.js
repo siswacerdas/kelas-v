@@ -30,6 +30,25 @@ function lapHidePicker_(hide) {
   const wel = document.getElementById("lap-welcome-main");
   if (wel) wel.style.display = hide ? "none" : "";
 }
+const MPLS_CACHE_PREFIX = "lap_mpls_v1:";
+const MPLS_CACHE_TTL = 3 * 60 * 1000; // 3 menit
+
+function bacaCacheMpls_(nama) {
+  try {
+    const raw = sessionStorage.getItem(MPLS_CACHE_PREFIX + nama);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.ts || !obj.data) return null;
+    if (Date.now() - obj.ts > MPLS_CACHE_TTL) return null;
+    return obj.data;
+  } catch (e) { return null; }
+}
+function tulisCacheMpls_(nama, data) {
+  try {
+    sessionStorage.setItem(MPLS_CACHE_PREFIX + nama, JSON.stringify({ ts: Date.now(), data: data }));
+  } catch (e) {}
+}
+
 function lapSiswaHeader_(nama, metaHtml) {
   const ganti = ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1))
     ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
@@ -45,19 +64,59 @@ function lapSiswaHeader_(nama, metaHtml) {
 /* ── Langkah 2: muat & render laporan 1 siswa ───────────────────────────── */
 async function loadReport(nama) {
   const wrap = document.getElementById("lap-report");
-  wrap.innerHTML = '<div class="ma-empty">Memuat laporan…</div>';
   document.getElementById("lap-subtitle").textContent = "Laporan untuk " + nama;
+
+  const cached = bacaCacheMpls_(nama);
+  if (cached) {
+    renderReport(nama, cached);
+    // revalidate di latar
+    fetchMplsNetwork_(nama)
+      .then(function (json) {
+        tulisCacheMpls_(nama, json);
+        const title = document.querySelector(".lap-aside-nama");
+        if (title && title.textContent === nama) renderReport(nama, json);
+      })
+      .catch(function () {});
+    return;
+  }
+
+  wrap.innerHTML = '<div class="ma-empty">Memuat laporan…</div>';
   try {
-    const idToken = await window.getFreshLaporanIdToken();
-    const url = MPLS_CONFIG.APPS_SCRIPT_URL + "?laporanSiswa=1&nama=" + encodeURIComponent(nama) +
-      "&idToken=" + encodeURIComponent(idToken);
-    const res = await fetch(url);
-    const json = await res.json();
-    if (json.status === "error") throw new Error(json.message || "Gagal memuat laporan");
+    const json = await fetchMplsNetwork_(nama);
+    tulisCacheMpls_(nama, json);
     renderReport(nama, json);
   } catch (err) {
-    wrap.innerHTML = '<div class="ma-empty">Gagal memuat laporan: ' + esc(err.message) + "</div>";
+    wrap.innerHTML = '<div class="ma-empty">Gagal memuat laporan: ' + esc(err.message) +
+      ' <button type="button" class="lap-retry-btn" onclick="location.reload()">Coba lagi</button></div>';
   }
+}
+
+async function fetchMplsNetwork_(nama) {
+  const idToken = await window.getFreshLaporanIdToken();
+  const base = MPLS_CONFIG.APPS_SCRIPT_URL;
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      // POST-style body preferensi; endpoint legacy masih GET — pakai GET + no-store + retry
+      const url = base + "?laporanSiswa=1&nama=" + encodeURIComponent(nama) +
+        "&idToken=" + encodeURIComponent(idToken);
+      const controller = new AbortController();
+      const tid = setTimeout(function () { controller.abort(); }, 15000);
+      try {
+        const res = await fetch(url, { cache: "no-store", signal: controller.signal });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const json = await res.json();
+        if (json.status === "error") throw new Error(json.message || "Gagal memuat laporan");
+        return json;
+      } finally {
+        clearTimeout(tid);
+      }
+    } catch (err) {
+      lastErr = err;
+      if (attempt < 2) await new Promise(function (r) { setTimeout(r, 600 * (attempt + 1)); });
+    }
+  }
+  throw lastErr || new Error("Gagal memuat laporan");
 }
 
 /* ── Render kesimpulan naratif 1 aspek (MPLS/Kognitif/Jurnal), pakai mesin skoring yang

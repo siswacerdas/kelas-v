@@ -122,18 +122,70 @@ function kelompokkanPerMapel(hasilList) {
   }));
 }
 
+const LATIHAN_CACHE_PREFIX = "lap_latihan_v1:";
+const LATIHAN_CACHE_TTL = 2 * 60 * 1000; // 2 menit (Firestore relatif cepat)
+
+function bacaCacheLatihan_(nama) {
+  try {
+    const raw = sessionStorage.getItem(LATIHAN_CACHE_PREFIX + nama);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.ts || !Array.isArray(obj.data)) return null;
+    if (Date.now() - obj.ts > LATIHAN_CACHE_TTL) return null;
+    return obj.data;
+  } catch (e) { return null; }
+}
+function tulisCacheLatihan_(nama, list) {
+  try {
+    // Timestamp Firestore → millis agar JSON-safe
+    const data = (list || []).map(function (row) {
+      const o = Object.assign({}, row);
+      if (o.selesaiPada && typeof o.selesaiPada.toDate === "function") {
+        o.selesaiPada = o.selesaiPada.toDate().toISOString();
+      } else if (o.selesaiPada && o.selesaiPada.seconds) {
+        o.selesaiPada = new Date(o.selesaiPada.seconds * 1000).toISOString();
+      }
+      if (o.dikerjakanPada && typeof o.dikerjakanPada.toDate === "function") {
+        o.dikerjakanPada = o.dikerjakanPada.toDate().toISOString();
+      }
+      return o;
+    });
+    sessionStorage.setItem(LATIHAN_CACHE_PREFIX + nama, JSON.stringify({ ts: Date.now(), data: data }));
+  } catch (e) {}
+}
+
 async function loadReport(nama) {
   const wrap = document.getElementById("lap-report");
-  wrap.innerHTML = '<div class="ma-empty">Memuat laporan…</div>';
   document.getElementById("lap-subtitle").textContent = "Laporan untuk " + nama;
+
+  const cached = bacaCacheLatihan_(nama);
+  if (cached) {
+    renderReport(nama, cached);
+    fetchLatihanNetwork_(nama)
+      .then(function (list) {
+        tulisCacheLatihan_(nama, list);
+        const title = document.querySelector(".lap-aside-nama");
+        if (title && title.textContent === nama) renderReport(nama, list);
+      })
+      .catch(function () {});
+    return;
+  }
+
+  wrap.innerHTML = '<div class="ma-empty">Memuat laporan…</div>';
   try {
-    const snap = await getDocs(query(collection(db, "hasil_latihan"), where("namaSiswa", "==", nama)));
-    const hasilList = [];
-    snap.forEach((d) => hasilList.push({ id: d.id, ...d.data() }));
+    const hasilList = await fetchLatihanNetwork_(nama);
+    tulisCacheLatihan_(nama, hasilList);
     renderReport(nama, hasilList);
   } catch (err) {
     wrap.innerHTML = '<div class="ma-empty">Gagal memuat laporan: ' + esc(err.message) + "</div>";
   }
+}
+
+async function fetchLatihanNetwork_(nama) {
+  const snap = await getDocs(query(collection(db, "hasil_latihan"), where("namaSiswa", "==", nama)));
+  const hasilList = [];
+  snap.forEach((d) => hasilList.push(Object.assign({ id: d.id }, d.data())));
+  return hasilList;
 }
 
 function renderReport(nama, hasilList) {

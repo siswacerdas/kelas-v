@@ -49,6 +49,45 @@
 let ctx = null;
 let mapelAktif = null;       // slug mapel yang sedang dipilih untuk detail, null = belum pilih
 let paneAktif = "ringkasan"; // ringkasan | aktivitas | mapel:<slug>
+let _bmView = null;         // cache tampilan: hindari rebuild penuh saat ganti pane
+
+const BM_PROGRES_CACHE_PREFIX = "lap_bm_progres_v1:";
+const BM_PROGRES_CACHE_TTL = 3 * 60 * 1000; // 3 menit
+const BM_PUSTAKA_LIST_KEY = "lap_pustaka_list_v1";
+const BM_PUSTAKA_LIST_TTL = 5 * 60 * 1000;
+
+function bacaCacheProgresBm_(nama) {
+  try {
+    const raw = sessionStorage.getItem(BM_PROGRES_CACHE_PREFIX + nama);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.ts || !obj.data) return null;
+    if (Date.now() - obj.ts > BM_PROGRES_CACHE_TTL) return null;
+    return obj.data;
+  } catch (e) { return null; }
+}
+function tulisCacheProgresBm_(nama, data) {
+  try {
+    sessionStorage.setItem(BM_PROGRES_CACHE_PREFIX + nama, JSON.stringify({ ts: Date.now(), data: data }));
+  } catch (e) {}
+}
+function bacaCachePustakaList_() {
+  try {
+    const raw = sessionStorage.getItem(BM_PUSTAKA_LIST_KEY);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.ts || !Array.isArray(obj.data)) return null;
+    if (Date.now() - obj.ts > BM_PUSTAKA_LIST_TTL) return null;
+    return obj.data;
+  } catch (e) { return null; }
+}
+function tulisCachePustakaList_(data) {
+  try {
+    sessionStorage.setItem(BM_PUSTAKA_LIST_KEY, JSON.stringify({ ts: Date.now(), data: data || [] }));
+  } catch (e) {}
+}
+
+
 let dataMateriRows = [];     // hasil ?progresMateri=1 apa adanya (dengan Timestamp)
 let dataModulRows = [];      // hasil ?progresModul=1 apa adanya (dengan Timestamp)
 let dataPustakaRows = [];    // hasil ?progresPustaka=1 apa adanya (dengan Timestamp)
@@ -189,6 +228,29 @@ function daftarMapelGabungan_(materiGroups, modulGroups, pustakaGroups) {
 
 async function loadReport(nama) {
   const wrap = document.getElementById("lap-report");
+  document.getElementById("lap-subtitle").textContent = "Laporan untuk " + nama;
+
+  // 1) Cache hit → tampilkan segera, revalidasi di latar
+  const cached = bacaCacheProgresBm_(nama);
+  if (cached) {
+    dataMateriRows = cached.materi || [];
+    dataModulRows = cached.modul || [];
+    dataPustakaRows = cached.pustaka || [];
+    window.__lapPartialErrors = cached.partialErrors || [];
+    if (pustakaListAll === null) {
+      const pl = bacaCachePustakaList_();
+      if (pl) pustakaListAll = pl;
+    }
+    const daftarMapel = daftarMapelGabungan_(
+      buildMapelGroupsMateri(), buildMapelGroupsModul(), buildMapelGroupsPustaka(pustakaListAll || [])
+    );
+    if (!mapelAktif && daftarMapel.length) mapelAktif = daftarMapel[0].mapelSlug;
+    renderReport(nama);
+    // revalidate diam-diam
+    revalidateProgresBm_(nama).catch(function () {});
+    return;
+  }
+
   wrap.innerHTML = '<div class="lap-loading-panel" id="lap-loading-panel">'
       + '<div class="lap-loading-title">Memuat laporan…</div>'
       + '<div class="lap-loading-steps" id="lap-loading-steps">'
@@ -198,111 +260,114 @@ async function loadReport(nama) {
       + '</div>'
       + '<div class="lap-load-bar"><i></i></div>'
       + '</div>';
-  document.getElementById("lap-subtitle").textContent = "Laporan untuk " + nama;
+
   try {
-    const idToken = await window.getFreshLaporanIdToken();
-    const base = MPLS_CONFIG.APPS_SCRIPT_URL;
-    // DIUBAH — sebelumnya GET dengan idToken ditempel di query string (?progresMateri=1&
-    // idToken=...). idToken JWT Firebase bisa 1000+ karakter, dan request GET sepanjang itu
-    // ke Apps Script Web App bisa gagal dengan gejala 404 di proxy redirect
-    // "script.googleusercontent.com/macros/echo" (lihat catatan di Code.gs doPost, cabang
-    // "get_progres_materi"/"get_progres_modul"). POST dengan body JSON tidak kena batasan
-    // panjang URL, jadi idToken dipindah ke body, bukan lagi ke URL.
-    //
-    // v2 (BUG lanjutan ditemukan Sept 2026, lihat ANTIREGRESI.md §57): Arif melaporkan
-    // error 404 "script.googleusercontent.com/macros/echo" MASIH SESEKALI muncul WALAU
-    // idToken sudah di body (POST), dan laporan "kadang gagal kadang tidak" — bukan gagal
-    // permanen/konsisten. Ini pola KLASIK ketidakstabilan proxy redirect Apps Script Web
-    // App sendiri (bukan soal ukuran payload lagi) — dokumentasi & keluhan publik soal ini
-    // sudah dikenal luas, dan proyek ini SUDAH PERNAH menangani pola serupa dengan cara yang
-    // SAMA di tempat lain (lihat riwayat lama "siswa_login" sebelum migrasi ke Firebase Auth
-    // langsung, CHANGELOG.md) — bukan dengan menghilangkan Apps Script (laporan ini memang
-    // harus baca sheet lewat Apps Script), tapi dengan TIMEOUT + SATU KALI RETRY OTOMATIS
-    // untuk kegagalan TEKNIS (timeout/network/bukan JSON) — BUKAN untuk error valid dari
-    // server (mis. `status:"error"` dengan pesan yang jelas, itu tidak diulang, langsung
-    // ditampilkan apa adanya). Diterapkan lewat `fetchDenganRetry_` di bawah, dipakai KEDUA
-    // panggilan (materi & modul) — laporan baru dianggap gagal kalau retry-nya JUGA gagal.
-    // Fase L-1: soft-fail per sumber. Dulu 1 endpoint error → SELURUH laporan gagal.
-    // Sekarang tiap sumber independen; yang gagal ditandai, yang sukses tetap ditampilkan.
-    const sumberStatus = { materi: "loading", modul: "loading", pustaka: "loading" };
-    function setStep_(src, state, detail) {
-      sumberStatus[src] = state;
-      const el = document.querySelector('.lap-load-step[data-src="' + src + '"]');
-      if (!el) return;
-      el.classList.remove("is-ok", "is-err", "is-loading");
-      el.classList.add(state === "ok" ? "is-ok" : state === "err" ? "is-err" : "is-loading");
-      const sp = el.querySelector("span");
-      if (sp) sp.textContent = detail || (state === "ok" ? "✓" : state === "err" ? "gagal" : "…");
-    }
-
-    async function ambilSumber_(type, src) {
-      setStep_(src, "loading", "mengunduh…");
-      try {
-        const json = await fetchDenganRetry_(base, { type: type, nama: nama, idToken: idToken });
-        if (json && json.status === "error") {
-          setStep_(src, "err", "error");
-          return { ok: false, data: [], message: json.message || "Error server" };
-        }
-        setStep_(src, "ok", "✓");
-        return { ok: true, data: (json && json.data) || [] };
-      } catch (err) {
-        setStep_(src, "err", "gagal");
-        return { ok: false, data: [], message: (err && err.message) || "Gagal jaringan" };
-      }
-    }
-
-    const [resMateri, resModul, resPustaka] = await Promise.all([
-      ambilSumber_("get_progres_materi", "materi"),
-      ambilSumber_("get_progres_modul", "modul"),
-      ambilSumber_("get_progres_pustaka", "pustaka"),
-    ]);
-
-    dataMateriRows = resMateri.data;
-    dataModulRows = resModul.data;
-    dataPustakaRows = resPustaka.data;
-
-    const gagalSemua = !resMateri.ok && !resModul.ok && !resPustaka.ok;
-    if (gagalSemua) {
-      throw new Error("Semua sumber laporan gagal dimuat. Periksa koneksi lalu coba lagi.");
-    }
-
-    // simpan peringatan parsial untuk banner di renderReport
-    window.__lapPartialErrors = [];
-    if (!resMateri.ok) window.__lapPartialErrors.push("Materi Ajar: " + (resMateri.message || "gagal"));
-    if (!resModul.ok) window.__lapPartialErrors.push("Modul: " + (resModul.message || "gagal"));
-    if (!resPustaka.ok) window.__lapPartialErrors.push("Pustaka Belajar: " + (resPustaka.message || "gagal"));
-
-    // Daftar SEMUA file Pustaka Belajar (bukan data per-siswa) — sama untuk semua siswa,
-    // cukup diambil sekali per kunjungan halaman (lihat komentar `pustakaListAll` di atas).
-    // SENGAJA fail-soft: kegagalan di sini TIDAK melempar/menggagalkan seluruh laporan.
-    if (pustakaListAll === null) {
-      try {
-        const resList = await fetch(base + "?pustakaBelajar=1", { cache: "no-store" });
-        const jsonList = await resList.json();
-        pustakaListAll = jsonList.status === "error" ? [] : (jsonList.data || []);
-      } catch (e) {
-        pustakaListAll = []; // gagal ambil daftar Pustaka Belajar -> subseksi itu kosong, bukan seluruh laporan gagal
-      }
-    }
-
-    // Default: pilih mapel PERTAMA yang punya data supaya orang tua langsung lihat sesuatu
-    // tanpa perlu tap dulu (tapi tetap ringkas — cuma 1 mapel yang detailnya terbuka).
-    const daftarMapel = daftarMapelGabungan_(buildMapelGroupsMateri(), buildMapelGroupsModul(), buildMapelGroupsPustaka(pustakaListAll));
+    await fetchProgresBmNetwork_(nama);
+    const daftarMapel = daftarMapelGabungan_(
+      buildMapelGroupsMateri(), buildMapelGroupsModul(), buildMapelGroupsPustaka(pustakaListAll || [])
+    );
     mapelAktif = daftarMapel.length > 0 ? daftarMapel[0].mapelSlug : null;
-
     renderReport(nama);
   } catch (err) {
     wrap.innerHTML = '<div class="ma-empty">Gagal memuat laporan: ' + esc(err.message) + "</div>";
   }
 }
 
-/** Timeout 20 detik + SATU kali retry otomatis, KHUSUS untuk kegagalan TEKNIS (timeout,
- * network error/offline, atau respons yang bukan JSON sama sekali — termasuk pola 404
- * "script.googleusercontent.com/macros/echo" yang terbukti sesekali terjadi begitu saja
- * dari sisi proxy Apps Script, lihat komentar panjang di `loadReport` di atas). Error VALID
- * dari server (respons JSON yang berhasil di-parse, apa pun isinya termasuk
- * `status:"error"`) TIDAK diulang — itu bukan kegagalan teknis, server SUDAH menjawab
- * dengan jelas, mengulang tidak akan mengubah jawabannya. */
+async function revalidateProgresBm_(nama) {
+  await fetchProgresBmNetwork_(nama);
+  // Hanya re-render jika masih melihat siswa yang sama
+  const title = document.querySelector(".lap-aside-nama");
+  if (title && title.textContent === nama) {
+    renderReport(nama);
+  }
+}
+
+async function fetchProgresBmNetwork_(nama) {
+  const idToken = await window.getFreshLaporanIdToken();
+  const base = MPLS_CONFIG.APPS_SCRIPT_URL;
+
+  function setStep_(src, state, detail) {
+    const el = document.querySelector('.lap-load-step[data-src="' + src + '"]');
+    if (!el) return;
+    el.classList.remove("is-ok", "is-err", "is-loading");
+    el.classList.add(state === "ok" ? "is-ok" : state === "err" ? "is-err" : "is-loading");
+    const sp = el.querySelector("span");
+    if (sp) sp.textContent = detail || (state === "ok" ? "✓" : state === "err" ? "gagal" : "…");
+  }
+
+  async function ambilSumber_(type, src) {
+    setStep_(src, "loading", "mengunduh…");
+    try {
+      const json = await fetchDenganRetry_(base, { type: type, nama: nama, idToken: idToken });
+      if (json && json.status === "error") {
+        setStep_(src, "err", "error");
+        return { ok: false, data: [], message: json.message || "Error server" };
+      }
+      setStep_(src, "ok", "✓");
+      return { ok: true, data: (json && json.data) || [] };
+    } catch (err) {
+      setStep_(src, "err", "gagal");
+      return { ok: false, data: [], message: (err && err.message) || "Gagal jaringan" };
+    }
+  }
+
+  // Prefetch daftar pustaka paralel dengan 3 progres
+  const listPromise = (async function () {
+    if (pustakaListAll !== null) return pustakaListAll;
+    const cachedList = bacaCachePustakaList_();
+    if (cachedList) {
+      pustakaListAll = cachedList;
+      // refresh diam-diam
+      try {
+        const resList = await fetch(base + "?pustakaBelajar=1", { cache: "no-store" });
+        const jsonList = await resList.json();
+        if (jsonList && jsonList.status !== "error") {
+          pustakaListAll = jsonList.data || [];
+          tulisCachePustakaList_(pustakaListAll);
+        }
+      } catch (e) {}
+      return pustakaListAll;
+    }
+    try {
+      const resList = await fetch(base + "?pustakaBelajar=1", { cache: "no-store" });
+      const jsonList = await resList.json();
+      pustakaListAll = (jsonList && jsonList.status === "error") ? [] : ((jsonList && jsonList.data) || []);
+      tulisCachePustakaList_(pustakaListAll);
+    } catch (e) {
+      pustakaListAll = [];
+    }
+    return pustakaListAll;
+  })();
+
+  const [resMateri, resModul, resPustaka] = await Promise.all([
+    ambilSumber_("get_progres_materi", "materi"),
+    ambilSumber_("get_progres_modul", "modul"),
+    ambilSumber_("get_progres_pustaka", "pustaka"),
+  ]);
+  await listPromise;
+
+  dataMateriRows = resMateri.data;
+  dataModulRows = resModul.data;
+  dataPustakaRows = resPustaka.data;
+
+  const gagalSemua = !resMateri.ok && !resModul.ok && !resPustaka.ok;
+  if (gagalSemua) {
+    throw new Error("Semua sumber laporan gagal dimuat. Periksa koneksi lalu coba lagi.");
+  }
+
+  window.__lapPartialErrors = [];
+  if (!resMateri.ok) window.__lapPartialErrors.push("Materi Ajar: " + (resMateri.message || "gagal"));
+  if (!resModul.ok) window.__lapPartialErrors.push("Modul: " + (resModul.message || "gagal"));
+  if (!resPustaka.ok) window.__lapPartialErrors.push("Pustaka Belajar: " + (resPustaka.message || "gagal"));
+
+  tulisCacheProgresBm_(nama, {
+    materi: dataMateriRows,
+    modul: dataModulRows,
+    pustaka: dataPustakaRows,
+    partialErrors: window.__lapPartialErrors.slice(),
+  });
+}
+
 async function fetchDenganRetry_(url, payload) {
   // Timeout 15 dtk, max 3 percobaan (1 + 2 retry), jeda 600ms / 1200ms.
   // Hanya untuk kegagalan TEKNIS; JSON status:"error" tidak di-retry.
@@ -475,10 +540,6 @@ function renderReport(nama) {
     return html;
   }
 
-  const pctM = totalMateriSemua ? Math.round((dibacaMateriSemua / totalMateriSemua) * 100) : 0;
-  const pctO = totalModulSemua ? Math.round((selesaiModulSemua / totalModulSemua) * 100) : 0;
-  const pctP = totalPustakaSemua ? Math.round((dibacaPustakaSemua / totalPustakaSemua) * 100) : 0;
-
   // Pastikan pane valid
   if (paneAktif && paneAktif.startsWith("mapel:")) {
     const s = paneAktif.slice(6);
@@ -486,109 +547,92 @@ function renderReport(nama) {
   }
   if (!paneAktif) paneAktif = "ringkasan";
 
-  // Nav items
+  const pctM = totalMateriSemua ? Math.round((dibacaMateriSemua / totalMateriSemua) * 100) : 0;
+  const pctO = totalModulSemua ? Math.round((selesaiModulSemua / totalModulSemua) * 100) : 0;
+  const pctP = totalPustakaSemua ? Math.round((dibacaPustakaSemua / totalPustakaSemua) * 100) : 0;
+
+  const ringkasanBody =
+      '<div class="lap-metrics">' +
+        '<div class="lap-metric">' +
+          '<div class="lap-metric-value">' + dibacaMateriSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalMateriSemua + '</span></div>' +
+          '<div class="lap-metric-label">📖 Materi dibaca</div>' +
+          '<div class="lap-metric-bar"><i style="width:' + pctM + '%"></i></div>' +
+        '</div>' +
+        '<div class="lap-metric">' +
+          '<div class="lap-metric-value">' + selesaiModulSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalModulSemua + '</span></div>' +
+          '<div class="lap-metric-label">🧩 Modul selesai</div>' +
+          '<div class="lap-metric-bar"><i style="width:' + pctO + '%"></i></div>' +
+        '</div>' +
+        '<div class="lap-metric">' +
+          '<div class="lap-metric-value">' + dibacaPustakaSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalPustakaSemua + '</span></div>' +
+          '<div class="lap-metric-label">📚 Pustaka dibaca</div>' +
+          '<div class="lap-metric-bar"><i style="width:' + pctP + '%"></i></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="lap-block"><div class="lap-block-title">Aktivitas terbaru</div>' + aktivitasHtml + '</div>';
+
+  _bmView = {
+    nama: nama,
+    daftarMapel: daftarMapel,
+    aktivitasHtml: aktivitasHtml,
+    ringkasanBody: ringkasanBody,
+    buildDetailMapel_: buildDetailMapel_,
+  };
+
   let navHtml =
-    `<button type="button" class="lap-nav-item ${paneAktif === "ringkasan" ? "is-active" : ""}" data-pane="ringkasan">
-      <span class="nav-ico">📊</span> Ringkasan
-    </button>
-    <button type="button" class="lap-nav-item ${paneAktif === "aktivitas" ? "is-active" : ""}" data-pane="aktivitas">
-      <span class="nav-ico">🕐</span> Aktivitas
-      <span class="nav-badge">${aktivitasTerbaru.length}</span>
-    </button>
-    <div class="lap-nav-label">Mata pelajaran</div>`;
-  daftarMapel.forEach((m) => {
+    '<button type="button" class="lap-nav-item' + (paneAktif === "ringkasan" ? " is-active" : "") + '" data-pane="ringkasan">' +
+      '<span class="nav-ico">📊</span> Ringkasan</button>' +
+    '<button type="button" class="lap-nav-item' + (paneAktif === "aktivitas" ? " is-active" : "") + '" data-pane="aktivitas">' +
+      '<span class="nav-ico">🕐</span> Aktivitas<span class="nav-badge">' + aktivitasTerbaru.length + '</span></button>' +
+    '<div class="lap-nav-label">Mata pelajaran</div>';
+  for (let mi = 0; mi < daftarMapel.length; mi++) {
+    const m = daftarMapel[mi];
     const key = "mapel:" + m.mapelSlug;
-    navHtml += `<button type="button" class="lap-nav-item ${paneAktif === key ? "is-active" : ""}" data-pane="${esc(key)}">
-      <span class="nav-ico">${m.mapelIcon || "📚"}</span> ${esc(m.mapel)}
-    </button>`;
-  });
+    navHtml +=
+      '<button type="button" class="lap-nav-item' + (paneAktif === key ? " is-active" : "") + '" data-pane="' + esc(key) + '">' +
+      '<span class="nav-ico">' + (m.mapelIcon || "📚") + '</span> ' + esc(m.mapel) + '</button>';
+  }
   if (!daftarMapel.length) {
     navHtml += '<div class="lap-kosong" style="padding:0.5rem 10px;font-size:12px">Belum ada mapel</div>';
-  }
-
-  // Main pane content
-  let mainTitle = "Ringkasan";
-  let mainSub = "Gambaran keseluruhan progres belajar mandiri.";
-  let mainBody = "";
-  if (paneAktif === "ringkasan") {
-    mainBody = `
-      <div class="lap-metrics">
-        <div class="lap-metric">
-          <div class="lap-metric-value">${dibacaMateriSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalMateriSemua}</span></div>
-          <div class="lap-metric-label">📖 Materi dibaca</div>
-          <div class="lap-metric-bar"><i style="width:${pctM}%"></i></div>
-        </div>
-        <div class="lap-metric">
-          <div class="lap-metric-value">${selesaiModulSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalModulSemua}</span></div>
-          <div class="lap-metric-label">🧩 Modul selesai</div>
-          <div class="lap-metric-bar"><i style="width:${pctO}%"></i></div>
-        </div>
-        <div class="lap-metric">
-          <div class="lap-metric-value">${dibacaPustakaSemua}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalPustakaSemua}</span></div>
-          <div class="lap-metric-label">📚 Pustaka dibaca</div>
-          <div class="lap-metric-bar"><i style="width:${pctP}%"></i></div>
-        </div>
-      </div>
-      <div class="lap-block">
-        <div class="lap-block-title">Aktivitas terbaru</div>
-        ${aktivitasHtml}
-      </div>`;
-  } else if (paneAktif === "aktivitas") {
-    mainTitle = "Aktivitas Terbaru";
-    mainSub = "Urutan waktu — materi, modul, dan pustaka yang baru dikerjakan.";
-    mainBody = aktivitasHtml;
-  } else if (paneAktif.startsWith("mapel:")) {
-    const slug = paneAktif.slice(6);
-    const info = daftarMapel.find((m) => m.mapelSlug === slug);
-    mainTitle = (info ? (info.mapelIcon || "") + " " + info.mapel : "Mapel");
-    mainSub = "Rincian materi, modul, dan pustaka untuk mapel ini.";
-    mainBody = buildDetailMapel_(slug);
   }
 
   const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
     ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
     : "";
 
-  wrap.innerHTML = partialBanner + `
-    <div class="lap-dash">
-      <aside class="lap-aside">
-        <div class="lap-aside-student">
-          <div class="lap-aside-student-row">
-            <span class="lap-avatar">${esc(lapInitial_(nama))}</span>
-            <div>
-              <div class="lap-aside-nama">${esc(nama)}</div>
-              <div class="lap-aside-meta">Belajar mandiri</div>
-            </div>
-          </div>
-          <div class="lap-aside-actions">${gantiBtn}</div>
-        </div>
-        <nav class="lap-aside-nav">${navHtml}</nav>
-      </aside>
-      <div class="lap-main">
-        <h2 class="lap-main-title">${esc(mainTitle)}</h2>
-        <p class="lap-main-sub">${esc(mainSub)}</p>
-        ${mainBody}
-      </div>
-    </div>`;
+  wrap.innerHTML = partialBanner +
+    '<div class="lap-dash">' +
+      '<aside class="lap-aside">' +
+        '<div class="lap-aside-student">' +
+          '<div class="lap-aside-student-row">' +
+            '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
+            '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
+            '<div class="lap-aside-meta">Belajar mandiri</div></div>' +
+          '</div>' +
+          '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
+        '</div>' +
+        '<nav class="lap-aside-nav" id="lap-aside-nav">' + navHtml + '</nav>' +
+      '</aside>' +
+      '<div class="lap-main" id="lap-main-pane"></div>' +
+    '</div>';
 
-  wrap.querySelectorAll(".lap-nav-item").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      paneAktif = btn.getAttribute("data-pane") || "ringkasan";
+  const nav = document.getElementById("lap-aside-nav");
+  if (nav) {
+    nav.onclick = function (e) {
+      const btn = e.target.closest(".lap-nav-item");
+      if (!btn) return;
+      const pane = btn.getAttribute("data-pane") || "ringkasan";
+      if (pane === paneAktif) return;
+      paneAktif = pane;
       if (paneAktif.startsWith("mapel:")) mapelAktif = paneAktif.slice(6);
-      renderReport(nama);
-    });
-  });
-
-  wrap.querySelectorAll(".lap-tandai-manual-btn").forEach((btn) => {
-    btn.addEventListener("click", () => tandaiModulManual_(nama, btn.dataset.slug, btn.dataset.judul, btn));
-  });
-
-  const retryPartial = document.getElementById("lap-retry-partial");
-  if (retryPartial) retryPartial.addEventListener("click", () => loadReport(nama));
+      switchPaneBm_();
+    };
+  }
 
   const gantiEl = document.getElementById("lap-ganti-btn");
-  if (gantiEl) gantiEl.addEventListener("click", () => {
+  if (gantiEl) gantiEl.onclick = function () {
     wrap.innerHTML = "";
+    _bmView = null;
     paneAktif = "ringkasan";
     lapHidePicker_(false);
     document.getElementById("lap-subtitle").textContent = "Progres materi ajar, modul, dan pustaka belajar per mapel.";
@@ -597,7 +641,57 @@ function renderReport(nama) {
     } else {
       window.LaporanPicker.render(ctx, loadReport);
     }
-  });
+  };
+
+  const retryPartial = document.getElementById("lap-retry-partial");
+  if (retryPartial) retryPartial.onclick = function () { loadReport(nama); };
+
+  switchPaneBm_();
+}
+
+function switchPaneBm_() {
+  if (!_bmView) return;
+  const main = document.getElementById("lap-main-pane");
+  const nav = document.getElementById("lap-aside-nav");
+  if (!main) return;
+
+  if (nav) {
+    const items = nav.querySelectorAll(".lap-nav-item");
+    for (let i = 0; i < items.length; i++) {
+      items[i].classList.toggle("is-active", items[i].getAttribute("data-pane") === paneAktif);
+    }
+  }
+
+  let mainTitle = "Ringkasan";
+  let mainSub = "Gambaran keseluruhan progres belajar mandiri.";
+  let mainBody = "";
+  if (paneAktif === "ringkasan") {
+    mainBody = _bmView.ringkasanBody;
+  } else if (paneAktif === "aktivitas") {
+    mainTitle = "Aktivitas Terbaru";
+    mainSub = "Urutan waktu — materi, modul, dan pustaka yang baru dikerjakan.";
+    mainBody = _bmView.aktivitasHtml;
+  } else if (paneAktif.startsWith("mapel:")) {
+    const slug = paneAktif.slice(6);
+    const info = _bmView.daftarMapel.find((m) => m.mapelSlug === slug);
+    mainTitle = info ? ((info.mapelIcon || "") + " " + info.mapel) : "Mapel";
+    mainSub = "Rincian materi, modul, dan pustaka untuk mapel ini.";
+    mainBody = _bmView.buildDetailMapel_(slug);
+  }
+
+  main.innerHTML =
+    '<h2 class="lap-main-title">' + esc(mainTitle) + '</h2>' +
+    '<p class="lap-main-sub">' + esc(mainSub) + '</p>' +
+    mainBody;
+
+  const tandai = main.querySelectorAll(".lap-tandai-manual-btn");
+  for (let i = 0; i < tandai.length; i++) {
+    tandai[i].onclick = (function (btn) {
+      return function () {
+        tandaiModulManual_(_bmView.nama, btn.dataset.slug, btn.dataset.judul, btn);
+      };
+    })(tandai[i]);
+  }
 }
 
 /** Dipanggil saat guru klik "✏️ Tandai selesai" pada 1 baris modul yang belum tercatat.
