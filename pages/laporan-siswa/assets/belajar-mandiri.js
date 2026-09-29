@@ -500,15 +500,15 @@ function renderReport(nama) {
         const pct = total ? Math.round((dibaca / total) * 100) : 0;
         const items = tp.items.map((m) => {
           const done = sudahDibacaMateri.has(materiSlugFromFile_(m.file));
-          return `<div class="lap-check-item ${done ? "is-done" : ""}">
-            <span class="lap-check-mark">${done ? "✅" : "⬜"}</span>
-            <span class="lap-check-text">${esc(m.judul || m.file || "")}</span>
-          </div>`;
+          return '<div class="lap-check-item' + (done ? ' is-done' : '') + '">' +
+            '<span class="lap-check-mark" aria-hidden="true"></span>' +
+            '<span class="lap-check-text">' + esc(m.judul || m.file || "") + '</span></div>';
         }).join("");
-        return `<div class="lap-subblock">
-          <div class="lap-subblock-title">${esc(tp.tpNama || tp.tp || "TP")}<span class="lap-pct">${dibaca}/${total} · ${pct}%</span></div>
-          <div class="lap-check-list">${items}</div>
-        </div>`;
+        return '<div class="lap-subblock">' +
+          '<div class="lap-subblock-title">' + esc(tp.tema || tp.tpNama || tp.tp || "Tujuan Pembelajaran") +
+            '<span class="lap-pct">' + dibaca + '/' + total + ' · ' + pct + '%</span></div>' +
+          '<div class="lap-metric-bar" style="margin:0 0 10px"><i style="width:' + pct + '%"></i></div>' +
+          '<div class="lap-check-list">' + items + '</div></div>';
       }).join("");
       html += "</div>";
     }
@@ -516,11 +516,12 @@ function renderReport(nama) {
       html += '<div class="lap-block"><div class="lap-block-title">🧩 Modul (Ayo Belajar)</div>';
       html += mdg.items.map((it) => {
         const done = sudahSelesaiModul.has(it.slug);
+        const doneCls = done ? ' is-done' : '';
         const manualBtn = (!done && ctx && ctx.role === "guru")
           ? `<button type="button" class="lap-tandai-manual-btn" data-slug="${esc(it.slug)}" data-judul="${esc(it.judul)}">Tandai selesai</button>`
           : "";
         return `<div class="lap-check-item ${done ? "is-done" : ""}">
-          <span class="lap-check-mark">${done ? "✅" : "⬜"}</span>
+          <span class="lap-check-mark" aria-hidden="true"></span>
           <span class="lap-check-text">${esc(it.judul)}${manualBtn}</span>
         </div>`;
       }).join("");
@@ -531,7 +532,7 @@ function renderReport(nama) {
       html += pbg.items.map((it) => {
         const done = sudahDibacaPustaka.has(it.id);
         return `<div class="lap-check-item ${done ? "is-done" : ""}">
-          <span class="lap-check-mark">${done ? "✅" : "⬜"}</span>
+          <span class="lap-check-mark" aria-hidden="true"></span>
           <span class="lap-check-text">${esc(it.judul)}</span>
         </div>`;
       }).join("");
