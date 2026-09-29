@@ -143,30 +143,30 @@ function renderReport(nama, hasilList) {
   if (!window.__lapLatihanPane) window.__lapLatihanPane = "ringkasan";
   let pane = window.__lapLatihanPane;
 
+  const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
+    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    : "";
+
   if (!hasilList.length) {
-    wrap.innerHTML = `
-      <div class="lap-dash">
-        <aside class="lap-aside">
-          <div class="lap-aside-student">
-            <div class="lap-aside-student-row">
-              <span class="lap-avatar">${esc(lapInitial_(nama))}</span>
-              <div>
-                <div class="lap-aside-nama">${esc(nama)}</div>
-                <div class="lap-aside-meta">Belum ada data latihan</div>
-              </div>
-            </div>
-            <div class="lap-aside-actions">${
-              (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
-                ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>' : ""
-            }</div>
-          </div>
-        </aside>
-        <div class="lap-main">
-          <h2 class="lap-main-title">Belum ada latihan</h2>
-          <p class="lap-main-sub">Hasil akan muncul setelah siswa mengerjakan Uji Kemampuan.</p>
-          <div class="lap-kosong">Siswa ini belum mengerjakan Uji Kemampuan.</div>
-        </div>
-      </div>`;
+    window.__lapLatihanView = null;
+    wrap.innerHTML =
+      '<div class="lap-dash">' +
+        '<aside class="lap-aside">' +
+          '<div class="lap-aside-student">' +
+            '<div class="lap-aside-student-row">' +
+              '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
+              '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
+              '<div class="lap-aside-meta">Belum ada data latihan</div></div>' +
+            '</div>' +
+            '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
+          '</div>' +
+        '</aside>' +
+        '<div class="lap-main">' +
+          '<h2 class="lap-main-title">Belum ada latihan</h2>' +
+          '<p class="lap-main-sub">Hasil akan muncul setelah siswa mengerjakan Uji Kemampuan.</p>' +
+          '<div class="lap-kosong">Siswa ini belum mengerjakan Uji Kemampuan.</div>' +
+        '</div>' +
+      '</div>';
     attachGantiHandler(wrap);
     return;
   }
@@ -180,104 +180,128 @@ function renderReport(nama, hasilList) {
   );
   const pctCakupan = totalTpTersedia ? Math.round((tpUnikDicoba / totalTpTersedia) * 100) : 0;
 
-  // Validate pane
   if (pane.startsWith("mapel:")) {
     const mname = pane.slice(6);
-    if (!mapelGroups.some((mg) => mg.mapel === mname)) pane = "ringkasan";
+    if (!mapelGroups.some((mg) => mg.mapel === mname)) {
+      pane = "ringkasan";
+      window.__lapLatihanPane = "ringkasan";
+    }
   }
 
-  const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
-    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
-    : "";
+  // Prebuild bodies
+  const ringkasanBody =
+    '<div class="lap-hero-score">' +
+      '<div class="lap-hero-score-value" style="color:' + warnaSkor(rataRataSkorTerbaik) + '">' + rataRataSkorTerbaik + '%</div>' +
+      '<div class="lap-hero-score-label">Rata-rata skor terbaik</div>' +
+    '</div>' +
+    '<div class="lap-metrics">' +
+      '<div class="lap-metric">' +
+        '<div class="lap-metric-value">' + tpUnikDicoba + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalTpTersedia + '</span></div>' +
+        '<div class="lap-metric-label">TP sudah dicoba</div>' +
+        '<div class="lap-metric-bar"><i style="width:' + pctCakupan + '%"></i></div>' +
+      '</div>' +
+      '<div class="lap-metric"><div class="lap-metric-value">' + totalSesi + '</div><div class="lap-metric-label">Total sesi latihan</div></div>' +
+      '<div class="lap-metric"><div class="lap-metric-value">' + mapelGroups.length + '</div><div class="lap-metric-label">Mapel dilatih</div></div>' +
+    '</div>' +
+    '<p class="lap-main-sub" style="margin:0">Pilih mapel di menu untuk melihat rincian skor per TP.</p>';
 
-  let navHtml = `<button type="button" class="lap-nav-item ${pane === "ringkasan" ? "is-active" : ""}" data-pane="ringkasan">
-      <span class="nav-ico">📊</span> Ringkasan
-    </button>
-    <div class="lap-nav-label">Per mapel</div>`;
+  const mapelBodies = {};
+  mapelGroups.forEach((mg) => {
+    mapelBodies[mg.mapel] = mg.tpList.map((tp) =>
+      '<div class="lap-tp-row">' +
+        '<div class="lap-tp-row-top">' +
+          '<span class="lap-tp-nama">' + esc(tp.judul) + '</span>' +
+          '<span class="lap-tp-angka">' + tp.skorTerbaik + '% · ' + tp.jumlahPercobaan + '×</span>' +
+        '</div>' +
+        '<div class="lap-tp-bar-track"><div class="lap-tp-bar-fill" style="width:' + tp.skorTerbaik + '%; --m-color:' + warnaSkor(tp.skorTerbaik) + '"></div></div>' +
+        '<div class="lm-tp-meta">Terakhir: ' + tp.skorTerakhir + '% · ' + fmtTanggal(tp.tanggalTerakhir) + '</div>' +
+      '</div>'
+    ).join("");
+  });
+
+  window.__lapLatihanView = {
+    nama: nama,
+    mapelGroups: mapelGroups,
+    ringkasanBody: ringkasanBody,
+    mapelBodies: mapelBodies,
+  };
+
+  let navHtml =
+    '<button type="button" class="lap-nav-item' + (pane === "ringkasan" ? " is-active" : "") + '" data-pane="ringkasan">' +
+      '<span class="nav-ico">📊</span> Ringkasan</button>' +
+    '<div class="lap-nav-label">Per mapel</div>';
   mapelGroups.forEach((mg) => {
     const key = "mapel:" + mg.mapel;
-    navHtml += `<button type="button" class="lap-nav-item ${pane === key ? "is-active" : ""}" data-pane="${esc(key)}">
-      <span class="nav-ico">${mg.icon || "📚"}</span> ${esc(mg.mapel)}
-      <span class="nav-badge">${mg.tpList.length}</span>
-    </button>`;
+    navHtml +=
+      '<button type="button" class="lap-nav-item' + (pane === key ? " is-active" : "") + '" data-pane="' + esc(key) + '">' +
+      '<span class="nav-ico">' + (mg.icon || "📚") + '</span> ' + esc(mg.mapel) +
+      '<span class="nav-badge">' + mg.tpList.length + '</span></button>';
   });
+
+  wrap.innerHTML =
+    '<div class="lap-dash">' +
+      '<aside class="lap-aside">' +
+        '<div class="lap-aside-student">' +
+          '<div class="lap-aside-student-row">' +
+            '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
+            '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
+            '<div class="lap-aside-meta">' + totalSesi + ' sesi latihan</div></div>' +
+          '</div>' +
+          '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
+        '</div>' +
+        '<nav class="lap-aside-nav" id="lap-aside-nav">' + navHtml + '</nav>' +
+      '</aside>' +
+      '<div class="lap-main" id="lap-main-pane"></div>' +
+    '</div>';
+
+  const nav = document.getElementById("lap-aside-nav");
+  if (nav) {
+    nav.onclick = function (e) {
+      const btn = e.target.closest(".lap-nav-item");
+      if (!btn) return;
+      const key = btn.getAttribute("data-pane") || "ringkasan";
+      if (key === window.__lapLatihanPane) return;
+      window.__lapLatihanPane = key;
+      switchPaneLatihan_();
+    };
+  }
+
+  attachGantiHandler(wrap);
+  switchPaneLatihan_();
+}
+
+function switchPaneLatihan_() {
+  const view = window.__lapLatihanView;
+  if (!view) return;
+  const pane = window.__lapLatihanPane || "ringkasan";
+  const main = document.getElementById("lap-main-pane");
+  const nav = document.getElementById("lap-aside-nav");
+  if (!main) return;
+
+  if (nav) {
+    const items = nav.querySelectorAll(".lap-nav-item");
+    for (let i = 0; i < items.length; i++) {
+      items[i].classList.toggle("is-active", items[i].getAttribute("data-pane") === pane);
+    }
+  }
 
   let mainTitle = "Ringkasan";
   let mainSub = "Gambaran hasil Uji Kemampuan.";
   let mainBody = "";
-
   if (pane === "ringkasan") {
-    mainBody = `
-      <div class="lap-hero-score">
-        <div class="lap-hero-score-value" style="color:${warnaSkor(rataRataSkorTerbaik)}">${rataRataSkorTerbaik}%</div>
-        <div class="lap-hero-score-label">Rata-rata skor terbaik</div>
-      </div>
-      <div class="lap-metrics">
-        <div class="lap-metric">
-          <div class="lap-metric-value">${tpUnikDicoba}<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/${totalTpTersedia}</span></div>
-          <div class="lap-metric-label">TP sudah dicoba</div>
-          <div class="lap-metric-bar"><i style="width:${pctCakupan}%"></i></div>
-        </div>
-        <div class="lap-metric">
-          <div class="lap-metric-value">${totalSesi}</div>
-          <div class="lap-metric-label">Total sesi latihan</div>
-        </div>
-        <div class="lap-metric">
-          <div class="lap-metric-value">${mapelGroups.length}</div>
-          <div class="lap-metric-label">Mapel dilatih</div>
-        </div>
-      </div>
-      <p class="lap-main-sub" style="margin:0">Pilih mapel di menu kiri untuk melihat rincian skor per TP.</p>`;
+    mainBody = view.ringkasanBody;
   } else if (pane.startsWith("mapel:")) {
     const mname = pane.slice(6);
-    const mg = mapelGroups.find((g) => g.mapel === mname);
-    mainTitle = (mg ? (mg.icon || "") + " " + mg.mapel : mname);
+    const mg = view.mapelGroups.find((g) => g.mapel === mname);
+    mainTitle = mg ? ((mg.icon || "") + " " + mg.mapel) : mname;
     mainSub = "Skor terbaik dan riwayat percobaan per TP.";
-    if (mg) {
-      mainBody = mg.tpList.map((tp) => `
-        <div class="lap-tp-row">
-          <div class="lap-tp-row-top">
-            <span class="lap-tp-nama">${esc(tp.judul)}</span>
-            <span class="lap-tp-angka">${tp.skorTerbaik}% · ${tp.jumlahPercobaan}×</span>
-          </div>
-          <div class="lap-tp-bar-track"><div class="lap-tp-bar-fill" style="width:${tp.skorTerbaik}%; --m-color:${warnaSkor(tp.skorTerbaik)}"></div></div>
-          <div class="lm-tp-meta">Terakhir: ${tp.skorTerakhir}% · ${fmtTanggal(tp.tanggalTerakhir)}</div>
-        </div>`).join("");
-    } else {
-      mainBody = '<div class="lap-kosong">Tidak ada data.</div>';
-    }
+    mainBody = view.mapelBodies[mname] || '<div class="lap-kosong">Tidak ada data.</div>';
   }
 
-  wrap.innerHTML = `
-    <div class="lap-dash">
-      <aside class="lap-aside">
-        <div class="lap-aside-student">
-          <div class="lap-aside-student-row">
-            <span class="lap-avatar">${esc(lapInitial_(nama))}</span>
-            <div>
-              <div class="lap-aside-nama">${esc(nama)}</div>
-              <div class="lap-aside-meta">${totalSesi} sesi latihan</div>
-            </div>
-          </div>
-          <div class="lap-aside-actions">${gantiBtn}</div>
-        </div>
-        <nav class="lap-aside-nav">${navHtml}</nav>
-      </aside>
-      <div class="lap-main">
-        <h2 class="lap-main-title">${esc(mainTitle)}</h2>
-        <p class="lap-main-sub">${esc(mainSub)}</p>
-        ${mainBody}
-      </div>
-    </div>`;
-
-  wrap.querySelectorAll(".lap-nav-item").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      window.__lapLatihanPane = btn.getAttribute("data-pane") || "ringkasan";
-      renderReport(nama, hasilList);
-    });
-  });
-
-  attachGantiHandler(wrap);
+  main.innerHTML =
+    '<h2 class="lap-main-title">' + esc(mainTitle) + '</h2>' +
+    '<p class="lap-main-sub">' + esc(mainSub) + '</p>' +
+    mainBody;
 }
 
 function attachGantiHandler(wrap) {

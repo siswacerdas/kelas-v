@@ -143,62 +143,64 @@ function renderReport(nama, data) {
        esc(profil["Tanggal Lahir"] || "")) || "Profil MPLS"
     : "Profil belum terdaftar di Data Siswa";
 
+  // Precompute bodies sekali — ganti pane hanya tukar panel
   const panes = [
-    { key: "mpls", ico: "🧭", label: "Kesiapan Belajar", body: renderNarasi(MplsScoring, data.mpls),
-      sub: "Emosi, kemandirian, minat, dan fisik." },
-    { key: "kognitif", ico: "📚", label: "Kesiapan Akademik", body: renderNarasi(MplsScoringKognitif, data.mplsKognitif),
-      sub: "Literasi dan numerasi." },
-    { key: "jurnal", ico: "📝", label: "Jurnal Menulis", body: renderNarasi(MplsScoringJurnal, data.jurnal),
-      sub: "Aktivitas menulis selama MPLS." },
+    { key: "mpls", ico: "🧭", label: "Kesiapan Belajar",
+      sub: "Emosi, kemandirian, minat, dan fisik.",
+      body: renderNarasi(MplsScoring, data.mpls) },
+    { key: "kognitif", ico: "📚", label: "Kesiapan Akademik",
+      sub: "Literasi dan numerasi.",
+      body: renderNarasi(MplsScoringKognitif, data.mplsKognitif) },
+    { key: "jurnal", ico: "📝", label: "Jurnal Menulis",
+      sub: "Aktivitas menulis selama MPLS.",
+      body: renderNarasi(MplsScoringJurnal, data.jurnal) },
   ];
-  const active = panes.find((p) => p.key === pane) || panes[0];
+  window.__lapMplsView = { nama: nama, panes: panes };
 
   const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
     ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
     : "";
 
-  let navHtml = "";
-  panes.forEach((p) => {
-    navHtml += `<button type="button" class="lap-nav-item ${p.key === active.key ? "is-active" : ""}" data-pane="${p.key}">
-      <span class="nav-ico">${p.ico}</span> ${p.label}
-    </button>`;
-  });
+  let navHtml = '<div class="lap-nav-label">Aspek MPLS</div>';
+  for (let i = 0; i < panes.length; i++) {
+    const p = panes[i];
+    navHtml +=
+      '<button type="button" class="lap-nav-item' + (p.key === pane ? " is-active" : "") + '" data-pane="' + p.key + '">' +
+      '<span class="nav-ico">' + p.ico + '</span> ' + p.label + '</button>';
+  }
 
-  wrap.innerHTML = `
-    <div class="lap-dash">
-      <aside class="lap-aside">
-        <div class="lap-aside-student">
-          <div class="lap-aside-student-row">
-            <span class="lap-avatar">${esc(lapInitial_(nama))}</span>
-            <div>
-              <div class="lap-aside-nama">${esc(nama)}</div>
-              <div class="lap-aside-meta">${meta}</div>
-            </div>
-          </div>
-          <div class="lap-aside-actions">${gantiBtn}</div>
-        </div>
-        <nav class="lap-aside-nav">
-          <div class="lap-nav-label">Aspek MPLS</div>
-          ${navHtml}
-        </nav>
-      </aside>
-      <div class="lap-main">
-        <h2 class="lap-main-title">${active.ico} ${esc(active.label)}</h2>
-        <p class="lap-main-sub">${esc(active.sub)}</p>
-        ${active.body}
-      </div>
-    </div>`;
+  wrap.innerHTML =
+    '<div class="lap-dash">' +
+      '<aside class="lap-aside">' +
+        '<div class="lap-aside-student">' +
+          '<div class="lap-aside-student-row">' +
+            '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
+            '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
+            '<div class="lap-aside-meta">' + meta + '</div></div>' +
+          '</div>' +
+          '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
+        '</div>' +
+        '<nav class="lap-aside-nav" id="lap-aside-nav">' + navHtml + '</nav>' +
+      '</aside>' +
+      '<div class="lap-main" id="lap-main-pane"></div>' +
+    '</div>';
 
-  wrap.querySelectorAll(".lap-nav-item").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      window.__lapMplsPane = btn.getAttribute("data-pane");
-      renderReport(nama, data);
-    });
-  });
+  const nav = document.getElementById("lap-aside-nav");
+  if (nav) {
+    nav.onclick = function (e) {
+      const btn = e.target.closest(".lap-nav-item");
+      if (!btn) return;
+      const key = btn.getAttribute("data-pane");
+      if (key === window.__lapMplsPane) return;
+      window.__lapMplsPane = key;
+      switchPaneMpls_();
+    };
+  }
 
   const gantiEl = document.getElementById("lap-ganti-btn");
-  if (gantiEl) gantiEl.addEventListener("click", () => {
+  if (gantiEl) gantiEl.onclick = function () {
     wrap.innerHTML = "";
+    window.__lapMplsView = null;
     window.__lapMplsPane = "mpls";
     lapHidePicker_(false);
     document.getElementById("lap-subtitle").textContent = "Ringkasan kesiapan belajar, kesiapan akademik, dan jurnal aktivitas.";
@@ -207,7 +209,29 @@ function renderReport(nama, data) {
     } else {
       window.LaporanPicker.render(ctx, loadReport);
     }
-  });
+  };
+
+  switchPaneMpls_();
+}
+
+function switchPaneMpls_() {
+  const view = window.__lapMplsView;
+  if (!view) return;
+  const pane = window.__lapMplsPane || "mpls";
+  const active = view.panes.find((p) => p.key === pane) || view.panes[0];
+  const main = document.getElementById("lap-main-pane");
+  const nav = document.getElementById("lap-aside-nav");
+  if (!main) return;
+  if (nav) {
+    const items = nav.querySelectorAll(".lap-nav-item");
+    for (let i = 0; i < items.length; i++) {
+      items[i].classList.toggle("is-active", items[i].getAttribute("data-pane") === active.key);
+    }
+  }
+  main.innerHTML =
+    '<h2 class="lap-main-title">' + active.ico + " " + esc(active.label) + '</h2>' +
+    '<p class="lap-main-sub">' + esc(active.sub) + '</p>' +
+    active.body;
 }
 
 document.addEventListener("laporan-context-ready", (e) => {
