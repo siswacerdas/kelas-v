@@ -276,7 +276,7 @@ async function loadReport(nama) {
 async function revalidateProgresBm_(nama) {
   await fetchProgresBmNetwork_(nama);
   // Hanya re-render jika masih melihat siswa yang sama
-  const title = document.querySelector(".lap-aside-nama");
+  const title = document.querySelector(".lr-name");
   if (title && title.textContent === nama) {
     renderReport(nama);
   }
@@ -473,15 +473,16 @@ function renderReport(nama) {
   };
 
   const aktivitasHtml = aktivitasTerbaru.length > 0
-    ? '<div class="lap-aktivitas-list">' + aktivitasTerbaru.map((a) => `
-        <div class="lap-aktivitas-row">
-          <span class="lap-aktivitas-icon">${ikonAktivitas_(a.jenis)}</span>
-          <div class="lap-aktivitas-body">
-            <div class="lap-aktivitas-judul">${esc(a.judul)}</div>
-            <div class="lap-aktivitas-meta">${esc(a.mapel)} · ${labelAktivitas_(a)}</div>
-          </div>
-          <span class="lap-aktivitas-waktu">${esc(formatWaktuRamah_(a.ts))}</span>
-        </div>`).join("") + "</div>"
+    ? aktivitasTerbaru.map((a) =>
+        '<div class="lr-act">' +
+          '<span class="lr-act-ico">' + ikonAktivitas_(a.jenis) + '</span>' +
+          '<div class="lr-act-body">' +
+            '<div class="lr-act-title">' + esc(a.judul) + '</div>' +
+            '<div class="lr-act-meta">' + esc(a.mapel) + ' · ' + labelAktivitas_(a) + '</div>' +
+          '</div>' +
+          '<span class="lr-act-time">' + esc(formatWaktuRamah_(a.ts)) + '</span>' +
+        '</div>'
+      ).join("")
     : '<div class="lap-kosong">Belum ada aktivitas belajar mandiri tercatat.</div>';
 
   // ── Detail 1 mapel ──
@@ -493,50 +494,49 @@ function renderReport(nama) {
 
     let html = "";
     if (mg) {
-      html += '<div class="lap-block"><div class="lap-block-title">📖 Materi Ajar (Ingat Lagi)</div>';
+      html += '<div class="lr-block"><div class="lr-block-title">Materi Ajar · Ingat Lagi</div>';
       html += mg.tpList.map((tp) => {
         const total = tp.items.length;
         const dibaca = tp.items.filter((m) => sudahDibacaMateri.has(materiSlugFromFile_(m.file))).length;
         const pct = total ? Math.round((dibaca / total) * 100) : 0;
         const items = tp.items.map((m) => {
           const done = sudahDibacaMateri.has(materiSlugFromFile_(m.file));
-          return '<div class="lap-check-item' + (done ? ' is-done' : '') + '">' +
-            '<span class="lap-check-mark" aria-hidden="true"></span>' +
-            '<span class="lap-check-text">' + esc(m.judul || m.file || "") + '</span></div>';
+          return '<div class="lr-item' + (done ? ' is-done' : '') + '">' +
+            '<span class="lr-box" aria-hidden="true"></span>' +
+            '<span class="lr-text">' + esc(m.judul || m.file || "") + '</span></div>';
         }).join("");
-        return '<div class="lap-subblock">' +
-          '<div class="lap-subblock-title">' + esc(tp.tema || tp.tpNama || tp.tp || "Tujuan Pembelajaran") +
-            '<span class="lap-pct">' + dibaca + '/' + total + ' · ' + pct + '%</span></div>' +
-          '<div class="lap-metric-bar" style="margin:0 0 10px"><i style="width:' + pct + '%"></i></div>' +
-          '<div class="lap-check-list">' + items + '</div></div>';
+        return '<div class="lr-group">' +
+          '<div class="lr-group-head">' +
+            '<div class="lr-group-title">' + esc(tp.tema || tp.tpNama || tp.tp || "Tujuan Pembelajaran") + '</div>' +
+            '<span class="lr-group-pct">' + dibaca + '/' + total + ' · ' + pct + '%</span>' +
+          '</div>' +
+          '<div class="lr-metric-bar" style="margin:0 0 8px"><i style="width:' + pct + '%"></i></div>' +
+          '<div class="lr-list">' + items + '</div></div>';
       }).join("");
-      html += "</div>";
+      html += '</div>';
     }
     if (mdg) {
-      html += '<div class="lap-block"><div class="lap-block-title">🧩 Modul (Ayo Belajar)</div>';
+      html += '<div class="lr-block"><div class="lr-block-title">Modul · Ayo Belajar</div><div class="lr-list">';
       html += mdg.items.map((it) => {
         const done = sudahSelesaiModul.has(it.slug);
-        const doneCls = done ? ' is-done' : '';
         const manualBtn = (!done && ctx && ctx.role === "guru")
-          ? `<button type="button" class="lap-tandai-manual-btn" data-slug="${esc(it.slug)}" data-judul="${esc(it.judul)}">Tandai selesai</button>`
+          ? '<button type="button" class="lap-tandai-manual-btn" data-slug="' + esc(it.slug) + '" data-judul="' + esc(it.judul) + '">Tandai selesai</button>'
           : "";
-        return `<div class="lap-check-item ${done ? "is-done" : ""}">
-          <span class="lap-check-mark" aria-hidden="true"></span>
-          <span class="lap-check-text">${esc(it.judul)}${manualBtn}</span>
-        </div>`;
+        return '<div class="lr-item' + (done ? ' is-done' : '') + '">' +
+          '<span class="lr-box" aria-hidden="true"></span>' +
+          '<span class="lr-text">' + esc(it.judul) + manualBtn + '</span></div>';
       }).join("");
-      html += "</div>";
+      html += '</div></div>';
     }
     if (pbg) {
-      html += '<div class="lap-block"><div class="lap-block-title">📚 Pustaka Belajar</div><div class="lap-check-list">';
+      html += '<div class="lr-block"><div class="lr-block-title">Pustaka Belajar</div><div class="lr-list">';
       html += pbg.items.map((it) => {
         const done = sudahDibacaPustaka.has(it.id);
-        return `<div class="lap-check-item ${done ? "is-done" : ""}">
-          <span class="lap-check-mark" aria-hidden="true"></span>
-          <span class="lap-check-text">${esc(it.judul)}</span>
-        </div>`;
+        return '<div class="lr-item' + (done ? ' is-done' : '') + '">' +
+          '<span class="lr-box" aria-hidden="true"></span>' +
+          '<span class="lr-text">' + esc(it.judul) + '</span></div>';
       }).join("");
-      html += "</div></div>";
+      html += '</div></div>';
     }
     return html;
   }
@@ -553,24 +553,24 @@ function renderReport(nama) {
   const pctP = totalPustakaSemua ? Math.round((dibacaPustakaSemua / totalPustakaSemua) * 100) : 0;
 
   const ringkasanBody =
-      '<div class="lap-metrics">' +
-        '<div class="lap-metric">' +
-          '<div class="lap-metric-value">' + dibacaMateriSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalMateriSemua + '</span></div>' +
-          '<div class="lap-metric-label">📖 Materi dibaca</div>' +
-          '<div class="lap-metric-bar"><i style="width:' + pctM + '%"></i></div>' +
+      '<div class="lr-metrics">' +
+        '<div class="lr-metric">' +
+          '<div class="lr-metric-value">' + dibacaMateriSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalMateriSemua + '</span></div>' +
+          '<div class="lr-metric-label">Materi dibaca</div>' +
+          '<div class="lr-metric-bar"><i style="width:' + pctM + '%"></i></div>' +
         '</div>' +
-        '<div class="lap-metric">' +
-          '<div class="lap-metric-value">' + selesaiModulSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalModulSemua + '</span></div>' +
-          '<div class="lap-metric-label">🧩 Modul selesai</div>' +
-          '<div class="lap-metric-bar"><i style="width:' + pctO + '%"></i></div>' +
+        '<div class="lr-metric">' +
+          '<div class="lr-metric-value">' + selesaiModulSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalModulSemua + '</span></div>' +
+          '<div class="lr-metric-label">Modul selesai</div>' +
+          '<div class="lr-metric-bar"><i style="width:' + pctO + '%"></i></div>' +
         '</div>' +
-        '<div class="lap-metric">' +
-          '<div class="lap-metric-value">' + dibacaPustakaSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalPustakaSemua + '</span></div>' +
-          '<div class="lap-metric-label">📚 Pustaka dibaca</div>' +
-          '<div class="lap-metric-bar"><i style="width:' + pctP + '%"></i></div>' +
+        '<div class="lr-metric">' +
+          '<div class="lr-metric-value">' + dibacaPustakaSemua + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalPustakaSemua + '</span></div>' +
+          '<div class="lr-metric-label">Pustaka dibaca</div>' +
+          '<div class="lr-metric-bar"><i style="width:' + pctP + '%"></i></div>' +
         '</div>' +
       '</div>' +
-      '<div class="lap-block"><div class="lap-block-title">Aktivitas terbaru</div>' + aktivitasHtml + '</div>';
+      '<div class="lr-block"><div class="lr-block-title">Aktivitas terbaru</div>' + aktivitasHtml + '</div>';
 
   _bmView = {
     nama: nama,
@@ -581,46 +581,41 @@ function renderReport(nama) {
   };
 
   let navHtml =
-    '<button type="button" class="lap-nav-item' + (paneAktif === "ringkasan" ? " is-active" : "") + '" data-pane="ringkasan">' +
+    '<button type="button" class="lr-tab' + (paneAktif === "ringkasan" ? " is-active" : "") + '" data-pane="ringkasan">' +
       '<span class="nav-ico">📊</span> Ringkasan</button>' +
-    '<button type="button" class="lap-nav-item' + (paneAktif === "aktivitas" ? " is-active" : "") + '" data-pane="aktivitas">' +
-      '<span class="nav-ico">🕐</span> Aktivitas<span class="nav-badge">' + aktivitasTerbaru.length + '</span></button>' +
-    '<div class="lap-nav-label">Mata pelajaran</div>';
+    '<button type="button" class="lr-tab' + (paneAktif === "aktivitas" ? " is-active" : "") + '" data-pane="aktivitas">' +
+      '<span class="nav-ico">🕐</span> Aktivitas' +
+      (aktivitasTerbaru.length ? '<span class="nav-badge">' + aktivitasTerbaru.length + '</span>' : '') +
+    '</button>';
   for (let mi = 0; mi < daftarMapel.length; mi++) {
     const m = daftarMapel[mi];
     const key = "mapel:" + m.mapelSlug;
     navHtml +=
-      '<button type="button" class="lap-nav-item' + (paneAktif === key ? " is-active" : "") + '" data-pane="' + esc(key) + '">' +
+      '<button type="button" class="lr-tab' + (paneAktif === key ? " is-active" : "") + '" data-pane="' + esc(key) + '">' +
       '<span class="nav-ico">' + (m.mapelIcon || "📚") + '</span> ' + esc(m.mapel) + '</button>';
-  }
-  if (!daftarMapel.length) {
-    navHtml += '<div class="lap-kosong" style="padding:0.5rem 10px;font-size:12px">Belum ada mapel</div>';
   }
 
   const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
-    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    ? '<button type="button" class="lr-ganti" id="lap-ganti-btn">Ganti siswa</button>'
     : "";
 
   wrap.innerHTML = partialBanner +
-    '<div class="lap-dash">' +
-      '<aside class="lap-aside">' +
-        '<div class="lap-aside-student">' +
-          '<div class="lap-aside-student-row">' +
-            '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
-            '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
-            '<div class="lap-aside-meta">Belajar mandiri</div></div>' +
-          '</div>' +
-          '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
-        '</div>' +
-        '<nav class="lap-aside-nav" id="lap-aside-nav">' + navHtml + '</nav>' +
-      '</aside>' +
-      '<div class="lap-main" id="lap-main-pane"></div>' +
+    '<div class="lr">' +
+      '<header class="lr-hero">' +
+        '<div class="lr-hero-left">' +
+          '<span class="lr-av">' + esc(lapInitial_(nama)) + '</span>' +
+          '<div><div class="lr-name">' + esc(nama) + '</div>' +
+          '<div class="lr-meta">Belajar mandiri</div></div>' +
+        '</div>' + gantiBtn +
+      '</header>' +
+      '<nav class="lr-tabs" id="lap-aside-nav">' + navHtml + '</nav>' +
+      '<div class="lr-body" id="lap-main-pane"></div>' +
     '</div>';
 
   const nav = document.getElementById("lap-aside-nav");
   if (nav) {
     nav.onclick = function (e) {
-      const btn = e.target.closest(".lap-nav-item");
+      const btn = e.target.closest(".lr-tab");
       if (!btn) return;
       const pane = btn.getAttribute("data-pane") || "ringkasan";
       if (pane === paneAktif) return;
@@ -657,7 +652,7 @@ function switchPaneBm_() {
   if (!main) return;
 
   if (nav) {
-    const items = nav.querySelectorAll(".lap-nav-item");
+    const items = nav.querySelectorAll(".lr-tab");
     for (let i = 0; i < items.length; i++) {
       items[i].classList.toggle("is-active", items[i].getAttribute("data-pane") === paneAktif);
     }
@@ -670,19 +665,19 @@ function switchPaneBm_() {
     mainBody = _bmView.ringkasanBody;
   } else if (paneAktif === "aktivitas") {
     mainTitle = "Aktivitas Terbaru";
-    mainSub = "Urutan waktu — materi, modul, dan pustaka yang baru dikerjakan.";
+    mainSub = "Materi, modul, dan pustaka yang baru dikerjakan.";
     mainBody = _bmView.aktivitasHtml;
   } else if (paneAktif.startsWith("mapel:")) {
     const slug = paneAktif.slice(6);
     const info = _bmView.daftarMapel.find((m) => m.mapelSlug === slug);
     mainTitle = info ? ((info.mapelIcon || "") + " " + info.mapel) : "Mapel";
-    mainSub = "Rincian materi, modul, dan pustaka untuk mapel ini.";
+    mainSub = "Rincian materi, modul, dan pustaka.";
     mainBody = _bmView.buildDetailMapel_(slug);
   }
 
   main.innerHTML =
-    '<h2 class="lap-main-title">' + esc(mainTitle) + '</h2>' +
-    '<p class="lap-main-sub">' + esc(mainSub) + '</p>' +
+    '<h2 class="lr-title">' + esc(mainTitle) + '</h2>' +
+    '<p class="lr-sub">' + esc(mainSub) + '</p>' +
     mainBody;
 
   const tandai = main.querySelectorAll(".lap-tandai-manual-btn");

@@ -164,7 +164,7 @@ async function loadReport(nama) {
     fetchLatihanNetwork_(nama)
       .then(function (list) {
         tulisCacheLatihan_(nama, list);
-        const title = document.querySelector(".lap-aside-nama");
+        const title = document.querySelector(".lr-name");
         if (title && title.textContent === nama) renderReport(nama, list);
       })
       .catch(function () {});
@@ -196,26 +196,23 @@ function renderReport(nama, hasilList) {
   let pane = window.__lapLatihanPane;
 
   const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
-    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    ? '<button type="button" class="lr-ganti" id="lap-ganti-btn">Ganti siswa</button>'
     : "";
 
   if (!hasilList.length) {
     window.__lapLatihanView = null;
     wrap.innerHTML =
-      '<div class="lap-dash">' +
-        '<aside class="lap-aside">' +
-          '<div class="lap-aside-student">' +
-            '<div class="lap-aside-student-row">' +
-              '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
-              '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
-              '<div class="lap-aside-meta">Belum ada data latihan</div></div>' +
-            '</div>' +
-            '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
-          '</div>' +
-        '</aside>' +
-        '<div class="lap-main">' +
-          '<h2 class="lap-main-title">Belum ada latihan</h2>' +
-          '<p class="lap-main-sub">Hasil akan muncul setelah siswa mengerjakan Uji Kemampuan.</p>' +
+      '<div class="lr">' +
+        '<header class="lr-hero">' +
+          '<div class="lr-hero-left">' +
+            '<span class="lr-av">' + esc(lapInitial_(nama)) + '</span>' +
+            '<div><div class="lr-name">' + esc(nama) + '</div>' +
+            '<div class="lr-meta">Belum ada data latihan</div></div>' +
+          '</div>' + gantiBtn +
+        '</header>' +
+        '<div class="lr-body">' +
+          '<h2 class="lr-title">Belum ada latihan</h2>' +
+          '<p class="lr-sub">Hasil muncul setelah siswa mengerjakan Uji Kemampuan.</p>' +
           '<div class="lap-kosong">Siswa ini belum mengerjakan Uji Kemampuan.</div>' +
         '</div>' +
       '</div>';
@@ -240,33 +237,31 @@ function renderReport(nama, hasilList) {
     }
   }
 
-  // Prebuild bodies
   const ringkasanBody =
-    '<div class="lap-hero-score">' +
-      '<div class="lap-hero-score-value" style="color:' + warnaSkor(rataRataSkorTerbaik) + '">' + rataRataSkorTerbaik + '%</div>' +
-      '<div class="lap-hero-score-label">Rata-rata skor terbaik</div>' +
+    '<div class="lr-score">' +
+      '<div class="lr-score-value" style="color:' + warnaSkor(rataRataSkorTerbaik) + '">' + rataRataSkorTerbaik + '%</div>' +
+      '<div class="lr-score-label">Rata-rata skor terbaik</div>' +
     '</div>' +
-    '<div class="lap-metrics">' +
-      '<div class="lap-metric">' +
-        '<div class="lap-metric-value">' + tpUnikDicoba + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalTpTersedia + '</span></div>' +
-        '<div class="lap-metric-label">TP sudah dicoba</div>' +
-        '<div class="lap-metric-bar"><i style="width:' + pctCakupan + '%"></i></div>' +
+    '<div class="lr-metrics">' +
+      '<div class="lr-metric">' +
+        '<div class="lr-metric-value">' + tpUnikDicoba + '<span style="font-size:0.85rem;font-weight:600;color:var(--ink-3)">/' + totalTpTersedia + '</span></div>' +
+        '<div class="lr-metric-label">TP sudah dicoba</div>' +
+        '<div class="lr-metric-bar"><i style="width:' + pctCakupan + '%"></i></div>' +
       '</div>' +
-      '<div class="lap-metric"><div class="lap-metric-value">' + totalSesi + '</div><div class="lap-metric-label">Total sesi latihan</div></div>' +
-      '<div class="lap-metric"><div class="lap-metric-value">' + mapelGroups.length + '</div><div class="lap-metric-label">Mapel dilatih</div></div>' +
-    '</div>' +
-    '<p class="lap-main-sub" style="margin:0">Pilih mapel di menu untuk melihat rincian skor per TP.</p>';
+      '<div class="lr-metric"><div class="lr-metric-value">' + totalSesi + '</div><div class="lr-metric-label">Total sesi</div></div>' +
+      '<div class="lr-metric"><div class="lr-metric-value">' + mapelGroups.length + '</div><div class="lr-metric-label">Mapel dilatih</div></div>' +
+    '</div>';
 
   const mapelBodies = {};
   mapelGroups.forEach((mg) => {
     mapelBodies[mg.mapel] = mg.tpList.map((tp) =>
-      '<div class="lap-tp-row">' +
-        '<div class="lap-tp-row-top">' +
-          '<span class="lap-tp-nama">' + esc(tp.judul) + '</span>' +
-          '<span class="lap-tp-angka">' + tp.skorTerbaik + '% · ' + tp.jumlahPercobaan + '×</span>' +
+      '<div class="lr-tp">' +
+        '<div class="lr-tp-top">' +
+          '<span class="lr-tp-nama">' + esc(tp.judul) + '</span>' +
+          '<span class="lr-tp-angka">' + tp.skorTerbaik + '% · ' + tp.jumlahPercobaan + '×</span>' +
         '</div>' +
-        '<div class="lap-tp-bar-track"><div class="lap-tp-bar-fill" style="width:' + tp.skorTerbaik + '%; --m-color:' + warnaSkor(tp.skorTerbaik) + '"></div></div>' +
-        '<div class="lm-tp-meta">Terakhir: ' + tp.skorTerakhir + '% · ' + fmtTanggal(tp.tanggalTerakhir) + '</div>' +
+        '<div class="lr-tp-track"><div class="lr-tp-fill" style="width:' + tp.skorTerbaik + '%; --m-color:' + warnaSkor(tp.skorTerbaik) + '"></div></div>' +
+        '<div class="lr-tp-meta">Terakhir: ' + tp.skorTerakhir + '% · ' + fmtTanggal(tp.tanggalTerakhir) + '</div>' +
       '</div>'
     ).join("");
   });
@@ -279,37 +274,33 @@ function renderReport(nama, hasilList) {
   };
 
   let navHtml =
-    '<button type="button" class="lap-nav-item' + (pane === "ringkasan" ? " is-active" : "") + '" data-pane="ringkasan">' +
-      '<span class="nav-ico">📊</span> Ringkasan</button>' +
-    '<div class="lap-nav-label">Per mapel</div>';
+    '<button type="button" class="lr-tab' + (pane === "ringkasan" ? " is-active" : "") + '" data-pane="ringkasan">' +
+      '<span class="nav-ico">📊</span> Ringkasan</button>';
   mapelGroups.forEach((mg) => {
     const key = "mapel:" + mg.mapel;
     navHtml +=
-      '<button type="button" class="lap-nav-item' + (pane === key ? " is-active" : "") + '" data-pane="' + esc(key) + '">' +
+      '<button type="button" class="lr-tab' + (pane === key ? " is-active" : "") + '" data-pane="' + esc(key) + '">' +
       '<span class="nav-ico">' + (mg.icon || "📚") + '</span> ' + esc(mg.mapel) +
       '<span class="nav-badge">' + mg.tpList.length + '</span></button>';
   });
 
   wrap.innerHTML =
-    '<div class="lap-dash">' +
-      '<aside class="lap-aside">' +
-        '<div class="lap-aside-student">' +
-          '<div class="lap-aside-student-row">' +
-            '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
-            '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
-            '<div class="lap-aside-meta">' + totalSesi + ' sesi latihan</div></div>' +
-          '</div>' +
-          '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
-        '</div>' +
-        '<nav class="lap-aside-nav" id="lap-aside-nav">' + navHtml + '</nav>' +
-      '</aside>' +
-      '<div class="lap-main" id="lap-main-pane"></div>' +
+    '<div class="lr">' +
+      '<header class="lr-hero">' +
+        '<div class="lr-hero-left">' +
+          '<span class="lr-av">' + esc(lapInitial_(nama)) + '</span>' +
+          '<div><div class="lr-name">' + esc(nama) + '</div>' +
+          '<div class="lr-meta">' + totalSesi + ' sesi latihan</div></div>' +
+        '</div>' + gantiBtn +
+      '</header>' +
+      '<nav class="lr-tabs" id="lap-aside-nav">' + navHtml + '</nav>' +
+      '<div class="lr-body" id="lap-main-pane"></div>' +
     '</div>';
 
   const nav = document.getElementById("lap-aside-nav");
   if (nav) {
     nav.onclick = function (e) {
-      const btn = e.target.closest(".lap-nav-item");
+      const btn = e.target.closest(".lr-tab");
       if (!btn) return;
       const key = btn.getAttribute("data-pane") || "ringkasan";
       if (key === window.__lapLatihanPane) return;
@@ -331,7 +322,7 @@ function switchPaneLatihan_() {
   if (!main) return;
 
   if (nav) {
-    const items = nav.querySelectorAll(".lap-nav-item");
+    const items = nav.querySelectorAll(".lr-tab");
     for (let i = 0; i < items.length; i++) {
       items[i].classList.toggle("is-active", items[i].getAttribute("data-pane") === pane);
     }
@@ -351,8 +342,8 @@ function switchPaneLatihan_() {
   }
 
   main.innerHTML =
-    '<h2 class="lap-main-title">' + esc(mainTitle) + '</h2>' +
-    '<p class="lap-main-sub">' + esc(mainSub) + '</p>' +
+    '<h2 class="lr-title">' + esc(mainTitle) + '</h2>' +
+    '<p class="lr-sub">' + esc(mainSub) + '</p>' +
     mainBody;
 }
 

@@ -73,7 +73,7 @@ async function loadReport(nama) {
     fetchMplsNetwork_(nama)
       .then(function (json) {
         tulisCacheMpls_(nama, json);
-        const title = document.querySelector(".lap-aside-nama");
+        const title = document.querySelector(".lr-name");
         if (title && title.textContent === nama) renderReport(nama, json);
       })
       .catch(function () {});
@@ -137,22 +137,22 @@ function renderNarasi(engine, row) {
   }
 
   const kekuatanHtml = ov.kekuatan.length
-    ? `<div class="lap-overall-line">💪 <b>Aspek kuat:</b> ${esc(ov.kekuatan.join(", "))}</div>` : "";
+    ? `<div class="lr-overall-line">💪 <b>Aspek kuat:</b> ${esc(ov.kekuatan.join(", "))}</div>` : "";
   const perhatianHtml = ov.perhatian.length
-    ? `<div class="lap-overall-line">🔎 <b>Perlu perhatian:</b> ${esc(ov.perhatian.join(", "))}</div>` : "";
+    ? `<div class="lr-overall-line">🔎 <b>Perlu perhatian:</b> ${esc(ov.perhatian.join(", "))}</div>` : "";
 
   // Rekomendasi "di rumah" relevan untuk guru MAUPUN orang tua (guru pun perlu tahu apa yang
   // disarankan ke orang tua supaya bisa saling menguatkan). Rekomendasi "di sekolah" hanya
   // ditampilkan untuk akun guru — kurang relevan buat orang tua baca rencana kerja guru sendiri.
   const rekomHtml = `
-    <div class="lap-rekom-grid">
+    <div class="lr-rekom">
       ${ctx.role === "guru" ? `
-        <div class="lap-rekom-col">
-          <div class="lap-rekom-title">🏫 Di Sekolah</div>
+        <div class="lr-rekom-col">
+          <div class="lr-rekom-title">🏫 Di Sekolah</div>
           <ul>${(ov.guru.length ? ov.guru : ["Pertahankan pendampingan rutin yang sudah berjalan baik."]).map((g) => `<li>${esc(g)}</li>`).join("")}</ul>
         </div>` : ""}
-      <div class="lap-rekom-col">
-        <div class="lap-rekom-title">🏠 Di Rumah</div>
+      <div class="lr-rekom-col">
+        <div class="lr-rekom-title">🏠 Di Rumah</div>
         <ul>${(ov.ortu.length ? ov.ortu : ["Pertahankan dukungan rutin yang sudah berjalan baik di rumah."]).map((o) => `<li>${esc(o)}</li>`).join("")}</ul>
       </div>
     </div>`;
@@ -160,20 +160,20 @@ function renderNarasi(engine, row) {
   const catCards = result.categories
     .filter((c) => c.level) // sembunyikan kategori yang sama sekali belum diisi
     .map((c) => `
-      <div class="lap-cat-card" style="--cat-accent:${esc(c.accent)}">
-        <div class="lap-cat-title">${c.icon} ${esc(c.title)}</div>
-        <div class="lap-cat-level ${LEVEL_CLASS[c.level] || ""}">${esc(c.levelLabel)}</div>
-        <p class="lap-cat-simpulan">${esc(c.simpulan)}</p>
+      <div class="lr-cat" style="--cat-accent:${esc(c.accent)}">
+        <div class="lr-cat-title">${c.icon} ${esc(c.title)}</div>
+        <div class="lr-cat-level ${LEVEL_CLASS[c.level] || ""}">${esc(c.levelLabel)}</div>
+        <p class="lr-cat-simpulan">${esc(c.simpulan)}</p>
       </div>`).join("");
 
   return `
-    <div class="lap-overall ${LEVEL_CLASS[ov.level] || ""}">
-      <div class="lap-overall-badge">${esc(ov.label)}</div>
-      <p class="lap-overall-narasi">${esc(ov.narasi)}</p>
+    <div class="lr-overall ${LEVEL_CLASS[ov.level] || ""}">
+      <div class="lr-overall-badge">${esc(ov.label)}</div>
+      <p class="lr-overall-narasi">${esc(ov.narasi)}</p>
       ${kekuatanHtml}${perhatianHtml}
       ${rekomHtml}
     </div>
-    ${catCards ? `<div class="lap-cat-grid">${catCards}</div>` : ""}`;
+    ${catCards ? `<div class="lr-cat-grid">${catCards}</div>` : ""}`;
 }
 
 function renderSection(key, title, bodyHtml) {
@@ -202,7 +202,6 @@ function renderReport(nama, data) {
        esc(profil["Tanggal Lahir"] || "")) || "Profil MPLS"
     : "Profil belum terdaftar di Data Siswa";
 
-  // Precompute bodies sekali — ganti pane hanya tukar panel
   const panes = [
     { key: "mpls", ico: "🧭", label: "Kesiapan Belajar",
       sub: "Emosi, kemandirian, minat, dan fisik.",
@@ -217,37 +216,34 @@ function renderReport(nama, data) {
   window.__lapMplsView = { nama: nama, panes: panes };
 
   const gantiBtn = (ctx && (ctx.role === "guru" || (ctx.role === "orangtua" && ctx.anak && ctx.anak.length > 1)))
-    ? '<button type="button" class="lap-ganti" id="lap-ganti-btn">Ganti siswa</button>'
+    ? '<button type="button" class="lr-ganti" id="lap-ganti-btn">Ganti siswa</button>'
     : "";
 
-  let navHtml = '<div class="lap-nav-label">Aspek MPLS</div>';
+  let navHtml = "";
   for (let i = 0; i < panes.length; i++) {
     const p = panes[i];
     navHtml +=
-      '<button type="button" class="lap-nav-item' + (p.key === pane ? " is-active" : "") + '" data-pane="' + p.key + '">' +
+      '<button type="button" class="lr-tab' + (p.key === pane ? " is-active" : "") + '" data-pane="' + p.key + '">' +
       '<span class="nav-ico">' + p.ico + '</span> ' + p.label + '</button>';
   }
 
   wrap.innerHTML =
-    '<div class="lap-dash">' +
-      '<aside class="lap-aside">' +
-        '<div class="lap-aside-student">' +
-          '<div class="lap-aside-student-row">' +
-            '<span class="lap-avatar">' + esc(lapInitial_(nama)) + '</span>' +
-            '<div><div class="lap-aside-nama">' + esc(nama) + '</div>' +
-            '<div class="lap-aside-meta">' + meta + '</div></div>' +
-          '</div>' +
-          '<div class="lap-aside-actions">' + gantiBtn + '</div>' +
-        '</div>' +
-        '<nav class="lap-aside-nav" id="lap-aside-nav">' + navHtml + '</nav>' +
-      '</aside>' +
-      '<div class="lap-main" id="lap-main-pane"></div>' +
+    '<div class="lr">' +
+      '<header class="lr-hero">' +
+        '<div class="lr-hero-left">' +
+          '<span class="lr-av">' + esc(lapInitial_(nama)) + '</span>' +
+          '<div><div class="lr-name">' + esc(nama) + '</div>' +
+          '<div class="lr-meta">' + meta + '</div></div>' +
+        '</div>' + gantiBtn +
+      '</header>' +
+      '<nav class="lr-tabs" id="lap-aside-nav">' + navHtml + '</nav>' +
+      '<div class="lr-body" id="lap-main-pane"></div>' +
     '</div>';
 
   const nav = document.getElementById("lap-aside-nav");
   if (nav) {
     nav.onclick = function (e) {
-      const btn = e.target.closest(".lap-nav-item");
+      const btn = e.target.closest(".lr-tab");
       if (!btn) return;
       const key = btn.getAttribute("data-pane");
       if (key === window.__lapMplsPane) return;
@@ -282,14 +278,14 @@ function switchPaneMpls_() {
   const nav = document.getElementById("lap-aside-nav");
   if (!main) return;
   if (nav) {
-    const items = nav.querySelectorAll(".lap-nav-item");
+    const items = nav.querySelectorAll(".lr-tab");
     for (let i = 0; i < items.length; i++) {
       items[i].classList.toggle("is-active", items[i].getAttribute("data-pane") === active.key);
     }
   }
   main.innerHTML =
-    '<h2 class="lap-main-title">' + active.ico + " " + esc(active.label) + '</h2>' +
-    '<p class="lap-main-sub">' + esc(active.sub) + '</p>' +
+    '<h2 class="lr-title">' + active.ico + " " + esc(active.label) + '</h2>' +
+    '<p class="lr-sub">' + esc(active.sub) + '</p>' +
     active.body;
 }
 
