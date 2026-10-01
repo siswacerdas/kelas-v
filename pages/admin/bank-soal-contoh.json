@@ -1,1 +1,77 @@
-PLACEHOLDER
+[
+  {
+    "pertanyaan": "Manakah yang termasuk informasi penting dari teks yang dibacakan guru?",
+    "mapel": "Bahasa Indonesia",
+    "tp": "M1",
+    "jenisSoal": "pg_tunggal",
+    "kko": "C2",
+    "kompleksitas": "dasar",
+    "pilihan": [
+      "Judul buku yang disebut sambil lalu",
+      "Nama tokoh utama dan masalahnya",
+      "Warna baju guru",
+      "Jumlah kursi di kelas"
+    ],
+    "jawaban": "Nama tokoh utama dan masalahnya"
+  },
+  {
+    "pertanyaan": "Pilih SEMUA kalimat yang menunjukkan hubungan sebab-akibat.",
+    "mapel": "Bahasa Indonesia",
+    "tp": "M2",
+    "jenisSoal": "pg_kompleks",
+    "kko": "C3",
+    "kompleksitas": "menengah",
+    "pilihan": [
+      "Karena hujan deras, jalan banjir.",
+      "Budi suka apel.",
+      "Lampu padam sehingga ruangan gelap.",
+      "Hari ini hari Senin."
+    ],
+    "jawabanBenar": [
+      "Karena hujan deras, jalan banjir.",
+      "Lampu padam sehingga ruangan gelap."
+    ]
+  },
+  {
+    "pertanyaan": "Masukkan setiap bilangan ke kategori yang tepat.",
+    "mapel": "Matematika",
+    "tp": "bilangan-tp1",
+    "jenisSoal": "pg_kategori",
+    "kko": "C2",
+    "kompleksitas": "dasar",
+    "kategori": ["Bilangan genap", "Bilangan ganjil"],
+    "item": [
+      { "teks": "12", "kategoriBenar": "Bilangan genap" },
+      { "teks": "7", "kategoriBenar": "Bilangan ganjil" },
+      { "teks": "20", "kategoriBenar": "Bilangan genap" },
+      { "teks": "15", "kategoriBenar": "Bilangan ganjil" }
+    ]
+  },
+  {
+    "pertanyaan": "Urutkan langkah menyelesaikan soal cerita dari awal sampai akhir.",
+    "mapel": "Matematika",
+    "tp": "bilangan-tp2",
+    "jenisSoal": "mengurutkan",
+    "kko": "C3",
+    "kompleksitas": "menengah",
+    "item": [
+      "Baca soal dan pahami yang ditanyakan",
+      "Tulis yang diketahui",
+      "Pilih operasi yang tepat",
+      "Hitung dan cek jawaban"
+    ]
+  },
+  {
+    "pertanyaan": "Jodohkan istilah dengan artinya.",
+    "mapel": "IPAS",
+    "tp": "organ-tp2",
+    "jenisSoal": "menjodohkan",
+    "kko": "C1",
+    "kompleksitas": "dasar",
+    "pasangan": [
+      { "kiri": "Jantung", "kanan": "Memompa darah ke seluruh tubuh" },
+      { "kiri": "Paru-paru", "kanan": "Tempat pertukaran oksigen dan karbon dioksida" },
+      { "kiri": "Lambung", "kanan": "Mencerna makanan secara kimiawi" }
+    ]
+  }
+]
